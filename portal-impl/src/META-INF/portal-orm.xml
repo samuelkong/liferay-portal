@@ -1359,6 +1359,7 @@
 			<basic name="viewCount" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
+			<transient name="titleMap" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
