@@ -56,7 +56,9 @@ public class MBThreadFinderImpl
 	public int countByG_C_S(long groupId, long categoryId, int status)
 		throws SystemException {
 
-		return doCountByG_C_S(groupId, categoryId, status, false);
+		long[] categoryIds = {categoryId};
+
+		return doCountByG_C_S(groupId, categoryIds, status, false);
 	}
 
 	public int countByS_G_U_C_S(
@@ -116,7 +118,15 @@ public class MBThreadFinderImpl
 	public int filterCountByG_C_S(long groupId, long categoryId, int status)
 		throws SystemException {
 
-		return doCountByG_C_S(groupId, categoryId, status, true);
+		long[] categoryIds = {categoryId};
+
+		return doCountByG_C_S(groupId, categoryIds, status, true);
+	}
+
+	public int filterCountByG_C_S(long groupId, long[] categoryIds, int status)
+		throws SystemException {
+
+		return doCountByG_C_S(groupId, categoryIds, status, true);
 	}
 
 	public int filterCountByS_G_U_C_S(
@@ -168,9 +178,17 @@ public class MBThreadFinderImpl
 			long groupId, long categoryId, int status, int start, int end)
 		throws SystemException {
 
-		return doFindByG_C_S(groupId, categoryId, status, start, end, true);
+		long [] categoryIds = {categoryId};
+
+		return doFindByG_C_S(groupId, categoryIds, status, start, end, true);
 	}
 
+	public List<MBThread> filterFindByG_C_S(
+			long groupId, long[] categoryIds, int status, int start, int end)
+		throws SystemException {
+
+		return doFindByG_C_S(groupId, categoryIds, status, start, end, true);
+	}
 	public List<MBThread> filterFindByS_G_U_C_S(
 			long groupId, long userId, long[] categoryIds, int status,
 			int start, int end)
@@ -184,7 +202,9 @@ public class MBThreadFinderImpl
 			long groupId, long categoryId, int status, int start, int end)
 		throws SystemException {
 
-		return doFindByG_C_S(groupId, categoryId, status, start, end, false);
+		long [] categoryIds = {categoryId};
+
+		return doFindByG_C_S(groupId, categoryIds, status, start, end, false);
 	}
 
 	public List<MBThread> findByS_G_U_C_S(
@@ -197,15 +217,16 @@ public class MBThreadFinderImpl
 	}
 
 	protected int doCountByG_C_S(
-			long groupId, long categoryId, int status, boolean inlineSQLHelper)
+			long groupId, long[] categoryIds, int status,
+			boolean inlineSQLHelper)
 		throws SystemException {
 
 		if (!inlineSQLHelper || !InlineSQLHelperUtil.isEnabled(groupId)) {
 			if (status != WorkflowConstants.STATUS_ANY) {
-				return MBThreadUtil.countByG_C_S(groupId, categoryId, status);
+				return MBThreadUtil.countByG_C_S(groupId, categoryIds, status);
 			}
 			else {
-				return MBThreadUtil.countByG_C(groupId, categoryId);
+				return MBThreadUtil.countByG_C(groupId, categoryIds);
 			}
 		}
 
@@ -215,6 +236,18 @@ public class MBThreadFinderImpl
 			session = openSession();
 
 			String sql = CustomSQLUtil.get(COUNT_BY_G_C);
+
+			if ((categoryIds == null) || (categoryIds.length == 0)) {
+				sql = StringUtil.replace(
+					sql, "(MBThread.categoryId = ?) ", StringPool.BLANK);
+			}
+			else {
+				sql = StringUtil.replace(
+					sql, "MBThread.categoryId = ?",
+					"MBThread.categoryId = " +
+						StringUtil.merge(
+							categoryIds, " OR MBThread.categoryId = "));
+			}
 
 			if (status != WorkflowConstants.STATUS_ANY) {
 				sql = CustomSQLUtil.appendCriteria(
@@ -232,7 +265,6 @@ public class MBThreadFinderImpl
 			QueryPos qPos = QueryPos.getInstance(q);
 
 			qPos.add(groupId);
-			qPos.add(categoryId);
 
 			if (status != WorkflowConstants.STATUS_ANY) {
 				qPos.add(status);
@@ -328,17 +360,17 @@ public class MBThreadFinderImpl
 	}
 
 	protected List<MBThread> doFindByG_C_S(
-			long groupId, long categoryId, int status, int start, int end,
+			long groupId, long[] categoryIds, int status, int start, int end,
 			boolean inlineSQLHelper)
 		throws SystemException {
 
 		if (!inlineSQLHelper || !InlineSQLHelperUtil.isEnabled(groupId)) {
 			if (status != WorkflowConstants.STATUS_ANY) {
 				return MBThreadUtil.findByG_C_S(
-					groupId, categoryId, status, start, end);
+					groupId, categoryIds, status, start, end);
 			}
 			else {
-				return MBThreadUtil.findByG_C(groupId, categoryId, start, end);
+				return MBThreadUtil.findByG_C(groupId, categoryIds, start, end);
 			}
 		}
 
@@ -348,6 +380,18 @@ public class MBThreadFinderImpl
 			session = openSession();
 
 			String sql = CustomSQLUtil.get(FIND_BY_G_C);
+
+			if ((categoryIds == null) || (categoryIds.length == 0)) {
+				sql = StringUtil.replace(
+					sql, "(MBThread.categoryId = ?) ", StringPool.BLANK);
+			}
+			else {
+				sql = StringUtil.replace(
+					sql, "MBThread.categoryId = ?",
+					"MBThread.categoryId = " +
+						StringUtil.merge(
+							categoryIds, " OR MBThread.categoryId = "));
+			}
 
 			if (status != WorkflowConstants.STATUS_ANY) {
 				sql = CustomSQLUtil.appendCriteria(
@@ -365,7 +409,6 @@ public class MBThreadFinderImpl
 			QueryPos qPos = QueryPos.getInstance(q);
 
 			qPos.add(groupId);
-			qPos.add(categoryId);
 
 			if (status != WorkflowConstants.STATUS_ANY) {
 				qPos.add(status);
