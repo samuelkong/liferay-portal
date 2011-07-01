@@ -838,6 +838,7 @@ public class OrganizationUtil {
 	*
 	* @param companyId the company ID
 	* @param name the name
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching organization, or <code>null</code> if a matching organization could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -1116,7 +1117,7 @@ public class OrganizationUtil {
 	}
 
 	/**
-	* Determines if the group is associated with the organization.
+	* Returns <code>true</code> if the group is associated with the organization.
 	*
 	* @param pk the primary key of the organization
 	* @param groupPK the primary key of the group
@@ -1129,7 +1130,7 @@ public class OrganizationUtil {
 	}
 
 	/**
-	* Determines if the organization has any groups associated with it.
+	* Returns <code>true</code> if the organization has any groups associated with it.
 	*
 	* @param pk the primary key of the organization to check for associations with groups
 	* @return <code>true</code> if the organization has any groups associated with it; <code>false</code> otherwise
@@ -1339,7 +1340,7 @@ public class OrganizationUtil {
 	}
 
 	/**
-	* Determines if the user is associated with the organization.
+	* Returns <code>true</code> if the user is associated with the organization.
 	*
 	* @param pk the primary key of the organization
 	* @param userPK the primary key of the user
@@ -1352,7 +1353,7 @@ public class OrganizationUtil {
 	}
 
 	/**
-	* Determines if the organization has any users associated with it.
+	* Returns <code>true</code> if the organization has any users associated with it.
 	*
 	* @param pk the primary key of the organization to check for associations with users
 	* @return <code>true</code> if the organization has any users associated with it; <code>false</code> otherwise

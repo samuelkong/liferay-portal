@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.ServerDetector;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.util.servlet.GenericServletInputStream;
 
 import java.io.BufferedReader;
@@ -72,6 +73,10 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 		_include = include;
 
 		_lifecycle = _portletRequestImpl.getLifecycle();
+
+		if (Validator.isNotNull(_queryString)) {
+			_portletRequestImpl.setPortletRequestDispatcherRequest(request);
+		}
 	}
 
 	@Override

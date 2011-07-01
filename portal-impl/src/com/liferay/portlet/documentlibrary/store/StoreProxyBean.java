@@ -20,8 +20,6 @@ import com.liferay.portal.service.ServiceContext;
 import java.io.File;
 import java.io.InputStream;
 
-import java.util.Date;
-
 /**
  * @author Brian Wing Shun Chan
  */
@@ -35,29 +33,34 @@ public class StoreProxyBean extends BaseProxyBean implements Store {
 
 	public void addFile(
 		long companyId, String portletId, long groupId, long repositoryId,
-		String fileName, long fileEntryId, String properties, Date modifiedDate,
-		ServiceContext serviceContext, byte[] bytes) {
+		String fileName, ServiceContext serviceContext, byte[] bytes) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	public void addFile(
 		long companyId, String portletId, long groupId, long repositoryId,
-		String fileName, long fileEntryId, String properties,
-		Date modifiedDate, ServiceContext serviceContext, File file) {
+		String fileName, ServiceContext serviceContext, File file) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	public void addFile(
 		long companyId, String portletId, long groupId, long repositoryId,
-		String fileName, long fileEntryId, String properties,
-		Date modifiedDate, ServiceContext serviceContext, InputStream is) {
+		String fileName, ServiceContext serviceContext, InputStream is) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	public void checkRoot(long companyId) {
+		throw new UnsupportedOperationException();
+	}
+
+	public void copyFileVersion(
+		long companyId, String portletId, long groupId, long repositoryId,
+		String fileName, String fromVersionNumber, String toVersionNumber,
+		String sourceFileName, ServiceContext serviceContext) {
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -104,6 +107,10 @@ public class StoreProxyBean extends BaseProxyBean implements Store {
 		throw new UnsupportedOperationException();
 	}
 
+	public String[] getFileNames(long companyId, long repositoryId) {
+		throw new UnsupportedOperationException();
+	}
+
 	public String[] getFileNames(
 		long companyId, long repositoryId, String dirName) {
 
@@ -133,14 +140,14 @@ public class StoreProxyBean extends BaseProxyBean implements Store {
 
 	public void updateFile(
 		long companyId, String portletId, long groupId, long repositoryId,
-		long newRepositoryId, String fileName, long fileEntryId) {
+		long newRepositoryId, String fileName) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	public void updateFile(
 		long companyId, String portletId, long groupId, long repositoryId,
-		String fileName, String newFileName, boolean reindex) {
+		String fileName, String newFileName) {
 
 		throw new UnsupportedOperationException();
 	}
@@ -148,7 +155,6 @@ public class StoreProxyBean extends BaseProxyBean implements Store {
 	public void updateFile(
 		long companyId, String portletId, long groupId, long repositoryId,
 		String fileName, String versionNumber, String sourceFileName,
-		long fileEntryId, String properties, Date modifiedDate,
 		ServiceContext serviceContext, byte[] bytes) {
 
 		throw new UnsupportedOperationException();
@@ -157,7 +163,6 @@ public class StoreProxyBean extends BaseProxyBean implements Store {
 	public void updateFile(
 		long companyId, String portletId, long groupId, long repositoryId,
 		String fileName, String versionNumber, String sourceFileName,
-		long fileEntryId, String properties, Date modifiedDate,
 		ServiceContext serviceContext, File file) {
 
 		throw new UnsupportedOperationException();
@@ -166,8 +171,15 @@ public class StoreProxyBean extends BaseProxyBean implements Store {
 	public void updateFile(
 		long companyId, String portletId, long groupId, long repositoryId,
 		String fileName, String versionNumber, String sourceFileName,
-		long fileEntryId, String properties, Date modifiedDate,
 		ServiceContext serviceContext, InputStream is) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	public void updateFileVersion(
+		long companyId, String portletId, long groupId, long repositoryId,
+		String fileName, String fromVersionNumber, String toVersionNumber,
+		String sourceFileName, ServiceContext serviceContext) {
 
 		throw new UnsupportedOperationException();
 	}

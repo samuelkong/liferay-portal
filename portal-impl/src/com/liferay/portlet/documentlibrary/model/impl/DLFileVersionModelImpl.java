@@ -56,7 +56,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a d l file version model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileVersion} interface instead.
+	 * Never modify or reference this class directly. All methods that expect a document library file version model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileVersion} interface instead.
 	 */
 	public static final String TABLE_NAME = "DLFileVersion";
 	public static final Object[][] TABLE_COLUMNS = {
@@ -423,8 +423,13 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 			return (DLFileVersion)this;
 		}
 		else {
-			return (DLFileVersion)Proxy.newProxyInstance(_classLoader,
-				_escapedModelProxyInterfaces, new AutoEscapeBeanHandler(this));
+			if (_escapedModelProxy == null) {
+				_escapedModelProxy = (DLFileVersion)Proxy.newProxyInstance(_classLoader,
+						_escapedModelProxyInterfaces,
+						new AutoEscapeBeanHandler(this));
+			}
+
+			return _escapedModelProxy;
 		}
 	}
 
@@ -725,4 +730,5 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 	private String _statusByUserName;
 	private Date _statusDate;
 	private transient ExpandoBridge _expandoBridge;
+	private DLFileVersion _escapedModelProxy;
 }

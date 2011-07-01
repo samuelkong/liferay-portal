@@ -477,8 +477,14 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		UserGroup userGroup = (UserGroup)EntityCacheUtil.getResult(UserGroupModelImpl.ENTITY_CACHE_ENABLED,
 				UserGroupImpl.class, userGroupId, this);
 
+		if (userGroup == _nullUserGroup) {
+			return null;
+		}
+
 		if (userGroup == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
@@ -487,11 +493,17 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 						Long.valueOf(userGroupId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (userGroup != null) {
 					cacheResult(userGroup);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(UserGroupModelImpl.ENTITY_CACHE_ENABLED,
+						UserGroupImpl.class, userGroupId, _nullUserGroup);
 				}
 
 				closeSession(session);
@@ -907,7 +919,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
@@ -930,7 +942,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_COLUMN_PK);
+				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
 
 		Session session = null;
 
@@ -1022,7 +1034,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			String[] orderByFields = orderByComparator.getOrderByFields();
@@ -1100,7 +1112,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_COLUMN_PK);
+				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
 
 		SQLQuery q = session.createSQLQuery(sql);
 
@@ -1570,7 +1582,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_C_P_PARENTUSERGROUPID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
@@ -1593,7 +1605,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_COLUMN_PK);
+				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
 
 		Session session = null;
 
@@ -1691,7 +1703,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_C_P_PARENTUSERGROUPID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			String[] orderByFields = orderByComparator.getOrderByFields();
@@ -1769,7 +1781,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_COLUMN_PK);
+				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
 
 		SQLQuery q = session.createSQLQuery(sql);
 
@@ -1861,6 +1873,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 	 *
 	 * @param companyId the company ID
 	 * @param name the name
+	 * @param retrieveFromCache whether to use the finder cache
 	 * @return the matching user group, or <code>null</code> if a matching user group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2192,7 +2205,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_COLUMN_PK);
+				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
 
 		Session session = null;
 
@@ -2302,7 +2315,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		query.append(_FINDER_COLUMN_C_P_PARENTUSERGROUPID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_COLUMN_PK);
+				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
 
 		Session session = null;
 
@@ -2616,7 +2629,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the group is associated with the user group.
+	 * Returns <code>true</code> if the group is associated with the user group.
 	 *
 	 * @param pk the primary key of the user group
 	 * @param groupPK the primary key of the group
@@ -2651,7 +2664,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 	}
 
 	/**
-	 * Determines if the user group has any groups associated with it.
+	 * Returns <code>true</code> if the user group has any groups associated with it.
 	 *
 	 * @param pk the primary key of the user group to check for associations with groups
 	 * @return <code>true</code> if the user group has any groups associated with it; <code>false</code> otherwise
@@ -3079,7 +3092,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the team is associated with the user group.
+	 * Returns <code>true</code> if the team is associated with the user group.
 	 *
 	 * @param pk the primary key of the user group
 	 * @param teamPK the primary key of the team
@@ -3113,7 +3126,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 	}
 
 	/**
-	 * Determines if the user group has any teams associated with it.
+	 * Returns <code>true</code> if the user group has any teams associated with it.
 	 *
 	 * @param pk the primary key of the user group to check for associations with teams
 	 * @return <code>true</code> if the user group has any teams associated with it; <code>false</code> otherwise
@@ -3541,7 +3554,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the user is associated with the user group.
+	 * Returns <code>true</code> if the user is associated with the user group.
 	 *
 	 * @param pk the primary key of the user group
 	 * @param userPK the primary key of the user
@@ -3575,7 +3588,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 	}
 
 	/**
-	 * Determines if the user group has any users associated with it.
+	 * Returns <code>true</code> if the user group has any users associated with it.
 	 *
 	 * @param pk the primary key of the user group to check for associations with users
 	 * @return <code>true</code> if the user group has any users associated with it; <code>false</code> otherwise
@@ -4532,13 +4545,19 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 	private static final String _FINDER_COLUMN_C_N_NAME_3 = "(userGroup.name IS NULL OR userGroup.name = ?)";
 	private static final String _FILTER_SQL_SELECT_USERGROUP_WHERE = "SELECT {userGroup.*} FROM UserGroup userGroup WHERE ";
 	private static final String _FILTER_SQL_COUNT_USERGROUP_WHERE = "SELECT COUNT(DISTINCT userGroup.userGroupId) AS COUNT_VALUE FROM UserGroup userGroup WHERE ";
-	private static final String _FILTER_COLUMN_PK = "userGroup.userGroupId";
 	private static final String _FILTER_ENTITY_ALIAS = "userGroup";
 	private static final String _FILTER_ENTITY_TABLE = "UserGroup";
+	private static final String _FILTER_ENTITY_TABLE_PK_COLUMN = "userGroup.userGroupId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "userGroup.userGroupId";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "userGroup.";
 	private static final String _ORDER_BY_ENTITY_TABLE = "UserGroup.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No UserGroup exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No UserGroup exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(UserGroupPersistenceImpl.class);
+	private static UserGroup _nullUserGroup = new UserGroupImpl() {
+			public Object clone() {
+				return this;
+			}
+		};
 }

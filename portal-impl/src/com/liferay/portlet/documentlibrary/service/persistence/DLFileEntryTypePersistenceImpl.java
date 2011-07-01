@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The persistence implementation for the d l file entry type service.
+ * The persistence implementation for the document library file entry type service.
  *
  * <p>
  * Caching information and settings can be found in <code>portal.properties</code>
@@ -77,7 +77,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link DLFileEntryTypeUtil} to access the d l file entry type persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+	 * Never modify or reference this class directly. Always use {@link DLFileEntryTypeUtil} to access the document library file entry type persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static final String FINDER_CLASS_NAME_ENTITY = DLFileEntryTypeImpl.class.getName();
 	public static final String FINDER_CLASS_NAME_LIST = FINDER_CLASS_NAME_ENTITY +
@@ -120,9 +120,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 			FINDER_CLASS_NAME_LIST, "countAll", new String[0]);
 
 	/**
-	 * Caches the d l file entry type in the entity cache if it is enabled.
+	 * Caches the document library file entry type in the entity cache if it is enabled.
 	 *
-	 * @param dlFileEntryType the d l file entry type
+	 * @param dlFileEntryType the document library file entry type
 	 */
 	public void cacheResult(DLFileEntryType dlFileEntryType) {
 		EntityCacheUtil.putResult(DLFileEntryTypeModelImpl.ENTITY_CACHE_ENABLED,
@@ -133,9 +133,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Caches the d l file entry types in the entity cache if it is enabled.
+	 * Caches the document library file entry types in the entity cache if it is enabled.
 	 *
-	 * @param dlFileEntryTypes the d l file entry types
+	 * @param dlFileEntryTypes the document library file entry types
 	 */
 	public void cacheResult(List<DLFileEntryType> dlFileEntryTypes) {
 		for (DLFileEntryType dlFileEntryType : dlFileEntryTypes) {
@@ -149,7 +149,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Clears the cache for all d l file entry types.
+	 * Clears the cache for all document library file entry types.
 	 *
 	 * <p>
 	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
@@ -167,7 +167,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Clears the cache for the d l file entry type.
+	 * Clears the cache for the document library file entry type.
 	 *
 	 * <p>
 	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
@@ -180,10 +180,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Creates a new d l file entry type with the primary key. Does not add the d l file entry type to the database.
+	 * Creates a new document library file entry type with the primary key. Does not add the document library file entry type to the database.
 	 *
-	 * @param fileEntryTypeId the primary key for the new d l file entry type
-	 * @return the new d l file entry type
+	 * @param fileEntryTypeId the primary key for the new document library file entry type
+	 * @return the new document library file entry type
 	 */
 	public DLFileEntryType create(long fileEntryTypeId) {
 		DLFileEntryType dlFileEntryType = new DLFileEntryTypeImpl();
@@ -195,11 +195,11 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the d l file entry type with the primary key from the database. Also notifies the appropriate model listeners.
+	 * Removes the document library file entry type with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param primaryKey the primary key of the d l file entry type
-	 * @return the d l file entry type that was removed
-	 * @throws com.liferay.portal.NoSuchModelException if a d l file entry type with the primary key could not be found
+	 * @param primaryKey the primary key of the document library file entry type
+	 * @return the document library file entry type that was removed
+	 * @throws com.liferay.portal.NoSuchModelException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -209,11 +209,11 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the d l file entry type with the primary key from the database. Also notifies the appropriate model listeners.
+	 * Removes the document library file entry type with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param fileEntryTypeId the primary key of the d l file entry type
-	 * @return the d l file entry type that was removed
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a d l file entry type with the primary key could not be found
+	 * @param fileEntryTypeId the primary key of the document library file entry type
+	 * @return the document library file entry type that was removed
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType remove(long fileEntryTypeId)
@@ -250,10 +250,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the d l file entry type from the database. Also notifies the appropriate model listeners.
+	 * Removes the document library file entry type from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dlFileEntryType the d l file entry type
-	 * @return the d l file entry type that was removed
+	 * @param dlFileEntryType the document library file entry type
+	 * @return the document library file entry type that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -354,11 +354,11 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry type with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the document library file entry type with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
 	 *
-	 * @param primaryKey the primary key of the d l file entry type
-	 * @return the d l file entry type
-	 * @throws com.liferay.portal.NoSuchModelException if a d l file entry type with the primary key could not be found
+	 * @param primaryKey the primary key of the document library file entry type
+	 * @return the document library file entry type
+	 * @throws com.liferay.portal.NoSuchModelException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -368,11 +368,11 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry type with the primary key or throws a {@link com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException} if it could not be found.
+	 * Returns the document library file entry type with the primary key or throws a {@link com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException} if it could not be found.
 	 *
-	 * @param fileEntryTypeId the primary key of the d l file entry type
-	 * @return the d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a d l file entry type with the primary key could not be found
+	 * @param fileEntryTypeId the primary key of the document library file entry type
+	 * @return the document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType findByPrimaryKey(long fileEntryTypeId)
@@ -392,10 +392,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry type with the primary key or returns <code>null</code> if it could not be found.
+	 * Returns the document library file entry type with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param primaryKey the primary key of the d l file entry type
-	 * @return the d l file entry type, or <code>null</code> if a d l file entry type with the primary key could not be found
+	 * @param primaryKey the primary key of the document library file entry type
+	 * @return the document library file entry type, or <code>null</code> if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -405,10 +405,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry type with the primary key or returns <code>null</code> if it could not be found.
+	 * Returns the document library file entry type with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param fileEntryTypeId the primary key of the d l file entry type
-	 * @return the d l file entry type, or <code>null</code> if a d l file entry type with the primary key could not be found
+	 * @param fileEntryTypeId the primary key of the document library file entry type
+	 * @return the document library file entry type, or <code>null</code> if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType fetchByPrimaryKey(long fileEntryTypeId)
@@ -416,8 +416,14 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		DLFileEntryType dlFileEntryType = (DLFileEntryType)EntityCacheUtil.getResult(DLFileEntryTypeModelImpl.ENTITY_CACHE_ENABLED,
 				DLFileEntryTypeImpl.class, fileEntryTypeId, this);
 
+		if (dlFileEntryType == _nullDLFileEntryType) {
+			return null;
+		}
+
 		if (dlFileEntryType == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
@@ -426,11 +432,18 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 						Long.valueOf(fileEntryTypeId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (dlFileEntryType != null) {
 					cacheResult(dlFileEntryType);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(DLFileEntryTypeModelImpl.ENTITY_CACHE_ENABLED,
+						DLFileEntryTypeImpl.class, fileEntryTypeId,
+						_nullDLFileEntryType);
 				}
 
 				closeSession(session);
@@ -441,10 +454,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns all the d l file entry types where groupId = &#63;.
+	 * Returns all the document library file entry types where groupId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @return the matching d l file entry types
+	 * @return the matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findByGroupId(long groupId)
@@ -453,16 +466,16 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns a range of all the d l file entry types where groupId = &#63;.
+	 * Returns a range of all the document library file entry types where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
-	 * @return the range of matching d l file entry types
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
+	 * @return the range of matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findByGroupId(long groupId, int start, int end)
@@ -471,17 +484,17 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file entry types where groupId = &#63;.
+	 * Returns an ordered range of all the document library file entry types where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file entry types
+	 * @return the ordered range of matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findByGroupId(long groupId, int start,
@@ -555,7 +568,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the first d l file entry type in the ordered set where groupId = &#63;.
+	 * Returns the first document library file entry type in the ordered set where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -563,8 +576,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 *
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching d l file entry type could not be found
+	 * @return the first matching document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching document library file entry type could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType findByGroupId_First(long groupId,
@@ -591,7 +604,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the last d l file entry type in the ordered set where groupId = &#63;.
+	 * Returns the last document library file entry type in the ordered set where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -599,8 +612,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 *
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching d l file entry type could not be found
+	 * @return the last matching document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching document library file entry type could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType findByGroupId_Last(long groupId,
@@ -629,17 +642,17 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry types before and after the current d l file entry type in the ordered set where groupId = &#63;.
+	 * Returns the document library file entry types before and after the current document library file entry type in the ordered set where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param fileEntryTypeId the primary key of the current d l file entry type
+	 * @param fileEntryTypeId the primary key of the current document library file entry type
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a d l file entry type with the primary key could not be found
+	 * @return the previous, current, and next document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType[] findByGroupId_PrevAndNext(long fileEntryTypeId,
@@ -773,10 +786,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns all the d l file entry types that the user has permission to view where groupId = &#63;.
+	 * Returns all the document library file entry types that the user has permission to view where groupId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @return the matching d l file entry types that the user has permission to view
+	 * @return the matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> filterFindByGroupId(long groupId)
@@ -786,16 +799,16 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns a range of all the d l file entry types that the user has permission to view where groupId = &#63;.
+	 * Returns a range of all the document library file entry types that the user has permission to view where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
-	 * @return the range of matching d l file entry types that the user has permission to view
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
+	 * @return the range of matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> filterFindByGroupId(long groupId, int start,
@@ -804,17 +817,17 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file entry types that the user has permissions to view where groupId = &#63;.
+	 * Returns an ordered range of all the document library file entry types that the user has permissions to view where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file entry types that the user has permission to view
+	 * @return the ordered range of matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> filterFindByGroupId(long groupId, int start,
@@ -837,7 +850,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
@@ -851,7 +864,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(), _FILTER_COLUMN_PK, groupId);
+				DLFileEntryType.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -883,13 +897,13 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry types before and after the current d l file entry type in the ordered set of d l file entry types that the user has permission to view where groupId = &#63;.
+	 * Returns the document library file entry types before and after the current document library file entry type in the ordered set of document library file entry types that the user has permission to view where groupId = &#63;.
 	 *
-	 * @param fileEntryTypeId the primary key of the current d l file entry type
+	 * @param fileEntryTypeId the primary key of the current document library file entry type
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a d l file entry type with the primary key could not be found
+	 * @return the previous, current, and next document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType[] filterFindByGroupId_PrevAndNext(
@@ -944,7 +958,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			String[] orderByFields = orderByComparator.getOrderByFields();
@@ -1013,7 +1027,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(), _FILTER_COLUMN_PK, groupId);
+				DLFileEntryType.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		SQLQuery q = session.createSQLQuery(sql);
 
@@ -1050,12 +1065,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns all the d l file entry types where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns all the document library file entry types where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @return the matching d l file entry types
+	 * @return the matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findByG_N_D(long groupId, String name,
@@ -1065,7 +1080,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns a range of all the d l file entry types where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns a range of all the document library file entry types where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1074,9 +1089,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
-	 * @return the range of matching d l file entry types
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
+	 * @return the range of matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findByG_N_D(long groupId, String name,
@@ -1085,7 +1100,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file entry types where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns an ordered range of all the document library file entry types where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1094,10 +1109,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file entry types
+	 * @return the ordered range of matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findByG_N_D(long groupId, String name,
@@ -1204,7 +1219,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the first d l file entry type in the ordered set where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns the first document library file entry type in the ordered set where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1214,8 +1229,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 * @param name the name
 	 * @param description the description
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching d l file entry type could not be found
+	 * @return the first matching document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching document library file entry type could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType findByG_N_D_First(long groupId, String name,
@@ -1248,7 +1263,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the last d l file entry type in the ordered set where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns the last document library file entry type in the ordered set where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1258,8 +1273,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 * @param name the name
 	 * @param description the description
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching d l file entry type could not be found
+	 * @return the last matching document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a matching document library file entry type could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType findByG_N_D_Last(long groupId, String name,
@@ -1294,19 +1309,19 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry types before and after the current d l file entry type in the ordered set where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns the document library file entry types before and after the current document library file entry type in the ordered set where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param fileEntryTypeId the primary key of the current d l file entry type
+	 * @param fileEntryTypeId the primary key of the current document library file entry type
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a d l file entry type with the primary key could not be found
+	 * @return the previous, current, and next document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType[] findByG_N_D_PrevAndNext(long fileEntryTypeId,
@@ -1474,12 +1489,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns all the d l file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns all the document library file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @return the matching d l file entry types that the user has permission to view
+	 * @return the matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> filterFindByG_N_D(long groupId, String name,
@@ -1489,7 +1504,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns a range of all the d l file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns a range of all the document library file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1498,9 +1513,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
-	 * @return the range of matching d l file entry types that the user has permission to view
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
+	 * @return the range of matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> filterFindByG_N_D(long groupId, String name,
@@ -1509,7 +1524,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file entry types that the user has permissions to view where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns an ordered range of all the document library file entry types that the user has permissions to view where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1518,10 +1533,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file entry types that the user has permission to view
+	 * @return the ordered range of matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> filterFindByG_N_D(long groupId, String name,
@@ -1570,7 +1585,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 			}
 		}
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
@@ -1584,7 +1599,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(), _FILTER_COLUMN_PK, groupId);
+				DLFileEntryType.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -1624,15 +1640,15 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the d l file entry types before and after the current d l file entry type in the ordered set of d l file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns the document library file entry types before and after the current document library file entry type in the ordered set of document library file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
-	 * @param fileEntryTypeId the primary key of the current d l file entry type
+	 * @param fileEntryTypeId the primary key of the current document library file entry type
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file entry type
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a d l file entry type with the primary key could not be found
+	 * @return the previous, current, and next document library file entry type
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileEntryTypeException if a document library file entry type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileEntryType[] filterFindByG_N_D_PrevAndNext(
@@ -1713,7 +1729,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 			}
 		}
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			String[] orderByFields = orderByComparator.getOrderByFields();
@@ -1782,7 +1798,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(), _FILTER_COLUMN_PK, groupId);
+				DLFileEntryType.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		SQLQuery q = session.createSQLQuery(sql);
 
@@ -1827,9 +1844,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns all the d l file entry types.
+	 * Returns all the document library file entry types.
 	 *
-	 * @return the d l file entry types
+	 * @return the document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findAll() throws SystemException {
@@ -1837,15 +1854,15 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns a range of all the d l file entry types.
+	 * Returns a range of all the document library file entry types.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
-	 * @return the range of d l file entry types
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
+	 * @return the range of document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findAll(int start, int end)
@@ -1854,16 +1871,16 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file entry types.
+	 * Returns an ordered range of all the document library file entry types.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of d l file entry types
+	 * @return the ordered range of document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileEntryType> findAll(int start, int end,
@@ -1936,7 +1953,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes all the d l file entry types where groupId = &#63; from the database.
+	 * Removes all the document library file entry types where groupId = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @throws SystemException if a system exception occurred
@@ -1948,7 +1965,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes all the d l file entry types where groupId = &#63; and name = &#63; and description = &#63; from the database.
+	 * Removes all the document library file entry types where groupId = &#63; and name = &#63; and description = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
@@ -1964,7 +1981,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes all the d l file entry types from the database.
+	 * Removes all the document library file entry types from the database.
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1975,10 +1992,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the number of d l file entry types where groupId = &#63;.
+	 * Returns the number of document library file entry types where groupId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @return the number of matching d l file entry types
+	 * @return the number of matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countByGroupId(long groupId) throws SystemException {
@@ -2028,10 +2045,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the number of d l file entry types that the user has permission to view where groupId = &#63;.
+	 * Returns the number of document library file entry types that the user has permission to view where groupId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @return the number of matching d l file entry types that the user has permission to view
+	 * @return the number of matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int filterCountByGroupId(long groupId) throws SystemException {
@@ -2046,7 +2063,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(), _FILTER_COLUMN_PK, groupId);
+				DLFileEntryType.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -2075,12 +2093,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the number of d l file entry types where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns the number of document library file entry types where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @return the number of matching d l file entry types
+	 * @return the number of matching document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countByG_N_D(long groupId, String name, String description)
@@ -2163,12 +2181,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the number of d l file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
+	 * Returns the number of document library file entry types that the user has permission to view where groupId = &#63; and name = &#63; and description = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param description the description
-	 * @return the number of matching d l file entry types that the user has permission to view
+	 * @return the number of matching document library file entry types that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int filterCountByG_N_D(long groupId, String name, String description)
@@ -2208,7 +2226,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(), _FILTER_COLUMN_PK, groupId);
+				DLFileEntryType.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -2245,9 +2264,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns the number of d l file entry types.
+	 * Returns the number of document library file entry types.
 	 *
-	 * @return the number of d l file entry types
+	 * @return the number of document library file entry types
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countAll() throws SystemException {
@@ -2285,10 +2304,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns all the d d m structures associated with the d l file entry type.
+	 * Returns all the d d m structures associated with the document library file entry type.
 	 *
-	 * @param pk the primary key of the d l file entry type
-	 * @return the d d m structures associated with the d l file entry type
+	 * @param pk the primary key of the document library file entry type
+	 * @return the d d m structures associated with the document library file entry type
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure> getDDMStructures(
@@ -2297,16 +2316,16 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Returns a range of all the d d m structures associated with the d l file entry type.
+	 * Returns a range of all the d d m structures associated with the document library file entry type.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param pk the primary key of the d l file entry type
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
-	 * @return the range of d d m structures associated with the d l file entry type
+	 * @param pk the primary key of the document library file entry type
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
+	 * @return the range of d d m structures associated with the document library file entry type
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure> getDDMStructures(
@@ -2324,17 +2343,17 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 			});
 
 	/**
-	 * Returns an ordered range of all the d d m structures associated with the d l file entry type.
+	 * Returns an ordered range of all the d d m structures associated with the document library file entry type.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param pk the primary key of the d l file entry type
-	 * @param start the lower bound of the range of d l file entry types
-	 * @param end the upper bound of the range of d l file entry types (not inclusive)
+	 * @param pk the primary key of the document library file entry type
+	 * @param start the lower bound of the range of document library file entry types
+	 * @param end the upper bound of the range of document library file entry types (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of d d m structures associated with the d l file entry type
+	 * @return the ordered range of d d m structures associated with the document library file entry type
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure> getDDMStructures(
@@ -2404,10 +2423,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 			"getDDMStructuresSize", new String[] { Long.class.getName() });
 
 	/**
-	 * Returns the number of d d m structures associated with the d l file entry type.
+	 * Returns the number of d d m structures associated with the document library file entry type.
 	 *
-	 * @param pk the primary key of the d l file entry type
-	 * @return the number of d d m structures associated with the d l file entry type
+	 * @param pk the primary key of the document library file entry type
+	 * @return the number of d d m structures associated with the document library file entry type
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int getDDMStructuresSize(long pk) throws SystemException {
@@ -2458,11 +2477,11 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the d d m structure is associated with the d l file entry type.
+	 * Returns <code>true</code> if the d d m structure is associated with the document library file entry type.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructurePK the primary key of the d d m structure
-	 * @return <code>true</code> if the d d m structure is associated with the d l file entry type; <code>false</code> otherwise
+	 * @return <code>true</code> if the d d m structure is associated with the document library file entry type; <code>false</code> otherwise
 	 * @throws SystemException if a system exception occurred
 	 */
 	public boolean containsDDMStructure(long pk, long ddmStructurePK)
@@ -2494,10 +2513,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Determines if the d l file entry type has any d d m structures associated with it.
+	 * Returns <code>true</code> if the document library file entry type has any d d m structures associated with it.
 	 *
-	 * @param pk the primary key of the d l file entry type to check for associations with d d m structures
-	 * @return <code>true</code> if the d l file entry type has any d d m structures associated with it; <code>false</code> otherwise
+	 * @param pk the primary key of the document library file entry type to check for associations with d d m structures
+	 * @return <code>true</code> if the document library file entry type has any d d m structures associated with it; <code>false</code> otherwise
 	 * @throws SystemException if a system exception occurred
 	 */
 	public boolean containsDDMStructures(long pk) throws SystemException {
@@ -2510,9 +2529,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Adds an association between the d l file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Adds an association between the document library file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructurePK the primary key of the d d m structure
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2530,9 +2549,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Adds an association between the d l file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Adds an association between the document library file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructure the d d m structure
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2551,9 +2570,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Adds an association between the d l file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Adds an association between the document library file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructurePKs the primary keys of the d d m structures
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2573,9 +2592,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Adds an association between the d l file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Adds an association between the document library file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructures the d d m structures
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2596,9 +2615,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Clears all associations between the d l file entry type and its d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Clears all associations between the document library file entry type and its d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type to clear the associated d d m structures from
+	 * @param pk the primary key of the document library file entry type to clear the associated d d m structures from
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void clearDDMStructures(long pk) throws SystemException {
@@ -2614,9 +2633,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the association between the d l file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Removes the association between the document library file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructurePK the primary key of the d d m structure
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2634,9 +2653,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the association between the d l file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Removes the association between the document library file entry type and the d d m structure. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructure the d d m structure
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2655,9 +2674,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the association between the d l file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Removes the association between the document library file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructurePKs the primary keys of the d d m structures
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2677,9 +2696,9 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Removes the association between the d l file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Removes the association between the document library file entry type and the d d m structures. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
+	 * @param pk the primary key of the document library file entry type
 	 * @param ddmStructures the d d m structures
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -2700,10 +2719,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Sets the d d m structures associated with the d l file entry type, removing and adding associations as necessary. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Sets the d d m structures associated with the document library file entry type, removing and adding associations as necessary. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
-	 * @param ddmStructurePKs the primary keys of the d d m structures to be associated with the d l file entry type
+	 * @param pk the primary key of the document library file entry type
+	 * @param ddmStructurePKs the primary keys of the d d m structures to be associated with the document library file entry type
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void setDDMStructures(long pk, long[] ddmStructurePKs)
@@ -2733,10 +2752,10 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Sets the d d m structures associated with the d l file entry type, removing and adding associations as necessary. Also notifies the appropriate model listeners and clears the mapping table finder cache.
+	 * Sets the d d m structures associated with the document library file entry type, removing and adding associations as necessary. Also notifies the appropriate model listeners and clears the mapping table finder cache.
 	 *
-	 * @param pk the primary key of the d l file entry type
-	 * @param ddmStructures the d d m structures to be associated with the d l file entry type
+	 * @param pk the primary key of the document library file entry type
+	 * @param ddmStructures the d d m structures to be associated with the document library file entry type
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void setDDMStructures(long pk,
@@ -2763,7 +2782,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	}
 
 	/**
-	 * Initializes the d l file entry type persistence.
+	 * Initializes the document library file entry type persistence.
 	 */
 	public void afterPropertiesSet() {
 		String[] listenerClassNames = StringUtil.split(GetterUtil.getString(
@@ -3022,13 +3041,19 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	private static final String _FINDER_COLUMN_G_N_D_DESCRIPTION_3 = "(dlFileEntryType.description IS NULL OR dlFileEntryType.description = ?)";
 	private static final String _FILTER_SQL_SELECT_DLFILEENTRYTYPE_WHERE = "SELECT {dlFileEntryType.*} FROM DLFileEntryType dlFileEntryType WHERE ";
 	private static final String _FILTER_SQL_COUNT_DLFILEENTRYTYPE_WHERE = "SELECT COUNT(DISTINCT dlFileEntryType.fileEntryTypeId) AS COUNT_VALUE FROM DLFileEntryType dlFileEntryType WHERE ";
-	private static final String _FILTER_COLUMN_PK = "dlFileEntryType.fileEntryTypeId";
 	private static final String _FILTER_ENTITY_ALIAS = "dlFileEntryType";
 	private static final String _FILTER_ENTITY_TABLE = "DLFileEntryType";
+	private static final String _FILTER_ENTITY_TABLE_PK_COLUMN = "dlFileEntryType.fileEntryTypeId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "dlFileEntryType.fileEntryTypeId";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "dlFileEntryType.";
 	private static final String _ORDER_BY_ENTITY_TABLE = "DLFileEntryType.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No DLFileEntryType exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No DLFileEntryType exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFileEntryTypePersistenceImpl.class);
+	private static DLFileEntryType _nullDLFileEntryType = new DLFileEntryTypeImpl() {
+			public Object clone() {
+				return this;
+			}
+		};
 }

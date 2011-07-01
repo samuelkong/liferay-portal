@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
 /**
- * The interface for the d l file entry remote service.
+ * The interface for the document library file entry remote service.
  *
  * <p>
  * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
@@ -39,7 +39,7 @@ public interface DLFileEntryService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link DLFileEntryServiceUtil} to access the d l file entry remote service. Add custom service methods to {@link com.liferay.portlet.documentlibrary.service.impl.DLFileEntryServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify or reference this interface directly. Always use {@link DLFileEntryServiceUtil} to access the document library file entry remote service. Add custom service methods to {@link com.liferay.portlet.documentlibrary.service.impl.DLFileEntryServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 	public com.liferay.portlet.documentlibrary.model.DLFileEntry addFileEntry(
 		long groupId, long repositoryId, long folderId,
@@ -74,8 +74,8 @@ public interface DLFileEntryService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
-	public void copyFileEntry(long groupId, long repositoryId,
-		long fileEntryId, long destFolderId,
+	public com.liferay.portlet.documentlibrary.model.DLFileEntry copyFileEntry(
+		long groupId, long repositoryId, long fileEntryId, long destFolderId,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;

@@ -106,6 +106,7 @@ import javax.portlet.PortletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -383,6 +384,14 @@ public class MainServlet extends ActionServlet {
 		}
 
 		long companyId = getCompanyId(request);
+
+		if (processCompanyInactiveRequest(request, response, companyId)) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Processed company inactive request");
+			}
+
+			return;
+		}
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Set portal port");
@@ -993,6 +1002,27 @@ public class MainServlet extends ActionServlet {
 		return userId;
 	}
 
+	protected boolean processCompanyInactiveRequest(
+			HttpServletRequest request, HttpServletResponse response,
+			long companyId)
+		throws IOException {
+
+		if (PortalInstances.isCompanyActive(companyId)) {
+			return false;
+		}
+
+		response.setContentType(ContentTypes.TEXT_HTML_UTF8);
+
+		String html = ContentUtil.get(
+			"com/liferay/portal/dependencies/company_inactive.html");
+
+		ServletOutputStream servletOutputStream = response.getOutputStream();
+
+		servletOutputStream.print(html);
+
+		return true;
+	}
+
 	protected void processGlobalShutdownEvents() throws Exception {
 		EventsProcessorUtil.process(
 			PropsKeys.GLOBAL_SHUTDOWN_EVENTS,
@@ -1034,8 +1064,14 @@ public class MainServlet extends ActionServlet {
 			_log.error(e, e);
 		}
 
-		response.addHeader(
-			_LIFERAY_PORTAL_REQUEST_HEADER, ReleaseInfo.getReleaseInfo());
+		if (_HTTP_HEADER_VERSION_VERBOSITY_PARTIAL) {
+			response.addHeader(
+				_LIFERAY_PORTAL_REQUEST_HEADER, ReleaseInfo.getName());
+		}
+		else {
+			response.addHeader(
+				_LIFERAY_PORTAL_REQUEST_HEADER, ReleaseInfo.getReleaseInfo());
+		}
 
 		ThreadLocalCacheManager.clearAll(Lifecycle.REQUEST);
 	}
@@ -1139,7 +1175,9 @@ public class MainServlet extends ActionServlet {
 		String html = ContentUtil.get(
 			"com/liferay/portal/dependencies/shutdown.html");
 
-		response.getOutputStream().print(html);
+		ServletOutputStream servletOutputStream = response.getOutputStream();
+
+		servletOutputStream.print(html);
 
 		return true;
 	}
@@ -1200,6 +1238,9 @@ public class MainServlet extends ActionServlet {
 
 		PrincipalThreadLocal.setPassword(password);
 	}
+
+	private static final boolean _HTTP_HEADER_VERSION_VERBOSITY_PARTIAL =
+		PropsValues.HTTP_HEADER_VERSION_VERBOSITY.equalsIgnoreCase("partial");
 
 	private static final String _LIFERAY_PORTAL_REQUEST_HEADER =
 		"Liferay-Portal";

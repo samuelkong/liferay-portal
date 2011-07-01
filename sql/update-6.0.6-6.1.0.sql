@@ -24,6 +24,7 @@ alter table CalEvent add location STRING null;
 update ClassName_ set value = 'com.liferay.portal.model.UserPersonalSite' where value = 'com.liferay.portal.model.UserPersonalCommunity';
 
 drop index IX_975996C0 on Company;
+alter table Company add active_ BOOLEAN;
 
 create table DDLRecord (
 	uuid_ VARCHAR(75) null,
@@ -136,8 +137,7 @@ create table DLContent (
 create table DLFileEntryMetadata (
 	uuid_ VARCHAR(75) null,
 	fileEntryMetadataId LONG not null primary key,
-	classNameId LONG,
-	classPK LONG,
+	DDMStorageId LONG,
 	DDMStructureId LONG,
 	fileEntryTypeId LONG,
 	fileEntryId LONG,

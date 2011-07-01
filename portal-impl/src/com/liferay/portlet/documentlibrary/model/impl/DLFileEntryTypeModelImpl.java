@@ -59,7 +59,7 @@ public class DLFileEntryTypeModelImpl extends BaseModelImpl<DLFileEntryType>
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a d l file entry type model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileEntryType} interface instead.
+	 * Never modify or reference this class directly. All methods that expect a document library file entry type model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileEntryType} interface instead.
 	 */
 	public static final String TABLE_NAME = "DLFileEntryType";
 	public static final Object[][] TABLE_COLUMNS = {
@@ -276,8 +276,13 @@ public class DLFileEntryTypeModelImpl extends BaseModelImpl<DLFileEntryType>
 			return (DLFileEntryType)this;
 		}
 		else {
-			return (DLFileEntryType)Proxy.newProxyInstance(_classLoader,
-				_escapedModelProxyInterfaces, new AutoEscapeBeanHandler(this));
+			if (_escapedModelProxy == null) {
+				_escapedModelProxy = (DLFileEntryType)Proxy.newProxyInstance(_classLoader,
+						_escapedModelProxyInterfaces,
+						new AutoEscapeBeanHandler(this));
+			}
+
+			return _escapedModelProxy;
 		}
 	}
 
@@ -454,4 +459,5 @@ public class DLFileEntryTypeModelImpl extends BaseModelImpl<DLFileEntryType>
 	private String _name;
 	private String _description;
 	private transient ExpandoBridge _expandoBridge;
+	private DLFileEntryType _escapedModelProxy;
 }

@@ -54,9 +54,9 @@ if (record != null) {
 
 	<liferay-ui:error exception="<%= StorageFieldRequiredException.class %>" message="please-fill-out-all-required-fields" />
 
-	<aui:model-context bean="<%= recordVersion %>" model="<%= DDLRecordVersion.class %>" />
-
 	<c:if test="<%= recordVersion != null %>">
+		<aui:model-context bean="<%= recordVersion %>" model="<%= DDLRecordVersion.class %>" />
+
 		<aui:workflow-status model="<%= DDLRecord.class %>" status="<%= recordVersion.getStatus() %>" version="<%= recordVersion.getVersion() %>" />
 	</c:if>
 
@@ -67,17 +67,7 @@ if (record != null) {
 		<%
 		DDLRecordSet recordSet = DDLRecordSetLocalServiceUtil.getRecordSet(recordSetId);
 
-		DDMStructure ddmStructure = recordSet.getDDMStructure();
-
-		if (detailDDMTemplateId > 0) {
-			try {
-				DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.getTemplate(detailDDMTemplateId);
-
-				ddmStructure.setXsd(ddmTemplate.getScript());
-			}
-			catch (NoSuchTemplateException nste) {
-			}
-		}
+		DDMStructure ddmStructure = recordSet.getDDMStructure(detailDDMTemplateId);
 
 		Fields fields = null;
 

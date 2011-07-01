@@ -16,6 +16,8 @@ package com.liferay.portal.service.persistence;
 
 import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ORMException;
+import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.model.BaseModel;
@@ -65,6 +67,8 @@ public interface BasePersistence<T extends BaseModel<T>> {
 	 * @param model the instance of this model to clear the cache for
 	 */
 	public void clearCache(T model);
+
+	public void closeSession(Session session);
 
 	/**
 	 * Returns the number of rows that match the dynamic query.
@@ -159,6 +163,7 @@ public interface BasePersistence<T extends BaseModel<T>> {
 	 * @param  start the lower bound of the range of matching rows
 	 * @param  end the upper bound of the range of matching rows (not inclusive)
 	 * @param  orderByComparator the comparator to order the results by
+	 *         (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -183,6 +188,10 @@ public interface BasePersistence<T extends BaseModel<T>> {
 	 * @see    #registerListener(ModelListener)
 	 */
 	public ModelListener<T>[] getListeners();
+
+	public Session openSession() throws ORMException;
+
+	public SystemException processException(Exception e);
 
 	/**
 	 * Registers a new listener for this model.

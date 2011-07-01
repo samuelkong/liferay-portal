@@ -165,7 +165,7 @@ public interface CompanyModel extends BaseModel<Company> {
 	public boolean getSystem();
 
 	/**
-	 * Determines if this company is system.
+	 * Returns <code>true</code> if this company is system.
 	 *
 	 * @return <code>true</code> if this company is system; <code>false</code> otherwise
 	 */
@@ -191,6 +191,27 @@ public interface CompanyModel extends BaseModel<Company> {
 	 * @param maxUsers the max users of this company
 	 */
 	public void setMaxUsers(int maxUsers);
+
+	/**
+	 * Returns the active of this company.
+	 *
+	 * @return the active of this company
+	 */
+	public boolean getActive();
+
+	/**
+	 * Returns <code>true</code> if this company is active.
+	 *
+	 * @return <code>true</code> if this company is active; <code>false</code> otherwise
+	 */
+	public boolean isActive();
+
+	/**
+	 * Sets whether this company is active.
+	 *
+	 * @param active the active of this company
+	 */
+	public void setActive(boolean active);
 
 	public boolean isNew();
 

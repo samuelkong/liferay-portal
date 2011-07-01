@@ -54,7 +54,7 @@ public class DLFileRankModelImpl extends BaseModelImpl<DLFileRank>
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a d l file rank model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileRank} interface instead.
+	 * Never modify or reference this class directly. All methods that expect a document library file rank model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileRank} interface instead.
 	 */
 	public static final String TABLE_NAME = "DLFileRank";
 	public static final Object[][] TABLE_COLUMNS = {
@@ -201,8 +201,13 @@ public class DLFileRankModelImpl extends BaseModelImpl<DLFileRank>
 			return (DLFileRank)this;
 		}
 		else {
-			return (DLFileRank)Proxy.newProxyInstance(_classLoader,
-				_escapedModelProxyInterfaces, new AutoEscapeBeanHandler(this));
+			if (_escapedModelProxy == null) {
+				_escapedModelProxy = (DLFileRank)Proxy.newProxyInstance(_classLoader,
+						_escapedModelProxyInterfaces,
+						new AutoEscapeBeanHandler(this));
+			}
+
+			return _escapedModelProxy;
 		}
 	}
 
@@ -374,4 +379,5 @@ public class DLFileRankModelImpl extends BaseModelImpl<DLFileRank>
 	private long _originalFileEntryId;
 	private boolean _setOriginalFileEntryId;
 	private transient ExpandoBridge _expandoBridge;
+	private DLFileRank _escapedModelProxy;
 }

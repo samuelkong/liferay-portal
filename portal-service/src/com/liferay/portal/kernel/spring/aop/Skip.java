@@ -12,25 +12,19 @@
  * details.
  */
 
-package com.liferay.portal.model;
+package com.liferay.portal.kernel.spring.aop;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * <p>
- * See http://issues.liferay.com/browse/LPS-15626.
- * </p>
- *
- * @author Raymond Augé
+ * @author Shuyang Zhou
  */
-public class PersonalizedPages {
-
-	public static String namespaceColumnId(String columnId) {
-		return columnId.concat(_PERSONALIZABLE_SUFFIX);
-	}
-
-	public static String namespacePlid(long plid) {
-		return PersonalizedPages.class.getName().concat(String.valueOf(plid));
-	}
-
-	private static final String _PERSONALIZABLE_SUFFIX = "-personalizable";
-
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Skip {
 }

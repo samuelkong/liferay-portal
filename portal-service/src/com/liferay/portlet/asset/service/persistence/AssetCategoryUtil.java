@@ -352,6 +352,7 @@ public class AssetCategoryUtil {
 	*
 	* @param uuid the uuid
 	* @param groupId the group ID
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching asset category, or <code>null</code> if a matching asset category could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -1232,6 +1233,7 @@ public class AssetCategoryUtil {
 	* @param parentCategoryId the parent category ID
 	* @param name the name
 	* @param vocabularyId the vocabulary ID
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching asset category, or <code>null</code> if a matching asset category could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -1616,7 +1618,7 @@ public class AssetCategoryUtil {
 	}
 
 	/**
-	* Determines if the asset entry is associated with the asset category.
+	* Returns <code>true</code> if the asset entry is associated with the asset category.
 	*
 	* @param pk the primary key of the asset category
 	* @param assetEntryPK the primary key of the asset entry
@@ -1629,7 +1631,7 @@ public class AssetCategoryUtil {
 	}
 
 	/**
-	* Determines if the asset category has any asset entries associated with it.
+	* Returns <code>true</code> if the asset category has any asset entries associated with it.
 	*
 	* @param pk the primary key of the asset category to check for associations with asset entries
 	* @return <code>true</code> if the asset category has any asset entries associated with it; <code>false</code> otherwise

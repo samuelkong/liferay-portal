@@ -59,7 +59,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a d l file entry model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileEntry} interface instead.
+	 * Never modify or reference this class directly. All methods that expect a document library file entry model instance should use the {@link com.liferay.portlet.documentlibrary.model.DLFileEntry} interface instead.
 	 */
 	public static final String TABLE_NAME = "DLFileEntry";
 	public static final Object[][] TABLE_COLUMNS = {
@@ -496,8 +496,13 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 			return (DLFileEntry)this;
 		}
 		else {
-			return (DLFileEntry)Proxy.newProxyInstance(_classLoader,
-				_escapedModelProxyInterfaces, new AutoEscapeBeanHandler(this));
+			if (_escapedModelProxy == null) {
+				_escapedModelProxy = (DLFileEntry)Proxy.newProxyInstance(_classLoader,
+						_escapedModelProxyInterfaces,
+						new AutoEscapeBeanHandler(this));
+			}
+
+			return _escapedModelProxy;
 		}
 	}
 
@@ -813,4 +818,5 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 	private long _size;
 	private int _readCount;
 	private transient ExpandoBridge _expandoBridge;
+	private DLFileEntry _escapedModelProxy;
 }

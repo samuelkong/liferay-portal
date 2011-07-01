@@ -1058,10 +1058,18 @@ AUI().add(
 					},
 
 					_mergeTag: function(fromId, toId, callback) {
+						var serviceParameterTypes = [
+           					'long',
+           					'long',
+           					'boolean'
+           				];
+
 						Liferay.Service.Asset.AssetTag.mergeTags(
 							{
 								fromTagId: fromId,
-								toTagId: toId
+								toTagId: toId,
+								overrideProperties: true,
+								serviceParameterTypes: A.JSON.stringify(serviceParameterTypes)
 							},
 							callback
 						);
@@ -1293,6 +1301,7 @@ AUI().add(
 							}
 							else if ((exception.indexOf('TagNameException') > -1) ||
 									 (exception.indexOf('AssetTagException') > -1)) {
+
 								errorText = Liferay.Language.get('one-of-your-fields-contains-invalid-characters');
 							}
 							else if (exception.indexOf('auth.PrincipalException') > -1) {

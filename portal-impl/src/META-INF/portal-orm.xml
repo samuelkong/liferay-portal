@@ -118,6 +118,9 @@
 			<basic name="logoId" />
 			<basic name="system" />
 			<basic name="maxUsers" />
+			<basic name="active">
+				<column name="ACTIVE_" />
+			</basic>
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
 		</attributes>
@@ -1681,8 +1684,7 @@
 			<basic name="uuid">
 				<column name="UUID_" />
 			</basic>
-			<basic name="classNameId" />
-			<basic name="classPK" />
+			<basic name="DDMStorageId" />
 			<basic name="DDMStructureId" />
 			<basic name="fileEntryTypeId" />
 			<basic name="fileEntryId" />

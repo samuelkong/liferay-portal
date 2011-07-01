@@ -19,6 +19,8 @@
 	<property name="plink.executable" location="${project.dir}/tools/putty/plink.exe" />
 	<property name="pscp.executable" location="${project.dir}/tools/putty/pscp.exe" />
 
+	<property name="selenium.nanny.executable" location="${project.dir}/tools/selenium/selenium_nanny.exe" />
+
 	<target name="append-ant-script">
 		<loadfile property="template.content" srcfile="portal-web/test-ant-templates/${ant.script.template}">
 			<filterchain>
@@ -2565,6 +2567,65 @@ file.
 
 	<target name="run-simple-server">
 		<if>
+			<not>
+				<isset property="selenium.executable.zip" />
+			</not>
+			<then>
+				<fail>
+.
+
+Please set "selenium.executable.zip" in test.properties to point to the Selenium
+executable ZIP file.
+				</fail>
+			</then>
+		</if>
+
+		<if>
+			<or>
+				<not>
+					<available file="${selenium.nanny.executable}" />
+				</not>
+				<uptodate
+					srcfile="${selenium.nanny.executable}"
+					targetfile="${selenium.executable.zip}"
+				/>
+			</or>
+			<then>
+				<delete>
+					<fileset
+						dir="${project.dir}/tools/selenium"
+						includes="*.exe"
+					/>
+				</delete>
+
+				<unzip
+					dest="${project.dir}/tools/selenium"
+					src="${selenium.executable.zip}"
+				/>
+
+				<touch file="${selenium.nanny.executable}" />
+			</then>
+		</if>
+
+		<if>
+			<isset property="selenium.output.dir" />
+			<then>
+				<replace
+					file="portal-web/test/test-portal-web.properties"
+					token="output.dir=H:\\selenium-output\\"
+					value="output.dir=${selenium.output.dir}"
+				/>
+			</then>
+			<else>
+				<property name="selenium.output.dir" value="H:\\selenium-output\\" />
+			</else>
+		</if>
+
+		<delete dir="${selenium.output.dir}" />
+
+		<mkdir dir="${selenium.output.dir}" />
+
+		<if>
 			<isset property="test.browser" />
 			<then>
 				<replace
@@ -2573,6 +2634,51 @@ file.
 					value="browser.type=*${test.browser}"
 				/>
 			</then>
+			<else>
+				<property name="test.browser" value="chrome" />
+			</else>
+		</if>
+
+		<if>
+			<or>
+				<equals arg1="${test.browser}" arg2="chrome" />
+				<equals arg1="${test.browser}" arg2="firefox" />
+			</or>
+			<then>
+				<replace
+					file="portal-web/test/test-portal-web.properties"
+					token="#selenium.executable.dir="
+					value="selenium.executable.dir=${project.dir}/tools/selenium"
+				/>
+				<replace
+					file="portal-web/test/test-portal-web.properties"
+					token="#selenium_download_file.executable="
+					value="selenium_download_file.executable=selenium_download_file_ff.exe"
+				/>
+				<replace
+					file="portal-web/test/test-portal-web.properties"
+					token="#selenium_set_browser_option.executable="
+					value="selenium_set_browser_option.executable=selenium_set_browser_option_ff.exe"
+				/>
+			</then>
+			<elseif>
+				<or>
+					<equals arg1="${test.browser}" arg2="iehta" />
+					<equals arg1="${test.browser}" arg2="iexplorer" />
+				</or>
+				<then>
+					<replace
+						file="portal-web/test/test-portal-web.properties"
+						token="#selenium.executable.dir="
+						value="selenium.executable.dir=${project.dir}/tools/selenium"
+					/>
+					<replace
+						file="portal-web/test/test-portal-web.properties"
+						token="#selenium_download_file.executable="
+						value="selenium_download_file.executable=selenium_download_file_ie.exe"
+					/>
+				</then>
+			</elseif>
 		</if>
 
 		<antcall target="rebuild-database" inheritAll="false" />
@@ -2721,19 +2827,9 @@ file.
 	</target>
 
 	<target name="start-selenium-nanny">
-		<copy file="${selenium.nanny.executable}" tofile="selenium_nanny.exe" />
-
-		<sequential>
-			<waitfor>
-				<available file="selenium_nanny.exe" />
-			</waitfor>
-
-			<sleep seconds="10" />
-
-			<forget>
-				<exec executable="selenium_nanny.exe" />
-			</forget>
-		</sequential>
+		<forget>
+			<exec executable="${selenium.nanny.executable}" />
+		</forget>
 	</target>
 
 	<target name="stop-selenium">
@@ -2744,8 +2840,6 @@ file.
 		<exec executable="taskkill.exe">
 			<arg line="/F /IM selenium_nanny.exe" />
 		</exec>
-
-		<delete file="selenium_nanny.exe" />
 	</target>
 
 	<target name="stop-vm">

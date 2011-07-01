@@ -17,6 +17,8 @@
 <%@ include file="/html/portal/init.jsp" %>
 
 <%
+String cmd = ParamUtil.getString(request, Constants.CMD);
+
 Portlet portlet = (Portlet)request.getAttribute(WebKeys.RENDER_PORTLET);
 
 String portletId = portlet.getPortletId();
@@ -266,15 +268,15 @@ if ((!themeDisplay.isSignedIn()) ||
 	showMaxIcon = PropsValues.LAYOUT_GUEST_SHOW_MAX_ICON;
 	showMinIcon = PropsValues.LAYOUT_GUEST_SHOW_MIN_ICON;
 
-	if (!(layoutTypePortlet.isPersonalizable() && !layoutTypePortlet.isColumnDisabled(columnId) && LayoutPermissionUtil.contains(permissionChecker, layout, ActionKeys.CUSTOMIZE))) {
+	if (!(layoutTypePortlet.isCustomizable() && !layoutTypePortlet.isColumnDisabled(columnId) && LayoutPermissionUtil.contains(permissionChecker, layout, ActionKeys.CUSTOMIZE))) {
 		showCloseIcon = false;
 		showMoveIcon = false;
 	}
 }
 
-// Portlets cannot be moved if the column is not personalizable
+// Portlets cannot be moved if the column is not customizable
 
-if (layoutTypePortlet.isPersonalizable() && layoutTypePortlet.isColumnDisabled(columnId)) {
+if (layoutTypePortlet.isCustomizable() && layoutTypePortlet.isColumnDisabled(columnId)) {
 	showCloseIcon = false;
 	showMoveIcon = false;
 }
@@ -796,7 +798,7 @@ if ((layout.isTypePanel() || layout.isTypeControlPanel()) && !portletDisplay.get
 	}
 
 	if (!portletDisplay.isShowMoveIcon()) {
-		if (layoutTypePortlet.isPersonalizable() && layoutTypePortlet.isColumnDisabled(columnId)) {
+		if (layoutTypePortlet.isCustomizable() && layoutTypePortlet.isColumnDisabled(columnId)) {
 			cssClasses += " portlet-static";
 		}
 		else if (portlet.isStaticStart()) {
@@ -907,6 +909,19 @@ if ((layout.isTypePanel() || layout.isTypeControlPanel()) && !portletDisplay.get
 
 			if (portletException) {
 				portletContent = "/portal/portlet_error.jsp";
+			}
+
+			if (!portlet.isAjaxable() && cmd.equals("add")) {
+		%>
+
+				<liferay-util:buffer var="nonAjaxableContentMessage">
+					<div class="portlet-msg-info">
+						<liferay-ui:message key="this-change-will-only-be-shown-after-you-refresh-the-page" />
+					</div>
+				</liferay-util:buffer>
+
+		<%
+				renderRequestImpl.setAttribute(WebKeys.PORTLET_CONTENT, nonAjaxableContentMessage);
 			}
 		%>
 

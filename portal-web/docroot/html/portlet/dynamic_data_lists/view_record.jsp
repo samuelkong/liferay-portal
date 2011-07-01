@@ -28,7 +28,9 @@ long recordSetId = BeanParamUtil.getLong(record, request, "recordSetId");
 
 long detailDDMTemplateId = ParamUtil.getLong(request, "detailDDMTemplateId");
 
-DDLRecordVersion recordVersion = record.getRecordVersion();
+String version = ParamUtil.getString(request, "version");
+
+DDLRecordVersion recordVersion = record.getRecordVersion(version);
 %>
 
 <liferay-ui:header
@@ -36,9 +38,9 @@ DDLRecordVersion recordVersion = record.getRecordVersion();
 	title='view-record'
 />
 
-<aui:model-context bean="<%= recordVersion %>" model="<%= DDLRecordVersion.class %>" />
-
 <c:if test="<%= recordVersion != null %>">
+	<aui:model-context bean="<%= recordVersion %>" model="<%= DDLRecordVersion.class %>" />
+
 	<aui:workflow-status model="<%= DDLRecord.class %>" status="<%= recordVersion.getStatus() %>" version="<%= recordVersion.getVersion() %>" />
 </c:if>
 
@@ -47,17 +49,7 @@ DDLRecordVersion recordVersion = record.getRecordVersion();
 	<%
 	DDLRecordSet recordSet = DDLRecordSetLocalServiceUtil.getRecordSet(recordSetId);
 
-	DDMStructure ddmStructure = recordSet.getDDMStructure();
-
-	if (detailDDMTemplateId > 0) {
-		try {
-			DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.getTemplate(detailDDMTemplateId);
-
-			ddmStructure.setXsd(ddmTemplate.getScript());
-		}
-		catch (NoSuchTemplateException nste) {
-		}
-	}
+	DDMStructure ddmStructure = recordSet.getDDMStructure(detailDDMTemplateId);
 
 	Fields fields = null;
 
