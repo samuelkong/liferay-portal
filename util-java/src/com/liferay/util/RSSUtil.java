@@ -85,10 +85,10 @@ public class RSSUtil {
 	public static String getFormatType(String format) {
 		String formatType = DEFAULT_TYPE;
 
-		if (StringUtil.contains(format, ATOM)) {
+		if (StringUtil.contains(format, ATOM, "")) {
 			formatType = RSSUtil.ATOM;
 		}
-		else if (StringUtil.contains(format, RSS)) {
+		else if (StringUtil.contains(format, RSS, "")) {
 			formatType = RSSUtil.RSS;
 		}
 
@@ -98,10 +98,10 @@ public class RSSUtil {
 	public static double getFormatVersion(String format) {
 		double formatVersion = DEFAULT_VERSION;
 
-		if (StringUtil.contains(format, "10")) {
+		if (StringUtil.contains(format, "10", "")) {
 			formatVersion = 1.0;
 		}
-		else if (StringUtil.contains(format, "20")) {
+		else if (StringUtil.contains(format, "20", "")) {
 			formatVersion = 2.0;
 		}
 
