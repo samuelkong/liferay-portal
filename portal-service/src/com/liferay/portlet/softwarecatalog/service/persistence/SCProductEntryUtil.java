@@ -757,6 +757,7 @@ public class SCProductEntryUtil {
 	*
 	* @param repoGroupId the repo group ID
 	* @param repoArtifactId the repo artifact ID
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching s c product entry, or <code>null</code> if a matching s c product entry could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -1027,7 +1028,7 @@ public class SCProductEntryUtil {
 	}
 
 	/**
-	* Determines if the s c license is associated with the s c product entry.
+	* Returns <code>true</code> if the s c license is associated with the s c product entry.
 	*
 	* @param pk the primary key of the s c product entry
 	* @param scLicensePK the primary key of the s c license
@@ -1040,7 +1041,7 @@ public class SCProductEntryUtil {
 	}
 
 	/**
-	* Determines if the s c product entry has any s c licenses associated with it.
+	* Returns <code>true</code> if the s c product entry has any s c licenses associated with it.
 	*
 	* @param pk the primary key of the s c product entry to check for associations with s c licenses
 	* @return <code>true</code> if the s c product entry has any s c licenses associated with it; <code>false</code> otherwise

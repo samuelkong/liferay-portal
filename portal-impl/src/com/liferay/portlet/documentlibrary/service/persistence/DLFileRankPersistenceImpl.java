@@ -52,7 +52,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The persistence implementation for the d l file rank service.
+ * The persistence implementation for the document library file rank service.
  *
  * <p>
  * Caching information and settings can be found in <code>portal.properties</code>
@@ -68,7 +68,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link DLFileRankUtil} to access the d l file rank persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+	 * Never modify or reference this class directly. Always use {@link DLFileRankUtil} to access the document library file rank persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static final String FINDER_CLASS_NAME_ENTITY = DLFileRankImpl.class.getName();
 	public static final String FINDER_CLASS_NAME_LIST = FINDER_CLASS_NAME_ENTITY +
@@ -130,9 +130,9 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 			"countAll", new String[0]);
 
 	/**
-	 * Caches the d l file rank in the entity cache if it is enabled.
+	 * Caches the document library file rank in the entity cache if it is enabled.
 	 *
-	 * @param dlFileRank the d l file rank
+	 * @param dlFileRank the document library file rank
 	 */
 	public void cacheResult(DLFileRank dlFileRank) {
 		EntityCacheUtil.putResult(DLFileRankModelImpl.ENTITY_CACHE_ENABLED,
@@ -149,9 +149,9 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Caches the d l file ranks in the entity cache if it is enabled.
+	 * Caches the document library file ranks in the entity cache if it is enabled.
 	 *
-	 * @param dlFileRanks the d l file ranks
+	 * @param dlFileRanks the document library file ranks
 	 */
 	public void cacheResult(List<DLFileRank> dlFileRanks) {
 		for (DLFileRank dlFileRank : dlFileRanks) {
@@ -164,7 +164,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Clears the cache for all d l file ranks.
+	 * Clears the cache for all document library file ranks.
 	 *
 	 * <p>
 	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
@@ -182,7 +182,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Clears the cache for the d l file rank.
+	 * Clears the cache for the document library file rank.
 	 *
 	 * <p>
 	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
@@ -202,10 +202,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Creates a new d l file rank with the primary key. Does not add the d l file rank to the database.
+	 * Creates a new document library file rank with the primary key. Does not add the document library file rank to the database.
 	 *
-	 * @param fileRankId the primary key for the new d l file rank
-	 * @return the new d l file rank
+	 * @param fileRankId the primary key for the new document library file rank
+	 * @return the new document library file rank
 	 */
 	public DLFileRank create(long fileRankId) {
 		DLFileRank dlFileRank = new DLFileRankImpl();
@@ -217,11 +217,11 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes the d l file rank with the primary key from the database. Also notifies the appropriate model listeners.
+	 * Removes the document library file rank with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param primaryKey the primary key of the d l file rank
-	 * @return the d l file rank that was removed
-	 * @throws com.liferay.portal.NoSuchModelException if a d l file rank with the primary key could not be found
+	 * @param primaryKey the primary key of the document library file rank
+	 * @return the document library file rank that was removed
+	 * @throws com.liferay.portal.NoSuchModelException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -231,11 +231,11 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes the d l file rank with the primary key from the database. Also notifies the appropriate model listeners.
+	 * Removes the document library file rank with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param fileRankId the primary key of the d l file rank
-	 * @return the d l file rank that was removed
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a d l file rank with the primary key could not be found
+	 * @param fileRankId the primary key of the document library file rank
+	 * @return the document library file rank that was removed
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank remove(long fileRankId)
@@ -271,10 +271,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes the d l file rank from the database. Also notifies the appropriate model listeners.
+	 * Removes the document library file rank from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dlFileRank the d l file rank
-	 * @return the d l file rank that was removed
+	 * @param dlFileRank the document library file rank
+	 * @return the document library file rank that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -397,11 +397,11 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the document library file rank with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
 	 *
-	 * @param primaryKey the primary key of the d l file rank
-	 * @return the d l file rank
-	 * @throws com.liferay.portal.NoSuchModelException if a d l file rank with the primary key could not be found
+	 * @param primaryKey the primary key of the document library file rank
+	 * @return the document library file rank
+	 * @throws com.liferay.portal.NoSuchModelException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -411,11 +411,11 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank with the primary key or throws a {@link com.liferay.portlet.documentlibrary.NoSuchFileRankException} if it could not be found.
+	 * Returns the document library file rank with the primary key or throws a {@link com.liferay.portlet.documentlibrary.NoSuchFileRankException} if it could not be found.
 	 *
-	 * @param fileRankId the primary key of the d l file rank
-	 * @return the d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a d l file rank with the primary key could not be found
+	 * @param fileRankId the primary key of the document library file rank
+	 * @return the document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByPrimaryKey(long fileRankId)
@@ -435,10 +435,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank with the primary key or returns <code>null</code> if it could not be found.
+	 * Returns the document library file rank with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param primaryKey the primary key of the d l file rank
-	 * @return the d l file rank, or <code>null</code> if a d l file rank with the primary key could not be found
+	 * @param primaryKey the primary key of the document library file rank
+	 * @return the document library file rank, or <code>null</code> if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -448,10 +448,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank with the primary key or returns <code>null</code> if it could not be found.
+	 * Returns the document library file rank with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param fileRankId the primary key of the d l file rank
-	 * @return the d l file rank, or <code>null</code> if a d l file rank with the primary key could not be found
+	 * @param fileRankId the primary key of the document library file rank
+	 * @return the document library file rank, or <code>null</code> if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank fetchByPrimaryKey(long fileRankId)
@@ -459,8 +459,14 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 		DLFileRank dlFileRank = (DLFileRank)EntityCacheUtil.getResult(DLFileRankModelImpl.ENTITY_CACHE_ENABLED,
 				DLFileRankImpl.class, fileRankId, this);
 
+		if (dlFileRank == _nullDLFileRank) {
+			return null;
+		}
+
 		if (dlFileRank == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
@@ -469,11 +475,17 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 						Long.valueOf(fileRankId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (dlFileRank != null) {
 					cacheResult(dlFileRank);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(DLFileRankModelImpl.ENTITY_CACHE_ENABLED,
+						DLFileRankImpl.class, fileRankId, _nullDLFileRank);
 				}
 
 				closeSession(session);
@@ -484,10 +496,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns all the d l file ranks where userId = &#63;.
+	 * Returns all the document library file ranks where userId = &#63;.
 	 *
 	 * @param userId the user ID
-	 * @return the matching d l file ranks
+	 * @return the matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByUserId(long userId) throws SystemException {
@@ -495,16 +507,16 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns a range of all the d l file ranks where userId = &#63;.
+	 * Returns a range of all the document library file ranks where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param userId the user ID
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
-	 * @return the range of matching d l file ranks
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
+	 * @return the range of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByUserId(long userId, int start, int end)
@@ -513,17 +525,17 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file ranks where userId = &#63;.
+	 * Returns an ordered range of all the document library file ranks where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param userId the user ID
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file ranks
+	 * @return the ordered range of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByUserId(long userId, int start, int end,
@@ -601,7 +613,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the first d l file rank in the ordered set where userId = &#63;.
+	 * Returns the first document library file rank in the ordered set where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -609,8 +621,8 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 *
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the first matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByUserId_First(long userId,
@@ -636,7 +648,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the last d l file rank in the ordered set where userId = &#63;.
+	 * Returns the last document library file rank in the ordered set where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -644,8 +656,8 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 *
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the last matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByUserId_Last(long userId,
@@ -674,17 +686,17 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file ranks before and after the current d l file rank in the ordered set where userId = &#63;.
+	 * Returns the document library file ranks before and after the current document library file rank in the ordered set where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param fileRankId the primary key of the current d l file rank
+	 * @param fileRankId the primary key of the current document library file rank
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a d l file rank with the primary key could not be found
+	 * @return the previous, current, and next document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank[] findByUserId_PrevAndNext(long fileRankId, long userId,
@@ -822,10 +834,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns all the d l file ranks where fileEntryId = &#63;.
+	 * Returns all the document library file ranks where fileEntryId = &#63;.
 	 *
 	 * @param fileEntryId the file entry ID
-	 * @return the matching d l file ranks
+	 * @return the matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByFileEntryId(long fileEntryId)
@@ -835,16 +847,16 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns a range of all the d l file ranks where fileEntryId = &#63;.
+	 * Returns a range of all the document library file ranks where fileEntryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param fileEntryId the file entry ID
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
-	 * @return the range of matching d l file ranks
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
+	 * @return the range of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByFileEntryId(long fileEntryId, int start,
@@ -853,17 +865,17 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file ranks where fileEntryId = &#63;.
+	 * Returns an ordered range of all the document library file ranks where fileEntryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
 	 * @param fileEntryId the file entry ID
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file ranks
+	 * @return the ordered range of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByFileEntryId(long fileEntryId, int start,
@@ -941,7 +953,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the first d l file rank in the ordered set where fileEntryId = &#63;.
+	 * Returns the first document library file rank in the ordered set where fileEntryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -949,8 +961,8 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 *
 	 * @param fileEntryId the file entry ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the first matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByFileEntryId_First(long fileEntryId,
@@ -977,7 +989,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the last d l file rank in the ordered set where fileEntryId = &#63;.
+	 * Returns the last document library file rank in the ordered set where fileEntryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -985,8 +997,8 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 *
 	 * @param fileEntryId the file entry ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the last matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByFileEntryId_Last(long fileEntryId,
@@ -1015,17 +1027,17 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file ranks before and after the current d l file rank in the ordered set where fileEntryId = &#63;.
+	 * Returns the document library file ranks before and after the current document library file rank in the ordered set where fileEntryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param fileRankId the primary key of the current d l file rank
+	 * @param fileRankId the primary key of the current document library file rank
 	 * @param fileEntryId the file entry ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a d l file rank with the primary key could not be found
+	 * @return the previous, current, and next document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank[] findByFileEntryId_PrevAndNext(long fileRankId,
@@ -1163,11 +1175,11 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns all the d l file ranks where groupId = &#63; and userId = &#63;.
+	 * Returns all the document library file ranks where groupId = &#63; and userId = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
-	 * @return the matching d l file ranks
+	 * @return the matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByG_U(long groupId, long userId)
@@ -1177,7 +1189,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns a range of all the d l file ranks where groupId = &#63; and userId = &#63;.
+	 * Returns a range of all the document library file ranks where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1185,9 +1197,9 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
-	 * @return the range of matching d l file ranks
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
+	 * @return the range of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByG_U(long groupId, long userId, int start,
@@ -1196,7 +1208,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file ranks where groupId = &#63; and userId = &#63;.
+	 * Returns an ordered range of all the document library file ranks where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1204,10 +1216,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching d l file ranks
+	 * @return the ordered range of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findByG_U(long groupId, long userId, int start,
@@ -1289,7 +1301,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the first d l file rank in the ordered set where groupId = &#63; and userId = &#63;.
+	 * Returns the first document library file rank in the ordered set where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1298,8 +1310,8 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 * @param groupId the group ID
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the first matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByG_U_First(long groupId, long userId,
@@ -1329,7 +1341,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the last d l file rank in the ordered set where groupId = &#63; and userId = &#63;.
+	 * Returns the last document library file rank in the ordered set where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
@@ -1338,8 +1350,8 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	 * @param groupId the group ID
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the last matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByG_U_Last(long groupId, long userId,
@@ -1371,18 +1383,18 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file ranks before and after the current d l file rank in the ordered set where groupId = &#63; and userId = &#63;.
+	 * Returns the document library file ranks before and after the current document library file rank in the ordered set where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param fileRankId the primary key of the current d l file rank
+	 * @param fileRankId the primary key of the current document library file rank
 	 * @param groupId the group ID
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a d l file rank with the primary key could not be found
+	 * @return the previous, current, and next document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a document library file rank with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank[] findByG_U_PrevAndNext(long fileRankId, long groupId,
@@ -1524,13 +1536,13 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; or throws a {@link com.liferay.portlet.documentlibrary.NoSuchFileRankException} if it could not be found.
+	 * Returns the document library file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; or throws a {@link com.liferay.portlet.documentlibrary.NoSuchFileRankException} if it could not be found.
 	 *
 	 * @param companyId the company ID
 	 * @param userId the user ID
 	 * @param fileEntryId the file entry ID
-	 * @return the matching d l file rank
-	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching d l file rank could not be found
+	 * @return the matching document library file rank
+	 * @throws com.liferay.portlet.documentlibrary.NoSuchFileRankException if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank findByC_U_F(long companyId, long userId, long fileEntryId)
@@ -1564,12 +1576,12 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the document library file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param companyId the company ID
 	 * @param userId the user ID
 	 * @param fileEntryId the file entry ID
-	 * @return the matching d l file rank, or <code>null</code> if a matching d l file rank could not be found
+	 * @return the matching document library file rank, or <code>null</code> if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank fetchByC_U_F(long companyId, long userId, long fileEntryId)
@@ -1578,12 +1590,13 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the d l file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the document library file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param companyId the company ID
 	 * @param userId the user ID
 	 * @param fileEntryId the file entry ID
-	 * @return the matching d l file rank, or <code>null</code> if a matching d l file rank could not be found
+	 * @param retrieveFromCache whether to use the finder cache
+	 * @return the matching document library file rank, or <code>null</code> if a matching document library file rank could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public DLFileRank fetchByC_U_F(long companyId, long userId,
@@ -1675,9 +1688,9 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns all the d l file ranks.
+	 * Returns all the document library file ranks.
 	 *
-	 * @return the d l file ranks
+	 * @return the document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findAll() throws SystemException {
@@ -1685,15 +1698,15 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns a range of all the d l file ranks.
+	 * Returns a range of all the document library file ranks.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
-	 * @return the range of d l file ranks
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
+	 * @return the range of document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findAll(int start, int end)
@@ -1702,16 +1715,16 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns an ordered range of all the d l file ranks.
+	 * Returns an ordered range of all the document library file ranks.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of d l file ranks
-	 * @param end the upper bound of the range of d l file ranks (not inclusive)
+	 * @param start the lower bound of the range of document library file ranks
+	 * @param end the upper bound of the range of document library file ranks (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of d l file ranks
+	 * @return the ordered range of document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<DLFileRank> findAll(int start, int end,
@@ -1784,7 +1797,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes all the d l file ranks where userId = &#63; from the database.
+	 * Removes all the document library file ranks where userId = &#63; from the database.
 	 *
 	 * @param userId the user ID
 	 * @throws SystemException if a system exception occurred
@@ -1796,7 +1809,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes all the d l file ranks where fileEntryId = &#63; from the database.
+	 * Removes all the document library file ranks where fileEntryId = &#63; from the database.
 	 *
 	 * @param fileEntryId the file entry ID
 	 * @throws SystemException if a system exception occurred
@@ -1808,7 +1821,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes all the d l file ranks where groupId = &#63; and userId = &#63; from the database.
+	 * Removes all the document library file ranks where groupId = &#63; and userId = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
@@ -1822,7 +1835,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes the d l file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; from the database.
+	 * Removes the document library file rank where companyId = &#63; and userId = &#63; and fileEntryId = &#63; from the database.
 	 *
 	 * @param companyId the company ID
 	 * @param userId the user ID
@@ -1837,7 +1850,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Removes all the d l file ranks from the database.
+	 * Removes all the document library file ranks from the database.
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1848,10 +1861,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the number of d l file ranks where userId = &#63;.
+	 * Returns the number of document library file ranks where userId = &#63;.
 	 *
 	 * @param userId the user ID
-	 * @return the number of matching d l file ranks
+	 * @return the number of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countByUserId(long userId) throws SystemException {
@@ -1901,10 +1914,10 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the number of d l file ranks where fileEntryId = &#63;.
+	 * Returns the number of document library file ranks where fileEntryId = &#63;.
 	 *
 	 * @param fileEntryId the file entry ID
-	 * @return the number of matching d l file ranks
+	 * @return the number of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countByFileEntryId(long fileEntryId) throws SystemException {
@@ -1954,11 +1967,11 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the number of d l file ranks where groupId = &#63; and userId = &#63;.
+	 * Returns the number of document library file ranks where groupId = &#63; and userId = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
-	 * @return the number of matching d l file ranks
+	 * @return the number of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countByG_U(long groupId, long userId) throws SystemException {
@@ -2012,12 +2025,12 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the number of d l file ranks where companyId = &#63; and userId = &#63; and fileEntryId = &#63;.
+	 * Returns the number of document library file ranks where companyId = &#63; and userId = &#63; and fileEntryId = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param userId the user ID
 	 * @param fileEntryId the file entry ID
-	 * @return the number of matching d l file ranks
+	 * @return the number of matching document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countByC_U_F(long companyId, long userId, long fileEntryId)
@@ -2076,9 +2089,9 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Returns the number of d l file ranks.
+	 * Returns the number of document library file ranks.
 	 *
-	 * @return the number of d l file ranks
+	 * @return the number of document library file ranks
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countAll() throws SystemException {
@@ -2116,7 +2129,7 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	}
 
 	/**
-	 * Initializes the d l file rank persistence.
+	 * Initializes the document library file rank persistence.
 	 */
 	public void afterPropertiesSet() {
 		String[] listenerClassNames = StringUtil.split(GetterUtil.getString(
@@ -2184,4 +2197,9 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No DLFileRank exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFileRankPersistenceImpl.class);
+	private static DLFileRank _nullDLFileRank = new DLFileRankImpl() {
+			public Object clone() {
+				return this;
+			}
+		};
 }

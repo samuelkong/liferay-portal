@@ -301,7 +301,7 @@ else if (fileEntryType != null) {
 						try {
 							DLFileEntryMetadata fileEntryMetadata = DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(ddmStructure.getStructureId(), fileVersionId);
 
-							fields = StorageEngineUtil.getFields(fileEntryMetadata.getClassPK());
+							fields = StorageEngineUtil.getFields(fileEntryMetadata.getDDMStorageId());
 						}
 						catch (Exception e) {
 						}
@@ -393,7 +393,7 @@ else if (fileEntryType != null) {
 				publishButtonLabel = "submit-for-publication";
 			}
 
-			if (pending && !PropsValues.DL_FILE_ENTRY_DRAFTS_ENABLED) {
+			if ((isCheckedOut || pending) && !PropsValues.DL_FILE_ENTRY_DRAFTS_ENABLED) {
 				publishButtonLabel = "save";
 			}
 			%>

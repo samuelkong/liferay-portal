@@ -178,6 +178,8 @@ if (layout != null) {
 											<em><%= layoutRevision.getName(locale) %></em>
 										</div>
 
+										<aui:model-context bean="<%= layoutRevision %>" model="<%= LayoutRevision.class %>" />
+
 										<aui:workflow-status status='<%= layoutRevision.getStatus() %>' version="<%= String.valueOf(layoutRevision.getLayoutRevisionId()) %>" />
 									</div>
 

@@ -235,6 +235,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 	*
 	* @param actionId the action ID
 	* @param resourceId the resource ID
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching permission, or <code>null</code> if a matching permission could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -400,7 +401,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the group is associated with the permission.
+	* Returns <code>true</code> if the group is associated with the permission.
 	*
 	* @param pk the primary key of the permission
 	* @param groupPK the primary key of the group
@@ -411,7 +412,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the permission has any groups associated with it.
+	* Returns <code>true</code> if the permission has any groups associated with it.
 	*
 	* @param pk the primary key of the permission to check for associations with groups
 	* @return <code>true</code> if the permission has any groups associated with it; <code>false</code> otherwise
@@ -589,7 +590,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the role is associated with the permission.
+	* Returns <code>true</code> if the role is associated with the permission.
 	*
 	* @param pk the primary key of the permission
 	* @param rolePK the primary key of the role
@@ -600,7 +601,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the permission has any roles associated with it.
+	* Returns <code>true</code> if the permission has any roles associated with it.
 	*
 	* @param pk the primary key of the permission to check for associations with roles
 	* @return <code>true</code> if the permission has any roles associated with it; <code>false</code> otherwise
@@ -778,7 +779,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the user is associated with the permission.
+	* Returns <code>true</code> if the user is associated with the permission.
 	*
 	* @param pk the primary key of the permission
 	* @param userPK the primary key of the user
@@ -789,7 +790,7 @@ public interface PermissionPersistence extends BasePersistence<Permission> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the permission has any users associated with it.
+	* Returns <code>true</code> if the permission has any users associated with it.
 	*
 	* @param pk the primary key of the permission to check for associations with users
 	* @return <code>true</code> if the permission has any users associated with it; <code>false</code> otherwise

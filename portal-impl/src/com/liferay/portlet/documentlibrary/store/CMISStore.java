@@ -15,14 +15,7 @@
 package com.liferay.portlet.documentlibrary.store;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchEngineUtil;
-import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -32,14 +25,11 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.documentlibrary.DuplicateFileException;
 import com.liferay.portlet.documentlibrary.NoSuchFileException;
-import com.liferay.portlet.documentlibrary.model.FileModel;
 import com.liferay.portlet.documentlibrary.util.DLUtil;
 
 import java.io.InputStream;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +44,7 @@ import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -101,18 +92,46 @@ public class CMISStore extends BaseStore {
 	@Override
 	public void addFile(
 			long companyId, String portletId, long groupId, long repositoryId,
-			String fileName, long fileEntryId, String properties,
-			Date modifiedDate, ServiceContext serviceContext, InputStream is)
+			String fileName, ServiceContext serviceContext, InputStream is)
 		throws PortalException {
 
 		updateFile(
 			companyId, portletId, groupId, repositoryId, fileName,
-			DEFAULT_VERSION, null, fileEntryId, properties, modifiedDate,
-			serviceContext, is);
+			DEFAULT_VERSION, null, serviceContext, is);
 	}
 
 	@Override
 	public void checkRoot(long companyId) {
+	}
+
+	@Override
+	public void copyFileVersion(
+			long companyId, String portletId, long groupId, long repositoryId,
+			String fileName, String fromVersionNumber, String toVersionNumber,
+			String sourceFileName, ServiceContext serviceContext)
+		throws PortalException {
+
+		Folder versioningFolder = getVersioningFolder(
+			companyId, repositoryId, fileName, false);
+
+		ObjectId versioningFolderObjectId = new ObjectIdImpl(
+			versioningFolder.getId());
+
+		Map<String, Object> documentProperties = new HashMap<String, Object>();
+
+		String title = String.valueOf(toVersionNumber);
+
+		documentProperties.put(PropertyIds.NAME, title);
+
+		documentProperties.put(
+			PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
+
+		Document document = getVersionedDocument(
+			companyId, repositoryId, fileName, fromVersionNumber);
+
+		document.copy(
+			versioningFolderObjectId, documentProperties, null,
+			document.getPolicies(), null, null, null);
 	}
 
 	@Override
@@ -142,18 +161,6 @@ public class CMISStore extends BaseStore {
 		}
 
 		versioningFolder.deleteTree(true, UnfileObject.DELETE, false);
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(
-			FileModel.class);
-
-		FileModel fileModel = new FileModel();
-
-		fileModel.setCompanyId(companyId);
-		fileModel.setFileName(fileName);
-		fileModel.setPortletId(portletId);
-		fileModel.setRepositoryId(repositoryId);
-
-		indexer.delete(fileModel);
 	}
 
 	@Override
@@ -166,18 +173,6 @@ public class CMISStore extends BaseStore {
 			companyId, repositoryId, fileName, versionNumber);
 
 		document.delete(true);
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(
-			FileModel.class);
-
-		FileModel fileModel = new FileModel();
-
-		fileModel.setCompanyId(companyId);
-		fileModel.setFileName(fileName);
-		fileModel.setPortletId(portletId);
-		fileModel.setRepositoryId(repositoryId);
-
-		indexer.delete(fileModel);
 	}
 
 	@Override
@@ -195,6 +190,22 @@ public class CMISStore extends BaseStore {
 			companyId, repositoryId, fileName, versionNumber);
 
 		return document.getContentStream().getStream();
+	}
+
+	public String[] getFileNames(long companyId, long repositoryId) {
+		Folder folder = getRepositoryFolder(companyId, repositoryId);
+
+		List<Folder> folders = getFolders(folder);
+
+		String[] fileNames = new String[folders.size()];
+
+		for (int i = 0; i < folders.size(); i++) {
+			Folder curFolder = folders.get(i);
+
+			fileNames[i] = curFolder.getName();
+		}
+
+		return fileNames;
 	}
 
 	@Override
@@ -293,59 +304,9 @@ public class CMISStore extends BaseStore {
 	}
 
 	@Override
-	public void reindex(String[] ids) throws SearchException {
-		long companyId = GetterUtil.getLong(ids[0]);
-		String portletId = ids[1];
-		long groupId = GetterUtil.getLong(ids[2]);
-		long repositoryId = GetterUtil.getLong(ids[3]);
-
-		Collection<com.liferay.portal.kernel.search.Document> documents =
-			new ArrayList<com.liferay.portal.kernel.search.Document>();
-
-		try {
-			Folder repositoryFolderEntry = getRepositoryFolder(
-				companyId, repositoryId);
-
-			List<Folder> folders = getFolders(repositoryFolderEntry);
-
-			for (Folder folder : folders) {
-				String fileName = folder.getName();
-
-				Indexer indexer = IndexerRegistryUtil.getIndexer(
-					FileModel.class);
-
-				FileModel fileModel = new FileModel();
-
-				fileModel.setCompanyId(companyId);
-				fileModel.setFileName(fileName);
-				fileModel.setGroupId(groupId);
-				fileModel.setPortletId(portletId);
-				fileModel.setRepositoryId(repositoryId);
-
-				com.liferay.portal.kernel.search.Document document =
-					indexer.getDocument(fileModel);
-
-				if (document == null) {
-					continue;
-				}
-
-				documents.add(document);
-			}
-		}
-		catch (Exception e) {
-			if (_log.isErrorEnabled()) {
-				_log.error(e, e);
-			}
-		}
-
-		SearchEngineUtil.updateDocuments(companyId, documents);
-	}
-
-	@Override
 	public void updateFile(
-			long companyId, String portletId, long groupId, long repositoryId,
-			long newRepositoryId, String fileName, long fileEntryId)
-		throws PortalException {
+		long companyId, String portletId, long groupId, long repositoryId,
+		long newRepositoryId, String fileName) {
 
 		Folder oldVersioningFolderEntry = getVersioningFolder(
 			companyId, repositoryId, fileName, true);
@@ -366,28 +327,11 @@ public class CMISStore extends BaseStore {
 		}
 
 		oldVersioningFolderEntry.deleteTree(true, UnfileObject.DELETE, false);
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(FileModel.class);
-
-		FileModel fileModel = new FileModel();
-
-		fileModel.setCompanyId(companyId);
-		fileModel.setFileName(fileName);
-		fileModel.setPortletId(portletId);
-		fileModel.setRepositoryId(repositoryId);
-
-		indexer.delete(fileModel);
-
-		fileModel.setGroupId(groupId);
-		fileModel.setRepositoryId(newRepositoryId);
-
-		indexer.reindex(fileModel);
 	}
 
 	public void updateFile(
-			long companyId, String portletId, long groupId, long repositoryId,
-			String fileName, String newFileName, boolean reindex)
-		throws PortalException {
+		long companyId, String portletId, long groupId, long repositoryId,
+		String fileName, String newFileName) {
 
 		Folder oldVersioningFolderEntry = getVersioningFolder(
 			companyId, repositoryId, fileName, true);
@@ -408,31 +352,12 @@ public class CMISStore extends BaseStore {
 		}
 
 		oldVersioningFolderEntry.deleteTree(true, UnfileObject.DELETE, false);
-
-		if (reindex) {
-			Indexer indexer = IndexerRegistryUtil.getIndexer(FileModel.class);
-
-			FileModel fileModel = new FileModel();
-
-			fileModel.setCompanyId(companyId);
-			fileModel.setFileName(fileName);
-			fileModel.setPortletId(portletId);
-			fileModel.setRepositoryId(repositoryId);
-
-			indexer.delete(fileModel);
-
-			fileModel.setFileName(newFileName);
-			fileModel.setGroupId(groupId);
-
-			indexer.reindex(fileModel);
-		}
 	}
 
 	@Override
 	public void updateFile(
 			long companyId, String portletId, long groupId, long repositoryId,
 			String fileName, String versionNumber, String sourceFileName,
-			long fileEntryId, String properties, Date modifiedDate,
 			ServiceContext serviceContext, InputStream is)
 		throws PortalException {
 
@@ -448,23 +373,34 @@ public class CMISStore extends BaseStore {
 		}
 
 		createDocument(versioningFolder, title, is, serviceContext);
+	}
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(FileModel.class);
+	@Override
+	public void updateFileVersion(
+			long companyId, String portletId, long groupId, long repositoryId,
+			String fileName, String fromVersionNumber, String toVersionNumber,
+			String sourceFileName, ServiceContext serviceContext)
+		throws PortalException {
 
-		FileModel fileModel = new FileModel();
+		Folder versioningFolder = getVersioningFolder(
+			companyId, repositoryId, fileName, false);
 
-		fileModel.setAssetCategoryIds(serviceContext.getAssetCategoryIds());
-		fileModel.setAssetTagNames(serviceContext.getAssetTagNames());
-		fileModel.setCompanyId(companyId);
-		fileModel.setFileEntryId(fileEntryId);
-		fileModel.setFileName(fileName);
-		fileModel.setGroupId(groupId);
-		fileModel.setModifiedDate(modifiedDate);
-		fileModel.setPortletId(portletId);
-		fileModel.setProperties(properties);
-		fileModel.setRepositoryId(repositoryId);
+		String title = String.valueOf(toVersionNumber);
 
-		indexer.reindex(fileModel);
+		Document document = getDocument(versioningFolder, title);
+
+		if (document != null) {
+			throw new DuplicateFileException();
+		}
+
+		document = getVersionedDocument(
+			companyId, repositoryId, fileName, fromVersionNumber);
+
+		Map<String, Object> documentProperties = new HashMap<String, Object>();
+
+		documentProperties.put(PropertyIds.NAME, title);
+
+		document.updateProperties(documentProperties);
 	}
 
 	protected Document createDocument(
@@ -624,8 +560,6 @@ public class CMISStore extends BaseStore {
 
 		return versioningFolder;
 	}
-
-	private static Log _log = LogFactoryUtil.getLog(CMISStore.class);
 
 	private static Session _session;
 	private static Folder _systemRootDir;

@@ -15,6 +15,7 @@
 package com.liferay.portalweb.portlet.blogs.lar;
 
 import com.liferay.portalweb.portal.BaseTests;
+import com.liferay.portalweb.portlet.blogs.lar.exportlarblogsentry.ExportLARBlogsEntryTests;
 import com.liferay.portalweb.portlet.blogs.lar.importlar.ImportLARTests;
 
 import junit.framework.Test;
@@ -28,6 +29,7 @@ public class LARTests extends BaseTests {
 	public static Test suite() {
 		TestSuite testSuite = new TestSuite();
 
+		testSuite.addTest(ExportLARBlogsEntryTests.suite());
 		testSuite.addTest(ImportLARTests.suite());
 
 		return testSuite;

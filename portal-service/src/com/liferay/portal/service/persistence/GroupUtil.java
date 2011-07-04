@@ -344,6 +344,7 @@ public class GroupUtil {
 	* Returns the group where liveGroupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param liveGroupId the live group ID
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching group, or <code>null</code> if a matching group could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -389,6 +390,7 @@ public class GroupUtil {
 	*
 	* @param companyId the company ID
 	* @param name the name
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching group, or <code>null</code> if a matching group could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -433,6 +435,7 @@ public class GroupUtil {
 	*
 	* @param companyId the company ID
 	* @param friendlyURL the friendly u r l
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching group, or <code>null</code> if a matching group could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -607,6 +610,7 @@ public class GroupUtil {
 	* @param companyId the company ID
 	* @param classNameId the class name ID
 	* @param classPK the class p k
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching group, or <code>null</code> if a matching group could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -656,6 +660,7 @@ public class GroupUtil {
 	* @param companyId the company ID
 	* @param liveGroupId the live group ID
 	* @param name the name
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching group, or <code>null</code> if a matching group could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -710,6 +715,7 @@ public class GroupUtil {
 	* @param classNameId the class name ID
 	* @param liveGroupId the live group ID
 	* @param name the name
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching group, or <code>null</code> if a matching group could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -1076,7 +1082,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the organization is associated with the group.
+	* Returns <code>true</code> if the organization is associated with the group.
 	*
 	* @param pk the primary key of the group
 	* @param organizationPK the primary key of the organization
@@ -1089,7 +1095,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the group has any organizations associated with it.
+	* Returns <code>true</code> if the group has any organizations associated with it.
 	*
 	* @param pk the primary key of the group to check for associations with organizations
 	* @return <code>true</code> if the group has any organizations associated with it; <code>false</code> otherwise
@@ -1301,7 +1307,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the permission is associated with the group.
+	* Returns <code>true</code> if the permission is associated with the group.
 	*
 	* @param pk the primary key of the group
 	* @param permissionPK the primary key of the permission
@@ -1314,7 +1320,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the group has any permissions associated with it.
+	* Returns <code>true</code> if the group has any permissions associated with it.
 	*
 	* @param pk the primary key of the group to check for associations with permissions
 	* @return <code>true</code> if the group has any permissions associated with it; <code>false</code> otherwise
@@ -1526,7 +1532,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the role is associated with the group.
+	* Returns <code>true</code> if the role is associated with the group.
 	*
 	* @param pk the primary key of the group
 	* @param rolePK the primary key of the role
@@ -1539,7 +1545,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the group has any roles associated with it.
+	* Returns <code>true</code> if the group has any roles associated with it.
 	*
 	* @param pk the primary key of the group to check for associations with roles
 	* @return <code>true</code> if the group has any roles associated with it; <code>false</code> otherwise
@@ -1749,7 +1755,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the user group is associated with the group.
+	* Returns <code>true</code> if the user group is associated with the group.
 	*
 	* @param pk the primary key of the group
 	* @param userGroupPK the primary key of the user group
@@ -1762,7 +1768,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the group has any user groups associated with it.
+	* Returns <code>true</code> if the group has any user groups associated with it.
 	*
 	* @param pk the primary key of the group to check for associations with user groups
 	* @return <code>true</code> if the group has any user groups associated with it; <code>false</code> otherwise
@@ -1974,7 +1980,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the user is associated with the group.
+	* Returns <code>true</code> if the user is associated with the group.
 	*
 	* @param pk the primary key of the group
 	* @param userPK the primary key of the user
@@ -1987,7 +1993,7 @@ public class GroupUtil {
 	}
 
 	/**
-	* Determines if the group has any users associated with it.
+	* Returns <code>true</code> if the group has any users associated with it.
 	*
 	* @param pk the primary key of the group to check for associations with users
 	* @return <code>true</code> if the group has any users associated with it; <code>false</code> otherwise

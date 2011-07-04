@@ -238,6 +238,7 @@ public interface AssetEntryPersistence extends BasePersistence<AssetEntry> {
 	*
 	* @param groupId the group ID
 	* @param classUuid the class uuid
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching asset entry, or <code>null</code> if a matching asset entry could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -276,6 +277,7 @@ public interface AssetEntryPersistence extends BasePersistence<AssetEntry> {
 	*
 	* @param classNameId the class name ID
 	* @param classPK the class p k
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching asset entry, or <code>null</code> if a matching asset entry could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -463,7 +465,7 @@ public interface AssetEntryPersistence extends BasePersistence<AssetEntry> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the asset category is associated with the asset entry.
+	* Returns <code>true</code> if the asset category is associated with the asset entry.
 	*
 	* @param pk the primary key of the asset entry
 	* @param assetCategoryPK the primary key of the asset category
@@ -474,7 +476,7 @@ public interface AssetEntryPersistence extends BasePersistence<AssetEntry> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the asset entry has any asset categories associated with it.
+	* Returns <code>true</code> if the asset entry has any asset categories associated with it.
 	*
 	* @param pk the primary key of the asset entry to check for associations with asset categories
 	* @return <code>true</code> if the asset entry has any asset categories associated with it; <code>false</code> otherwise
@@ -654,7 +656,7 @@ public interface AssetEntryPersistence extends BasePersistence<AssetEntry> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the asset tag is associated with the asset entry.
+	* Returns <code>true</code> if the asset tag is associated with the asset entry.
 	*
 	* @param pk the primary key of the asset entry
 	* @param assetTagPK the primary key of the asset tag
@@ -665,7 +667,7 @@ public interface AssetEntryPersistence extends BasePersistence<AssetEntry> {
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the asset entry has any asset tags associated with it.
+	* Returns <code>true</code> if the asset entry has any asset tags associated with it.
 	*
 	* @param pk the primary key of the asset entry to check for associations with asset tags
 	* @return <code>true</code> if the asset entry has any asset tags associated with it; <code>false</code> otherwise

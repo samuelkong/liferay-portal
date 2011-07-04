@@ -443,8 +443,14 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 		SCProductVersion scProductVersion = (SCProductVersion)EntityCacheUtil.getResult(SCProductVersionModelImpl.ENTITY_CACHE_ENABLED,
 				SCProductVersionImpl.class, productVersionId, this);
 
+		if (scProductVersion == _nullSCProductVersion) {
+			return null;
+		}
+
 		if (scProductVersion == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
@@ -453,11 +459,18 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 						Long.valueOf(productVersionId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (scProductVersion != null) {
 					cacheResult(scProductVersion);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(SCProductVersionModelImpl.ENTITY_CACHE_ENABLED,
+						SCProductVersionImpl.class, productVersionId,
+						_nullSCProductVersion);
 				}
 
 				closeSession(session);
@@ -859,6 +872,7 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 	 * Returns the s c product version where directDownloadURL = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param directDownloadURL the direct download u r l
+	 * @param retrieveFromCache whether to use the finder cache
 	 * @return the matching s c product version, or <code>null</code> if a matching s c product version could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1435,7 +1449,7 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the s c framework version is associated with the s c product version.
+	 * Returns <code>true</code> if the s c framework version is associated with the s c product version.
 	 *
 	 * @param pk the primary key of the s c product version
 	 * @param scFrameworkVersionPK the primary key of the s c framework version
@@ -1471,7 +1485,7 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 	}
 
 	/**
-	 * Determines if the s c product version has any s c framework versions associated with it.
+	 * Returns <code>true</code> if the s c product version has any s c framework versions associated with it.
 	 *
 	 * @param pk the primary key of the s c product version to check for associations with s c framework versions
 	 * @return <code>true</code> if the s c product version has any s c framework versions associated with it; <code>false</code> otherwise
@@ -2001,4 +2015,9 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No SCProductVersion exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(SCProductVersionPersistenceImpl.class);
+	private static SCProductVersion _nullSCProductVersion = new SCProductVersionImpl() {
+			public Object clone() {
+				return this;
+			}
+		};
 }

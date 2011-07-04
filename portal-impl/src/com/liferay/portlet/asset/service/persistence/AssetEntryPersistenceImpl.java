@@ -534,8 +534,14 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 		AssetEntry assetEntry = (AssetEntry)EntityCacheUtil.getResult(AssetEntryModelImpl.ENTITY_CACHE_ENABLED,
 				AssetEntryImpl.class, entryId, this);
 
+		if (assetEntry == _nullAssetEntry) {
+			return null;
+		}
+
 		if (assetEntry == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
@@ -544,11 +550,17 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 						Long.valueOf(entryId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (assetEntry != null) {
 					cacheResult(assetEntry);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(AssetEntryModelImpl.ENTITY_CACHE_ENABLED,
+						AssetEntryImpl.class, entryId, _nullAssetEntry);
 				}
 
 				closeSession(session);
@@ -945,6 +957,7 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 *
 	 * @param groupId the group ID
 	 * @param classUuid the class uuid
+	 * @param retrieveFromCache whether to use the finder cache
 	 * @return the matching asset entry, or <code>null</code> if a matching asset entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1096,6 +1109,7 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 *
 	 * @param classNameId the class name ID
 	 * @param classPK the class p k
+	 * @param retrieveFromCache whether to use the finder cache
 	 * @return the matching asset entry, or <code>null</code> if a matching asset entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1737,7 +1751,7 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the asset category is associated with the asset entry.
+	 * Returns <code>true</code> if the asset category is associated with the asset entry.
 	 *
 	 * @param pk the primary key of the asset entry
 	 * @param assetCategoryPK the primary key of the asset category
@@ -1773,7 +1787,7 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	}
 
 	/**
-	 * Determines if the asset entry has any asset categories associated with it.
+	 * Returns <code>true</code> if the asset entry has any asset categories associated with it.
 	 *
 	 * @param pk the primary key of the asset entry to check for associations with asset categories
 	 * @return <code>true</code> if the asset entry has any asset categories associated with it; <code>false</code> otherwise
@@ -2213,7 +2227,7 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the asset tag is associated with the asset entry.
+	 * Returns <code>true</code> if the asset tag is associated with the asset entry.
 	 *
 	 * @param pk the primary key of the asset entry
 	 * @param assetTagPK the primary key of the asset tag
@@ -2248,7 +2262,7 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	}
 
 	/**
-	 * Determines if the asset entry has any asset tags associated with it.
+	 * Returns <code>true</code> if the asset entry has any asset tags associated with it.
 	 *
 	 * @param pk the primary key of the asset entry to check for associations with asset tags
 	 * @return <code>true</code> if the asset entry has any asset tags associated with it; <code>false</code> otherwise
@@ -2978,4 +2992,9 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No AssetEntry exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(AssetEntryPersistenceImpl.class);
+	private static AssetEntry _nullAssetEntry = new AssetEntryImpl() {
+			public Object clone() {
+				return this;
+			}
+		};
 }

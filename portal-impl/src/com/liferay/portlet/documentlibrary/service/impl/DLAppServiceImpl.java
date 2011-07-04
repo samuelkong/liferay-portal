@@ -35,6 +35,7 @@ import com.liferay.portlet.documentlibrary.NoSuchFileException;
 import com.liferay.portlet.documentlibrary.model.DLFileShortcut;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.base.DLAppServiceBaseImpl;
+import com.liferay.portlet.documentlibrary.util.DLProcessor;
 import com.liferay.portlet.documentlibrary.util.comparator.RepositoryModelModifiedDateComparator;
 
 import java.io.File;
@@ -45,17 +46,29 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * The document library remote service. All portlets should interact with the
+ * document library through this class or through {@link DLAppLocalServiceImpl},
+ * rather than through the individual document library service classes.
+ *
  * <p>
- * The DLAppService and {@link DLAppLocalServiceImpl} are used to handle all
- * service calls for the Document Library portlet, for all Liferay and
- * third-party repositories. While the method signatures are universal for all
- * repositories, additional parameters may be specified in the serviceContext to
- * enable added flexibility, especially within Liferay's repository during
- * creation and update. In particular, noteworthy parameters include: <ul> <li>
- * fileEntryTypeId - ID for custom file entry type </li> <li> fieldsMap -
- * mapping for fields associated with custom document type </li> <li>
- * sourceFileName - original filename of file being uploaded </li> </ul>
+ * This class provides a unified interface to all Liferay and third party
+ * repositories. While the method signatures are universal for all repositories,
+ * additional parameters may be specified in the serviceContext for added
+ * flexibility, especially within Liferay's repository during creation and
+ * update. In particular, noteworthy parameters include:
  * </p>
+ *
+ * <ul>
+ * <li>
+ * fileEntryTypeId - ID for a custom file entry type
+ * </li>
+ * <li>
+ * fieldsMap - mapping for fields associated with a custom document type
+ * </li>
+ * <li>
+ * sourceFileName - original filename of the file being uploaded
+ * </li>
+ * </ul>
  *
  * @author Alexander Chow
  */
@@ -122,7 +135,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			folderId, mimeType, title, description, changeLog, is, size,
 			serviceContext);
 
-		dlAppHelperLocalService.triggerProcesses(fileEntry);
+		DLProcessor.triggerAll(fileEntry);
 
 		return fileEntry;
 	}
@@ -711,7 +724,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			fileEntryId, sourceFileName, mimeType, title, description,
 			changeLog, majorVersion, is, size, serviceContext);
 
-		dlAppHelperLocalService.triggerProcesses(fileEntry);
+		DLProcessor.triggerAll(fileEntry);
 
 		return fileEntry;
 	}
@@ -766,9 +779,11 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 
 		for (FileEntry srcFileEntry : srcFileEntries) {
 			try {
-				repository.copyFileEntry(
+				FileEntry fileEntry = repository.copyFileEntry(
 					destFolder.getGroupId(), srcFileEntry.getFileEntryId(),
 					destFolder.getFolderId(), serviceContext);
+
+				DLProcessor.triggerAll(fileEntry);
 			}
 			catch (Exception e) {
 				_log.error(e, e);

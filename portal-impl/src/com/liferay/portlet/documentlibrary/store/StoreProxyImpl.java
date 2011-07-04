@@ -16,13 +16,10 @@ package com.liferay.portlet.documentlibrary.store;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.service.ServiceContext;
 
 import java.io.File;
 import java.io.InputStream;
-
-import java.util.Date;
 
 /**
  * @author Brian Wing Shun Chan
@@ -39,47 +36,57 @@ public class StoreProxyImpl implements Store {
 
 	public void addFile(
 			long companyId, String portletId, long groupId, long repositoryId,
-			String fileName, long fileEntryId, String properties,
-			Date modifiedDate, ServiceContext serviceContext, byte[] bytes)
+			String fileName, ServiceContext serviceContext, byte[] bytes)
 		throws PortalException, SystemException {
 
 		Store store = StoreFactory.getInstance();
 
 		store.addFile(
-			companyId, portletId, groupId, repositoryId, fileName, fileEntryId,
-			properties, modifiedDate, serviceContext, bytes);
+			companyId, portletId, groupId, repositoryId, fileName,
+			serviceContext, bytes);
 	}
 
 	public void addFile(
 			long companyId, String portletId, long groupId, long repositoryId,
-			String fileName, long fileEntryId, String properties,
-			Date modifiedDate, ServiceContext serviceContext, File file)
+			String fileName, ServiceContext serviceContext, File file)
 		throws PortalException, SystemException {
 
 		Store store = StoreFactory.getInstance();
 
 		store.addFile(
-			companyId, portletId, groupId, repositoryId, fileName, fileEntryId,
-			properties, modifiedDate, serviceContext, file);
+			companyId, portletId, groupId, repositoryId, fileName,
+			serviceContext, file);
 	}
 
 	public void addFile(
 			long companyId, String portletId, long groupId, long repositoryId,
-			String fileName, long fileEntryId, String properties,
-			Date modifiedDate, ServiceContext serviceContext, InputStream is)
+			String fileName, ServiceContext serviceContext, InputStream is)
 		throws PortalException, SystemException {
 
 		Store store = StoreFactory.getInstance();
 
 		store.addFile(
-			companyId, portletId, groupId, repositoryId, fileName, fileEntryId,
-			properties, modifiedDate, serviceContext, is);
+			companyId, portletId, groupId, repositoryId, fileName,
+			serviceContext, is);
 	}
 
 	public void checkRoot(long companyId) throws SystemException {
 		Store store = StoreFactory.getInstance();
 
 		store.checkRoot(companyId);
+	}
+
+	public void copyFileVersion(
+			long companyId, String portletId, long groupId, long repositoryId,
+			String fileName, String fromVersionNumber, String toVersionNumber,
+			String sourceFileName, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		Store store = StoreFactory.getInstance();
+
+		store.copyFileVersion(
+			companyId, portletId, groupId, repositoryId, fileName,
+			fromVersionNumber, toVersionNumber, sourceFileName, serviceContext);
 	}
 
 	public void deleteDirectory(
@@ -150,6 +157,14 @@ public class StoreProxyImpl implements Store {
 			companyId, repositoryId, fileName, versionNumber);
 	}
 
+	public String[] getFileNames(long companyId, long repositoryId)
+		throws SystemException {
+
+		Store store = StoreFactory.getInstance();
+
+		return store.getFileNames(companyId, repositoryId);
+	}
+
 	public String[] getFileNames(
 			long companyId, long repositoryId, String dirName)
 		throws PortalException, SystemException {
@@ -184,40 +199,33 @@ public class StoreProxyImpl implements Store {
 		store.move(srcDir, destDir);
 	}
 
-	public void reindex(String[] ids) throws SearchException {
-		Store store = StoreFactory.getInstance();
-
-		store.reindex(ids);
-	}
-
 	public void updateFile(
 			long companyId, String portletId, long groupId, long repositoryId,
-			long newRepositoryId, String fileName, long fileEntryId)
+			long newRepositoryId, String fileName)
 		throws PortalException, SystemException {
 
 		Store store = StoreFactory.getInstance();
 
 		store.updateFile(
 			companyId, portletId, groupId, repositoryId, newRepositoryId,
-			fileName, fileEntryId);
+			fileName);
 	}
 
 	public void updateFile(
 			long companyId, String portletId, long groupId, long repositoryId,
-			String fileName, String newFileName, boolean reindex)
+			String fileName, String newFileName)
 		throws PortalException, SystemException {
 
 		Store store = StoreFactory.getInstance();
 
 		store.updateFile(
 			companyId, portletId, groupId, repositoryId, fileName,
-			newFileName, reindex);
+			newFileName);
 	}
 
 	public void updateFile(
 			long companyId, String portletId, long groupId, long repositoryId,
 			String fileName, String versionNumber, String sourceFileName,
-			long fileEntryId, String properties, Date modifiedDate,
 			ServiceContext serviceContext, byte[] bytes)
 		throws PortalException, SystemException {
 
@@ -225,14 +233,12 @@ public class StoreProxyImpl implements Store {
 
 		store.updateFile(
 			companyId, portletId, groupId, repositoryId, fileName,
-			versionNumber, sourceFileName, fileEntryId, properties,
-			modifiedDate, serviceContext, bytes);
+			versionNumber, sourceFileName, serviceContext, bytes);
 	}
 
 	public void updateFile(
 			long companyId, String portletId, long groupId, long repositoryId,
 			String fileName, String versionNumber, String sourceFileName,
-			long fileEntryId, String properties, Date modifiedDate,
 			ServiceContext serviceContext, File file)
 		throws PortalException, SystemException {
 
@@ -240,14 +246,12 @@ public class StoreProxyImpl implements Store {
 
 		store.updateFile(
 			companyId, portletId, groupId, repositoryId, fileName,
-			versionNumber, sourceFileName, fileEntryId, properties,
-			modifiedDate, serviceContext, file);
+			versionNumber, sourceFileName, serviceContext, file);
 	}
 
 	public void updateFile(
 			long companyId, String portletId, long groupId, long repositoryId,
 			String fileName, String versionNumber, String sourceFileName,
-			long fileEntryId, String properties, Date modifiedDate,
 			ServiceContext serviceContext, InputStream is)
 		throws PortalException, SystemException {
 
@@ -255,8 +259,20 @@ public class StoreProxyImpl implements Store {
 
 		store.updateFile(
 			companyId, portletId, groupId, repositoryId, fileName,
-			versionNumber, sourceFileName, fileEntryId, properties,
-			modifiedDate, serviceContext, is);
+			versionNumber, sourceFileName, serviceContext, is);
+	}
+
+	public void updateFileVersion(
+			long companyId, String portletId, long groupId, long repositoryId,
+			String fileName, String fromVersionNumber, String toVersionNumber,
+			String sourceFileName, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		Store store = StoreFactory.getInstance();
+
+		store.updateFileVersion(
+			companyId, portletId, groupId, repositoryId, fileName,
+			fromVersionNumber, toVersionNumber, sourceFileName, serviceContext);
 	}
 
 }

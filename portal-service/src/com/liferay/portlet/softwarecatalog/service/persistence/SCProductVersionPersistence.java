@@ -238,6 +238,7 @@ public interface SCProductVersionPersistence extends BasePersistence<SCProductVe
 	* Returns the s c product version where directDownloadURL = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param directDownloadURL the direct download u r l
+	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching s c product version, or <code>null</code> if a matching s c product version could not be found
 	* @throws SystemException if a system exception occurred
 	*/
@@ -401,7 +402,7 @@ public interface SCProductVersionPersistence extends BasePersistence<SCProductVe
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the s c framework version is associated with the s c product version.
+	* Returns <code>true</code> if the s c framework version is associated with the s c product version.
 	*
 	* @param pk the primary key of the s c product version
 	* @param scFrameworkVersionPK the primary key of the s c framework version
@@ -412,7 +413,7 @@ public interface SCProductVersionPersistence extends BasePersistence<SCProductVe
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
-	* Determines if the s c product version has any s c framework versions associated with it.
+	* Returns <code>true</code> if the s c product version has any s c framework versions associated with it.
 	*
 	* @param pk the primary key of the s c product version to check for associations with s c framework versions
 	* @return <code>true</code> if the s c product version has any s c framework versions associated with it; <code>false</code> otherwise

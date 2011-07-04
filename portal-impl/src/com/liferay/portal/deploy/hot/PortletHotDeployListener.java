@@ -477,6 +477,7 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			}
 		}
 
+		PortletContextBagPool.remove(servletContextName);
 		PortletResourceBundles.remove(servletContextName);
 
 		unregisterClpMessageListeners(servletContext);

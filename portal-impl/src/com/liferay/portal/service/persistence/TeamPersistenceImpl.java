@@ -442,8 +442,14 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		Team team = (Team)EntityCacheUtil.getResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
 				TeamImpl.class, teamId, this);
 
+		if (team == _nullTeam) {
+			return null;
+		}
+
 		if (team == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
@@ -451,11 +457,17 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 				team = (Team)session.get(TeamImpl.class, Long.valueOf(teamId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (team != null) {
 					cacheResult(team);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
+						TeamImpl.class, teamId, _nullTeam);
 				}
 
 				closeSession(session);
@@ -866,7 +878,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
@@ -889,7 +901,8 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Team.class.getName(), _FILTER_COLUMN_PK, groupId);
+				Team.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				groupId);
 
 		Session session = null;
 
@@ -979,7 +992,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
-		appendGroupByComparator(query, _FILTER_COLUMN_PK);
+		appendGroupByComparator(query, _FILTER_ENTITY_TABLE_PK_COLUMN);
 
 		if (orderByComparator != null) {
 			String[] orderByFields = orderByComparator.getOrderByFields();
@@ -1057,7 +1070,8 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Team.class.getName(), _FILTER_COLUMN_PK, groupId);
+				Team.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				groupId);
 
 		SQLQuery q = session.createSQLQuery(sql);
 
@@ -1146,6 +1160,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
+	 * @param retrieveFromCache whether to use the finder cache
 	 * @return the matching team, or <code>null</code> if a matching team could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1462,7 +1477,8 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Team.class.getName(), _FILTER_COLUMN_PK, groupId);
+				Team.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				groupId);
 
 		Session session = null;
 
@@ -1771,7 +1787,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the user is associated with the team.
+	 * Returns <code>true</code> if the user is associated with the team.
 	 *
 	 * @param pk the primary key of the team
 	 * @param userPK the primary key of the user
@@ -1805,7 +1821,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	}
 
 	/**
-	 * Determines if the team has any users associated with it.
+	 * Returns <code>true</code> if the team has any users associated with it.
 	 *
 	 * @param pk the primary key of the team to check for associations with users
 	 * @return <code>true</code> if the team has any users associated with it; <code>false</code> otherwise
@@ -2234,7 +2250,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Determines if the user group is associated with the team.
+	 * Returns <code>true</code> if the user group is associated with the team.
 	 *
 	 * @param pk the primary key of the team
 	 * @param userGroupPK the primary key of the user group
@@ -2270,7 +2286,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	}
 
 	/**
-	 * Determines if the team has any user groups associated with it.
+	 * Returns <code>true</code> if the team has any user groups associated with it.
 	 *
 	 * @param pk the primary key of the team to check for associations with user groups
 	 * @return <code>true</code> if the team has any user groups associated with it; <code>false</code> otherwise
@@ -3061,13 +3077,19 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	private static final String _FINDER_COLUMN_G_N_NAME_3 = "(team.name IS NULL OR team.name = ?)";
 	private static final String _FILTER_SQL_SELECT_TEAM_WHERE = "SELECT {team.*} FROM Team team WHERE ";
 	private static final String _FILTER_SQL_COUNT_TEAM_WHERE = "SELECT COUNT(DISTINCT team.teamId) AS COUNT_VALUE FROM Team team WHERE ";
-	private static final String _FILTER_COLUMN_PK = "team.teamId";
 	private static final String _FILTER_ENTITY_ALIAS = "team";
 	private static final String _FILTER_ENTITY_TABLE = "Team";
+	private static final String _FILTER_ENTITY_TABLE_PK_COLUMN = "team.teamId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "team.teamId";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "team.";
 	private static final String _ORDER_BY_ENTITY_TABLE = "Team.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Team exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Team exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(TeamPersistenceImpl.class);
+	private static Team _nullTeam = new TeamImpl() {
+			public Object clone() {
+				return this;
+			}
+		};
 }

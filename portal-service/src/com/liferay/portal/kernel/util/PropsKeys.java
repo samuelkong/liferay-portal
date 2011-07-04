@@ -717,6 +717,8 @@ public interface PropsKeys {
 
 	public static final String HOT_UNDEPLOY_ON_REDEPLOY = "hot.undeploy.on.redeploy";
 
+	public static final String HTTP_HEADER_VERSION_VERBOSITY = "http.header.version.verbosity";
+
 	public static final String ICON_MENU_MAX_DISPLAY_ITEMS = "icon.menu.max.display.items";
 
 	public static final String ICQ_JAR = "icq.jar";
@@ -1642,6 +1644,8 @@ public interface PropsKeys {
 	public static final String SESSION_ENABLE_PHISHING_PROTECTION = "session.enable.phishing.protection";
 
 	public static final String SESSION_ENABLE_URL_WITH_SESSION_ID = "session.enable.url.with.session.id";
+
+	public static final String SESSION_ID_DELIMITER = "session.id.delimiter";
 
 	public static final String SESSION_PHISHING_PROTECTED_ATTRIBUTES = "session.phishing.protected.attributes";
 

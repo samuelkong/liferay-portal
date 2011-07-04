@@ -84,6 +84,7 @@ import com.liferay.portal.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.service.permission.LayoutPrototypePermissionUtil;
 import com.liferay.portal.service.permission.LayoutSetPrototypePermissionUtil;
 import com.liferay.portal.service.permission.OrganizationPermissionUtil;
+import com.liferay.portal.service.permission.PortalPermissionUtil;
 import com.liferay.portal.service.permission.PortletPermissionUtil;
 import com.liferay.portal.service.permission.UserPermissionUtil;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -612,12 +613,12 @@ public class ServicePreAction extends Action {
 		throws PortalException, SystemException {
 
 		return isViewableGroup(
-			user, groupId, privateLayout, 0, permissionChecker);
+			user, groupId, privateLayout, 0, null, permissionChecker);
 	}
 
 	protected boolean isViewableGroup(
 			User user, long groupId, boolean privateLayout, long layoutId,
-			PermissionChecker permissionChecker)
+			String controlPanelCategory, PermissionChecker permissionChecker)
 		throws PortalException, SystemException {
 
 		Group group = GroupLocalServiceUtil.getGroup(groupId);
@@ -699,11 +700,18 @@ public class ServicePreAction extends Action {
 		// Control panel layouts are only viewable by authenticated users
 
 		if (group.isControlPanel()) {
-			if (user.isDefaultUser()) {
-				return false;
+			if (PortalPermissionUtil.contains(
+					permissionChecker, ActionKeys.VIEW_CONTROL_PANEL)) {
+
+				return true;
 			}
 			else {
-				return true;
+				if (Validator.isNotNull(controlPanelCategory)) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 		}
 
@@ -1203,7 +1211,8 @@ public class ServicePreAction extends Action {
 
 				boolean isViewableGroup = isViewableGroup(
 					user, layout.getGroupId(), layout.isPrivateLayout(),
-					layout.getLayoutId(), permissionChecker);
+					layout.getLayoutId(), controlPanelCategory,
+					permissionChecker);
 
 				if (!isViewableGroup && group.isStagingGroup()) {
 					layout = null;
@@ -1283,8 +1292,8 @@ public class ServicePreAction extends Action {
 
 		LayoutSet layoutSet = null;
 
-		boolean personalizedView = SessionParamUtil.getBoolean(
-			request, "personalized_view", true);
+		boolean customizedView = SessionParamUtil.getBoolean(
+			request, "customized_view", true);
 
 		if (layout != null) {
 			layoutSet = layout.getLayoutSet();
@@ -1334,20 +1343,20 @@ public class ServicePreAction extends Action {
 
 			layoutTypePortlet = (LayoutTypePortlet)layout.getLayoutType();
 
-			boolean personalizable = layoutTypePortlet.isPersonalizable();
+			boolean customizable = layoutTypePortlet.isCustomizable();
 
-			if (!personalizable ||
+			if (!customizable ||
 				(group.isLayoutPrototype() || group.isLayoutSetPrototype())) {
 
-				personalizedView = false;
+				customizedView = false;
 			}
 
-			layoutTypePortlet.setPersonalizedView(personalizedView);
+			layoutTypePortlet.setCustomizedView(customizedView);
 			layoutTypePortlet.setUpdatePermission(
 				LayoutPermissionUtil.contains(
 					permissionChecker, layout, ActionKeys.UPDATE));
 
-			if (signedIn && personalizable && personalizedView &&
+			if (signedIn && customizable && customizedView &&
 				LayoutPermissionUtil.contains(
 					permissionChecker, layout, ActionKeys.CUSTOMIZE)) {
 
@@ -1716,7 +1725,7 @@ public class ServicePreAction extends Action {
 					}
 
 					themeDisplay.setShowLayoutTemplatesIcon(true);
-					themeDisplay.setShowPagePersonalizationIcon(true);
+					themeDisplay.setShowPageCustomizationIcon(true);
 
 					themeDisplay.setURLAddContent(
 						"Liferay.LayoutConfiguration.toggle('".concat(
@@ -1726,11 +1735,10 @@ public class ServicePreAction extends Action {
 						"Liferay.LayoutConfiguration.showTemplates();");
 				}
 
-				boolean hasPersonalizePermission =
-					LayoutPermissionUtil.contains(
-						permissionChecker, layout, ActionKeys.CUSTOMIZE);
+				boolean hasCustomizePermission = LayoutPermissionUtil.contains(
+					permissionChecker, layout, ActionKeys.CUSTOMIZE);
 
-				if (hasPersonalizePermission && personalizedView) {
+				if (hasCustomizePermission && customizedView) {
 					themeDisplay.setShowAddContentIconPermission(true);
 
 					if (!LiferayWindowState.isMaximized(request)) {

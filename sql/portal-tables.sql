@@ -326,7 +326,8 @@ create table Company (
 	homeURL STRING null,
 	logoId LONG,
 	system BOOLEAN,
-	maxUsers INTEGER
+	maxUsers INTEGER,
+	active_ BOOLEAN
 );
 
 create table Contact_ (
@@ -541,8 +542,7 @@ create table DLFileEntry (
 create table DLFileEntryMetadata (
 	uuid_ VARCHAR(75) null,
 	fileEntryMetadataId LONG not null primary key,
-	classNameId LONG,
-	classPK LONG,
+	DDMStorageId LONG,
 	DDMStructureId LONG,
 	fileEntryTypeId LONG,
 	fileEntryId LONG,

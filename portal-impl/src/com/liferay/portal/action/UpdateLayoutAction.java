@@ -100,8 +100,8 @@ public class UpdateLayoutAction extends JSONAction {
 			portletId = layoutTypePortlet.addPortletId(
 				userId, portletId, columnId, columnPos);
 
-			if (layoutTypePortlet.isPersonalizable() &&
-				layoutTypePortlet.isPersonalizedView() &&
+			if (layoutTypePortlet.isCustomizable() &&
+				layoutTypePortlet.isCustomizedView() &&
 				!layoutTypePortlet.isColumnDisabled(columnId)) {
 
 				updateLayout = false;
@@ -111,8 +111,8 @@ public class UpdateLayoutAction extends JSONAction {
 			if (layoutTypePortlet.hasPortletId(portletId)) {
 				layoutTypePortlet.removePortletId(userId, portletId);
 
-				if (layoutTypePortlet.isPersonalizable() &&
-					layoutTypePortlet.isPersonalizedView()) {
+				if (layoutTypePortlet.isCustomizable() &&
+					layoutTypePortlet.isCustomizedView()) {
 
 					updateLayout = false;
 					deletePortlet = false;
@@ -176,8 +176,8 @@ public class UpdateLayoutAction extends JSONAction {
 			layoutTypePortlet.movePortletId(
 				userId, portletId, columnId, columnPos);
 
-			if (layoutTypePortlet.isPersonalizable() &&
-				layoutTypePortlet.isPersonalizedView() &&
+			if (layoutTypePortlet.isCustomizable() &&
+				layoutTypePortlet.isCustomizedView() &&
 				!layoutTypePortlet.isColumnDisabled(columnId)) {
 
 				updateLayout = false;
@@ -194,7 +194,7 @@ public class UpdateLayoutAction extends JSONAction {
 
 			updateLayout = false;
 		}
-		else if (cmd.equals("toggle_personalized_view")) {
+		else if (cmd.equals("toggle_customized_view")) {
 			updateLayout = false;
 		}
 		else if (cmd.equals("update_type_settings")) {
@@ -287,19 +287,14 @@ public class UpdateLayoutAction extends JSONAction {
 		if (dataType.equals("json")) {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-			if (portlet.isAjaxable()) {
-				StringServletResponse stringResponse =
-					new StringServletResponse(response);
+			StringServletResponse stringResponse = new StringServletResponse(
+				response);
 
-				renderPortletAction.execute(
-					mapping, form, dynamicRequest, stringResponse);
+			renderPortletAction.execute(
+				mapping, form, dynamicRequest, stringResponse);
 
-				populatePortletJSONObject(
-					request, stringResponse, portlet, jsonObject);
-			}
-			else {
-				jsonObject.put("refresh", true);
-			}
+			populatePortletJSONObject(
+				request, stringResponse, portlet, jsonObject);
 
 			response.setContentType(ContentTypes.TEXT_JAVASCRIPT);
 
@@ -332,7 +327,7 @@ public class UpdateLayoutAction extends JSONAction {
 		LayoutTypePortlet layoutTypePortlet =
 			themeDisplay.getLayoutTypePortlet();
 
-		jsonObject.put("refresh", false);
+		jsonObject.put("refresh", !portlet.isAjaxable());
 		jsonObject.put("portletHTML", stringResponse.getString().trim());
 
 		Set<String> footerCssSet = new LinkedHashSet<String>();
@@ -363,7 +358,7 @@ public class UpdateLayoutAction extends JSONAction {
 
 		PortletApp portletApp = portlet.getPortletApp();
 
-		if (!portletOnLayout) {
+		if (!portletOnLayout && portlet.isAjaxable()) {
 			Portlet rootPortlet = portlet.getRootPortlet();
 
 			for (String footerPortalCss : portlet.getFooterPortalCss()) {

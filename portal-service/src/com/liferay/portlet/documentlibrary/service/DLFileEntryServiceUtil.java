@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.util.MethodCache;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
 
 /**
- * The utility for the d l file entry remote service. This utility wraps {@link com.liferay.portlet.documentlibrary.service.impl.DLFileEntryServiceImpl} and is the primary access point for service operations in application layer code running on a remote server.
+ * The utility for the document library file entry remote service. This utility wraps {@link com.liferay.portlet.documentlibrary.service.impl.DLFileEntryServiceImpl} and is the primary access point for service operations in application layer code running on a remote server.
  *
  * <p>
  * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
@@ -86,14 +86,14 @@ public class DLFileEntryServiceUtil {
 		return getService().checkOutFileEntry(fileEntryId, owner, expirationTime);
 	}
 
-	public static void copyFileEntry(long groupId, long repositoryId,
-		long fileEntryId, long destFolderId,
+	public static com.liferay.portlet.documentlibrary.model.DLFileEntry copyFileEntry(
+		long groupId, long repositoryId, long fileEntryId, long destFolderId,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		getService()
-			.copyFileEntry(groupId, repositoryId, fileEntryId, destFolderId,
-			serviceContext);
+		return getService()
+				   .copyFileEntry(groupId, repositoryId, fileEntryId,
+			destFolderId, serviceContext);
 	}
 
 	public static void deleteFileEntry(long fileEntryId)
