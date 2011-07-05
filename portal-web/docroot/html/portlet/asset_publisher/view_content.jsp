@@ -38,29 +38,45 @@ try {
 	AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByType(type);
 	AssetRenderer assetRenderer = null;
 
-	if (Validator.isNotNull(urlTitle)) {
-		assetRenderer = assetRendererFactory.getAssetRenderer(groupId, urlTitle);
+	try{
+		if (Validator.isNotNull(urlTitle)) {
+			assetRenderer = assetRendererFactory.getAssetRenderer(groupId, urlTitle);
 
-		className = assetRendererFactory.getClassName();
-		classPK = assetRenderer.getClassPK();
+			className = assetRendererFactory.getClassName();
+			classPK = assetRenderer.getClassPK();
 
-		assetEntry = assetRendererFactory.getAssetEntry(className, classPK);
-	}
-	else {
-		assetEntry = assetRendererFactory.getAssetEntry(assetEntryId);
-
-		className = PortalUtil.getClassName(assetEntry.getClassNameId());
-		classPK = assetEntry.getClassPK();
-
-		if (portletName.equals(PortletKeys.MY_WORKFLOW_INSTANCES) || portletName.equals(PortletKeys.MY_WORKFLOW_TASKS) || portletName.equals(PortletKeys.WORKFLOW_DEFINITIONS) || portletName.equals(PortletKeys.WORKFLOW_INSTANCES) || portletName.equals(PortletKeys.WORKFLOW_TASKS)) {
-			long assetEntryVersionId = ParamUtil.getLong(request, "assetEntryVersionId");
-
-			assetRenderer = assetRendererFactory.getAssetRenderer(assetEntryVersionId, AssetRendererFactory.TYPE_LATEST);
+			assetEntry = assetRendererFactory.getAssetEntry(className, classPK);
 		}
 		else {
-			assetRenderer = assetRendererFactory.getAssetRenderer(classPK, AssetRendererFactory.TYPE_LATEST_APPROVED);
-		}
+			assetEntry = assetRendererFactory.getAssetEntry(assetEntryId);
 
+			className = PortalUtil.getClassName(assetEntry.getClassNameId());
+			classPK = assetEntry.getClassPK();
+
+			if (portletName.equals(PortletKeys.MY_WORKFLOW_INSTANCES) || portletName.equals(PortletKeys.MY_WORKFLOW_TASKS) || portletName.equals(PortletKeys.WORKFLOW_DEFINITIONS) || portletName.equals(PortletKeys.WORKFLOW_INSTANCES) || portletName.equals(PortletKeys.WORKFLOW_TASKS)) {
+				long assetEntryVersionId = ParamUtil.getLong(request, "assetEntryVersionId");
+
+				assetRenderer = assetRendererFactory.getAssetRenderer(assetEntryVersionId, AssetRendererFactory.TYPE_LATEST);
+			}
+			else {
+				assetRenderer = assetRendererFactory.getAssetRenderer(classPK, AssetRendererFactory.TYPE_LATEST_APPROVED);
+			}
+
+		}
+	}
+	catch(com.liferay.portal.NoSuchModelException e){
+		_log.debug(e);
+	}
+
+	if((assetEntry == null) || !assetEntry.isVisible()) {
+%>
+
+		<div>
+			<liferay-util:include page="/html/portlet/asset_publisher/view.jsp" />
+		</div>
+
+<%
+		return;
 	}
 
 	String title = assetRenderer.getTitle(locale);
