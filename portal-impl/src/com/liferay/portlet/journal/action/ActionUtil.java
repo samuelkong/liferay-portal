@@ -70,7 +70,7 @@ public class ActionUtil {
 					groupId, structureId);
 			}
 			catch (NoSuchStructureException nsse) {
-				try {	
+				try {
 					structure = JournalStructureLocalServiceUtil.getStructure(
 						themeDisplay.getCompanyGroupId(), structureId);
 				}
