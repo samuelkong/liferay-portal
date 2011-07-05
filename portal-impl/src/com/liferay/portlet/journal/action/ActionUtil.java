@@ -69,12 +69,15 @@ public class ActionUtil {
 				structure = JournalStructureServiceUtil.getStructure(
 					groupId, structureId);
 			}
-			catch (NoSuchStructureException nsse) {
-				try {
-					structure = JournalStructureLocalServiceUtil.getStructure(
-						themeDisplay.getCompanyGroupId(), structureId);
-				}
-				catch (NoSuchStructureException nsse1) {
+			catch (NoSuchStructureException nsse1) {
+				if (groupId != themeDisplay.getCompanyGroupId()) {
+					try {
+						structure =
+							JournalStructureLocalServiceUtil.getStructure(
+								themeDisplay.getCompanyGroupId(), structureId);
+					}
+					catch (NoSuchStructureException nsse2) {
+					}
 				}
 			}
 
