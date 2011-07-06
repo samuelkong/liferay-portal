@@ -28,10 +28,12 @@ public class FinderPath {
 
 	public FinderPath(
 		boolean entityCacheEnabled, boolean finderCacheEnabled,
-		String className, String methodName, String[] params) {
+		Class<?> resultClass, String className, String methodName,
+		String[] params) {
 
 		_entityCacheEnabled = entityCacheEnabled;
 		_finderCacheEnabled = finderCacheEnabled;
+		_resultClass = resultClass;
 		_className = className;
 		_methodName = methodName;
 		_params = params;
@@ -90,6 +92,10 @@ public class FinderPath {
 		return _params;
 	}
 
+	public Class<?> getResultClass() {
+		return _resultClass;
+	}
+
 	public boolean isEntityCacheEnabled() {
 		return _entityCacheEnabled;
 	}
@@ -130,5 +136,6 @@ public class FinderPath {
 	private String _localCacheKeyPrefix;
 	private String _methodName;
 	private String[] _params;
+	private Class<?> _resultClass;
 
 }
