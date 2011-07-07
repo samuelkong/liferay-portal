@@ -189,8 +189,8 @@ public class EditUserAction extends PortletAction {
 				}
 
 				if (Validator.isNotNull(oldLanguageId) &&
-					themeDisplay.isI18n() && Validator.equals(
-						themeDisplay.getRealUserId(), user.getUserId())) {
+					themeDisplay.isI18n() &&
+						(themeDisplay.getRealUserId() == user.getUserId())) {
 
 					String i18nLanguageId = user.getLanguageId();
 					int pos = i18nLanguageId.indexOf(CharPool.UNDERLINE);
