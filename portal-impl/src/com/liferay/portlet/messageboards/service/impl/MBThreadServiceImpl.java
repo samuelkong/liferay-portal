@@ -79,7 +79,7 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 					groupId, categoryIds, start, end);
 			}
 			else {
-				return mbThreadPersistence.findByG_C_S(
+				return mbThreadFinder.filterFindByG_C_S(
 					groupId, categoryIds, status, start, end);
 			}
 		}
@@ -163,7 +163,8 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 					groupId, categoryIds);
 			}
 			else {
-				return mbThreadPersistence.countByG_C_S(
+
+				return mbThreadFinder.filterCountByG_C_S(
 					groupId, categoryIds, status);
 			}
 		}
