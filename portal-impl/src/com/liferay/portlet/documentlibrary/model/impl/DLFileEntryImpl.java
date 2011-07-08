@@ -155,8 +155,7 @@ public class DLFileEntryImpl extends DLFileEntryBaseImpl {
 	public DLFileVersion getLatestFileVersion()
 		throws PortalException, SystemException {
 
-		return DLFileEntryLocalServiceUtil.getLatestFileVersion(
-			getFileEntryId());
+		return DLFileEntryServiceUtil.getLatestFileVersion(getFileEntryId());
 	}
 
 	public Lock getLock() {
