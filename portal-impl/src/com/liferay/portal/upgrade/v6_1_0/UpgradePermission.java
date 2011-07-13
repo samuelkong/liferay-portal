@@ -60,6 +60,8 @@ public class UpgradePermission extends UpgradeProcess {
 
 		if (community) {
 			PermissionLocalServiceUtil.setContainerResourcePermissions(
+				name, RoleConstants.ORGANIZATION_USER, ActionKeys.VIEW);
+			PermissionLocalServiceUtil.setContainerResourcePermissions(
 				name, RoleConstants.SITE_MEMBER, ActionKeys.VIEW);
 		}
 
@@ -67,6 +69,9 @@ public class UpgradePermission extends UpgradeProcess {
 			PermissionLocalServiceUtil.setContainerResourcePermissions(
 				name, RoleConstants.GUEST, ActionKeys.VIEW);
 		}
+
+		PermissionLocalServiceUtil.setContainerResourcePermissions(
+			name, RoleConstants.OWNER, ActionKeys.VIEW);
 	}
 
 	protected void updatePermissions_6(
@@ -82,6 +87,8 @@ public class UpgradePermission extends UpgradeProcess {
 
 		if (community) {
 			ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
+				name, RoleConstants.ORGANIZATION_USER, actionIdsLong);
+			ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
 				name, RoleConstants.SITE_MEMBER, actionIdsLong);
 		}
 
@@ -89,6 +96,9 @@ public class UpgradePermission extends UpgradeProcess {
 			ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
 				name, RoleConstants.GUEST, actionIdsLong);
 		}
+
+		ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
+			name, RoleConstants.OWNER, actionIdsLong);
 	}
 
 }

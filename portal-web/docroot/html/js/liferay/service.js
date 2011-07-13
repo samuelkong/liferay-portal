@@ -666,6 +666,7 @@ Liferay.Service.registerClass(
 		getFoldersFileEntriesCount: true,
 		getGroupFileEntries: true,
 		getGroupFileEntriesCount: true,
+		getMountFolders: true,
 		getSubfolderIds: true,
 		lockFolder: true,
 		moveFileEntry: true,
@@ -747,6 +748,8 @@ Liferay.Service.registerClass(
 		getFolders: true,
 		getFoldersAndFileEntriesAndFileShortcutsCount: true,
 		getFoldersCount: true,
+		getMountFolders: true,
+		getMountFoldersCount: true,
 		getSubfolderIds: true,
 		hasFolderLock: true,
 		hasInheritableLock: true,
@@ -915,6 +918,9 @@ Liferay.Service.registerClass(
 		copyStructure: true,
 		deleteStructure: true,
 		getStructure: true,
+		getStructures: true,
+		search: true,
+		searchCount: true,
 		updateStructure: true
 	}
 );
