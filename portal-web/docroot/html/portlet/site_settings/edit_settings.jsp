@@ -22,7 +22,9 @@ String tabs2 = ParamUtil.getString(request, "tabs2");
 String redirect = ParamUtil.getString(request, "redirect");
 String backURL = ParamUtil.getString(request, "backURL", redirect);
 
-if (portletName.equals(PortletKeys.LAYOUTS_ADMIN) || portletName.equals(PortletKeys.MY_ACCOUNT)) {
+if (portletName.equals(PortletKeys.LAYOUTS_ADMIN) ||
+	portletName.equals(PortletKeys.MY_ACCOUNT) ||
+	portletName.equals(PortletKeys.SITE_SETTINGS)) {
 	portletDisplay.setURLBack(backURL);
 }
 
@@ -117,7 +119,7 @@ request.setAttribute("edit_settings.jsp-liveGroupId", new Long(liveGroupId));
 request.setAttribute("edit_settings.jsp-liveGroupTypeSettings", liveGroupTypeSettings);
 %>
 
-<c:if test="<%= portletName.equals(PortletKeys.COMMUNITIES) || portletName.equals(PortletKeys.SITES_ADMIN) || portletName.equals(PortletKeys.USERS_ADMIN) %>">
+<c:if test="<%= portletName.equals(PortletKeys.COMMUNITIES) || portletName.equals(PortletKeys.SITES_ADMIN) || portletName.equals(PortletKeys.USERS_ADMIN) || portletName.equals(PortletKeys.SITE_SETTINGS) %>">
 	<liferay-ui:header
 		backURL="<%= backURL %>"
 		title="<%= liveGroup.getDescriptiveName() %>"
