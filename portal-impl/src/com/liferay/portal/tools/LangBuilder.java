@@ -299,6 +299,10 @@ public class LangBuilder {
 	}
 
 	private String _orderProperties(File propertiesFile) throws IOException {
+		if (!propertiesFile.exists()) {
+			return null;
+		}
+
 		String content = FileUtil.read(propertiesFile);
 
 		UnsyncBufferedReader unsyncBufferedReader = new UnsyncBufferedReader(

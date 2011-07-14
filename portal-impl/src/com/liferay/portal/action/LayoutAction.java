@@ -770,7 +770,7 @@ public class LayoutAction extends Action {
 				request, portletId);
 
 		PortletPreferences portletPreferences =
-			PortletPreferencesLocalServiceUtil.getStrictPreferences(
+			PortletPreferencesLocalServiceUtil.getPreferences(
 				portletPreferencesIds);
 
 		processPublicRenderParameters(request, layout, portlet);
