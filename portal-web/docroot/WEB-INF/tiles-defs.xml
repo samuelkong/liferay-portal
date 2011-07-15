@@ -431,6 +431,10 @@
 		<put name="portlet_content" value="/portlet/document_library/select_file_entry.jsp" />
 	</definition>
 
+	<definition name="portlet.document_library.select_file_entry_type" extends="portlet.document_library">
+		<put name="portlet_content" value="/portlet/document_library/select_file_entry_type.jsp" />
+	</definition>
+
 	<definition name="portlet.document_library.select_folder" extends="portlet.document_library">
 		<put name="portlet_content" value="/portlet/document_library/select_folder.jsp" />
 	</definition>
@@ -1251,14 +1255,6 @@
 	<!-- Site Settings -->
 
 	<definition name="portlet.site_settings" extends="portlet" />
-
-	<definition name="portlet.site_settings.edit_settings" extends="portlet.site_settings">
-		<put name="portlet_content" value="/portlet/site_settings/edit_settings.jsp" />
-	</definition>
-
-	<definition name="portlet.site_settings.error" extends="portlet.site_settings">
-		<put name="portlet_content" value="/portlet/site_settings/error.jsp" />
-	</definition>
 
 	<!-- Sites Admin -->
 
