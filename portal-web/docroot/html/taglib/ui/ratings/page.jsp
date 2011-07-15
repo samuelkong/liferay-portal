@@ -94,7 +94,7 @@ if (ratingsEntry != null) {
 						<div class="aui-rating-label-element">
 							<liferay-ui:message key="average" />
 
-							(<%= ratingsStats.getTotalEntries() %> <%= LanguageUtil.get(pageContext, (ratingsStats.getTotalEntries() == 1) ? "vote" : "votes") %>)
+							(<%= ratingsStats.getTotalEntries() %> <%= LanguageUtil.get(pageContext, (ratingsStats.getTotalEntries() <= 1) ? "vote" : "votes") %>)
 						</div>
 
 						<%
@@ -125,7 +125,7 @@ if (ratingsEntry != null) {
 										</c:otherwise>
 									</c:choose>
 
-									(<%= ratingsStats.getTotalEntries() %> <%= LanguageUtil.get(pageContext, (ratingsStats.getTotalEntries() == 1) ? "vote" : "votes") %>)
+									(<%= ratingsStats.getTotalEntries() %> <%= LanguageUtil.get(pageContext, (ratingsStats.getTotalEntries() <= 1) ? "vote" : "votes") %>)
 								</div>
 
 								<a class="aui-rating-element aui-rating-element-<%= (yourScore > 0) ? "on" : "off" %> aui-rating-thumb-up" href="javascript:;"></a>

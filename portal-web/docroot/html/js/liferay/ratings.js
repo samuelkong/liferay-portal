@@ -53,7 +53,7 @@ AUI().add(
 
 						var voteLabel = '';
 
-						if (totalEntries == 1) {
+						if (totalEntries <= 1) {
 							voteLabel = Liferay.Language.get('vote');
 						}
 						else {
@@ -102,7 +102,7 @@ AUI().add(
 
 						var stars = ratingScore.get('selectedIndex') + 1;
 
-						if (stars == 1) {
+						if (stars <= 1) {
 							message = Liferay.Language.get('star');
 						}
 						else {
