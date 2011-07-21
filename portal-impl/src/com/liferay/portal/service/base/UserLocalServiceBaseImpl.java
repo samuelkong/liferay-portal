@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.model.PersistedModel;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.AccountLocalService;
 import com.liferay.portal.service.AccountService;
@@ -52,6 +53,7 @@ import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.GroupService;
 import com.liferay.portal.service.ImageLocalService;
 import com.liferay.portal.service.ImageService;
+import com.liferay.portal.service.LayoutBranchLocalService;
 import com.liferay.portal.service.LayoutLocalService;
 import com.liferay.portal.service.LayoutPrototypeLocalService;
 import com.liferay.portal.service.LayoutPrototypeService;
@@ -79,6 +81,7 @@ import com.liferay.portal.service.PasswordPolicyService;
 import com.liferay.portal.service.PasswordTrackerLocalService;
 import com.liferay.portal.service.PermissionLocalService;
 import com.liferay.portal.service.PermissionService;
+import com.liferay.portal.service.PersistedModelLocalServiceRegistry;
 import com.liferay.portal.service.PhoneLocalService;
 import com.liferay.portal.service.PhoneService;
 import com.liferay.portal.service.PluginSettingLocalService;
@@ -141,10 +144,12 @@ import com.liferay.portal.service.persistence.EmailAddressPersistence;
 import com.liferay.portal.service.persistence.GroupFinder;
 import com.liferay.portal.service.persistence.GroupPersistence;
 import com.liferay.portal.service.persistence.ImagePersistence;
+import com.liferay.portal.service.persistence.LayoutBranchPersistence;
 import com.liferay.portal.service.persistence.LayoutFinder;
 import com.liferay.portal.service.persistence.LayoutPersistence;
 import com.liferay.portal.service.persistence.LayoutPrototypePersistence;
 import com.liferay.portal.service.persistence.LayoutRevisionPersistence;
+import com.liferay.portal.service.persistence.LayoutSetBranchFinder;
 import com.liferay.portal.service.persistence.LayoutSetBranchPersistence;
 import com.liferay.portal.service.persistence.LayoutSetPersistence;
 import com.liferay.portal.service.persistence.LayoutSetPrototypePersistence;
@@ -236,10 +241,16 @@ import com.liferay.portlet.messageboards.service.persistence.MBStatsUserPersiste
 import com.liferay.portlet.shopping.service.ShoppingCartLocalService;
 import com.liferay.portlet.shopping.service.persistence.ShoppingCartPersistence;
 import com.liferay.portlet.social.service.SocialActivityLocalService;
+import com.liferay.portlet.social.service.SocialEquityLogLocalService;
+import com.liferay.portlet.social.service.SocialEquityUserLocalService;
 import com.liferay.portlet.social.service.SocialRequestLocalService;
 import com.liferay.portlet.social.service.persistence.SocialActivityFinder;
 import com.liferay.portlet.social.service.persistence.SocialActivityPersistence;
+import com.liferay.portlet.social.service.persistence.SocialEquityLogPersistence;
+import com.liferay.portlet.social.service.persistence.SocialEquityUserPersistence;
 import com.liferay.portlet.social.service.persistence.SocialRequestPersistence;
+
+import java.io.Serializable;
 
 import java.util.List;
 
@@ -426,6 +437,11 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	 */
 	public User getUser(long userId) throws PortalException, SystemException {
 		return userPersistence.findByPrimaryKey(userId);
+	}
+
+	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException, SystemException {
+		return userPersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
 	/**
@@ -1152,6 +1168,44 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	}
 
 	/**
+	 * Returns the layout branch local service.
+	 *
+	 * @return the layout branch local service
+	 */
+	public LayoutBranchLocalService getLayoutBranchLocalService() {
+		return layoutBranchLocalService;
+	}
+
+	/**
+	 * Sets the layout branch local service.
+	 *
+	 * @param layoutBranchLocalService the layout branch local service
+	 */
+	public void setLayoutBranchLocalService(
+		LayoutBranchLocalService layoutBranchLocalService) {
+		this.layoutBranchLocalService = layoutBranchLocalService;
+	}
+
+	/**
+	 * Returns the layout branch persistence.
+	 *
+	 * @return the layout branch persistence
+	 */
+	public LayoutBranchPersistence getLayoutBranchPersistence() {
+		return layoutBranchPersistence;
+	}
+
+	/**
+	 * Sets the layout branch persistence.
+	 *
+	 * @param layoutBranchPersistence the layout branch persistence
+	 */
+	public void setLayoutBranchPersistence(
+		LayoutBranchPersistence layoutBranchPersistence) {
+		this.layoutBranchPersistence = layoutBranchPersistence;
+	}
+
+	/**
 	 * Returns the layout prototype local service.
 	 *
 	 * @return the layout prototype local service
@@ -1376,6 +1430,25 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	public void setLayoutSetBranchPersistence(
 		LayoutSetBranchPersistence layoutSetBranchPersistence) {
 		this.layoutSetBranchPersistence = layoutSetBranchPersistence;
+	}
+
+	/**
+	 * Returns the layout set branch finder.
+	 *
+	 * @return the layout set branch finder
+	 */
+	public LayoutSetBranchFinder getLayoutSetBranchFinder() {
+		return layoutSetBranchFinder;
+	}
+
+	/**
+	 * Sets the layout set branch finder.
+	 *
+	 * @param layoutSetBranchFinder the layout set branch finder
+	 */
+	public void setLayoutSetBranchFinder(
+		LayoutSetBranchFinder layoutSetBranchFinder) {
+		this.layoutSetBranchFinder = layoutSetBranchFinder;
 	}
 
 	/**
@@ -4338,6 +4411,82 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	}
 
 	/**
+	 * Returns the social equity log local service.
+	 *
+	 * @return the social equity log local service
+	 */
+	public SocialEquityLogLocalService getSocialEquityLogLocalService() {
+		return socialEquityLogLocalService;
+	}
+
+	/**
+	 * Sets the social equity log local service.
+	 *
+	 * @param socialEquityLogLocalService the social equity log local service
+	 */
+	public void setSocialEquityLogLocalService(
+		SocialEquityLogLocalService socialEquityLogLocalService) {
+		this.socialEquityLogLocalService = socialEquityLogLocalService;
+	}
+
+	/**
+	 * Returns the social equity log persistence.
+	 *
+	 * @return the social equity log persistence
+	 */
+	public SocialEquityLogPersistence getSocialEquityLogPersistence() {
+		return socialEquityLogPersistence;
+	}
+
+	/**
+	 * Sets the social equity log persistence.
+	 *
+	 * @param socialEquityLogPersistence the social equity log persistence
+	 */
+	public void setSocialEquityLogPersistence(
+		SocialEquityLogPersistence socialEquityLogPersistence) {
+		this.socialEquityLogPersistence = socialEquityLogPersistence;
+	}
+
+	/**
+	 * Returns the social equity user local service.
+	 *
+	 * @return the social equity user local service
+	 */
+	public SocialEquityUserLocalService getSocialEquityUserLocalService() {
+		return socialEquityUserLocalService;
+	}
+
+	/**
+	 * Sets the social equity user local service.
+	 *
+	 * @param socialEquityUserLocalService the social equity user local service
+	 */
+	public void setSocialEquityUserLocalService(
+		SocialEquityUserLocalService socialEquityUserLocalService) {
+		this.socialEquityUserLocalService = socialEquityUserLocalService;
+	}
+
+	/**
+	 * Returns the social equity user persistence.
+	 *
+	 * @return the social equity user persistence
+	 */
+	public SocialEquityUserPersistence getSocialEquityUserPersistence() {
+		return socialEquityUserPersistence;
+	}
+
+	/**
+	 * Sets the social equity user persistence.
+	 *
+	 * @param socialEquityUserPersistence the social equity user persistence
+	 */
+	public void setSocialEquityUserPersistence(
+		SocialEquityUserPersistence socialEquityUserPersistence) {
+		this.socialEquityUserPersistence = socialEquityUserPersistence;
+	}
+
+	/**
 	 * Returns the social request local service.
 	 *
 	 * @return the social request local service
@@ -4373,6 +4522,16 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	public void setSocialRequestPersistence(
 		SocialRequestPersistence socialRequestPersistence) {
 		this.socialRequestPersistence = socialRequestPersistence;
+	}
+
+	public void afterPropertiesSet() {
+		persistedModelLocalServiceRegistry.register("com.liferay.portal.model.User",
+			userLocalService);
+	}
+
+	public void destroy() {
+		persistedModelLocalServiceRegistry.unregister(
+			"com.liferay.portal.model.User");
 	}
 
 	/**
@@ -4492,6 +4651,10 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	protected LayoutPersistence layoutPersistence;
 	@BeanReference(type = LayoutFinder.class)
 	protected LayoutFinder layoutFinder;
+	@BeanReference(type = LayoutBranchLocalService.class)
+	protected LayoutBranchLocalService layoutBranchLocalService;
+	@BeanReference(type = LayoutBranchPersistence.class)
+	protected LayoutBranchPersistence layoutBranchPersistence;
 	@BeanReference(type = LayoutPrototypeLocalService.class)
 	protected LayoutPrototypeLocalService layoutPrototypeLocalService;
 	@BeanReference(type = LayoutPrototypeService.class)
@@ -4516,6 +4679,8 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	protected LayoutSetBranchService layoutSetBranchService;
 	@BeanReference(type = LayoutSetBranchPersistence.class)
 	protected LayoutSetBranchPersistence layoutSetBranchPersistence;
+	@BeanReference(type = LayoutSetBranchFinder.class)
+	protected LayoutSetBranchFinder layoutSetBranchFinder;
 	@BeanReference(type = LayoutSetPrototypeLocalService.class)
 	protected LayoutSetPrototypeLocalService layoutSetPrototypeLocalService;
 	@BeanReference(type = LayoutSetPrototypeService.class)
@@ -4834,10 +4999,20 @@ public abstract class UserLocalServiceBaseImpl implements UserLocalService,
 	protected SocialActivityPersistence socialActivityPersistence;
 	@BeanReference(type = SocialActivityFinder.class)
 	protected SocialActivityFinder socialActivityFinder;
+	@BeanReference(type = SocialEquityLogLocalService.class)
+	protected SocialEquityLogLocalService socialEquityLogLocalService;
+	@BeanReference(type = SocialEquityLogPersistence.class)
+	protected SocialEquityLogPersistence socialEquityLogPersistence;
+	@BeanReference(type = SocialEquityUserLocalService.class)
+	protected SocialEquityUserLocalService socialEquityUserLocalService;
+	@BeanReference(type = SocialEquityUserPersistence.class)
+	protected SocialEquityUserPersistence socialEquityUserPersistence;
 	@BeanReference(type = SocialRequestLocalService.class)
 	protected SocialRequestLocalService socialRequestLocalService;
 	@BeanReference(type = SocialRequestPersistence.class)
 	protected SocialRequestPersistence socialRequestPersistence;
+	@BeanReference(type = PersistedModelLocalServiceRegistry.class)
+	protected PersistedModelLocalServiceRegistry persistedModelLocalServiceRegistry;
 	private static Log _log = LogFactoryUtil.getLog(UserLocalServiceBaseImpl.class);
 	private String _beanIdentifier;
 }

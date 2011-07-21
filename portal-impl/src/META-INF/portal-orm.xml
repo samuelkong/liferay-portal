@@ -305,6 +305,23 @@
 			<transient name="titleMap" />
 		</attributes>
 	</mapped-superclass>
+	<mapped-superclass class="com.liferay.portal.model.impl.LayoutBranchModelImpl">
+		<attributes>
+			<id name="LayoutBranchId" />
+			<basic name="groupId" />
+			<basic name="companyId" />
+			<basic name="userId" />
+			<basic name="userName" />
+			<basic name="layoutSetBranchId" />
+			<basic name="plid" />
+			<basic name="name" />
+			<basic name="description" />
+			<basic name="master" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+			<transient name="userUuid" />
+		</attributes>
+	</mapped-superclass>
 	<mapped-superclass class="com.liferay.portal.model.impl.LayoutPrototypeModelImpl">
 		<attributes>
 			<id name="layoutPrototypeId" />
@@ -336,10 +353,10 @@
 				<temporal>TIMESTAMP</temporal>
 			</basic>
 			<basic name="layoutSetBranchId" />
+			<basic name="layoutBranchId" />
 			<basic name="parentLayoutRevisionId" />
 			<basic name="head" />
 			<basic name="major" />
-			<basic name="variationName" />
 			<basic name="plid" />
 			<basic name="privateLayout" />
 			<basic name="name" />
@@ -410,6 +427,7 @@
 			<basic name="privateLayout" />
 			<basic name="name" />
 			<basic name="description" />
+			<basic name="master" />
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
@@ -1177,6 +1195,7 @@
 			</basic>
 			<basic name="classNameId" />
 			<basic name="classPK" />
+			<basic name="typePK" />
 			<basic name="workflowDefinitionName" />
 			<basic name="workflowDefinitionVersion" />
 			<transient name="primaryKey" />
@@ -1826,6 +1845,26 @@
 			<transient name="primaryKey" />
 			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
+		</attributes>
+	</mapped-superclass>
+	<mapped-superclass class="com.liferay.portlet.documentlibrary.model.impl.DLSyncModelImpl">
+		<attributes>
+			<id name="syncId" />
+			<basic name="companyId" />
+			<basic name="createDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="modifiedDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="fileId" />
+			<basic name="repositoryId" />
+			<basic name="event" />
+			<basic name="type">
+				<column name="TYPE_" />
+			</basic>
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 		</attributes>
 	</mapped-superclass>
 	<mapped-superclass class="com.liferay.portlet.dynamicdatalists.model.impl.DDLRecordModelImpl">
@@ -3263,6 +3302,10 @@
 			<transient name="typeSettingsProperties" />
 		</attributes>
 	</entity>
+	<entity class="com.liferay.portal.model.impl.LayoutBranchImpl" name="LayoutBranch">
+		<table name="LayoutBranch" />
+		<attributes />
+	</entity>
 	<entity class="com.liferay.portal.model.impl.LayoutPrototypeImpl" name="LayoutPrototype">
 		<table name="LayoutPrototype" />
 		<attributes />
@@ -3675,6 +3718,10 @@
 	</entity>
 	<entity class="com.liferay.portlet.documentlibrary.model.impl.DLFolderImpl" name="DLFolder">
 		<table name="DLFolder" />
+		<attributes />
+	</entity>
+	<entity class="com.liferay.portlet.documentlibrary.model.impl.DLSyncImpl" name="DLSync">
+		<table name="DLSync" />
 		<attributes />
 	</entity>
 	<entity class="com.liferay.portlet.dynamicdatalists.model.impl.DDLRecordImpl" name="DDLRecord">

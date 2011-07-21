@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface LayoutRevisionLocalService {
+public interface LayoutRevisionLocalService extends PersistedModelLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -161,6 +161,12 @@ public interface LayoutRevisionLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
 	/**
 	* Returns a range of all the layout revisions.
 	*
@@ -226,8 +232,8 @@ public interface LayoutRevisionLocalService {
 	public void setBeanIdentifier(java.lang.String beanIdentifier);
 
 	public com.liferay.portal.model.LayoutRevision addLayoutRevision(
-		long userId, long layoutSetBranchId, long parentLayoutRevisionId,
-		boolean head, java.lang.String variationName, long plid,
+		long userId, long layoutSetBranchId, long layoutBranchId,
+		long parentLayoutRevisionId, boolean head, long plid,
 		boolean privateLayout, java.lang.String name, java.lang.String title,
 		java.lang.String description, java.lang.String keywords,
 		java.lang.String robots, java.lang.String typeSettings,
@@ -246,14 +252,31 @@ public interface LayoutRevisionLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
-	public void deleteLayoutRevisions(long layoutSetBranchId, long plid,
-		java.lang.String variationName)
+	public void deleteLayoutRevisions(long layoutSetBranchId,
+		long layoutBranchId, long plid)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
 	public void deleteLayoutSetBranchLayoutRevisions(long layoutSetBranchId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portal.model.LayoutRevision> getChildLayoutRevisions(
+		long layoutSetBranchId, long parentLayoutRevisionId, long plid)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portal.model.LayoutRevision> getChildLayoutRevisions(
+		long layoutSetBranchId, long parentLayoutRevision, long plid,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getChildLayoutRevisionsCount(long layoutSetBranchId,
+		long parentLayoutRevision, long plid)
+		throws com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.LayoutRevision getLayoutRevision(
@@ -263,7 +286,7 @@ public interface LayoutRevisionLocalService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.LayoutRevision getLayoutRevision(
-		long layoutSetBranchId, long plid, java.lang.String variationName)
+		long layoutSetBranchId, long layoutBranchId, long plid)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
@@ -293,35 +316,18 @@ public interface LayoutRevisionLocalService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public java.util.List<com.liferay.portal.model.LayoutRevision> getLayoutRevisions(
-		long layoutSetBranchId, long parentLayoutRevisionId, long plid)
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<com.liferay.portal.model.LayoutRevision> getLayoutRevisions(
-		long layoutSetBranchId, long parentLayoutRevision, long plid,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.List<com.liferay.portal.model.LayoutRevision> getLayoutRevisions(
-		long layoutSetBranchId, long plid, java.lang.String variationName,
-		int start, int end,
+		long layoutSetBranchId, long layoutBranchId, long plid, int start,
+		int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getLayoutRevisionsCount(long layoutSetBranchId,
-		long parentLayoutRevision, long plid)
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutRevisionsCount(long layoutSetBranchId, long plid,
-		java.lang.String variationName)
+		long layoutBranchId, long plid)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	public com.liferay.portal.model.LayoutRevision updateLayoutRevision(
-		long userId, long layoutRevisionId, java.lang.String variationName,
+		long userId, long layoutRevisionId, long layoutBranchId,
 		java.lang.String name, java.lang.String title,
 		java.lang.String description, java.lang.String keywords,
 		java.lang.String robots, java.lang.String typeSettings,

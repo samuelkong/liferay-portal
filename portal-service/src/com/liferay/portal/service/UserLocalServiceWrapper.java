@@ -162,6 +162,13 @@ public class UserLocalServiceWrapper implements UserLocalService {
 		return _userLocalService.getUser(userId);
 	}
 
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _userLocalService.getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns a range of all the users.
 	*
@@ -895,6 +902,20 @@ public class UserLocalServiceWrapper implements UserLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _userLocalService.encryptUserId(name);
+	}
+
+	/**
+	* Returns the user with the screen name.
+	*
+	* @param companyId the primary key of the user's company
+	* @param screenName the user's screen name
+	* @return the user with the screen name, or null if a user with the screen
+	name could not be found
+	*/
+	public com.liferay.portal.model.User fetchUserByScreenName(long companyId,
+		java.lang.String screenName)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _userLocalService.fetchUserByScreenName(companyId, screenName);
 	}
 
 	/**

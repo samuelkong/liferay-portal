@@ -172,6 +172,13 @@ public class RoleLocalServiceUtil {
 		return getService().getRole(roleId);
 	}
 
+	public static com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns a range of all the roles.
 	*
@@ -272,6 +279,12 @@ public class RoleLocalServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		getService().addUserRoles(userId, roleIds);
+	}
+
+	public static void checkSystemRoles()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().checkSystemRoles();
 	}
 
 	public static void checkSystemRoles(long companyId)
@@ -425,6 +438,15 @@ public class RoleLocalServiceUtil {
 	}
 
 	public static java.util.List<com.liferay.portal.model.Role> search(
+		long companyId, java.lang.String keywords, java.lang.Integer[] types,
+		java.util.LinkedHashMap<java.lang.String, java.lang.Object> params,
+		int start, int end, com.liferay.portal.kernel.util.OrderByComparator obc)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .search(companyId, keywords, types, params, start, end, obc);
+	}
+
+	public static java.util.List<com.liferay.portal.model.Role> search(
 		long companyId, java.lang.String name, java.lang.String description,
 		java.lang.Integer[] types, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator obc)
@@ -448,6 +470,13 @@ public class RoleLocalServiceUtil {
 		java.lang.Integer[] types)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().searchCount(companyId, keywords, types);
+	}
+
+	public static int searchCount(long companyId, java.lang.String keywords,
+		java.lang.Integer[] types,
+		java.util.LinkedHashMap<java.lang.String, java.lang.Object> params)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().searchCount(companyId, keywords, types, params);
 	}
 
 	public static int searchCount(long companyId, java.lang.String name,

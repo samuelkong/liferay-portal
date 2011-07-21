@@ -23,7 +23,7 @@ package com.liferay.portal.model;
  * @see com.liferay.portal.model.impl.LayoutRevisionModelImpl
  * @generated
  */
-public interface LayoutRevision extends LayoutRevisionModel, SaveableModel {
+public interface LayoutRevision extends LayoutRevisionModel, PersistedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -43,6 +43,10 @@ public interface LayoutRevision extends LayoutRevisionModel, SaveableModel {
 	public java.lang.String getHTMLTitle(java.util.Locale locale);
 
 	public java.lang.String getHTMLTitle(java.lang.String localeLanguageId);
+
+	public com.liferay.portal.model.LayoutBranch getLayoutBranch()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 
 	public com.liferay.portal.model.LayoutSet getLayoutSet()
 		throws com.liferay.portal.kernel.exception.PortalException,

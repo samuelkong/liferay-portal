@@ -173,6 +173,13 @@ public class SocialEquityUserLocalServiceUtil {
 		return getService().getSocialEquityUser(equityUserId);
 	}
 
+	public static com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns a range of all the social equity users.
 	*
@@ -246,6 +253,11 @@ public class SocialEquityUserLocalServiceUtil {
 	*/
 	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
 		getService().setBeanIdentifier(beanIdentifier);
+	}
+
+	public static void clearRanks(long userId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getService().clearRanks(userId);
 	}
 
 	public static com.liferay.portlet.social.model.SocialEquityValue getContributionEquity(

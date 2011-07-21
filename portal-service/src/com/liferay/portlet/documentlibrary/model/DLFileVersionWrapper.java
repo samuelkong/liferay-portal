@@ -588,9 +588,9 @@ public class DLFileVersionWrapper implements DLFileVersion {
 		return _dlFileVersion.toXmlString();
 	}
 
-	public void save()
+	public void persist()
 		throws com.liferay.portal.kernel.exception.SystemException {
-		_dlFileVersion.save();
+		_dlFileVersion.persist();
 	}
 
 	public com.liferay.portal.kernel.util.UnicodeProperties getExtraSettingsProperties() {
@@ -601,6 +601,18 @@ public class DLFileVersionWrapper implements DLFileVersion {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _dlFileVersion.getFileEntry();
+	}
+
+	public com.liferay.portlet.documentlibrary.model.DLFolder getFolder()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _dlFileVersion.getFolder();
+	}
+
+	public long getFolderId()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _dlFileVersion.getFolderId();
 	}
 
 	public java.lang.String getIcon() {

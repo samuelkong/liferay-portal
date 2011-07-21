@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.service.PersistedModelLocalService;
 
 /**
  * The interface for the social relation local service.
@@ -35,7 +36,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface SocialRelationLocalService {
+public interface SocialRelationLocalService extends PersistedModelLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -159,6 +160,12 @@ public interface SocialRelationLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
 	/**
 	* Returns a range of all the social relations.
 	*
@@ -244,6 +251,10 @@ public interface SocialRelationLocalService {
 
 	public void deleteRelations(long userId)
 		throws com.liferay.portal.kernel.exception.SystemException;
+
+	public void deleteRelations(long userId1, long userId2)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public java.util.List<com.liferay.portlet.social.model.SocialRelation> getInverseRelations(

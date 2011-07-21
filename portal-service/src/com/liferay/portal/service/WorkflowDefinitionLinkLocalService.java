@@ -35,7 +35,8 @@ import com.liferay.portal.kernel.transaction.Transactional;
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface WorkflowDefinitionLinkLocalService {
+public interface WorkflowDefinitionLinkLocalService
+	extends PersistedModelLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -159,6 +160,12 @@ public interface WorkflowDefinitionLinkLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
 	/**
 	* Returns a range of all the workflow definition links.
 	*
@@ -226,32 +233,33 @@ public interface WorkflowDefinitionLinkLocalService {
 
 	public com.liferay.portal.model.WorkflowDefinitionLink addWorkflowDefinitionLink(
 		long userId, long companyId, long groupId, java.lang.String className,
-		long classPK, java.lang.String workflowDefinitionName,
+		long classPK, long typePK, java.lang.String workflowDefinitionName,
 		int workflowDefinitionVersion)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
 	public void deleteWorkflowDefinitionLink(long companyId, long groupId,
-		java.lang.String className, long classPK)
+		java.lang.String className, long classPK, long typePK)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.WorkflowDefinitionLink getDefaultWorkflowDefinitionLink(
-		long companyId, java.lang.String className, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public com.liferay.portal.model.WorkflowDefinitionLink getWorkflowDefinitionLink(
-		long companyId, long groupId, java.lang.String className, long classPK)
+		long companyId, java.lang.String className, long classPK, long typePK)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.WorkflowDefinitionLink getWorkflowDefinitionLink(
 		long companyId, long groupId, java.lang.String className, long classPK,
-		boolean strict)
+		long typePK)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.WorkflowDefinitionLink getWorkflowDefinitionLink(
+		long companyId, long groupId, java.lang.String className, long classPK,
+		long typePK, boolean strict)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
@@ -272,16 +280,28 @@ public interface WorkflowDefinitionLinkLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public boolean hasWorkflowDefinitionLink(long companyId, long groupId,
+		java.lang.String className, long classPK, long typePK)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
 	public void updateWorkflowDefinitionLink(long userId, long companyId,
-		long groupId, java.lang.String className, long classPK,
+		long groupId, java.lang.String className, long classPK, long typePK,
 		java.lang.String workflowDefinition)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
 	public com.liferay.portal.model.WorkflowDefinitionLink updateWorkflowDefinitionLink(
 		long userId, long companyId, long groupId, java.lang.String className,
-		long classPK, java.lang.String workflowDefinitionName,
+		long classPK, long typePK, java.lang.String workflowDefinitionName,
 		int workflowDefinitionVersion)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
+	public void updateWorkflowDefinitionLinks(long userId, long companyId,
+		long groupId, java.lang.String className, long classPK,
+		java.util.List<com.liferay.portal.kernel.util.ObjectValuePair<java.lang.Long, java.lang.String>> workflowDefinitions)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 }

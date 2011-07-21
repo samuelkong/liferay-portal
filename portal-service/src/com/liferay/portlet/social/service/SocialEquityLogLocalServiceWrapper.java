@@ -166,6 +166,13 @@ public class SocialEquityLogLocalServiceWrapper
 		return _socialEquityLogLocalService.getSocialEquityLog(equityLogId);
 	}
 
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _socialEquityLogLocalService.getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns a range of all the social equity logs.
 	*
@@ -329,6 +336,11 @@ public class SocialEquityLogLocalServiceWrapper
 			com.liferay.portal.kernel.exception.SystemException {
 		_socialEquityLogLocalService.deactivateEquityLogs(className, classPK,
 			actionId, extraData);
+	}
+
+	public void deactivateUserEquityLogs(long userId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		_socialEquityLogLocalService.deactivateUserEquityLogs(userId);
 	}
 
 	public void incrementSocialEquityAssetEntry_IQ(long assetEntryId,

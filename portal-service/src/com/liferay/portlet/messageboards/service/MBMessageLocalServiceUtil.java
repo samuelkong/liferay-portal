@@ -173,6 +173,13 @@ public class MBMessageLocalServiceUtil {
 		return getService().getMBMessage(messageId);
 	}
 
+	public static com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns the message-boards message with the UUID in the group.
 	*
@@ -595,12 +602,13 @@ public class MBMessageLocalServiceUtil {
 
 	public static com.liferay.portlet.messageboards.model.MBMessage updateDiscussionMessage(
 		long userId, long messageId, java.lang.String className, long classPK,
-		java.lang.String subject, java.lang.String body, int workflowAction)
+		java.lang.String subject, java.lang.String body,
+		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .updateDiscussionMessage(userId, messageId, className,
-			classPK, subject, body, workflowAction);
+			classPK, subject, body, serviceContext);
 	}
 
 	public static com.liferay.portlet.messageboards.model.MBMessage updateMessage(

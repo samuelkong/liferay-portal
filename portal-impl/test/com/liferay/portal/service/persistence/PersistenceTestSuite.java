@@ -39,6 +39,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFileRankPersist
 import com.liferay.portlet.documentlibrary.service.persistence.DLFileShortcutPersistenceTest;
 import com.liferay.portlet.documentlibrary.service.persistence.DLFileVersionPersistenceTest;
 import com.liferay.portlet.documentlibrary.service.persistence.DLFolderPersistenceTest;
+import com.liferay.portlet.documentlibrary.service.persistence.DLSyncPersistenceTest;
 import com.liferay.portlet.dynamicdatalists.service.persistence.DDLRecordPersistenceTest;
 import com.liferay.portlet.dynamicdatalists.service.persistence.DDLRecordSetPersistenceTest;
 import com.liferay.portlet.dynamicdatalists.service.persistence.DDLRecordVersionPersistenceTest;
@@ -123,6 +124,7 @@ public class PersistenceTestSuite extends TestSuite {
 		testSuite.addTestSuite(EmailAddressPersistenceTest.class);
 		testSuite.addTestSuite(GroupPersistenceTest.class);
 		testSuite.addTestSuite(ImagePersistenceTest.class);
+		testSuite.addTestSuite(LayoutBranchPersistenceTest.class);
 		testSuite.addTestSuite(LayoutPersistenceTest.class);
 		testSuite.addTestSuite(LayoutPrototypePersistenceTest.class);
 		testSuite.addTestSuite(LayoutRevisionPersistenceTest.class);
@@ -203,6 +205,7 @@ public class PersistenceTestSuite extends TestSuite {
 		testSuite.addTestSuite(DLFileShortcutPersistenceTest.class);
 		testSuite.addTestSuite(DLFileVersionPersistenceTest.class);
 		testSuite.addTestSuite(DLFolderPersistenceTest.class);
+		testSuite.addTestSuite(DLSyncPersistenceTest.class);
 
 		testSuite.addTestSuite(DDLRecordPersistenceTest.class);
 		testSuite.addTestSuite(DDLRecordSetPersistenceTest.class);

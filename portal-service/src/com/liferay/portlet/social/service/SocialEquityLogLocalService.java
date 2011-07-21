@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.service.PersistedModelLocalService;
 
 /**
  * The interface for the social equity log local service.
@@ -35,7 +36,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface SocialEquityLogLocalService {
+public interface SocialEquityLogLocalService extends PersistedModelLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -156,6 +157,12 @@ public interface SocialEquityLogLocalService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portlet.social.model.SocialEquityLog getSocialEquityLog(
 		long equityLogId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
@@ -283,6 +290,9 @@ public interface SocialEquityLogLocalService {
 		java.lang.String actionId, java.lang.String extraData)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
+
+	public void deactivateUserEquityLogs(long userId)
+		throws com.liferay.portal.kernel.exception.SystemException;
 
 	public void incrementSocialEquityAssetEntry_IQ(long assetEntryId,
 		com.liferay.portlet.social.model.SocialEquityIncrementPayload equityPayload)

@@ -110,7 +110,7 @@ if (Validator.isNotNull(ddmStructureId)) {
 				WorkflowDefinitionLink workflowDefinitionLink = null;
 
 				try {
-					workflowDefinitionLink = WorkflowDefinitionLinkLocalServiceUtil.getWorkflowDefinitionLink(company.getCompanyId(), themeDisplay.getScopeGroupId(), DDLRecordSet.class.getName(), recordSetId, true);
+					workflowDefinitionLink = WorkflowDefinitionLinkLocalServiceUtil.getWorkflowDefinitionLink(company.getCompanyId(), themeDisplay.getScopeGroupId(), DDLRecordSet.class.getName(), recordSetId, 0, true);
 				}
 				catch (NoSuchWorkflowDefinitionLinkException nswdle) {
 				}
@@ -153,7 +153,6 @@ if (Validator.isNotNull(ddmStructureId)) {
 				chooseCallback: '<portlet:namespace />selectDDMStructure',
 				saveCallback: '<portlet:namespace />selectDDMStructure',
 				dialog: {
-					stack: false,
 					width:820
 				},
 				storageType: '<%= PropsValues.DYNAMIC_DATA_LISTS_STORAGE_TYPE %>',

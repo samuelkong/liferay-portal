@@ -1222,7 +1222,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 	public MBMessage updateDiscussionMessage(
 			long userId, long messageId, String className, long classPK,
-			String subject, String body, int workflowAction)
+			String subject, String body, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		if (Validator.isNull(subject)) {
@@ -1235,12 +1235,8 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		double priority = 0.0;
 		boolean allowPingbacks = false;
 
-		ServiceContext serviceContext = new ServiceContext();
-
 		serviceContext.setAttribute("className", className);
 		serviceContext.setAttribute("classPK", String.valueOf(classPK));
-
-		serviceContext.setWorkflowAction(workflowAction);
 
 		return updateMessage(
 			userId, messageId, subject, body, files, existingFiles, priority,
@@ -1484,6 +1480,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 					if (!message.isAnonymous() && !user.isDefaultUser()) {
 						int activityType = MBActivityKeys.ADD_MESSAGE;
 						long receiverUserId = 0;
+						MBMessage socialEquityLogMessage = message;
 						String actionId = ActionKeys.ADD_MESSAGE;
 
 						MBMessage parentMessage =
@@ -1495,6 +1492,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 							receiverUserId = parentMessage.getUserId();
 
 							if (receiverUserId != userId) {
+								socialEquityLogMessage = parentMessage;
 								actionId = ActionKeys.REPLY_TO_MESSAGE;
 							}
 						}
@@ -1505,8 +1503,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 							activityType, StringPool.BLANK, receiverUserId);
 
 						socialEquityLogLocalService.addEquityLogs(
-							userId, MBMessage.class.getName(), messageId,
-							actionId, StringPool.BLANK);
+							userId, MBMessage.class.getName(),
+							socialEquityLogMessage.getMessageId(), actionId,
+							StringPool.BLANK);
 					}
 				}
 				else {

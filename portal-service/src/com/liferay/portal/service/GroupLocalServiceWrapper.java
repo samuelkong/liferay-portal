@@ -162,6 +162,13 @@ public class GroupLocalServiceWrapper implements GroupLocalService {
 		return _groupLocalService.getGroup(groupId);
 	}
 
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _groupLocalService.getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns a range of all the groups.
 	*
@@ -278,6 +285,12 @@ public class GroupLocalServiceWrapper implements GroupLocalService {
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		_groupLocalService.checkSystemGroups(companyId);
+	}
+
+	public com.liferay.portal.model.Group fetchFriendlyURLGroup(
+		long companyId, java.lang.String friendlyURL)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _groupLocalService.fetchFriendlyURLGroup(companyId, friendlyURL);
 	}
 
 	public com.liferay.portal.model.Group fetchGroup(long groupId)

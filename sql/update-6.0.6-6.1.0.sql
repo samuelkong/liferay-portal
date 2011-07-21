@@ -213,6 +213,18 @@ alter table DLFolder add overrideFileEntryTypes BOOLEAN;
 COMMIT_TRANSACTION;
 
 update DLFolder set repositoryId = groupId;
+update DLFolder set mountPoint = FALSE;
+
+create table DLSync (
+	syncId LONG not null primary key,
+	companyId LONG,
+	createDate DATE null,
+	modifiedDate DATE null,
+	fileId VARCHAR(75) null,
+	repositoryId LONG,
+	event VARCHAR(75) null,
+	type_ VARCHAR(75) null
+);
 
 alter table Group_ add site BOOLEAN;
 
@@ -245,6 +257,19 @@ update Layout set modifiedDate = CURRENT_TIMESTAMP;
 
 COMMIT_TRANSACTION;
 
+create table LayoutBranch (
+	LayoutBranchId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	layoutSetBranchId LONG,
+	plid LONG,
+	name VARCHAR(75) null,
+	description VARCHAR(75) null,
+	master BOOLEAN
+);
+
 create table LayoutRevision (
 	layoutRevisionId LONG not null primary key,
 	groupId LONG,
@@ -254,10 +279,10 @@ create table LayoutRevision (
 	createDate DATE null,
 	modifiedDate DATE null,
 	layoutSetBranchId LONG,
+	layoutBranchId LONG,
 	parentLayoutRevisionId LONG,
 	head BOOLEAN,
 	major BOOLEAN,
-	variationName VARCHAR(75) null,
 	plid LONG,
 	privateLayout BOOLEAN,
 	name STRING null,
@@ -291,7 +316,8 @@ create table LayoutSetBranch (
 	modifiedDate DATE null,
 	privateLayout BOOLEAN,
 	name VARCHAR(75) null,
-	description STRING null
+	description STRING null,
+	master BOOLEAN
 );
 
 alter table LayoutSetPrototype add uuid_ VARCHAR(75) null;
@@ -394,3 +420,4 @@ create table VirtualHost (
 );
 
 alter table WorkflowDefinitionLink add classPK LONG;
+alter table WorkflowDefinitionLink add typePK LONG;

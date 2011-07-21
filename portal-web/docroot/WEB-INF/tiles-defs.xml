@@ -1470,11 +1470,15 @@
 
 	<!-- Staging Bar -->
 
+	<definition name="portlet.staging_bar.edit_layout_set_branch" path="/portlet/staging_bar/add_layout_set_branch.jsp" />
+
 	<definition name="portlet.staging_bar.error" path="/portlet/staging_bar/error.jsp" />
 
 	<definition name="portlet.staging_bar.merge_layout_set_branch" path="/portlet/staging_bar/merge_layout_set_branch.jsp" />
 
 	<definition name="portlet.staging_bar.view" path="/portlet/staging_bar/view.jsp" />
+
+	<definition name="portlet.staging_bar.view_layout_revision_details" path="/portlet/staging_bar/view_layout_revision_details.jsp" />
 
 	<definition name="portlet.staging_bar.view_layout_revisions" path="/portlet/staging_bar/view_layout_revisions.jsp" />
 

@@ -356,7 +356,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 			message.setUserUuid(message.getUserUuid());
 
-			addRatingsEntries(MBMessage.class, message.getPrimaryKey());
+			addRatingsEntries(MBDiscussion.class, message.getPrimaryKey());
 		}
 
 		_commentsMap.put(getPrimaryKeyString(clazz, classPK), messages);
@@ -924,12 +924,15 @@ public class PortletDataContextImpl implements PortletDataContext {
 								message.getBody(), serviceContext);
 					}
 					else {
+						serviceContext.setWorkflowAction(
+							WorkflowConstants.ACTION_PUBLISH);
+
 						importedMessage =
 							MBMessageLocalServiceUtil.updateDiscussionMessage(
 								userId, existingMessage.getMessageId(),
 								clazz.getName(), newClassPK,
 								message.getSubject(), message.getBody(),
-								WorkflowConstants.ACTION_PUBLISH);
+								serviceContext);
 					}
 				}
 				else {
@@ -948,7 +951,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 			}
 
 			importRatingsEntries(
-				MBMessage.class, message.getPrimaryKey(),
+				MBDiscussion.class, message.getPrimaryKey(),
 				messagePKs.get(message.getPrimaryKey()));
 		}
 	}

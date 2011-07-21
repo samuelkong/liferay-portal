@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface UserLocalService {
+public interface UserLocalService extends PersistedModelLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -155,6 +155,12 @@ public interface UserLocalService {
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.User getUser(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
@@ -806,6 +812,19 @@ public interface UserLocalService {
 	public java.lang.String encryptUserId(java.lang.String name)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
+
+	/**
+	* Returns the user with the screen name.
+	*
+	* @param companyId the primary key of the user's company
+	* @param screenName the user's screen name
+	* @return the user with the screen name, or null if a user with the screen
+	name could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.model.User fetchUserByScreenName(long companyId,
+		java.lang.String screenName)
+		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**
 	* Returns a range of all the users belonging to the company.

@@ -15,12 +15,14 @@
 package com.liferay.portal.upgrade.v6_1_0;
 
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.ResourceActionsUtil;
 import com.liferay.portal.service.PermissionLocalServiceUtil;
 import com.liferay.portal.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.List;
@@ -34,6 +36,8 @@ public class UpgradePermission extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 
 		// LPS-14202 and LPS-17841
+
+		RoleLocalServiceUtil.checkSystemRoles();
 
 		updatePermissions("com.liferay.portlet.bookmarks", true, true);
 		updatePermissions("com.liferay.portlet.documentlibrary", false, true);
@@ -83,22 +87,23 @@ public class UpgradePermission extends UpgradeProcess {
 
 		ResourceActionLocalServiceUtil.checkResourceActions(name, modelActions);
 
+		int scope = ResourceConstants.SCOPE_INDIVIDUAL;
 		long actionIdsLong = 1;
 
 		if (community) {
-			ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
-				name, RoleConstants.ORGANIZATION_USER, actionIdsLong);
-			ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
-				name, RoleConstants.SITE_MEMBER, actionIdsLong);
+			ResourcePermissionLocalServiceUtil.addResourcePermissions(
+				name, RoleConstants.ORGANIZATION_USER, scope, actionIdsLong);
+			ResourcePermissionLocalServiceUtil.addResourcePermissions(
+				name, RoleConstants.SITE_MEMBER, scope, actionIdsLong);
 		}
 
 		if (guest) {
-			ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
-				name, RoleConstants.GUEST, actionIdsLong);
+			ResourcePermissionLocalServiceUtil.addResourcePermissions(
+				name, RoleConstants.GUEST, scope, actionIdsLong);
 		}
 
-		ResourcePermissionLocalServiceUtil.setContainerResourcePermissions(
-			name, RoleConstants.OWNER, actionIdsLong);
+		ResourcePermissionLocalServiceUtil.addResourcePermissions(
+			name, RoleConstants.OWNER, scope, actionIdsLong);
 	}
 
 }

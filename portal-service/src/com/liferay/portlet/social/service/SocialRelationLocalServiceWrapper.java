@@ -165,6 +165,13 @@ public class SocialRelationLocalServiceWrapper
 		return _socialRelationLocalService.getSocialRelation(relationId);
 	}
 
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _socialRelationLocalService.getPersistedModel(primaryKeyObj);
+	}
+
 	/**
 	* Returns a range of all the social relations.
 	*
@@ -270,6 +277,12 @@ public class SocialRelationLocalServiceWrapper
 	public void deleteRelations(long userId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_socialRelationLocalService.deleteRelations(userId);
+	}
+
+	public void deleteRelations(long userId1, long userId2)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_socialRelationLocalService.deleteRelations(userId1, userId2);
 	}
 
 	public java.util.List<com.liferay.portlet.social.model.SocialRelation> getInverseRelations(
