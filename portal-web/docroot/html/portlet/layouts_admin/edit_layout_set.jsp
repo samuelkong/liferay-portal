@@ -124,6 +124,17 @@ String[][] categorySections = {mainSections};
 	</div>
 </c:if>
 
+<liferay-ui:error exception="<%= LayoutTypeException.class %>">
+
+	<%
+	LayoutTypeException lte = (LayoutTypeException)errorException;
+	%>
+
+	<c:if test="<%= lte.getType() == LayoutTypeException.FIRST_LAYOUT %>">
+		<liferay-ui:message key="the-resulting-first-page-must-have-one-of-the-following-types" /> <%= PortalUtil.getFirstPageLayoutTypes(pageContext) %>.
+	</c:if>
+</liferay-ui:error>
+
 <aui:script use="aui-dialog,aui-toolbar">
 	var popup;
 	var exportPopup;

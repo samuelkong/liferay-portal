@@ -22,6 +22,7 @@
 <%@ page import="com.liferay.portal.LayoutFriendlyURLException" %>
 <%@ page import="com.liferay.portal.LayoutImportException" %>
 <%@ page import="com.liferay.portal.LayoutSetVirtualHostException" %>
+<%@ page import="com.liferay.portal.LayoutTypeException" %>
 <%@ page import="com.liferay.portal.NoSuchGroupException" %>
 <%@ page import="com.liferay.portal.NoSuchLayoutException" %>
 <%@ page import="com.liferay.portal.NoSuchLayoutSetException" %>
