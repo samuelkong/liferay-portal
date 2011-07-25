@@ -108,6 +108,10 @@ if (portletDisplay.isWebDAVEnabled()) {
 
 User userDisplay = UserLocalServiceUtil.getUserById(fileEntry.getUserId());
 
+AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(DLFileEntryConstants.getClassName(), assetClassPK);
+
+request.setAttribute(WebKeys.LAYOUT_ASSET_ENTRY, layoutAssetEntry);
+
 request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 %>
 
@@ -217,12 +221,14 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 						</span>
 					</c:if>
 
-					<div class="entry-links">
-						<liferay-ui:asset-links
-							className="<%= DLFileEntryConstants.getClassName() %>"
-							classPK="<%= assetClassPK %>"
-						/>
-					</div>
+					<c:if test="<%= enableRelatedAssets %>">
+						<div class="entry-links">
+							<liferay-ui:asset-links
+								className="<%= DLFileEntryConstants.getClassName() %>"
+								classPK="<%= assetClassPK %>"
+							/>
+						</div>
+					</c:if>
 
 					<span class="document-description">
 						<%= HtmlUtil.escape(fileVersion.getDescription()) %>
@@ -256,11 +262,11 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 						String previewFileURL = null;
 						String videoThumbnailURL = null;
 
-						boolean supportedAudio = AudioProcessor.isSupportedAudio(fileEntry);
+						boolean supportedAudio = AudioProcessor.isSupportedAudio(fileEntry, fileVersion.getVersion());
 						boolean supportedVideo = VideoProcessor.isSupportedVideo(fileEntry, fileVersion.getVersion());
 
 						if (supportedAudio) {
-							if (AudioProcessor.hasAudio(fileEntry)) {
+							if (AudioProcessor.hasAudio(fileEntry, fileVersion.getVersion())) {
 								previewFileCount = 1;
 							}
 

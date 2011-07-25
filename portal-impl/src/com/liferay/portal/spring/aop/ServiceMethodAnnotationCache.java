@@ -30,6 +30,14 @@ public class ServiceMethodAnnotationCache {
 		MethodInvocation methodInvocation,
 		Class<? extends Annotation> annotationType, T defaultValue) {
 
+		if (_annotations == null) {
+
+			// This should never happen except when shutting down the
+			// application server
+
+			return null;
+		}
+
 		Annotation[] annotations = _annotations.get(methodInvocation);
 
 		if (annotations == _nullAnnotations) {
@@ -51,6 +59,14 @@ public class ServiceMethodAnnotationCache {
 
 	public static void put(
 		MethodInvocation methodInvocation, Annotation[] annotations) {
+
+		if (_annotations == null) {
+
+			// This should never happen except when shutting down the
+			// application server
+
+			return;
+		}
 
 		if ((annotations == null) || (annotations.length == 0)) {
 			annotations = _nullAnnotations;

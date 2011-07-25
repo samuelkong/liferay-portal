@@ -37,6 +37,14 @@ public class AsyncAdvice extends AnnotationChainableMethodAdvice<Async> {
 	public Object before(final MethodInvocation methodInvocation)
 		throws Throwable {
 
+		if (_log == null) {
+
+			// This should never happen except when shutting down the
+			// application server
+
+			return null;
+		}
+
 		Async async = findAnnotation(methodInvocation);
 
 		if (async == _nullAsync) {

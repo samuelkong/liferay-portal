@@ -3696,7 +3696,7 @@ public class PortalImpl implements Portal {
 			strutsAction.equals("/wiki_admin/edit_page_attachment") ||
 			actionName.equals("addFile")) {
 
-			alwaysAllowDoAsUser = true;
+			//alwaysAllowDoAsUser = true;
 		}
 
 		if ((!PropsValues.PORTAL_JAAS_ENABLE &&

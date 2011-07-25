@@ -242,11 +242,6 @@ public class ComboServlet extends HttpServlet {
 
 	private static final String _JAVASCRIPT_MINIFIED_SUFFIX = "-min.js";
 
-	private ConcurrentMap<String, byte[][]> _byteArrays =
-		new ConcurrentHashMap<String, byte[][]>();
-	private ConcurrentMap<String, FileContentBag> _fileContentBags =
-		new ConcurrentHashMap<String, FileContentBag>();
-
 	private static class FileContentBag {
 
 		public FileContentBag(byte[] fileContent, long lastModifiedTime) {
@@ -258,5 +253,10 @@ public class ComboServlet extends HttpServlet {
 		private long _lastModified;
 
 	}
+
+	private ConcurrentMap<String, byte[][]> _byteArrays =
+		new ConcurrentHashMap<String, byte[][]>();
+	private ConcurrentMap<String, FileContentBag> _fileContentBags =
+		new ConcurrentHashMap<String, FileContentBag>();
 
 }
