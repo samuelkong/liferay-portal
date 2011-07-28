@@ -138,7 +138,16 @@ public class ExpandoValueImpl
 	public String[] getStringArray() throws PortalException, SystemException {
 		validate(ExpandoColumnConstants.STRING_ARRAY);
 
-		return StringUtil.split(getData());
+		String regex = "(?<=(?<!\\\\)(\\\\\\\\){0,100}),";
+
+		String[] dataArray = getData().split(regex);
+
+		for (int i = 0; i < dataArray.length; i++) {
+			dataArray[i] = StringUtil.replace(dataArray[i], "\\,", ",");
+			dataArray[i] = StringUtil.replace(dataArray[i], "\\\\", "\\");
+		}
+
+		return dataArray;
 	}
 
 	public void setBoolean(boolean data)
@@ -251,6 +260,11 @@ public class ExpandoValueImpl
 		throws PortalException, SystemException {
 
 		validate(ExpandoColumnConstants.STRING_ARRAY);
+
+		for (int i = 0; i < data.length; i++) {
+			data[i] = StringUtil.replace(data[i], "\\", "\\\\");
+			data[i] = StringUtil.replace(data[i], ",", "\\,");
+		}
 
 		setData(StringUtil.merge(data));
 	}
