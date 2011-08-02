@@ -17,10 +17,12 @@ package com.liferay.portlet.wiki.action;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -28,6 +30,7 @@ import com.liferay.portal.struts.ActionConstants;
 import com.liferay.portal.struts.PortletAction;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.ActionRequestImpl;
 import com.liferay.portlet.PortletURLImpl;
@@ -35,7 +38,6 @@ import com.liferay.portlet.documentlibrary.util.DocumentConversionUtil;
 import com.liferay.portlet.wiki.model.WikiPage;
 import com.liferay.portlet.wiki.service.WikiPageServiceUtil;
 import com.liferay.portlet.wiki.util.WikiUtil;
-import com.liferay.util.servlet.ServletResponseUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -112,6 +114,21 @@ public class ExportPageAction extends PortletAction {
 			setForward(actionRequest, ActionConstants.COMMON_NULL);
 		}
 		catch (Exception e) {
+			String host = PrefsPropsUtil.getString(
+				PropsKeys.OPENOFFICE_SERVER_HOST);
+
+			if (Validator.isNotNull(host) && !host.equals(_LOCALHOST_IP) &&
+				!host.startsWith(_LOCALHOST)) {
+
+				StringBundler sb = new StringBundler(3);
+
+				sb.append("Conversion using a remote OpenOffice instance is ");
+				sb.append("not fully supported. Please use a local instance ");
+				sb.append("to prevent any limitations and problems.");
+
+				_log.error(sb.toString());
+			}
+
 			PortalUtil.sendError(e, actionRequest, actionResponse);
 		}
 	}
@@ -201,6 +218,10 @@ public class ExportPageAction extends PortletAction {
 	}
 
 	private static final boolean _CHECK_METHOD_ON_PROCESS_ACTION = false;
+
+	private static final String _LOCALHOST = "localhost";
+
+	private static final String _LOCALHOST_IP = "127.0.0.1";
 
 	private static Log _log = LogFactoryUtil.getLog(ExportPageAction.class);
 

@@ -71,6 +71,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringComparator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.QName;
@@ -95,6 +96,8 @@ import com.liferay.portal.model.ResourcePermission;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.model.Theme;
+import com.liferay.portal.model.Ticket;
+import com.liferay.portal.model.TicketConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.model.impl.LayoutTypePortletImpl;
@@ -117,6 +120,7 @@ import com.liferay.portal.service.PortletLocalServiceUtil;
 import com.liferay.portal.service.ResourceCodeLocalServiceUtil;
 import com.liferay.portal.service.ResourceLocalServiceUtil;
 import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.service.TicketLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.service.UserServiceUtil;
 import com.liferay.portal.service.permission.GroupPermissionUtil;
@@ -698,7 +702,7 @@ public class PortalImpl implements Portal {
 		}
 
 		String domain = StringUtil.split(
-			HttpUtil.getDomain(url), StringPool.COLON)[0];
+			HttpUtil.getDomain(url), CharPool.COLON)[0];
 
 		try {
 			CompanyLocalServiceUtil.getCompanyByVirtualHost(domain);
@@ -848,7 +852,7 @@ public class PortalImpl implements Portal {
 			return null;
 		}
 
-		String[] parts = StringUtil.split(modelName, StringPool.PERIOD);
+		String[] parts = StringUtil.split(modelName, CharPool.PERIOD);
 
 		if ((parts.length <= 2) || !parts[parts.length - 2].equals("model")) {
 			return null;
@@ -923,7 +927,7 @@ public class PortalImpl implements Portal {
 		}
 
 		String[] loginAndPassword = StringUtil.split(
-			credentials, StringPool.COLON);
+			credentials, CharPool.COLON);
 
 		String login = loginAndPassword[0].trim();
 
@@ -1506,7 +1510,7 @@ public class PortalImpl implements Portal {
 			if (displayType.equals(
 					ExpandoColumnConstants.PROPERTY_DISPLAY_TYPE_TEXT_BOX)) {
 
-				values = StringUtil.split(values[0], StringPool.NEW_LINE);
+				values = StringUtil.splitLines(values[0]);
 			}
 
 			value = GetterUtil.getDoubleValues(values);
@@ -1520,7 +1524,7 @@ public class PortalImpl implements Portal {
 			if (displayType.equals(
 					ExpandoColumnConstants.PROPERTY_DISPLAY_TYPE_TEXT_BOX)) {
 
-				values = StringUtil.split(values[0], StringPool.NEW_LINE);
+				values = StringUtil.splitLines(values[0]);
 			}
 
 			value = GetterUtil.getFloatValues(values);
@@ -1534,7 +1538,7 @@ public class PortalImpl implements Portal {
 			if (displayType.equals(
 					ExpandoColumnConstants.PROPERTY_DISPLAY_TYPE_TEXT_BOX)) {
 
-				values = StringUtil.split(values[0], StringPool.NEW_LINE);
+				values = StringUtil.splitLines(values[0]);
 			}
 
 			value = GetterUtil.getIntegerValues(values);
@@ -1548,7 +1552,7 @@ public class PortalImpl implements Portal {
 			if (displayType.equals(
 					ExpandoColumnConstants.PROPERTY_DISPLAY_TYPE_TEXT_BOX)) {
 
-				values = StringUtil.split(values[0], StringPool.NEW_LINE);
+				values = StringUtil.splitLines(values[0]);
 			}
 
 			value = GetterUtil.getLongValues(values);
@@ -1562,7 +1566,7 @@ public class PortalImpl implements Portal {
 			if (displayType.equals(
 					ExpandoColumnConstants.PROPERTY_DISPLAY_TYPE_TEXT_BOX)) {
 
-				values = StringUtil.split(values[0], StringPool.NEW_LINE);
+				values = StringUtil.splitLines(values[0]);
 			}
 
 			value = GetterUtil.getShortValues(values);
@@ -3186,7 +3190,7 @@ public class PortalImpl implements Portal {
 					layout, portletId);
 
 			String scopeType = GetterUtil.getString(
-				portletSetup.getValue("lfr-scope-type", null));
+				portletSetup.getValue("lfrScopeType", null));
 
 			if (Validator.isNull(scopeType)) {
 				return layout.getGroupId();
@@ -3630,6 +3634,12 @@ public class PortalImpl implements Portal {
 	public User getUser(HttpServletRequest request)
 		throws PortalException, SystemException {
 
+		User user = (User)request.getAttribute(WebKeys.USER);
+
+		if (user != null) {
+			return user;
+		}
+
 		long userId = getUserId(request);
 
 		if (userId <= 0) {
@@ -3648,13 +3658,9 @@ public class PortalImpl implements Portal {
 			userId = GetterUtil.getLong(remoteUser);
 		}
 
-		User user = (User)request.getAttribute(WebKeys.USER);
+		user = UserLocalServiceUtil.getUserById(userId);
 
-		if (user == null) {
-			user = UserLocalServiceUtil.getUserById(userId);
-
-			request.setAttribute(WebKeys.USER, user);
-		}
+		request.setAttribute(WebKeys.USER, user);
 
 		return user;
 	}
@@ -3696,7 +3702,12 @@ public class PortalImpl implements Portal {
 			strutsAction.equals("/wiki_admin/edit_page_attachment") ||
 			actionName.equals("addFile")) {
 
-			//alwaysAllowDoAsUser = true;
+			try {
+				alwaysAllowDoAsUser = isAlwaysAllowDoAsUser(request);
+			}
+			catch (Exception e) {
+				_log.error(e, e);
+			}
 		}
 
 		if ((!PropsValues.PORTAL_JAAS_ENABLE &&
@@ -4710,6 +4721,19 @@ public class PortalImpl implements Portal {
 		portletPreferencesImpl.store();
 	}
 
+	public String[] stripURLAnchor(String url, String separator) {
+		String anchor = StringPool.BLANK;
+
+		int pos = url.indexOf(separator);
+
+		if (pos != -1) {
+			anchor = url.substring(pos);
+			url = url.substring(0, pos);
+		}
+
+		return new String[] {url, anchor};
+	}
+
 	public String transformCustomSQL(String sql) {
 		if ((_customSqlKeys == null) || (_customSqlValues == null)) {
 			_initCustomSQL();
@@ -5134,6 +5158,67 @@ public class PortalImpl implements Portal {
 		}
 	}
 
+	protected boolean isAlwaysAllowDoAsUser(HttpServletRequest request)
+		throws Exception {
+
+		String ticketKey = ParamUtil.getString(request, "ticketKey");
+
+		if (Validator.isNull(ticketKey)) {
+			return false;
+		}
+
+		Ticket ticket = TicketLocalServiceUtil.fetchTicket(ticketKey);
+
+		if (ticket == null) {
+			return false;
+		}
+
+		String className = ticket.getClassName();
+
+		if (!className.equals(User.class.getName())) {
+			return false;
+		}
+
+		long doAsUserId = 0;
+
+		try {
+			Company company = getCompany(request);
+
+			String doAsUserIdString = ParamUtil.getString(
+				request, "doAsUserId");
+
+			if (Validator.isNotNull(doAsUserIdString)) {
+				doAsUserId = GetterUtil.getLong(
+					Encryptor.decrypt(company.getKeyObj(), doAsUserIdString));
+			}
+		}
+		catch (Exception e) {
+			return false;
+		}
+
+		if ((ticket.getClassPK() != doAsUserId) ||
+			(ticket.getType() != TicketConstants.TYPE_IMPERSONATE)) {
+
+			return false;
+		}
+
+		if (ticket.isExpired()) {
+			TicketLocalServiceUtil.deleteTicket(ticket);
+
+			return false;
+		}
+
+		Date expirationDate = new Date(
+			System.currentTimeMillis() +
+				PropsValues.SESSION_TIMEOUT * Time.MINUTE);
+
+		ticket.setExpirationDate(expirationDate);
+
+		TicketLocalServiceUtil.updateTicket(ticket, false);
+
+		return true;
+	}
+
 	protected void notifyPortalPortEventListeners(int portalPort) {
 		for (PortalPortEventListener portalPortEventListener :
 				_portalPortEventListeners) {
@@ -5308,6 +5393,10 @@ public class PortalImpl implements Portal {
 			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.MESSAGEBOARDS.MODEL." +
 				"MBMESSAGE$]",
 			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.WIKI.MODEL.WIKIPAGE$]",
+			"[$RESOURCE_SCOPE_COMPANY$]",
+			"[$RESOURCE_SCOPE_GROUP$]",
+			"[$RESOURCE_SCOPE_GROUP_TEMPLATE$]",
+			"[$RESOURCE_SCOPE_INDIVIDUAL$]",
 			"[$SOCIAL_RELATION_TYPE_BI_COWORKER$]",
 			"[$SOCIAL_RELATION_TYPE_BI_FRIEND$]",
 			"[$SOCIAL_RELATION_TYPE_BI_ROMANTIC_PARTNER$]",
@@ -5339,6 +5428,10 @@ public class PortalImpl implements Portal {
 			PortalUtil.getClassNameId(IGImage.class),
 			PortalUtil.getClassNameId(MBMessage.class),
 			PortalUtil.getClassNameId(WikiPage.class),
+			ResourceConstants.SCOPE_COMPANY,
+			ResourceConstants.SCOPE_GROUP,
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			ResourceConstants.SCOPE_INDIVIDUAL,
 			SocialRelationConstants.TYPE_BI_COWORKER,
 			SocialRelationConstants.TYPE_BI_FRIEND,
 			SocialRelationConstants.TYPE_BI_ROMANTIC_PARTNER,

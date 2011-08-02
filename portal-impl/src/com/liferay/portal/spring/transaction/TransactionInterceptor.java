@@ -36,14 +36,6 @@ public class TransactionInterceptor
 	extends TransactionAspectSupport implements MethodInterceptor {
 
 	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-		if (_log == null) {
-
-			// This should never happen except when shutting down the
-			// application server
-
-			return null;
-		}
-
 		Method method = methodInvocation.getMethod();
 
 		Class<?> targetClass = null;

@@ -321,7 +321,7 @@
 		.overlay.document-action a {
 			display: block;
 			float: right;
-			min-height: 20px;
+			min-height: 15px;
 		}
 
 		&:hover, &.hover {
@@ -329,6 +329,27 @@
 		}
 
 		&:hover .overlay, &.hover .overlay, &.selected .document-selector {
+			clip: auto;
+		}
+	}
+
+	.folder-display-style li {
+		.overlay.document-action {
+			display: block;
+			overflow: hidden;
+			position: absolute;
+			right: 15px;
+			top: 5px;
+			width: 25px;
+
+			a {
+				display: block;
+				float: right;
+				min-height: 15px;
+			}
+		}
+
+		&:hover .overlay, &.hover .overlay {
 			clip: auto;
 		}
 	}
@@ -345,7 +366,7 @@
 		display: none;
 	}
 
-	.document-display-style, .lfr-search-container {
+	.document-display-style, .lfr-search-container, .folder-display-style li {
 		.overlay {
 			clip: rect(0 0 0 0);
 		}
@@ -525,23 +546,18 @@
 	.aui-liferaylistview-content {
 		ul .expand-folder {
 			height: 10px;
+			padding-left: 5px;
+			padding-right: 5px;
 			position: absolute;
-			right: 2px;
+			right: 0;
 			top: 5px;
-			width: 16px;
+			width: 10px;
 
 			.expand-folder-arrow {
 				left: 2px;
 				position: absolute;
 				top: 1px;
 			}
-		}
-
-		ul, li {
-			display: block;
-			list-style: none outside none;
-			margin: 0;
-			padding: 0;
 		}
 
 		li a {
@@ -660,6 +676,43 @@
 	.version.document-locked {
 		background: url(<%= themeImagesPath %>/common/lock.png) no-repeat 0 50%;
 		padding-left: 20px;
+	}
+
+	.common-file-metadata-container {
+		padding: 1em;
+
+		.aui-field-element {
+			display: block;
+
+			textarea {
+				width: 100% !important;
+			}
+		}
+
+		&.selected {
+			background-color: #D3E8F1;
+		}
+
+		.selected-files-count {
+			border-bottom: 1px solid #C8C9CA;
+			color: #555;
+			font-size: 1.8em;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.document-type .lfr-panel-content {
+			min-height: 35px;
+		}
+
+		.document-type-fields {
+			clear: left;
+			padding-top: 0.5em;
+		}
+
+		.categorization-panel {
+			clear: left;
+		}
 	}
 
 	.taglib-ratings.stars {

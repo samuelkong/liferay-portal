@@ -35,6 +35,7 @@ public class UpgradeUserName extends UpgradeProcess {
 		updateTable("BookmarksFolder");
 		updateTable("IGFolder");
 		updateTable("IGImage");
+		updateTable("PollsVote");
 	}
 
 	protected void updateTable(String tableName) throws Exception {

@@ -278,7 +278,9 @@ public class LangBuilder {
 					}
 
 					translatedText = StringUtil.replace(
-						translatedText.trim(), "  ", " ");
+						translatedText.trim(),
+						new String[] {"  ", "<i>", "</i>"},
+						new String[] {" ", "<em>", "</em>"});
 
 					unsyncBufferedWriter.write(key + "=" + translatedText);
 

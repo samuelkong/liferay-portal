@@ -16,7 +16,9 @@ package com.liferay.portlet.usersadmin.action;
 
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.CSVUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -40,7 +42,6 @@ import com.liferay.portlet.ActionResponseImpl;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.usersadmin.search.UserSearch;
 import com.liferay.portlet.usersadmin.search.UserSearchTerms;
-import com.liferay.util.servlet.ServletResponseUtil;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -100,17 +101,19 @@ public class ExportUsersAction extends PortletAction {
 			String field = PropsValues.USERS_EXPORT_CSV_FIELDS[i];
 
 			if (field.equals("fullName")) {
-				sb.append(user.getFullName());
+				sb.append(CSVUtil.encode(user.getFullName()));
 			}
 			else if (field.startsWith("expando:")) {
 				String attributeName = field.substring(7);
 
 				ExpandoBridge expandoBridge = user.getExpandoBridge();
 
-				sb.append(expandoBridge.getAttribute(attributeName));
+				sb.append(
+					CSVUtil.encode(expandoBridge.getAttribute(attributeName)));
 			}
 			else {
-				sb.append(BeanPropertiesUtil.getString(user, field));
+				sb.append(
+					CSVUtil.encode(BeanPropertiesUtil.getString(user, field)));
 			}
 
 			if ((i + 1) < PropsValues.USERS_EXPORT_CSV_FIELDS.length) {

@@ -146,14 +146,6 @@ public class ServiceBeanAopProxy implements AopProxy, InvocationHandler {
 	private void _setMethodInterceptors(
 		ServiceBeanMethodInvocation serviceBeanMethodInvocation) {
 
-		if (_methodInterceptors == null) {
-
-			// This should never happen except when shutting down the
-			// application server
-
-			return;
-		}
-
 		List<MethodInterceptor> methodInterceptors = _methodInterceptors.get(
 			serviceBeanMethodInvocation);
 

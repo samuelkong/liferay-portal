@@ -43,7 +43,8 @@ Locale[] locales = LanguageUtil.getAvailableLocales();
 
 <liferay-ui:header
 	backURL="<%= backURL %>"
-	title='<%= (layoutPrototype.isNew()) ? "new-page-template" : layoutPrototype.getName(locale) %>'
+	localizeTitle="<%= layoutPrototype.isNew() %>"
+	title='<%= layoutPrototype.isNew() ? "new-page-template" : layoutPrototype.getName(locale) %>'
 />
 
 <aui:form method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveLayoutPrototype();" %>'>
@@ -62,8 +63,8 @@ Locale[] locales = LanguageUtil.getAvailableLocales();
 
 		<c:if test="<%= !layoutPrototype.isNew() %>">
 			<aui:field-wrapper label="configuration">
-				<liferay-portlet:actionURL var="viewURL" portletName="<%= PortletKeys.MY_PLACES %>">
-					<portlet:param name="struts_action" value="/my_places/view" />
+				<liferay-portlet:actionURL var="viewURL" portletName="<%= PortletKeys.MY_SITES %>">
+					<portlet:param name="struts_action" value="/my_sites/view" />
 					<portlet:param name="groupId" value="<%= String.valueOf(layoutPrototype.getGroup().getGroupId()) %>" />
 					<portlet:param name="privateLayout" value="<%= Boolean.TRUE.toString() %>" />
 				</liferay-portlet:actionURL>

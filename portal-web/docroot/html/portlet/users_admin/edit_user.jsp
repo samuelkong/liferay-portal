@@ -171,6 +171,7 @@ String[][] categorySections = {mainSections, identificationSections, miscellaneo
 
 <liferay-ui:header
 	backURL="<%= backURL %>"
+	localizeTitle="<%= (selUser == null) %>"
 	title='<%= (selUser == null) ? "new-user" : selUser.getFullName() %>'
 />
 
@@ -242,6 +243,7 @@ String taglibOnSubmit = "event.preventDefault(); " + renderResponse.getNamespace
 	</liferay-util:buffer>
 
 	<liferay-ui:form-navigator
+		backURL="<%= backURL %>"
 		categoryNames="<%= _CATEGORY_NAMES %>"
 		categorySections="<%= categorySections %>"
 		htmlBottom="<%= htmlBottom %>"

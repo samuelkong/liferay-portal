@@ -14,7 +14,11 @@
 
 package com.liferay.portal.servlet;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletContextUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -22,10 +26,10 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.servlet.filters.dynamiccss.DynamicCSSUtil;
 import com.liferay.portal.util.MinifierUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.util.servlet.ServletResponseUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +104,7 @@ public class ComboServlet extends HttpServlet {
 					modulePath = StringUtil.replaceFirst(
 						p.concat(modulePath), contextPath, StringPool.BLANK);
 
-					bytes = getFileContent(modulePath, minifierType);
+					bytes = getFileContent(response, modulePath, minifierType);
 				}
 
 				bytesArray[--length] = bytes;
@@ -166,7 +170,8 @@ public class ComboServlet extends HttpServlet {
 		return null;
 	}
 
-	protected byte[] getFileContent(String path, String minifierType)
+	protected byte[] getFileContent(
+			HttpServletResponse response, String path, String minifierType)
 		throws IOException {
 
 		String fileContentKey = path.concat(StringPool.QUESTION).concat(
@@ -195,7 +200,7 @@ public class ComboServlet extends HttpServlet {
 			else {
 				_fileContentBags.remove(fileContentKey, fileContentBag);
 			}
- 		}
+		}
 
 		if (file == null) {
 			fileContentBag = _EMPTY_FILE_CONTENT_BAG;
@@ -207,6 +212,25 @@ public class ComboServlet extends HttpServlet {
 				!StringUtil.endsWith(path, _JAVASCRIPT_MINIFIED_SUFFIX)) {
 
 				if (minifierType.equals("css")) {
+					String cssRealPath = file.getAbsolutePath();
+
+					try {
+						stringFileContent = DynamicCSSUtil.parseSass(
+							cssRealPath, stringFileContent);
+					}
+					catch (Exception e) {
+						_log.error(
+							"Unable to parse SASS on CSS " + cssRealPath, e);
+
+						if (_log.isDebugEnabled()) {
+							_log.debug(stringFileContent);
+						}
+
+						response.setHeader(
+							HttpHeaders.CACHE_CONTROL,
+							HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
+					}
+
 					stringFileContent = MinifierUtil.minifyCss(
 						stringFileContent);
 				}
@@ -241,6 +265,8 @@ public class ComboServlet extends HttpServlet {
 	private static final String _JAVASCRIPT_DIR = "html/js";
 
 	private static final String _JAVASCRIPT_MINIFIED_SUFFIX = "-min.js";
+
+	private static Log _log = LogFactoryUtil.getLog(ComboServlet.class);
 
 	private static class FileContentBag {
 
