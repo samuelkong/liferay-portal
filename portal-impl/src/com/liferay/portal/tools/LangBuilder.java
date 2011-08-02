@@ -108,7 +108,7 @@ public class LangBuilder {
 				_createProperties(content, "iw"); // Hebrew
 				_createProperties(content, "hi_IN"); // Hindi (India)
 				_createProperties(content, "hu"); // Hungarian
-				_createProperties(content, "in"); // Indonesian
+				_createProperties(content, "id"); // Indonesian
 				_createProperties(content, "it"); // Italian
 				_createProperties(content, "ja"); // Japanese
 				_createProperties(content, "ko"); // Korean
@@ -385,7 +385,7 @@ public class LangBuilder {
 			translationId.equals("en_iw") ||
 			translationId.equals("en_hi") ||
 			translationId.equals("en_hu") ||
-			translationId.equals("en_in") ||
+			translationId.equals("en_id") ||
 			translationId.equals("en_nb") ||
 			translationId.equals("en_fa") ||
 			translationId.equals("en_pl") ||

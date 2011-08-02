@@ -444,11 +444,11 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
-		<url-pattern>/in/*</url-pattern>
+		<url-pattern>/id/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
-		<url-pattern>/in_ID/*</url-pattern>
+		<url-pattern>/id_ID/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
