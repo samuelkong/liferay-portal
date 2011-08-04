@@ -336,7 +336,7 @@ public class PrefsPropsUtil {
 
 		String value = getString(preferences, companyId, name);
 
-		if (Validator.isNotNull(value)) {
+		if (value != null) {
 			return value;
 		}
 		else {
@@ -350,7 +350,7 @@ public class PrefsPropsUtil {
 
 		String value = getString(preferences, companyId, name);
 
-		if (Validator.isNotNull(value)) {
+		if (value != null) {
 			return value;
 		}
 		else {
@@ -364,7 +364,7 @@ public class PrefsPropsUtil {
 
 		String value = getString(preferences, companyId, name);
 
-		if (Validator.isNotNull(value)) {
+		if (value != null) {
 			return value;
 		}
 		else {
@@ -378,7 +378,7 @@ public class PrefsPropsUtil {
 
 		String value = getString(preferences, companyId, name);
 
-		if (Validator.isNotNull(value)) {
+		if (value != null) {
 			return value;
 		}
 		else {
@@ -392,7 +392,7 @@ public class PrefsPropsUtil {
 
 		String value = getString(preferences, companyId, name);
 
-		if (Validator.isNotNull(value)) {
+		if (value != null) {
 			return value;
 		}
 		else {
