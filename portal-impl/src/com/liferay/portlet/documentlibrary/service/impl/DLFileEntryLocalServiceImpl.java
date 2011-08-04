@@ -1373,10 +1373,9 @@ public class DLFileEntryLocalServiceImpl
 
 		long oldDataRepositoryId = dlFileEntry.getDataRepositoryId();
 
-		validateFile(dlFileEntry.getGroupId(),
-			newFolderId,
-			dlFileEntry.getFileEntryId(),
-			dlFileEntry.getTitle());
+		validateFile(
+			dlFileEntry.getGroupId(), newFolderId,
+			dlFileEntry.getFileEntryId(), dlFileEntry.getTitle());
 
 		if (DLStoreUtil.hasFile(
 				user.getCompanyId(),
