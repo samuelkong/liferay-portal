@@ -111,7 +111,7 @@ if (Validator.isNull(contentField) || ((structure == null) && !contentField.equa
 }
 
 String feedType = BeanParamUtil.getString(feed, request, "feedType", RSSUtil.DEFAULT_TYPE);
-double feedVersion = BeanParamUtil.getDouble(feed, request, "feedVersion", RSSUtil.DEFAULT_VERSION);
+double feedVersion = BeanParamUtil.getDouble(feed, request, "feedVersion", RSSUtil.VERSION_DEFAULT);
 
 ResourceURL feedURL = null;
 

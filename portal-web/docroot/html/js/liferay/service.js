@@ -1043,6 +1043,8 @@ Liferay.Service.registerClass(
 	}
 );
 
+Liferay.Service.register("Liferay.Service.MDR", "com.liferay.portlet.mobiledevicerules.service");
+
 Liferay.Service.register("Liferay.Service.Polls", "com.liferay.portlet.polls.service");
 
 Liferay.Service.registerClass(

@@ -510,6 +510,58 @@
 					flags="s"
 				/>
 
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/browser.html">
+					<replacetoken><![CDATA[<title>FCKeditor - Resources Browser</title>]]></replacetoken>
+					<replacevalue><![CDATA[<title>Resources Browser</title>]]></replacevalue>
+				</replace>
+
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/browser.html">
+					<replacetoken><![CDATA[oConnector.CurrentFolder	= '/' ;]]></replacetoken>
+					<replacevalue><![CDATA[oConnector.CurrentFolder	= '/' ;
+
+var currentFolderParam = GetUrlParam( 'currentFolder' ) ;
+
+if (currentFolderParam) {
+	oConnector.CurrentFolder = currentFolderParam ;
+}
+]]>
+					</replacevalue>
+				</replace>
+
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/browser.html">
+					<replacetoken><![CDATA[sUrl += '&CurrentFolder=' + encodeURIComponent( this.CurrentFolder ) ;]]></replacetoken>
+					<replacevalue><![CDATA[sUrl += '&CurrentFolder=' + encodeURIComponent( oConnector.CurrentFolder ) ;]]></replacevalue>
+				</replace>
+
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/browser.html">
+					<replacetoken><![CDATA[function OnUploadCompleted( errorNumber, fileUrl, fileName, customMsg )]]></replacetoken>
+					<replacevalue><![CDATA[if (oConnector.ResourceType === 'Attachment') {
+	var frmCreateFolderLoadedInterval = window.setInterval(
+		function() {
+			var frmCreateFolder = document.getElementsByName('frmCreateFolder');
+
+			if (frmCreateFolder.length > 0) {
+				window.clearInterval(frmCreateFolderLoadedInterval);
+
+				frmCreateFolder = frmCreateFolder[0];
+
+				frmCreateFolder.setAttribute('height', '0');
+				frmCreateFolder.setAttribute('style', 'display:none');
+				frmCreateFolder.setAttribute('tabindex', '-1');
+				frmCreateFolder.setAttribute('width', '0');
+
+				var parentNode = frmCreateFolder.parentNode;
+
+				parentNode.setAttribute('cols', '0,*,0');
+			}
+		},
+		50
+	);
+}
+
+function OnUploadCompleted( errorNumber, fileUrl, fileName, customMsg )]]></replacevalue>
+				</replace>
+
 				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/frmupload.html">
 					<replacetoken><![CDATA[default :]]></replacetoken>
 					<replacevalue><![CDATA[
@@ -561,6 +613,34 @@
 					replace="\1\2\3"
 					flags="s"
 				/>
+
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/frmresourcetype.html">
+					<replacetoken><![CDATA[var aTypes = []]></replacetoken>
+					<replacevalue><![CDATA[var customTypes = [
+	['Attachment', 'Attachment']
+];
+
+var defaultTypes = []]>
+					</replacevalue>
+				</replace>
+
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/frmresourcetype.html">
+					<replacetoken><![CDATA[aTypes]]></replacetoken>
+					<replacevalue><![CDATA[defaultTypes]]></replacevalue>
+				</replace>
+
+				<replace file="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay/frmresourcetype.html">
+					<replacetoken><![CDATA[AddSelectOption( oCombo, defaultTypes[i][1], defaultTypes[i][0] ) ;]]></replacetoken>
+					<replacevalue><![CDATA[AddSelectOption( oCombo, defaultTypes[i][1], defaultTypes[i][0] ) ;
+	}
+
+	var len = customTypes.length;
+
+	for ( i = 0; i < len; i++ ) {
+		if ( customTypes[i][0] == oConnector.ResourceType )
+			AddSelectOption( oCombo, customTypes[i][1], customTypes[i][0] ) ;]]>
+					</replacevalue>
+				</replace>
 
 				<replace dir="docroot/html/js/editor/fckeditor/editor/filemanager/browser/liferay">
 					<include name="**/*.html"/>

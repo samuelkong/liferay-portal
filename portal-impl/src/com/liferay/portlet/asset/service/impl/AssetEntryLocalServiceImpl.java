@@ -319,14 +319,6 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		return assetEntryFinder.findEntries(entryQuery);
 	}
 
-	public void incrementViewCounter(
-			long userId, String className, long classPK)
-		throws PortalException, SystemException {
-
-		assetEntryLocalService.incrementViewCounter(
-			userId, className, classPK, 1);
-	}
-
 	@BufferedIncrement(incrementClass = NumberIncrement.class)
 	public void incrementViewCounter(
 			long userId, String className, long classPK, int increment)
@@ -518,6 +510,23 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 			long userId, long groupId, String className, long classPK,
 			long[] categoryIds, String[] tagNames)
 		throws PortalException, SystemException {
+
+		long classNameId = PortalUtil.getClassNameId(className);
+
+		AssetEntry entry = assetEntryPersistence.fetchByC_C(
+			classNameId, classPK);
+
+		if (entry != null) {
+			return updateEntry(
+				userId, groupId, className, classPK, entry.getClassUuid(),
+				categoryIds, tagNames, entry.getVisible(), entry.getStartDate(),
+				entry.getEndDate(), entry.getPublishDate(),
+				entry.getExpirationDate(), entry.getMimeType(),
+				entry.getTitle(), entry.getDescription(), entry.getSummary(),
+				entry.getUrl(), entry.getLayoutUuid(), entry.getHeight(),
+				entry.getWidth(), GetterUtil.getInteger(entry.getPriority()),
+				false);
+		}
 
 		return updateEntry(
 			userId, groupId, className, classPK, null, categoryIds, tagNames,
@@ -838,7 +847,7 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 
 			return assetEntryPersistence.findByC_C(classNameId, classPK);
 		}
-		else if (portletId.equals(PortletKeys.IMAGE_GALLERY)) {
+		else if (portletId.equals(PortletKeys.IMAGE_GALLERY_DISPLAY)) {
 			long imageId = GetterUtil.getLong(
 				document.get(Field.ENTRY_CLASS_PK));
 

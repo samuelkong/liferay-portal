@@ -552,7 +552,7 @@ public class JournalArticleLocalServiceImpl
 		newArticle.setCreateDate(now);
 		newArticle.setModifiedDate(now);
 		newArticle.setArticleId(newArticleId);
-		newArticle.setVersion(JournalArticleConstants.DEFAULT_VERSION);
+		newArticle.setVersion(JournalArticleConstants.VERSION_DEFAULT);
 		newArticle.setTitle(oldArticle.getTitle());
 		newArticle.setDescription(oldArticle.getDescription());
 
@@ -2035,7 +2035,7 @@ public class JournalArticleLocalServiceImpl
 				article, serviceContext);
 		}
 		else if (article.getVersion() ==
-				 	JournalArticleConstants.DEFAULT_VERSION) {
+				 	JournalArticleConstants.VERSION_DEFAULT) {
 
 			// Indexer
 
@@ -2171,7 +2171,7 @@ public class JournalArticleLocalServiceImpl
 		boolean addDraftAssetEntry = false;
 
 		if (!article.isApproved() &&
-			(article.getVersion() != JournalArticleConstants.DEFAULT_VERSION)) {
+			(article.getVersion() != JournalArticleConstants.VERSION_DEFAULT)) {
 
 			int approvedArticlesCount =
 				journalArticlePersistence.countByG_A_ST(
@@ -2242,10 +2242,14 @@ public class JournalArticleLocalServiceImpl
 
 		article.setModifiedDate(serviceContext.getModifiedDate(now));
 
+		boolean neverExpire = false;
+
 		if (status == WorkflowConstants.STATUS_APPROVED) {
 			Date expirationDate = article.getExpirationDate();
 
 			if ((expirationDate != null) && expirationDate.before(now)) {
+				neverExpire = true;
+
 				article.setExpirationDate(null);
 			}
 		}
@@ -2274,7 +2278,7 @@ public class JournalArticleLocalServiceImpl
 
 				if ((oldStatus != WorkflowConstants.STATUS_APPROVED) &&
 					(article.getVersion() !=
-						JournalArticleConstants.DEFAULT_VERSION)) {
+						JournalArticleConstants.VERSION_DEFAULT)) {
 
 					AssetEntry draftAssetEntry = null;
 
@@ -2335,9 +2339,17 @@ public class JournalArticleLocalServiceImpl
 				}
 
 				if (article.getClassNameId() == 0) {
-					assetEntryLocalService.updateVisible(
-						JournalArticle.class.getName(),
-						article.getResourcePrimKey(), true);
+					AssetEntry assetEntry =
+						assetEntryLocalService.updateVisible(
+							JournalArticle.class.getName(),
+							article.getResourcePrimKey(), true);
+
+					if (neverExpire) {
+						assetEntry.setExpirationDate(null);
+
+						assetEntryLocalService.updateAssetEntry(
+							assetEntry, false);
+					}
 				}
 
 				// Expando
@@ -2742,7 +2754,7 @@ public class JournalArticleLocalServiceImpl
 				continue;
 			}
 
-			if ((version > JournalArticleConstants.DEFAULT_VERSION) &&
+			if ((version > JournalArticleConstants.VERSION_DEFAULT) &&
 				(incrementVersion)) {
 
 				Image oldImage = null;
@@ -2965,11 +2977,11 @@ public class JournalArticleLocalServiceImpl
 			"[$ARTICLE_VERSION$]", article.getVersion());
 		subscriptionSender.setContextUserPrefix("ARTICLE");
 		subscriptionSender.setFrom(fromAddress, fromName);
-		subscriptionSender.setGroupId(article.getGroupId());
 		subscriptionSender.setHtmlFormat(true);
 		subscriptionSender.setMailId("journal_article", article.getId());
 		subscriptionSender.setPortletId(PortletKeys.JOURNAL);
 		subscriptionSender.setReplyToAddress(fromAddress);
+		subscriptionSender.setScopeGroupId(article.getGroupId());
 		subscriptionSender.setSubject(subject);
 		subscriptionSender.setUserId(article.getUserId());
 

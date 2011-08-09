@@ -444,7 +444,7 @@
 
 		<!-- References -->
 
-		<reference package-path="com.liferay.portlet.imagegallery" entity="IGImage" />
+		<reference package-path="com.liferay.portlet.documentlibrary" entity="DLFileEntry" />
 	</entity>
 	<entity name="Layout" uuid="true" local-service="true" remote-service="true">
 
@@ -1609,9 +1609,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="ResourceBlockId" return-type="Collection">
-			<finder-column name="resourceBlockId" />
-		</finder>
 		<finder name="R_R" return-type="ResourceBlockPermission" unique="true">
 			<finder-column name="resourceBlockId" />
 			<finder-column name="roleId" />
@@ -1667,6 +1664,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="Scope" return-type="Collection">
+			<finder-column name="scope" arrayable-operator="OR" />
+		</finder>
 		<finder name="RoleId" return-type="Collection">
 			<finder-column name="roleId" />
 		</finder>
@@ -1990,11 +1990,11 @@
 
 		<column name="defaultUser" type="boolean" />
 		<column name="contactId" type="long" />
-		<column name="password" type="String" />
-		<column name="passwordEncrypted" type="boolean" />
-		<column name="passwordReset" type="boolean" />
-		<column name="passwordModifiedDate" type="Date" />
-		<column name="digest" type="String" />
+		<column name="password" type="String" json-enabled="false" />
+		<column name="passwordEncrypted" type="boolean" json-enabled="false" />
+		<column name="passwordReset" type="boolean" json-enabled="false" />
+		<column name="passwordModifiedDate" type="Date" json-enabled="false" />
+		<column name="digest" type="String" json-enabled="false" />
 		<column name="reminderQueryQuestion" type="String" />
 		<column name="reminderQueryAnswer" type="String" />
 		<column name="graceLoginCount" type="int" />

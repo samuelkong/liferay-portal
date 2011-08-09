@@ -84,6 +84,7 @@ import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.LayoutConstants;
 import com.liferay.portal.model.LayoutSet;
+import com.liferay.portal.model.LayoutType;
 import com.liferay.portal.model.LayoutTypePortlet;
 import com.liferay.portal.model.LayoutTypePortletConstants;
 import com.liferay.portal.model.Organization;
@@ -701,21 +702,32 @@ public class PortalImpl implements Portal {
 			return url;
 		}
 
-		String domain = StringUtil.split(
-			HttpUtil.getDomain(url), CharPool.COLON)[0];
+		String domain = HttpUtil.getDomain(url);
+
+		int pos = -1;
+
+		if ((pos = domain.indexOf(CharPool.COLON)) != -1) {
+			domain = domain.substring(0, pos);
+		}
 
 		try {
-			CompanyLocalServiceUtil.getCompanyByVirtualHost(domain);
+			Company company = CompanyLocalServiceUtil.fetchCompanyByVirtualHost(
+				domain);
 
-			return url;
+			if (company != null) {
+				return url;
+			}
 		}
 		catch (Exception e) {
 		}
 
 		try {
-			LayoutSetLocalServiceUtil.getLayoutSet(domain);
+			LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
+				domain);
 
-			return url;
+			if (layoutSet != null) {
+				return url;
+			}
 		}
 		catch (Exception e) {
 		}
@@ -1064,7 +1076,7 @@ public class PortalImpl implements Portal {
 			portletId = PortletKeys.DOCUMENT_LIBRARY;
 		}
 		else if (className.startsWith("com.liferay.portlet.imagegallery")) {
-			portletId = PortletKeys.IMAGE_GALLERY;
+			portletId = PortletKeys.IMAGE_GALLERY_DISPLAY;
 		}
 		else if (className.startsWith("com.liferay.portlet.journal")) {
 			portletId = PortletKeys.JOURNAL;
@@ -1916,8 +1928,10 @@ public class PortalImpl implements Portal {
 		variables.put("liferay:mainPath", mainPath);
 		variables.put("liferay:plid", String.valueOf(layout.getPlid()));
 
+		LayoutType layoutType = layout.getLayoutType();
+
 		UnicodeProperties typeSettingsProperties =
-			layout.getLayoutType().getTypeSettingsProperties();
+			layoutType.getTypeSettingsProperties();
 
 		variables.putAll(typeSettingsProperties);
 
@@ -1969,11 +1983,13 @@ public class PortalImpl implements Portal {
 		String layoutActualURL = getLayoutActualURL(layout, mainPath);
 
 		if (Validator.isNotNull(queryString)) {
-			layoutActualURL = layoutActualURL + queryString;
+			layoutActualURL = layoutActualURL.concat(queryString);
 		}
 		else if (params.isEmpty()) {
+			LayoutType layoutType = layout.getLayoutType();
+
 			UnicodeProperties typeSettingsProperties =
-				layout.getLayoutType().getTypeSettingsProperties();
+				layoutType.getTypeSettingsProperties();
 
 			queryString = typeSettingsProperties.getProperty("query-string");
 
@@ -1981,7 +1997,8 @@ public class PortalImpl implements Portal {
 				layoutActualURL.contains(StringPool.QUESTION)) {
 
 				layoutActualURL =
-					layoutActualURL + StringPool.AMPERSAND + queryString;
+					layoutActualURL.concat(StringPool.AMPERSAND).concat(
+						queryString);
 			}
 		}
 
@@ -3697,7 +3714,7 @@ public class PortalImpl implements Portal {
 
 		if (path.equals("/portal/session_click") ||
 			strutsAction.equals("/document_library/edit_file_entry") ||
-			strutsAction.equals("/image_gallery/edit_image") ||
+			strutsAction.equals("/image_gallery_display/edit_image") ||
 			strutsAction.equals("/wiki/edit_page_attachment") ||
 			strutsAction.equals("/wiki_admin/edit_page_attachment") ||
 			actionName.equals("addFile")) {

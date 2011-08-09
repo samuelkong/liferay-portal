@@ -69,6 +69,9 @@ import com.liferay.portlet.messageboards.service.persistence.MBMessageFlagPersis
 import com.liferay.portlet.messageboards.service.persistence.MBMessagePersistenceTest;
 import com.liferay.portlet.messageboards.service.persistence.MBStatsUserPersistenceTest;
 import com.liferay.portlet.messageboards.service.persistence.MBThreadPersistenceTest;
+import com.liferay.portlet.mobiledevicerules.service.persistence.MDRActionPersistenceTest;
+import com.liferay.portlet.mobiledevicerules.service.persistence.MDRRuleGroupPersistenceTest;
+import com.liferay.portlet.mobiledevicerules.service.persistence.MDRRulePersistenceTest;
 import com.liferay.portlet.polls.service.persistence.PollsChoicePersistenceTest;
 import com.liferay.portlet.polls.service.persistence.PollsQuestionPersistenceTest;
 import com.liferay.portlet.polls.service.persistence.PollsVotePersistenceTest;
@@ -244,6 +247,10 @@ public class PersistenceTestSuite extends TestSuite {
 		testSuite.addTestSuite(MBMessagePersistenceTest.class);
 		testSuite.addTestSuite(MBStatsUserPersistenceTest.class);
 		testSuite.addTestSuite(MBThreadPersistenceTest.class);
+
+		testSuite.addTestSuite(MDRActionPersistenceTest.class);
+		testSuite.addTestSuite(MDRRuleGroupPersistenceTest.class);
+		testSuite.addTestSuite(MDRRulePersistenceTest.class);
 
 		testSuite.addTestSuite(PollsChoicePersistenceTest.class);
 		testSuite.addTestSuite(PollsQuestionPersistenceTest.class);

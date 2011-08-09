@@ -180,6 +180,13 @@
 				<description></description>
 			</attribute>
 			<attribute>
+				<name>helpMessage</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+				<defaultValue></defaultValue>
+				<description></description>
+			</attribute>
+			<attribute>
 				<name>label</name>
 				<inputType>java.lang.String</inputType>
 				<outputType>java.lang.String</outputType>
@@ -550,6 +557,13 @@
 				<description></description>
 			</attribute>
 			<attribute>
+				<name>helpMessage</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+				<defaultValue></defaultValue>
+				<description></description>
+			</attribute>
+			<attribute>
 				<name>label</name>
 				<inputType>java.lang.String</inputType>
 				<outputType>java.lang.String</outputType>
@@ -671,8 +685,8 @@
 				<description></description>
 			</attribute>
 		</attributes>
-	</component>
-	<component name="Select">
+	</component>-->
+	<component name="Select" bodyContent="true">
 		<attributes>
 			<attribute>
 				<name>bean</name>
@@ -683,8 +697,8 @@
 			</attribute>
 			<attribute>
 				<name>changesContext</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
@@ -697,22 +711,22 @@
 			</attribute>
 			<attribute>
 				<name>data</name>
-				<inputType>java.util.Map</inputType>
-				<outputType>java.util.Map</outputType>
+				<inputType><![CDATA[java.util.Map<java.lang.String,java.lang.Object>]]></inputType>
+				<outputType><![CDATA[java.util.Map<java.lang.String,java.lang.Object>]]></outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
 			<attribute>
 				<name>disabled</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
 			<attribute>
 				<name>first</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
@@ -731,9 +745,16 @@
 				<description></description>
 			</attribute>
 			<attribute>
+				<name>ignoreRequestValue</name>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
+				<defaultValue></defaultValue>
+				<description></description>
+			</attribute>
+			<attribute>
 				<name>inlineField</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
@@ -760,8 +781,8 @@
 			</attribute>
 			<attribute>
 				<name>last</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
@@ -781,8 +802,8 @@
 			</attribute>
 			<attribute>
 				<name>multiple</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
@@ -816,8 +837,8 @@
 			</attribute>
 			<attribute>
 				<name>showEmptyOption</name>
-				<inputType>java.lang.Boolean</inputType>
-				<outputType>java.lang.Boolean</outputType>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
@@ -835,9 +856,16 @@
 				<defaultValue></defaultValue>
 				<description></description>
 			</attribute>
+			<attribute>
+				<name>useNamespace</name>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
+				<defaultValue>true</defaultValue>
+				<description></description>
+			</attribute>
 		</attributes>
 	</component>
-	<component name="Tool">
+	<!--<component name="Tool">
 		<attributes>
 			<attribute>
 				<name>handler</name>

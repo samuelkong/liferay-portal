@@ -1332,6 +1332,10 @@
 		<field name="version" type="String" />
 		<field name="size" type="long" />
 		<field name="readCount" type="int" />
+		<field name="smallImageId" type="long" />
+		<field name="largeImageId" type="long" />
+		<field name="custom1ImageId" type="long" />
+		<field name="custom2ImageId" type="long" />
 	</model>
 	<model name="com.liferay.portlet.documentlibrary.model.DLFileEntryMetadata">
 		<field name="uuid" type="String" />
@@ -1404,6 +1408,10 @@
 		<field name="fileEntryTypeId" type="long" />
 		<field name="version" type="String" />
 		<field name="size" type="long" />
+		<field name="smallImageId" type="long" />
+		<field name="largeImageId" type="long" />
+		<field name="custom1ImageId" type="long" />
+		<field name="custom2ImageId" type="long" />
 		<field name="status" type="int" />
 		<field name="statusByUserId" type="long" />
 		<field name="statusByUserName" type="String" />
@@ -1437,8 +1445,9 @@
 		<field name="companyId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="fileId" type="String" />
+		<field name="fileId" type="long" />
 		<field name="repositoryId" type="long" />
+		<field name="parentFolderId" type="long" />
 		<field name="event" type="String" />
 		<field name="type" type="String" />
 	</model>
@@ -1479,6 +1488,7 @@
 			<hint-collection name="TEXTAREA" />
 		</field>
 		<field name="minDisplayRows" type="int" />
+		<field name="scope" type="int" />
 	</model>
 	<model name="com.liferay.portlet.dynamicdatalists.model.DDLRecordVersion">
 		<field name="recordVersionId" type="long" />
@@ -1967,6 +1977,49 @@
 		<field name="statusByUserId" type="long" />
 		<field name="statusByUserName" type="String" />
 		<field name="statusDate" type="Date" />
+	</model>
+	<model name="com.liferay.portlet.mobiledevicerules.model.MDRAction">
+		<field name="uuid" type="String" />
+		<field name="actionId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="ruleGroupId" type="long" />
+		<field name="ruleId" type="long" />
+		<field name="name" type="String" localized="true" />
+		<field name="description" type="String" localized="true" />
+		<field name="type" type="String" />
+		<field name="typeSettings" type="String" />
+	</model>
+	<model name="com.liferay.portlet.mobiledevicerules.model.MDRRule">
+		<field name="uuid" type="String" />
+		<field name="ruleId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="ruleGroupId" type="long" />
+		<field name="name" type="String" localized="true" />
+		<field name="description" type="String" localized="true" />
+		<field name="type" type="String" />
+		<field name="typeSettings" type="String" />
+	</model>
+	<model name="com.liferay.portlet.mobiledevicerules.model.MDRRuleGroup">
+		<field name="uuid" type="String" />
+		<field name="ruleGroupId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" localized="true" />
+		<field name="description" type="String" localized="true" />
 	</model>
 	<model name="com.liferay.portlet.polls.model.PollsChoice">
 		<field name="uuid" type="String" />

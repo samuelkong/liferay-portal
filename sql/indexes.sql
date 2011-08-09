@@ -93,12 +93,14 @@ create index IX_507BA031 on BlogsStatsUser (userId, lastPostDate);
 create index IX_E52FF7EF on BookmarksEntry (groupId);
 create index IX_5200100C on BookmarksEntry (groupId, folderId);
 create index IX_E2E9F129 on BookmarksEntry (groupId, userId);
+create index IX_E848278F on BookmarksEntry (resourceBlockId);
 create index IX_B670BA39 on BookmarksEntry (uuid_);
 create unique index IX_EAA02A91 on BookmarksEntry (uuid_, groupId);
 
 create index IX_2ABA25D7 on BookmarksFolder (companyId);
 create index IX_7F703619 on BookmarksFolder (groupId);
 create index IX_967799C0 on BookmarksFolder (groupId, parentFolderId);
+create index IX_28A49BB9 on BookmarksFolder (resourceBlockId);
 create index IX_451E7AE3 on BookmarksFolder (uuid_);
 create unique index IX_DC2F8927 on BookmarksFolder (uuid_, groupId);
 
@@ -465,6 +467,18 @@ create index IX_E1E7142B on MBThread (groupId, status);
 create index IX_AEDD9CB5 on MBThread (lastPostDate, priority);
 create index IX_CC993ECB on MBThread (rootMessageId);
 
+create index IX_4D306B22 on MDRAction (ruleId);
+create index IX_77BB5E9D on MDRAction (uuid_);
+create unique index IX_75BE36AD on MDRAction (uuid_, groupId);
+
+create index IX_4F4293F1 on MDRRule (ruleGroupId);
+create index IX_EA63B9D7 on MDRRule (uuid_);
+create unique index IX_F3EFDCB3 on MDRRule (uuid_, groupId);
+
+create index IX_5849891C on MDRRuleGroup (groupId);
+create index IX_7F26B2A6 on MDRRuleGroup (uuid_);
+create unique index IX_46665CC4 on MDRRuleGroup (uuid_, groupId);
+
 create index IX_8A1CC4B on MembershipRequest (groupId);
 create index IX_C28C72EC on MembershipRequest (groupId, statusId);
 create index IX_35AA8FA6 on MembershipRequest (groupId, userId, statusId);
@@ -572,6 +586,7 @@ create index IX_2200AA69 on ResourcePermission (companyId, name, scope, primKey)
 create unique index IX_8D83D0CE on ResourcePermission (companyId, name, scope, primKey, roleId);
 create unique index IX_4A1F4402 on ResourcePermission (companyId, name, scope, primKey, roleId, ownerId, actionIds);
 create index IX_A37A0588 on ResourcePermission (roleId);
+create index IX_F4555981 on ResourcePermission (scope);
 
 create unique index IX_BA497163 on ResourceTypePermission (companyId, groupId, name, roleId);
 create index IX_7D81F66F on ResourceTypePermission (companyId, name, roleId);

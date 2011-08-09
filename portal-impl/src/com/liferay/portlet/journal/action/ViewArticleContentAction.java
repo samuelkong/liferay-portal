@@ -76,7 +76,7 @@ public class ViewArticleContentAction extends Action {
 			long groupId = ParamUtil.getLong(request, "groupId");
 			String articleId = ParamUtil.getString(request, "articleId");
 			double version = ParamUtil.getDouble(
-				request, "version", JournalArticleConstants.DEFAULT_VERSION);
+				request, "version", JournalArticleConstants.VERSION_DEFAULT);
 
 			String languageId = LanguageUtil.getLanguageId(request);
 

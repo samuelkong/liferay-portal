@@ -60,7 +60,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 		return journalArticleLocalService.addArticle(
 			getUserId(), groupId, classNameId, classPK, articleId,
-			autoArticleId, JournalArticleConstants.DEFAULT_VERSION, titleMap,
+			autoArticleId, JournalArticleConstants.VERSION_DEFAULT, titleMap,
 			descriptionMap, content, type, structureId, templateId, layoutUuid,
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, expirationDateMonth, expirationDateDay,
@@ -91,7 +91,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 		return journalArticleLocalService.addArticle(
 			getUserId(), groupId, classNameId, classPK, articleId,
-			autoArticleId, JournalArticleConstants.DEFAULT_VERSION, titleMap,
+			autoArticleId, JournalArticleConstants.VERSION_DEFAULT, titleMap,
 			descriptionMap, content, type, structureId, templateId, layoutUuid,
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, expirationDateMonth, expirationDateDay,

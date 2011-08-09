@@ -420,7 +420,8 @@ create table DDLRecordSet (
 	recordSetKey VARCHAR(75) null,
 	name STRING null,
 	description STRING null,
-	minDisplayRows INTEGER
+	minDisplayRows INTEGER,
+	scope INTEGER
 );
 
 create table DDLRecordVersion (
@@ -538,7 +539,11 @@ create table DLFileEntry (
 	fileEntryTypeId LONG,
 	version VARCHAR(75) null,
 	size_ LONG,
-	readCount INTEGER
+	readCount INTEGER,
+	smallImageId LONG,
+	largeImageId LONG,
+	custom1ImageId LONG,
+	custom2ImageId LONG
 );
 
 create table DLFileEntryMetadata (
@@ -620,6 +625,10 @@ create table DLFileVersion (
 	fileEntryTypeId LONG,
 	version VARCHAR(75) null,
 	size_ LONG,
+	smallImageId LONG,
+	largeImageId LONG,
+	custom1ImageId LONG,
+	custom2ImageId LONG,
 	status INTEGER,
 	statusByUserId LONG,
 	statusByUserName VARCHAR(75) null,
@@ -650,8 +659,9 @@ create table DLSync (
 	companyId LONG,
 	createDate DATE null,
 	modifiedDate DATE null,
-	fileId VARCHAR(75) null,
+	fileId LONG,
 	repositoryId LONG,
+	parentFolderId LONG,
 	event VARCHAR(75) null,
 	type_ VARCHAR(75) null
 );
@@ -1190,6 +1200,52 @@ create table MBThread (
 	statusByUserId LONG,
 	statusByUserName VARCHAR(75) null,
 	statusDate DATE null
+);
+
+create table MDRAction (
+	uuid_ VARCHAR(75) null,
+	actionId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	ruleGroupId LONG,
+	ruleId LONG,
+	name STRING null,
+	description STRING null,
+	type_ VARCHAR(75) null,
+	typeSettings VARCHAR(75) null
+);
+
+create table MDRRule (
+	uuid_ VARCHAR(75) null,
+	ruleId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	ruleGroupId LONG,
+	name STRING null,
+	description STRING null,
+	type_ VARCHAR(75) null,
+	typeSettings VARCHAR(75) null
+);
+
+create table MDRRuleGroup (
+	uuid_ VARCHAR(75) null,
+	ruleGroupId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	name STRING null,
+	description STRING null
 );
 
 create table MembershipRequest (

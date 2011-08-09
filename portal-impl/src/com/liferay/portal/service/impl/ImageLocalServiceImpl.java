@@ -16,7 +16,6 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.portal.ImageTypeException;
 import com.liferay.portal.NoSuchImageException;
-import com.liferay.portal.image.DatabaseHook;
 import com.liferay.portal.image.HookFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -32,7 +31,6 @@ import com.liferay.portal.model.Image;
 import com.liferay.portal.model.impl.ImageImpl;
 import com.liferay.portal.service.base.ImageLocalServiceBaseImpl;
 import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.PropsValues;
 
 import java.awt.image.RenderedImage;
 
@@ -142,14 +140,15 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 			return;
 		}
 
-		if (PropsValues.IMAGE_HOOK_IMPL.equals(DatabaseHook.class.getName()) &&
+		/*if (PropsValues.IMAGE_HOOK_IMPL.equals(
+				DatabaseHook.class.getName()) &&
 			(imagePersistence.getListeners().length == 0)) {
 
 			runSQL("delete from Image where imageId = " + imageId);
 
 			imagePersistence.clearCache();
 		}
-		else {
+		else {*/
 			try {
 				Image image = getImage(imageId);
 
@@ -161,7 +160,7 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 			}
 			catch (NoSuchImageException nsie) {
 			}
-		}
+		//}
 	}
 
 	public Image getCompanyLogo(long imageId) {

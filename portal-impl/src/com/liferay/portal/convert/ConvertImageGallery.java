@@ -15,7 +15,6 @@
 package com.liferay.portal.convert;
 
 import com.liferay.portal.image.DatabaseHook;
-import com.liferay.portal.image.HookFactory;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
@@ -81,25 +80,19 @@ public class ConvertImageGallery extends ConvertProcess {
 		try {
 			CacheRegistryUtil.setActive(false);
 
-			_sourceHook = HookFactory.getInstance();
+			ClassLoader classLoader = PortalClassLoaderUtil.getClassLoader();
+
+			_sourceHook = (Hook)classLoader.loadClass(
+				PropsValues.IMAGE_HOOK_IMPL).newInstance();
 
 			String[] values = getParameterValues();
 
 			String targetHookClassName = values[0];
 
-			ClassLoader classLoader = PortalClassLoaderUtil.getClassLoader();
-
 			_targetHook = (Hook)classLoader.loadClass(
 				targetHookClassName).newInstance();
 
 			migrateImages();
-
-			HookFactory.setInstance(_targetHook);
-
-			MaintenanceUtil.appendStatus(
-				"Please set " + PropsKeys.IMAGE_HOOK_IMPL +
-					" in your portal-ext.properties to use " +
-						targetHookClassName);
 
 			if (_sourceHook instanceof DatabaseHook) {
 				DB db = DBFactoryUtil.getDB();
@@ -122,9 +115,9 @@ public class ConvertImageGallery extends ConvertProcess {
 
 			_targetHook.updateImage(image, image.getType(), bytes);
 
-			if (_targetHook instanceof DatabaseHook) {
+			/*if (_targetHook instanceof DatabaseHook) {
 				ImageLocalServiceUtil.updateImage(image, false);
-			}
+			}*/
 		}
 		catch (Exception e) {
 			_log.error("Migration failed for " + image.getImageId(), e);

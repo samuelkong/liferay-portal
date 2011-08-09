@@ -949,6 +949,42 @@
 		<property name="service" ref="com.liferay.portlet.messageboards.service.MBThreadService" />
 		<property name="serviceInterface" value="com.liferay.portlet.messageboards.service.MBThreadService" />
 	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRActionService-burlap" class="org.springframework.remoting.caucho.BurlapServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRActionService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRActionService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRActionService-hessian" class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRActionService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRActionService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRActionService-http" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRActionService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRActionService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRRuleService-burlap" class="org.springframework.remoting.caucho.BurlapServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRRuleService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRRuleService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRRuleService-hessian" class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRRuleService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRRuleService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRRuleService-http" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRRuleService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRRuleService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRRuleGroupService-burlap" class="org.springframework.remoting.caucho.BurlapServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRRuleGroupService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRRuleGroupService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRRuleGroupService-hessian" class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRRuleGroupService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRRuleGroupService" />
+	</bean>
+	<bean name="/com_liferay_portlet_mobiledevicerules_service_spring_MDRRuleGroupService-http" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service" ref="com.liferay.portlet.mobiledevicerules.service.MDRRuleGroupService" />
+		<property name="serviceInterface" value="com.liferay.portlet.mobiledevicerules.service.MDRRuleGroupService" />
+	</bean>
 	<bean name="/com_liferay_portlet_polls_service_spring_PollsQuestionService-burlap" class="org.springframework.remoting.caucho.BurlapServiceExporter">
 		<property name="service" ref="com.liferay.portlet.polls.service.PollsQuestionService" />
 		<property name="serviceInterface" value="com.liferay.portlet.polls.service.PollsQuestionService" />
