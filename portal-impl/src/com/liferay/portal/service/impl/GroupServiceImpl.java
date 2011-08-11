@@ -209,6 +209,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 				new LinkedHashMap<String, Object>();
 
 			groupParams.put("usersGroups", new Long(userId));
+			groupParams.put("active", Boolean.TRUE);
 
 			userPlaces.addAll(
 				groupLocalService.search(
