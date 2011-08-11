@@ -210,6 +210,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 
 			groupParams.put("active", Boolean.TRUE);
 			groupParams.put("usersGroups", new Long(userId));
+			groupParams.put("active", Boolean.TRUE);
 
 			userPlaces.addAll(
 				groupLocalService.search(
