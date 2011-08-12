@@ -28,13 +28,11 @@ PortletURL portletURL = (PortletURL)request.getAttribute("liferay-ui:asset-categ
 
 List<AssetVocabulary> vocabularies = AssetVocabularyServiceUtil.getGroupsVocabularies(new long[] {themeDisplay.getParentGroupId(), themeDisplay.getCompanyGroupId()});
 List<AssetCategory> categories = AssetCategoryServiceUtil.getCategories(className, classPK);
-%>
 
-<%
 for (AssetVocabulary vocabulary : vocabularies) {
 	vocabulary = vocabulary.toEscapedModel();
 
-	String vocabularyName = vocabulary.getName();
+	String vocabularyName = vocabulary.getTitle(themeDisplay.getLocale());
 
 	List<AssetCategory> curCategories = _filterCategories(categories, vocabulary);
 %>
@@ -53,7 +51,7 @@ for (AssetVocabulary vocabulary : vocabularies) {
 						portletURL.setParameter("categoryId", String.valueOf(category.getCategoryId()));
 					%>
 
-						<a class="asset-category" href="<%= portletURL.toString() %>"><%= _buildCategoryPath(category) %></a>
+						<a class="asset-category" href="<%= portletURL.toString() %>"><%= _buildCategoryPath(category, themeDisplay) %></a>
 
 					<%
 					}
@@ -68,7 +66,7 @@ for (AssetVocabulary vocabulary : vocabularies) {
 					%>
 
 						<span class="asset-category">
-							<%= _buildCategoryPath(category) %>
+							<%= _buildCategoryPath(category, themeDisplay) %>
 						</span>
 
 					<%
@@ -84,11 +82,11 @@ for (AssetVocabulary vocabulary : vocabularies) {
 %>
 
 <%!
-private String _buildCategoryPath(AssetCategory category) throws PortalException, SystemException {
+private String _buildCategoryPath(AssetCategory category, ThemeDisplay themeDisplay) throws PortalException, SystemException {
 	List<AssetCategory> ancestorCategories = category.getAncestors();
 
 	if (ancestorCategories.isEmpty()) {
-		return category.getName();
+		return category.getTitle(themeDisplay.getLocale());
 	}
 
 	Collections.reverse(ancestorCategories);
@@ -98,11 +96,11 @@ private String _buildCategoryPath(AssetCategory category) throws PortalException
 	for (AssetCategory ancestorCategory : ancestorCategories) {
 		ancestorCategory = ancestorCategory.toEscapedModel();
 
-		sb.append(ancestorCategory.getName());
+		sb.append(ancestorCategory.getTitle(themeDisplay.getLocale()));
 		sb.append(" &raquo; ");
 	}
 
-	sb.append(category.getName());
+	sb.append(category.getTitle(themeDisplay.getLocale()));
 
 	return sb.toString();
 }

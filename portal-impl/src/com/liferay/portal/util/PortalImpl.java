@@ -131,7 +131,6 @@ import com.liferay.portal.service.permission.LayoutSetPrototypePermissionUtil;
 import com.liferay.portal.service.permission.OrganizationPermissionUtil;
 import com.liferay.portal.service.permission.PortletPermissionUtil;
 import com.liferay.portal.service.permission.UserPermissionUtil;
-import com.liferay.portal.servlet.ImageServlet;
 import com.liferay.portal.servlet.filters.i18n.I18nFilter;
 import com.liferay.portal.servlet.filters.secure.NonceUtil;
 import com.liferay.portal.struts.StrutsUtil;
@@ -139,6 +138,7 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.upload.UploadPortletRequestImpl;
 import com.liferay.portal.upload.UploadServletRequestImpl;
 import com.liferay.portal.util.comparator.PortletControlPanelWeightComparator;
+import com.liferay.portal.webserver.WebServerServlet;
 import com.liferay.portlet.ActionResponseImpl;
 import com.liferay.portlet.ControlPanelEntry;
 import com.liferay.portlet.DefaultControlPanelEntryFactory;
@@ -165,7 +165,6 @@ import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.expando.ValueDataException;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.model.ExpandoColumnConstants;
-import com.liferay.portlet.imagegallery.model.IGImage;
 import com.liferay.portlet.journal.asset.JournalArticleAssetRendererFactory;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalArticleConstants;
@@ -4574,8 +4573,8 @@ public class PortalImpl implements Portal {
 		}
 
 		if (e instanceof NoSuchImageException) {
-			if (_logImageServlet.isWarnEnabled()) {
-				_logImageServlet.warn(e, e);
+			if (_logWebServerServlet.isWarnEnabled()) {
+				_logWebServerServlet.warn(e, e);
 			}
 		}
 		else if ((e instanceof PortalException) && _log.isInfoEnabled()) {
@@ -5406,7 +5405,6 @@ public class PortalImpl implements Portal {
 			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.CALENDAR.MODEL.CALEVENT$]",
 			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.DOCUMENTLIBRARY.MODEL." +
 				"DLFILEENTRY$]",
-			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.IMAGEGALLERY.MODEL.IGIMAGE$]",
 			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.MESSAGEBOARDS.MODEL." +
 				"MBMESSAGE$]",
 			"[$CLASS_NAME_ID_COM.LIFERAY.PORTLET.WIKI.MODEL.WIKIPAGE$]",
@@ -5442,7 +5440,6 @@ public class PortalImpl implements Portal {
 			PortalUtil.getClassNameId(BookmarksEntry.class),
 			PortalUtil.getClassNameId(CalEvent.class),
 			PortalUtil.getClassNameId(DLFileEntry.class),
-			PortalUtil.getClassNameId(IGImage.class),
 			PortalUtil.getClassNameId(MBMessage.class),
 			PortalUtil.getClassNameId(WikiPage.class),
 			ResourceConstants.SCOPE_COMPANY,
@@ -5486,8 +5483,8 @@ public class PortalImpl implements Portal {
 
 	private static Log _log = LogFactoryUtil.getLog(PortalImpl.class);
 
-	private static Log _logImageServlet = LogFactoryUtil.getLog(
-		ImageServlet.class);
+	private static Log _logWebServerServlet = LogFactoryUtil.getLog(
+		WebServerServlet.class);
 
 	private String[] _allSystemGroups;
 	private String[] _allSystemOrganizationRoles;

@@ -54,6 +54,7 @@ public class UpgradeProcess_6_1_0 extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		upgrade(UpgradeSchema.class);
+		upgrade(UpgradeUserName.class);
 		upgrade(UpgradeAsset.class);
 		upgrade(UpgradeAdminPortlets.class);
 		upgrade(UpgradeBlogs.class);
@@ -73,7 +74,6 @@ public class UpgradeProcess_6_1_0 extends UpgradeProcess {
 		upgrade(UpgradeScheduler.class);
 		upgrade(UpgradeScopes.class);
 		upgrade(UpgradeSubscription.class);
-		upgrade(UpgradeUserName.class);
 		upgrade(UpgradeVirtualHost.class);
 		upgrade(UpgradeWorkflow.class);
 	}

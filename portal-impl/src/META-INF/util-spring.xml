@@ -211,13 +211,6 @@
 			<bean class="com.liferay.portal.servlet.BrowserSnifferImpl" />
 		</property>
 	</bean>
-	<bean id="com.liferay.portal.kernel.servlet.ImageServletTokenUtil" class="com.liferay.portal.kernel.servlet.ImageServletTokenUtil">
-		<property name="imageServletToken">
-			<bean class="com.liferay.portal.servlet.ImageServletTokenImpl">
-				<property name="multiVMPool" ref="com.liferay.portal.kernel.cache.MultiVMPool" />
-			</bean>
-		</property>
-	</bean>
 	<bean id="com.liferay.portal.kernel.servlet.filters.compoundsessionid.CompoundSessionIdSplitterUtil" class="com.liferay.portal.kernel.servlet.filters.compoundsessionid.CompoundSessionIdSplitterUtil">
 		<property name="compoundSessionIdSplitter">
 			<bean class="com.liferay.portal.servlet.filters.compoundsessionid.CompoundSessionIdSplitterImpl" />
@@ -507,6 +500,13 @@
 			<bean class="com.liferay.portal.util.PortletListerFactoryImpl" />
 		</property>
 	</bean>
+	<bean id="com.liferay.portal.webserver.WebServerServletTokenUtil" class="com.liferay.portal.webserver.WebServerServletTokenUtil">
+		<property name="webServerServletToken">
+			<bean class="com.liferay.portal.webserver.WebServerServletTokenImpl">
+				<property name="multiVMPool" ref="com.liferay.portal.kernel.cache.MultiVMPool" />
+			</bean>
+		</property>
+	</bean>
 	<bean id="com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil" class="com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil">
 		<property name="assetRendererFactoryRegistry">
 			<bean class="com.liferay.portal.asset.AssetRendererFactoryRegistryImpl" />
@@ -591,6 +591,10 @@
 	<bean id="com.liferay.portlet.journalcontent.util.JournalContent" class="com.liferay.portlet.journalcontent.util.JournalContentImpl" />
 	<bean id="com.liferay.portlet.journalcontent.util.JournalContentUtil" class="com.liferay.portlet.journalcontent.util.JournalContentUtil">
 		<property name="journalContent" ref="com.liferay.portlet.journalcontent.util.JournalContent" />
+	</bean>
+	<bean id="com.liferay.portlet.layoutconfiguration.util.RuntimePortlet" class="com.liferay.portlet.layoutconfiguration.util.RuntimePortletImpl" />
+	<bean id="com.liferay.portlet.layoutconfiguration.util.RuntimePortletUtil" class="com.liferay.portlet.layoutconfiguration.util.RuntimePortletUtil">
+		<property name="runtimePortlet" ref="com.liferay.portlet.layoutconfiguration.util.RuntimePortlet" />
 	</bean>
 	<bean id="com.liferay.portlet.passwordpoliciesadmin.util.PasswordPoliciesAdmin" class="com.liferay.portlet.passwordpoliciesadmin.util.PasswordPoliciesAdminImpl" />
 	<bean id="com.liferay.portlet.passwordpoliciesadmin.util.PasswordPoliciesAdminUtil" class="com.liferay.portlet.passwordpoliciesadmin.util.PasswordPoliciesAdminUtil">

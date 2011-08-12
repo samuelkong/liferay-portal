@@ -396,7 +396,6 @@
 		<reference package-path="com.liferay.portlet.bookmarks" entity="BookmarksFolder" />
 		<reference package-path="com.liferay.portlet.calendar" entity="CalEvent" />
 		<reference package-path="com.liferay.portlet.documentlibrary" entity="DLApp" />
-		<reference package-path="com.liferay.portlet.imagegallery" entity="IGFolder" />
 		<reference package-path="com.liferay.portlet.journal" entity="JournalArticle" />
 		<reference package-path="com.liferay.portlet.journal" entity="JournalStructure" />
 		<reference package-path="com.liferay.portlet.journal" entity="JournalTemplate" />
@@ -1761,7 +1760,7 @@
 		<column name="classPK" type="long" />
 		<column name="name" type="String" accessor="true" />
 		<column name="title" type="String" localized="true" />
-		<column name="description" type="String" />
+		<column name="description" type="String" localized="true" />
 		<column name="type" type="int" />
 		<column name="subtype" type="String" />
 

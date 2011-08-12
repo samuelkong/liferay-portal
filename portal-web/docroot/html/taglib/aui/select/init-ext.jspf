@@ -15,8 +15,6 @@
 --%>
 
 <%
-id = namespace + id;
-
 if (request.getAttribute("aui:select:useNamespace") == null) {
 	useNamespace = auiFormUseNamespace;
 }

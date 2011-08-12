@@ -136,6 +136,9 @@ public class AttachmentCommandReceiver extends BaseCommandReceiver {
 				wikiPage.getCompanyId(), repositoryId, dirName);
 		}
 
+		String attachmentURLPrefix = ParamUtil.getString(
+			request, "attachmentURLPrefix");
+
 		for (String fileName : fileNames) {
 			byte[] fileEntry = DLStoreUtil.getFileAsBytes(
 				wikiPage.getCompanyId(), repositoryId, fileName);
@@ -151,7 +154,7 @@ public class AttachmentCommandReceiver extends BaseCommandReceiver {
 			fileElement.setAttribute("name", fileName);
 			fileElement.setAttribute("desc", fileName);
 			fileElement.setAttribute("size", getSize(fileEntry.length));
-			fileElement.setAttribute("url", fileName);
+			fileElement.setAttribute("url", attachmentURLPrefix + fileName);
 		}
 	}
 

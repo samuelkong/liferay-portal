@@ -701,6 +701,10 @@ public class SourceFormatter {
 
 			String content = _fileUtil.read(file);
 
+			if (_isGenerated(content)) {
+				continue;
+			}
+
 			String className = file.getName();
 
 			className = className.substring(0, className.length() - 5);
@@ -839,10 +843,6 @@ public class SourceFormatter {
 					fileName, "package: " + fileName);
 			}
 
-			if (newContent.indexOf("  {") != -1) {
-				_sourceFormatterHelper.printError(fileName, "{:" + fileName);
-			}
-
 			if (!newContent.endsWith("\n\n}") &&
 				!newContent.endsWith("{\n}")) {
 
@@ -908,6 +908,11 @@ public class SourceFormatter {
 					_sourceFormatterHelper.printError(
 						fileName, "tab: " + fileName + " " + lineCount);
 				}
+			}
+
+			if (line.contains("  {") && !line.matches("\\s*\\*.*")) {
+				_sourceFormatterHelper.printError(
+					fileName, "{:" + fileName + " " + lineCount);
 			}
 
 			StringBuilder lineSB = new StringBuilder();
@@ -1521,6 +1526,15 @@ public class SourceFormatter {
 		sb.append("([^>]|%>)*>");
 
 		return sb.toString();
+	}
+
+	private static boolean _isGenerated(String content) {
+		if (content.contains("* @generated") || content.contains("$ANTLR")) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	private static void _readExclusions() throws IOException {

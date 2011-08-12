@@ -56,6 +56,26 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 			vocabularyId, categoryProperties, serviceContext);
 	}
 
+	public void deleteCategories(long[] categoryIds)
+		throws PortalException, SystemException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		for (long categoryId : categoryIds) {
+			AssetCategory category = assetCategoryPersistence.fetchByPrimaryKey(
+				categoryId);
+
+			if (category == null) {
+				continue;
+			}
+
+			AssetCategoryPermission.check(
+				permissionChecker, categoryId, ActionKeys.DELETE);
+
+			assetCategoryLocalService.deleteCategory(category);
+		}
+	}
+
 	public void deleteCategory(long categoryId)
 		throws PortalException, SystemException {
 
@@ -125,6 +145,18 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 				vocabularyId, start, end, obc));
 	}
 
+	public AssetCategory moveCategory(
+			long categoryId, long parentCategoryId, long vocabularyId,
+			ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		AssetCategoryPermission.check(
+			getPermissionChecker(), categoryId, ActionKeys.UPDATE);
+
+		return assetCategoryLocalService.moveCategory(
+			categoryId, parentCategoryId, vocabularyId, serviceContext);
+	}
+
 	public JSONArray search(
 			long groupId, String name, String[] categoryProperties, int start,
 			int end)
@@ -136,18 +168,6 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 		categories = filterCategories(categories);
 
 		return Autocomplete.listToJson(categories, "name", "name");
-	}
-
-	public AssetCategory moveCategory(
-			long categoryId, long parentCategoryId, long vocabularyId,
-			ServiceContext serviceContext)
-		throws PortalException, SystemException {
-
-		AssetCategoryPermission.check(
-			getPermissionChecker(), categoryId, ActionKeys.UPDATE);
-
-		return assetCategoryLocalService.moveCategory(
-			categoryId, parentCategoryId, vocabularyId, serviceContext);
 	}
 
 	public AssetCategory updateCategory(

@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.servlet.ImageServletTokenUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -70,6 +69,7 @@ import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.SubscriptionSender;
+import com.liferay.portal.webserver.WebServerServletTokenUtil;
 import com.liferay.portlet.asset.NoSuchEntryException;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetLink;
@@ -813,8 +813,16 @@ public class JournalArticleLocalServiceImpl
 
 		long classNameId = PortalUtil.getClassNameId(className);
 
-		return journalArticlePersistence.findByG_C_C(
+		List<JournalArticle> articles = journalArticlePersistence.findByG_C_C(
 			groupId, classNameId, classPK);
+
+		if (articles.isEmpty()) {
+			throw new NoSuchArticleException(
+				"No approved JournalArticle with the key {groupId=" + groupId +
+					", className=" + className + ", classPK=" + classPK + "}");
+		}
+
+		return articles.get(0);
 	}
 
 	public JournalArticle getArticleByUrlTitle(long groupId, String urlTitle)
@@ -1274,7 +1282,7 @@ public class JournalArticleLocalServiceImpl
 		List<JournalArticle> articles = journalArticlePersistence.findByG_A_ST(
 			groupId, articleId, WorkflowConstants.STATUS_APPROVED);
 
-		if (articles.size() == 0) {
+		if (articles.isEmpty()) {
 			throw new NoSuchArticleException(
 				"No approved JournalArticle with the key {groupId=" + groupId +
 					", " + "articleId=" + articleId + "}");
@@ -1335,7 +1343,7 @@ public class JournalArticleLocalServiceImpl
 				resourcePrimKey, status, 0, 1, orderByComparator);
 		}
 
-		if (articles.size() == 0) {
+		if (articles.isEmpty()) {
 			throw new NoSuchArticleException(
 				"No JournalArticle with the key {resourcePrimKey=" +
 					resourcePrimKey + "}");
@@ -1368,10 +1376,29 @@ public class JournalArticleLocalServiceImpl
 				groupId, articleId, status, 0, 1, orderByComparator);
 		}
 
-		if (articles.size() == 0) {
+		if (articles.isEmpty()) {
 			throw new NoSuchArticleException(
 				"No JournalArticle with the key {groupId=" + groupId +
 					", articleId=" + articleId + ", status=" + status + "}");
+		}
+
+		return articles.get(0);
+	}
+
+	public JournalArticle getLatestArticle(
+			long groupId, String className, long classPK)
+		throws PortalException, SystemException {
+
+		long classNameId = PortalUtil.getClassNameId(className);
+
+		List<JournalArticle> articles = journalArticlePersistence.findByG_C_C(
+			groupId, classNameId, classPK, 0, 1,
+			new ArticleVersionComparator());
+
+		if (articles.isEmpty()) {
+			throw new NoSuchArticleException(
+				"No JournalArticle with the key {groupId=" + groupId +
+					", className=" + className + ", classPK =" + classPK + "}");
 		}
 
 		return articles.get(0);
@@ -1394,7 +1421,7 @@ public class JournalArticleLocalServiceImpl
 				groupId, urlTitle, status, 0, 1, orderByComparator);
 		}
 
-		if (articles.size() == 0) {
+		if (articles.isEmpty()) {
 			throw new NoSuchArticleException(
 				"No JournalArticle with the key {groupId=" + groupId +
 					", urlTitle=" + urlTitle + ", status=" + status + "}");
@@ -2601,7 +2628,7 @@ public class JournalArticleLocalServiceImpl
 
 				String elContent =
 					"/image/journal/article?img_id=" + imageId + "&t=" +
-						ImageServletTokenUtil.getToken(imageId);
+						WebServerServletTokenUtil.getToken(imageId);
 
 				dynamicContentEl.setText(elContent);
 				dynamicContentEl.addAttribute("id", String.valueOf(imageId));
@@ -2719,7 +2746,7 @@ public class JournalArticleLocalServiceImpl
 
 			String elContent =
 				"/image/journal/article?img_id=" + imageId + "&t=" +
-					ImageServletTokenUtil.getToken(imageId);
+					WebServerServletTokenUtil.getToken(imageId);
 
 			if (dynamicContent.getText().equals("delete")) {
 				dynamicContent.setText(StringPool.BLANK);

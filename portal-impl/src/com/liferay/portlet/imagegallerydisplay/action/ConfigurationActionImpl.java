@@ -18,8 +18,8 @@ import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portlet.documentlibrary.NoSuchFolderException;
+import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
-import com.liferay.portlet.imagegallery.model.IGFolderConstants;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -47,7 +47,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 		long rootFolderId = GetterUtil.getLong(
 			getParameter(actionRequest, "rootFolderId"));
 
-		if (rootFolderId != IGFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+		if (rootFolderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			try {
 				DLAppLocalServiceUtil.getFolder(rootFolderId);
 			}

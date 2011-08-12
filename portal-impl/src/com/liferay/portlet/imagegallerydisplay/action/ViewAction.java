@@ -17,8 +17,8 @@ package com.liferay.portlet.imagegallerydisplay.action;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.struts.PortletAction;
+import com.liferay.portlet.documentlibrary.NoSuchFolderException;
 import com.liferay.portlet.documentlibrary.action.ActionUtil;
-import com.liferay.portlet.imagegallery.NoSuchFolderException;
 
 import javax.portlet.PortletConfig;
 import javax.portlet.RenderRequest;

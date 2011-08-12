@@ -129,8 +129,9 @@
 	<target name="compile">
 		<ant dir="portal-service" target="compile" inheritAll="false" />
 
-		<ant dir="util-java" target="compile" inheritAll="false" />
 		<ant dir="util-bridges" target="compile" inheritAll="false" />
+		<ant dir="util-java" target="compile" inheritAll="false" />
+		<ant dir="util-taglib" target="compile" inheritAll="false" />
 
 		<ant dir="portal-impl" target="compile" inheritAll="false" />
 	</target>

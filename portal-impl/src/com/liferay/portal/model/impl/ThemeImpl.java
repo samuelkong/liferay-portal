@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.ThemeHelper;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ColorScheme;
 import com.liferay.portal.model.Plugin;
@@ -41,10 +42,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Julio Camarero
+ * @author Raymond Augé
  */
 public class ThemeImpl extends PluginBaseImpl implements Theme {
 
@@ -100,7 +105,7 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 		ThemeSetting themeSetting = new ThemeSettingImpl(
 			configurable, options, type, value);
 
-		_settings.put(key, themeSetting);
+		_themeSettingsMap.put(key, themeSetting);
 	}
 
 	public int compareTo(Theme theme) {
@@ -147,7 +152,9 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 		Map<String, ThemeSetting> configurableSettings =
 			new HashMap<String, ThemeSetting>();
 
-		for (Map.Entry<String,ThemeSetting> entry : _settings.entrySet()) {
+		for (Map.Entry<String,ThemeSetting> entry :
+				_themeSettingsMap.entrySet()) {
+
 			ThemeSetting themeSetting = entry.getValue();
 
 			if (themeSetting.isConfigurable()) {
@@ -213,6 +220,34 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 		return Plugin.TYPE_THEME;
 	}
 
+	public String getResourcePath(
+		ServletContext servletContext, String portletId, String path) {
+
+		if (!PropsValues.LAYOUT_TEMPLATE_CACHE_ENABLED) {
+			return ThemeHelper.getResourcePath(
+				servletContext, this, portletId, path);
+		}
+
+		String key = path;
+
+		if (Validator.isNotNull(portletId)) {
+			key = path.concat(StringPool.POUND).concat(portletId);
+		}
+
+		String resourcePath = _resourcePathsMap.get(key);
+
+		if (resourcePath != null) {
+			return resourcePath;
+		}
+
+		resourcePath = ThemeHelper.getResourcePath(
+			servletContext, this, portletId, path);
+
+		_resourcePathsMap.put(key, resourcePath);
+
+		return resourcePath;
+	}
+
 	public String getRootPath() {
 		return _rootPath;
 	}
@@ -224,7 +259,7 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 	public String getSetting(String key) {
 		String value = null;
 
-		ThemeSetting themeSetting = _settings.get(key);
+		ThemeSetting themeSetting = _themeSettingsMap.get(key);
 
 		if (themeSetting != null) {
 			value = themeSetting.getValue();
@@ -236,7 +271,7 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 	public String[] getSettingOptions(String key) {
 		String[] options = null;
 
-		ThemeSetting themeSetting = _settings.get(key);
+		ThemeSetting themeSetting = _themeSettingsMap.get(key);
 
 		if (themeSetting != null) {
 			options = themeSetting.getOptions();
@@ -246,14 +281,14 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 	}
 
 	public Map<String, ThemeSetting> getSettings() {
-		return _settings;
+		return _themeSettingsMap;
 	}
 
 	public Properties getSettingsProperties() {
 		Properties properties = new Properties();
 
-		for (String key : _settings.keySet()) {
-			ThemeSetting setting = _settings.get(key);
+		for (String key : _themeSettingsMap.keySet()) {
+			ThemeSetting setting = _themeSettingsMap.get(key);
 
 			if (setting != null) {
 				properties.setProperty(key, setting.getValue());
@@ -365,6 +400,35 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 		return _warFile;
 	}
 
+	public boolean resourceExists(
+			ServletContext servletContext, String portletId, String path)
+		throws Exception {
+
+		if (!PropsValues.LAYOUT_TEMPLATE_CACHE_ENABLED) {
+			return ThemeHelper.resourceExists(
+				servletContext, this, portletId, path);
+		}
+
+		String key = path;
+
+		if (Validator.isNotNull(portletId)) {
+			key = path.concat(StringPool.POUND).concat(portletId);
+		}
+
+		Boolean resourceExists = _resourceExistsMap.containsKey(key);
+
+		if (resourceExists != null) {
+			return resourceExists;
+		}
+
+		resourceExists = ThemeHelper.resourceExists(
+			servletContext, this, portletId, path);
+
+		_resourceExistsMap.put(key, resourceExists);
+
+		return resourceExists;
+	}
+
 	public void setCssPath(String cssPath) {
 		_cssPath = cssPath;
 	}
@@ -401,7 +465,7 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 	}
 
 	public void setSetting(String key, String value) {
-		ThemeSetting themeSetting = _settings.get(key);
+		ThemeSetting themeSetting = _themeSettingsMap.get(key);
 
 		if (themeSetting != null) {
 			themeSetting.setValue(value);
@@ -549,9 +613,13 @@ public class ThemeImpl extends PluginBaseImpl implements Theme {
 	private String _javaScriptPath = "${root-path}/js";
 	private boolean _loadFromServletContext;
 	private String _name;
+	private Map<String, Boolean> _resourceExistsMap =
+		new ConcurrentHashMap<String,Boolean>();
+	private Map<String, String> _resourcePathsMap =
+		new ConcurrentHashMap<String,String>();
 	private String _rootPath = "/";
 	private String _servletContextName = StringPool.BLANK;
-	private Map<String, ThemeSetting> _settings =
+	private Map<String, ThemeSetting> _themeSettingsMap =
 		new HashMap<String, ThemeSetting>();
 	private Map<String, SpriteImage> _spriteImagesMap =
 		new HashMap<String, SpriteImage>();

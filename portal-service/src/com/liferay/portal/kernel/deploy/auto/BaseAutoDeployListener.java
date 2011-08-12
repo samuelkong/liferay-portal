@@ -25,11 +25,14 @@ import java.util.zip.ZipFile;
 /**
  * @author Ivica Cardic
  * @author Brian Wing Shun Chan
+ * @author Ryan Park
  */
 public abstract class BaseAutoDeployListener implements AutoDeployListener {
 
 	public boolean isExtPlugin(File file) {
-		if (file.getName().contains("-ext")) {
+		String fileName = file.getName();
+
+		if (fileName.contains("-ext")) {
 			return true;
 		}
 
@@ -37,11 +40,21 @@ public abstract class BaseAutoDeployListener implements AutoDeployListener {
 	}
 
 	public boolean isHookPlugin(File file) throws AutoDeployException {
-		if ((isMatchingFile(
-				file, "WEB-INF/liferay-plugin-package.properties")) &&
-			(file.getName().contains("-hook")) &&
-			(!file.getName().contains("-portlet"))) {
+		String fileName = file.getName();
 
+		if (isMatchingFile(file, "WEB-INF/liferay-plugin-package.properties") &&
+			fileName.contains("-hook") && !fileName.contains("-portlet")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isLiferayPackage(File file) {
+		String fileName = file.getName();
+
+		if (fileName.endsWith(".lpkg")) {
 			return true;
 		}
 
@@ -111,9 +124,10 @@ public abstract class BaseAutoDeployListener implements AutoDeployListener {
 			return true;
 		}
 
-		if ((isMatchingFile(
-				file, "WEB-INF/liferay-plugin-package.properties")) &&
-			(file.getName().contains("-theme"))) {
+		String fileName = file.getName();
+
+		if (isMatchingFile(file, "WEB-INF/liferay-plugin-package.properties") &&
+			fileName.contains("-theme")) {
 
 			return true;
 		}
@@ -122,9 +136,10 @@ public abstract class BaseAutoDeployListener implements AutoDeployListener {
 	}
 
 	public boolean isWebPlugin(File file) throws AutoDeployException {
-		if ((isMatchingFile(
-				file, "WEB-INF/liferay-plugin-package.properties")) &&
-			(file.getName().contains("-web"))) {
+		String fileName = file.getName();
+
+		if (isMatchingFile(file, "WEB-INF/liferay-plugin-package.properties") &&
+			fileName.contains("-web")) {
 
 			return true;
 		}

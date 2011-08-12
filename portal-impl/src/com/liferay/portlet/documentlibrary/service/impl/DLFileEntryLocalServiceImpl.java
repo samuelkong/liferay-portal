@@ -343,8 +343,7 @@ public class DLFileEntryLocalServiceImpl
 		DLStoreUtil.updateFileVersion(
 			user.getCompanyId(), dlFileEntry.getDataRepositoryId(),
 			dlFileEntry.getName(),
-			DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION, version,
-			dlFileEntry.getTitle());
+			DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION, version);
 
 		// Index
 
@@ -363,7 +362,7 @@ public class DLFileEntryLocalServiceImpl
 			WorkflowHandlerRegistryUtil.startWorkflowInstance(
 				user.getCompanyId(), dlFileEntry.getGroupId(), userId,
 				DLFileEntry.class.getName(), dlFileVersion.getFileVersionId(),
-				dlFileVersion, serviceContext);
+				dlFileVersion, serviceContext, workflowContext);
 		}
 
 		lockLocalService.unlock(DLFileEntry.class.getName(), fileEntryId);
@@ -465,8 +464,7 @@ public class DLFileEntryLocalServiceImpl
 			DLStoreUtil.copyFileVersion(
 				user.getCompanyId(), dlFileEntry.getDataRepositoryId(),
 				dlFileEntry.getName(), version,
-				DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION,
-				dlFileVersion.getTitle());
+				DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION);
 
 			copyFileEntryMetadata(
 				dlFileEntry.getCompanyId(), dlFileVersion.getFileEntryTypeId(),
@@ -597,6 +595,12 @@ public class DLFileEntryLocalServiceImpl
 		finally {
 			unlockFileEntry(fileEntryId);
 		}
+	}
+
+	public DLFileEntry fetchFileEntryByAnyImageId(long imageId)
+		throws SystemException {
+
+		return dlFileEntryFinder.fetchByAnyImageId(imageId);
 	}
 
 	public List<DLFileEntry> getExtraSettingsFileEntries(int start, int end)
@@ -991,6 +995,7 @@ public class DLFileEntryLocalServiceImpl
 					dlFileEntry.getVersion(),
 					dlFileVersion.getVersion()) <= 0) {
 
+				dlFileEntry.setExtension(dlFileVersion.getExtension());
 				dlFileEntry.setTitle(dlFileVersion.getTitle());
 				dlFileEntry.setDescription(dlFileVersion.getDescription());
 				dlFileEntry.setExtraSettings(dlFileVersion.getExtraSettings());

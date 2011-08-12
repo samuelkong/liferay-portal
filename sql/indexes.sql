@@ -273,24 +273,6 @@ create index IX_3103EF3D on Groups_Roles (roleId);
 create index IX_31FB749A on Groups_UserGroups (groupId);
 create index IX_3B69160F on Groups_UserGroups (userGroupId);
 
-create index IX_60214CF6 on IGFolder (companyId);
-create index IX_206498F8 on IGFolder (groupId);
-create index IX_1A605E9F on IGFolder (groupId, parentFolderId);
-create unique index IX_9BBAFB1E on IGFolder (groupId, parentFolderId, name);
-create index IX_F73C0982 on IGFolder (uuid_);
-create unique index IX_B10EFD68 on IGFolder (uuid_, groupId);
-
-create index IX_E597322D on IGImage (custom1ImageId);
-create index IX_D9E0A34C on IGImage (custom2ImageId);
-create index IX_63820A7 on IGImage (groupId);
-create index IX_8956B2C4 on IGImage (groupId, folderId);
-create index IX_AAE8DF83 on IGImage (groupId, folderId, name);
-create index IX_BE79E1E1 on IGImage (groupId, userId);
-create index IX_64F0B572 on IGImage (largeImageId);
-create index IX_D3D32126 on IGImage (smallImageId);
-create index IX_265BB0F1 on IGImage (uuid_);
-create unique index IX_E97342D9 on IGImage (uuid_, groupId);
-
 create index IX_6A925A4D on Image (size_);
 
 create index IX_DFF98523 on JournalArticle (companyId);

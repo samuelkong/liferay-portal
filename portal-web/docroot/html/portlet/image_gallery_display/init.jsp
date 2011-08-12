@@ -80,7 +80,7 @@
 <%@ page import="com.liferay.portlet.dynamicdatamapping.storage.Fields" %>
 <%@ page import="com.liferay.portlet.dynamicdatamapping.storage.StorageEngineUtil" %>
 <%@ page import="com.liferay.portlet.dynamicdatamapping.util.DDMXSDUtil" %>
-<%@ page import="com.liferay.portlet.imagegallery.util.IGUtil" %>
+<%@ page import="com.liferay.portlet.imagegallerydisplay.util.IGUtil" %>
 <%@ page import="com.liferay.portlet.usersadmin.search.GroupSearch" %>
 <%@ page import="com.liferay.portlet.usersadmin.search.GroupSearchTerms" %>
 

@@ -86,7 +86,9 @@ public class BeanLocatorImpl implements BeanLocator {
 
 				bean = _applicationContext.getBean(originalName);
 
-				Class<?>[] interfaces = bean.getClass().getInterfaces();
+				Class<?> beanClass = bean.getClass();
+
+				Class<?>[] interfaces = beanClass.getInterfaces();
 
 				List<Class<?>> interfacesList = new ArrayList<Class<?>>();
 

@@ -26,11 +26,13 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.ThemeHelper;
 import com.liferay.portal.kernel.util.UnsyncPrintWriterPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.velocity.VelocityContext;
 import com.liferay.portal.kernel.velocity.VelocityEngineUtil;
 import com.liferay.portal.kernel.velocity.VelocityVariablesUtil;
 import com.liferay.portal.model.Theme;
+import com.liferay.portal.theme.PortletDisplay;
 import com.liferay.portal.theme.ThemeDisplay;
 
 import freemarker.ext.jsp.TaglibFactory;
@@ -60,6 +62,21 @@ import org.apache.struts.tiles.ComponentContext;
  */
 public class ThemeUtil {
 
+	public static String getPortletId(HttpServletRequest request) {
+		String portletId = null;
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay != null) {
+			PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+			portletId = portletDisplay.getId();
+		}
+
+		return portletId;
+	}
+
 	public static void include(
 			ServletContext servletContext, HttpServletRequest request,
 			HttpServletResponse response, PageContext pageContext, String page,
@@ -75,8 +92,7 @@ public class ThemeUtil {
 			includeVM(servletContext, request, pageContext, page, theme, true);
 		}
 		else {
-			String path =
-				theme.getTemplatesPath() + StringPool.SLASH + page;
+			String path = theme.getTemplatesPath() + StringPool.SLASH + page;
 
 			includeJSP(servletContext, request, response, path, theme);
 		}
@@ -104,8 +120,16 @@ public class ThemeUtil {
 			ServletContextPool.put(servletContextName, servletContext);
 		}
 
-		String resourcePath = ThemeHelper.getResourcePath(
-			servletContext, theme, path);
+		String portletId = getPortletId(request);
+
+		String resourcePath = theme.getResourcePath(
+			servletContext, portletId, path);
+
+		if (Validator.isNotNull(portletId) &&
+			!FreeMarkerEngineUtil.resourceExists(resourcePath)) {
+
+			resourcePath = theme.getResourcePath(servletContext, null, path);
+		}
 
 		if (!FreeMarkerEngineUtil.resourceExists(resourcePath)) {
 			_log.error(resourcePath + " does not exist");
@@ -258,8 +282,16 @@ public class ThemeUtil {
 			ServletContextPool.put(servletContextName, servletContext);
 		}
 
-		String resourcePath = ThemeHelper.getResourcePath(
-			servletContext, theme, page);
+		String portletId = getPortletId(request);
+
+		String resourcePath = theme.getResourcePath(
+			servletContext, portletId, page);
+
+		if (Validator.isNotNull(portletId) &&
+			!VelocityEngineUtil.resourceExists(resourcePath)) {
+
+			resourcePath = theme.getResourcePath(servletContext, null, page);
+		}
 
 		if (!VelocityEngineUtil.resourceExists(resourcePath)) {
 			_log.error(resourcePath + " does not exist");

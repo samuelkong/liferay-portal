@@ -281,16 +281,8 @@ public interface AssetCategoryLocalService extends PersistedModelLocalService {
 			com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.lang.String[] getCategoryNames()
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.lang.String[] getCategoryNames(long classNameId, long classPK)
-		throws com.liferay.portal.kernel.exception.SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.lang.String[] getCategoryNames(java.lang.String className,
-		long classPK)
+	public com.liferay.portlet.asset.model.AssetCategory fetchCategory(
+		long categoryId)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -315,6 +307,19 @@ public interface AssetCategoryLocalService extends PersistedModelLocalService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long[] getCategoryIds(java.lang.String className, long classPK)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.lang.String[] getCategoryNames()
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.lang.String[] getCategoryNames(long classNameId, long classPK)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.lang.String[] getCategoryNames(java.lang.String className,
+		long classPK)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

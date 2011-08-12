@@ -65,6 +65,18 @@ import java.rmi.RemoteException;
  * @generated
  */
 public class AssetCategoryServiceSoap {
+	public static void deleteCategories(long[] categoryIds)
+		throws RemoteException {
+		try {
+			AssetCategoryServiceUtil.deleteCategories(categoryIds);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	public static void deleteCategory(long categoryId)
 		throws RemoteException {
 		try {
@@ -193,22 +205,6 @@ public class AssetCategoryServiceSoap {
 		}
 	}
 
-	public static java.lang.String search(long groupId, java.lang.String name,
-		java.lang.String[] categoryProperties, int start, int end)
-		throws RemoteException {
-		try {
-			com.liferay.portal.kernel.json.JSONArray returnValue = AssetCategoryServiceUtil.search(groupId,
-					name, categoryProperties, start, end);
-
-			return returnValue.toString();
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
 	public static com.liferay.portlet.asset.model.AssetCategorySoap moveCategory(
 		long categoryId, long parentCategoryId, long vocabularyId,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -218,6 +214,22 @@ public class AssetCategoryServiceSoap {
 					parentCategoryId, vocabularyId, serviceContext);
 
 			return com.liferay.portlet.asset.model.AssetCategorySoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static java.lang.String search(long groupId, java.lang.String name,
+		java.lang.String[] categoryProperties, int start, int end)
+		throws RemoteException {
+		try {
+			com.liferay.portal.kernel.json.JSONArray returnValue = AssetCategoryServiceUtil.search(groupId,
+					name, categoryProperties, start, end);
+
+			return returnValue.toString();
 		}
 		catch (Exception e) {
 			_log.error(e, e);

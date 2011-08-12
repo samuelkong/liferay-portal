@@ -41,6 +41,12 @@ public class AssetCategoryServiceWrapper implements AssetCategoryService {
 			descriptionMap, vocabularyId, categoryProperties, serviceContext);
 	}
 
+	public void deleteCategories(long[] categoryIds)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_assetCategoryService.deleteCategories(categoryIds);
+	}
+
 	public void deleteCategory(long categoryId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
@@ -104,15 +110,6 @@ public class AssetCategoryServiceWrapper implements AssetCategoryService {
 			start, end, obc);
 	}
 
-	public com.liferay.portal.kernel.json.JSONArray search(long groupId,
-		java.lang.String name, java.lang.String[] categoryProperties,
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _assetCategoryService.search(groupId, name, categoryProperties,
-			start, end);
-	}
-
 	public com.liferay.portlet.asset.model.AssetCategory moveCategory(
 		long categoryId, long parentCategoryId, long vocabularyId,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -120,6 +117,15 @@ public class AssetCategoryServiceWrapper implements AssetCategoryService {
 			com.liferay.portal.kernel.exception.SystemException {
 		return _assetCategoryService.moveCategory(categoryId, parentCategoryId,
 			vocabularyId, serviceContext);
+	}
+
+	public com.liferay.portal.kernel.json.JSONArray search(long groupId,
+		java.lang.String name, java.lang.String[] categoryProperties,
+		int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _assetCategoryService.search(groupId, name, categoryProperties,
+			start, end);
 	}
 
 	public com.liferay.portlet.asset.model.AssetCategory updateCategory(

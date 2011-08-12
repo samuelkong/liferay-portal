@@ -175,11 +175,12 @@ portletURL.setParameter("tabs1", tabs1);
 
 				// Name and description
 
-				if (Validator.isNotNull(structure.getDescription())) {
-					row.addText(structure.getName().concat("<br />").concat(structure.getDescription()), rowURL);
+				if (Validator.isNotNull(structure.getName())) {
+					row.addText(structure.getName(locale), rowURL);
 				}
-				else {
-					row.addText(structure.getName(), rowURL);
+
+				if (Validator.isNotNull(structure.getDescription())) {
+					row.addText(structure.getDescription(locale), rowURL);
 				}
 
 				// Action
@@ -252,7 +253,11 @@ portletURL.setParameter("tabs1", tabs1);
 
 				row.addText(template.getTemplateId(), rowURL);
 
-				// Name, description, and image
+				// Name
+
+				row.addText(template.getName(locale), rowURL);
+
+				// Description and image
 
 				row.addJSP("/html/portlet/journal/template_description.jsp");
 
@@ -439,7 +444,7 @@ portletURL.setParameter("tabs1", tabs1);
 								<aui:a href="<%= editStructureURL %>"><%= structure.getId() %></aui:a>
 							</td>
 							<td>
-								<aui:a href="<%= editStructureURL %>"><%= structure.getName() %></aui:a>
+								<aui:a href="<%= editStructureURL %>"><%= structure.getName(locale) %></aui:a>
 							</td>
 						</tr>
 
@@ -488,7 +493,7 @@ portletURL.setParameter("tabs1", tabs1);
 								<aui:a href="<%= editTemplateURL %>"><%= template.getId() %></aui:a>
 							</td>
 							<td>
-								<aui:a href="<%= editTemplateURL %>"><%= template.getName() %></aui:a>
+								<aui:a href="<%= editTemplateURL %>"><%= template.getName(locale) %></aui:a>
 							</td>
 						</tr>
 

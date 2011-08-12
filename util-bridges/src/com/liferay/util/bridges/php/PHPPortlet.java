@@ -16,13 +16,13 @@ package com.liferay.util.bridges.php;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.DynamicServletConfig;
 import com.liferay.portal.kernel.servlet.PortletServletObjectsFactory;
 import com.liferay.portal.kernel.servlet.ServletObjectsFactory;
 import com.liferay.portal.kernel.servlet.StringServletResponse;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.util.bridges.common.ScriptPostProcess;
-import com.liferay.util.servlet.DynamicServletConfig;
 
 import java.io.IOException;
 import java.io.PrintWriter;

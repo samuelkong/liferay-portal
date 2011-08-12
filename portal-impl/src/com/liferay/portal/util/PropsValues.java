@@ -979,6 +979,10 @@ public class PropsValues {
 
 	public static final boolean ORGANIZATIONS_USER_GROUP_MEMBERSHIP_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.ORGANIZATIONS_USER_GROUP_MEMBERSHIP_ENABLED));
 
+	public static final String OSGI_FRAMEWORK_STORAGE = PropsUtil.get(PropsKeys.OSGI_FRAMEWORK_STORAGE);
+
+	public static final String[] OSGI_SYSTEM_PACKAGES_EXTRA = PropsUtil.getArray(PropsKeys.OSGI_SYSTEM_PACKAGES_EXTRA);
+
 	public static final String PASSWORDS_DEFAULT_POLICY_NAME = PropsUtil.get(PropsKeys.PASSWORDS_DEFAULT_POLICY_NAME);
 
 	public static final String PASSWORDS_DIGEST_ENCODING = PropsUtil.get(PropsKeys.PASSWORDS_DIGEST_ENCODING);

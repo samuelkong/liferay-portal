@@ -756,38 +756,6 @@ create table Groups_UserGroups (
 	primary key (groupId, userGroupId)
 );
 
-create table IGFolder (
-	uuid_ VARCHAR(75) null,
-	folderId LONG not null primary key,
-	groupId LONG,
-	companyId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	parentFolderId LONG,
-	name VARCHAR(75) null,
-	description STRING null
-);
-
-create table IGImage (
-	uuid_ VARCHAR(75) null,
-	imageId LONG not null primary key,
-	groupId LONG,
-	companyId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	folderId LONG,
-	name VARCHAR(75) null,
-	description STRING null,
-	smallImageId LONG,
-	largeImageId LONG,
-	custom1ImageId LONG,
-	custom2ImageId LONG
-);
-
 create table Image (
 	imageId LONG not null primary key,
 	modifiedDate DATE null,
@@ -898,7 +866,7 @@ create table JournalStructure (
 	modifiedDate DATE null,
 	structureId VARCHAR(75) null,
 	parentStructureId VARCHAR(75) null,
-	name VARCHAR(75) null,
+	name STRING null,
 	description STRING null,
 	xsd TEXT null
 );
@@ -914,7 +882,7 @@ create table JournalTemplate (
 	modifiedDate DATE null,
 	templateId VARCHAR(75) null,
 	structureId VARCHAR(75) null,
-	name VARCHAR(75) null,
+	name STRING null,
 	description STRING null,
 	xsl TEXT null,
 	langType VARCHAR(75) null,

@@ -52,8 +52,6 @@ import com.liferay.portlet.expando.service.persistence.ExpandoColumnPersistenceT
 import com.liferay.portlet.expando.service.persistence.ExpandoRowPersistenceTest;
 import com.liferay.portlet.expando.service.persistence.ExpandoTablePersistenceTest;
 import com.liferay.portlet.expando.service.persistence.ExpandoValuePersistenceTest;
-import com.liferay.portlet.imagegallery.service.persistence.IGFolderPersistenceTest;
-import com.liferay.portlet.imagegallery.service.persistence.IGImagePersistenceTest;
 import com.liferay.portlet.journal.service.persistence.JournalArticleImagePersistenceTest;
 import com.liferay.portlet.journal.service.persistence.JournalArticlePersistenceTest;
 import com.liferay.portlet.journal.service.persistence.JournalArticleResourcePersistenceTest;
@@ -227,9 +225,6 @@ public class PersistenceTestSuite extends TestSuite {
 		testSuite.addTestSuite(ExpandoRowPersistenceTest.class);
 		testSuite.addTestSuite(ExpandoTablePersistenceTest.class);
 		testSuite.addTestSuite(ExpandoValuePersistenceTest.class);
-
-		testSuite.addTestSuite(IGFolderPersistenceTest.class);
-		testSuite.addTestSuite(IGImagePersistenceTest.class);
 
 		testSuite.addTestSuite(JournalArticleImagePersistenceTest.class);
 		testSuite.addTestSuite(JournalArticlePersistenceTest.class);
