@@ -53,6 +53,7 @@ List<Group> mySites = user.getMySites(max);
 			String privateAddPageHREF = null;
 
 			if (regularSite && GroupPermissionUtil.contains(permissionChecker, mySite.getGroupId(), ActionKeys.MANAGE_LAYOUTS)) {
+			
 				PortletURL addPageURL = new PortletURLImpl(request, PortletKeys.MY_SITES, plid, PortletRequest.ACTION_PHASE);
 
 				addPageURL.setWindowState(WindowState.NORMAL);
@@ -144,7 +145,6 @@ List<Group> mySites = user.getMySites(max);
 
 						<%
 						portletURL.setParameter("groupId", String.valueOf(mySite.getGroupId()));
-						portletURL.setParameter("privateLayout", Boolean.FALSE.toString());
 
 						boolean firstSite = false;
 
@@ -166,99 +166,110 @@ List<Group> mySites = user.getMySites(max);
 							}
 						}
 
-						String cssClass = "public-site";
+						String cssPosition = StringPool.BLANK;
 
 						if (firstSite) {
-							cssClass += " first";
+							cssPosition += " first";
 						}
 
 						if (lastSite) {
-							cssClass += " last";
-						}
-
-						if (selectedSite && layout.isPublicLayout()) {
-							cssClass += " current-site";
+							cssPosition += " last";
 						}
 						%>
-
-						<c:if test="<%= showPublicSite && publicLayoutsPageCount > 0 %>">
-							<li class="<%= cssClass %>">
-								<a href="<%= HtmlUtil.escape(portletURL.toString()) %>" onclick="Liferay.Util.forcePost(this); return false;">
-
-									<%
-									String siteName = StringPool.BLANK;
-
-									if (userSite) {
-										siteName = LanguageUtil.get(pageContext, "my-public-pages");
-									}
-									else if (mySite.getName().equals(GroupConstants.GUEST)) {
-										siteName = HtmlUtil.escape(themeDisplay.getAccount().getName());
-									}
-									else {
-										siteName = mySite.getDescriptiveName();
-									}
-									%>
-
-									<%@ include file="/html/taglib/ui/my_sites/page_site_name.jspf" %>
-
-									<c:if test="<%= privateLayoutsPageCount > 0 %>">
-										<span class="site-type"><liferay-ui:message key="public" /></span>
-									</c:if>
-								</a>
-							</li>
-						</c:if>
-
-						<%
-						portletURL.setParameter("privateLayout", Boolean.TRUE.toString());
-
-						cssClass = "private-site";
-
-						if (mySite.isControlPanel()) {
-							cssClass += " control-panel";
-						}
-
-						if (selectedSite && layout.isPrivateLayout()) {
-							cssClass += " current-site";
-						}
-						%>
-
-						<c:if test="<%= showPrivateSite && privateLayoutsPageCount > 0 %>">
-							<li class="<%= cssClass %>">
+						
+						<c:choose>
+							<c:when test="<%= mySite.isControlPanel() %>" >
+								<li class="<%= "control-panel" + cssPosition %>">
+									<a href="<%= themeDisplay.getURLControlPanel() %>">
+									
+										<%
+											String siteName = StringPool.BLANK;
+										
+											siteName = mySite.getDescriptiveName();
+										%>
+										
+										<%@ include file="/html/taglib/ui/my_sites/page_site_name.jspf" %>
+	
+									</a>
+								</li>
+							</c:when>
+							<c:otherwise>
+								
 								<%
-								String url = StringPool.BLANK;
-							
-								if (mySite.isControlPanel()) {
-									url = themeDisplay.getURLControlPanel();
-								}
-								else{
-									url = HtmlUtil.escape(portletURL.toString());
+								portletURL.setParameter("privateLayout", Boolean.FALSE.toString());
+								
+								String cssPublicClass = "public-site";
+
+								if (selectedSite && layout.isPublicLayout()) {
+									cssPublicClass += " current-site";
 								}
 								%>
+							
+								<c:if test="<%= showPublicSite && publicLayoutsPageCount > 0 %>">
+									<li class="<%= cssPublicClass + cssPosition %>">
+										<a href="<%= HtmlUtil.escape(portletURL.toString()) %>" onclick="Liferay.Util.forcePost(this); return false;">
+			
+											<%
+											String siteName = StringPool.BLANK;
+			
+											if (userSite) {
+												siteName = LanguageUtil.get(pageContext, "my-public-pages");
+											}
+											else if (mySite.getName().equals(GroupConstants.GUEST)) {
+												siteName = HtmlUtil.escape(themeDisplay.getAccount().getName());
+											}
+											else {
+												siteName = mySite.getDescriptiveName();
+											}
+											%>
+			
+											<%@ include file="/html/taglib/ui/my_sites/page_site_name.jspf" %>
+			
+											<c:if test="<%= privateLayoutsPageCount > 0 %>">
+												<span class="site-type"><liferay-ui:message key="public" /></span>
+											</c:if>
+										</a>
+									</li>
+								</c:if>
+			
+								<%
+								portletURL.setParameter("privateLayout", Boolean.TRUE.toString());
 								
-								<a href="<%= url %>" onclick="Liferay.Util.forcePost(this); return false;">
-								
-									<%
-									String siteName = StringPool.BLANK;
+								String cssPrivateClass = StringPool.BLANK;
 
-									if (userSite) {
-										siteName = LanguageUtil.get(pageContext, "my-private-pages");
-									}
-									else if (mySite.getName().equals(GroupConstants.GUEST)) {
-										siteName = HtmlUtil.escape(themeDisplay.getAccount().getName());
-									}
-									else {
-										siteName = mySite.getDescriptiveName();
-									}
-									%>
-
-									<%@ include file="/html/taglib/ui/my_sites/page_site_name.jspf" %>
-
-									<c:if test="<%= publicLayoutsPageCount > 0 %>">
-										<span class="site-type"><liferay-ui:message key="private" /></span>
-									</c:if>
-								</a>
-							</li>
-						</c:if>
+								if (selectedSite && layout.isPrivateLayout()) {
+									cssPrivateClass += " current-site";
+								}
+								%>
+			
+								<c:if test="<%= showPrivateSite && privateLayoutsPageCount > 0 %>">
+									<li class="<%= cssPrivateClass + cssPosition %>">
+										<a href="<%= HtmlUtil.escape(portletURL.toString()) %>" onclick="Liferay.Util.forcePost(this); return false;">
+			
+											<%
+											String siteName = StringPool.BLANK;
+			
+											if (userSite) {
+												siteName = LanguageUtil.get(pageContext, "my-private-pages");
+											}
+											else if (mySite.getName().equals(GroupConstants.GUEST)) {
+												siteName = HtmlUtil.escape(themeDisplay.getAccount().getName());
+											}
+											else {
+												siteName = mySite.getDescriptiveName();
+											}
+											%>
+			
+											<%@ include file="/html/taglib/ui/my_sites/page_site_name.jspf" %>
+			
+											<c:if test="<%= publicLayoutsPageCount > 0 %>">
+												<span class="site-type"><liferay-ui:message key="private" /></span>
+											</c:if>
+										</a>
+									</li>
+								</c:if>							
+							</c:otherwise>
+						</c:choose>
 					</c:when>
 					<c:when test='<%= PropsValues.MY_SITES_DISPLAY_STYLE.equals("classic") %>'>
 
