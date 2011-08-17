@@ -742,10 +742,6 @@ public class GroupFinderImpl
 	protected String replaceJoinAndWhere(
 		String sql, LinkedHashMap<String, Object> params) {
 
-		if (params.isEmpty()) {
-			return sql;
-		}
-
 		StringBundler sb = new StringBundler(params.size() + 1);
 
 		sb.append(sql);
