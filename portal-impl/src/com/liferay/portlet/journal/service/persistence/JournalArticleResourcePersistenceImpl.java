@@ -2098,10 +2098,12 @@ public class JournalArticleResourcePersistenceImpl extends BasePersistenceImpl<J
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(JournalArticleResourcePersistenceImpl.class);
 	private static JournalArticleResource _nullJournalArticleResource = new JournalArticleResourceImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<JournalArticleResource> toCacheModel() {
 				return _nullJournalArticleResourceCacheModel;
 			}

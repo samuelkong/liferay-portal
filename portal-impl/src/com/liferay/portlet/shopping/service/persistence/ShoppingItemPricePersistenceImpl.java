@@ -1047,10 +1047,12 @@ public class ShoppingItemPricePersistenceImpl extends BasePersistenceImpl<Shoppi
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ShoppingItemPricePersistenceImpl.class);
 	private static ShoppingItemPrice _nullShoppingItemPrice = new ShoppingItemPriceImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ShoppingItemPrice> toCacheModel() {
 				return _nullShoppingItemPriceCacheModel;
 			}

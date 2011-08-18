@@ -1829,10 +1829,12 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(RatingsEntryPersistenceImpl.class);
 	private static RatingsEntry _nullRatingsEntry = new RatingsEntryImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<RatingsEntry> toCacheModel() {
 				return _nullRatingsEntryCacheModel;
 			}

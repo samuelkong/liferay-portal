@@ -126,9 +126,7 @@ public interface UserService {
 		java.lang.String lastName, int prefixId, int suffixId, boolean male,
 		int birthdayMonth, int birthdayDay, int birthdayYear,
 		java.lang.String jobTitle, long[] groupIds, long[] organizationIds,
-		long[] roleIds, long[] userGroupIds,
-		java.util.List<com.liferay.portal.model.Address> addresses,
-		boolean sendEmail,
+		long[] roleIds, long[] userGroupIds, boolean sendEmail,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;

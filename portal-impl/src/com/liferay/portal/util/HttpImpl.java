@@ -77,6 +77,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HostParams;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
@@ -85,6 +86,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Hugo Huijser
  */
 public class HttpImpl implements Http {
 
@@ -1056,12 +1058,10 @@ public class HttpImpl implements Http {
 						for (Map.Entry<String, String> entry :
 								parts.entrySet()) {
 
-							String key = entry.getKey();
-							String value = entry.getValue();
+							StringPart stringPart = new StringPart(
+								entry.getKey(), entry.getValue());
 
-							if (value != null) {
-								postMethod.addParameter(key, value);
-							}
+							partsList.add(stringPart);
 						}
 					}
 

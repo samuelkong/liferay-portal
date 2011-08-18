@@ -1672,10 +1672,12 @@ public class DLContentPersistenceImpl extends BasePersistenceImpl<DLContent>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLContentPersistenceImpl.class);
 	private static DLContent _nullDLContent = new DLContentImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DLContent> toCacheModel() {
 				return _nullDLContentCacheModel;
 			}

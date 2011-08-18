@@ -49,6 +49,7 @@ import java.util.List;
  */
 public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 
+	@Override
 	public void afterPropertiesSet() {
 		ClassLoader classLoader = getClass().getClassLoader();
 

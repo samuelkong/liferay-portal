@@ -337,6 +337,7 @@ public class EntityCacheImpl implements CacheRegistryItem, EntityCache {
 			_primaryKey = primaryKey;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			CacheKey cacheKey = (CacheKey)obj;
 
@@ -350,6 +351,7 @@ public class EntityCacheImpl implements CacheRegistryItem, EntityCache {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			return _shardName.hashCode() * 11 + _primaryKey.hashCode();
 		}
@@ -371,6 +373,7 @@ public class EntityCacheImpl implements CacheRegistryItem, EntityCache {
 			_primaryKey = primaryKey;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			LocalCacheKey localCacheKey = (LocalCacheKey)obj;
 
@@ -385,6 +388,7 @@ public class EntityCacheImpl implements CacheRegistryItem, EntityCache {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			int hashCode = HashUtil.hash(0, _shardName);
 

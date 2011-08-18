@@ -1145,10 +1145,12 @@ public class UserTrackerPathPersistenceImpl extends BasePersistenceImpl<UserTrac
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(UserTrackerPathPersistenceImpl.class);
 	private static UserTrackerPath _nullUserTrackerPath = new UserTrackerPathImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<UserTrackerPath> toCacheModel() {
 				return _nullUserTrackerPathCacheModel;
 			}

@@ -15,6 +15,7 @@
 package com.liferay.portal.lar;
 
 import com.liferay.portal.NoSuchLayoutException;
+import com.liferay.portal.kernel.lar.ImportExportThreadLocal;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataHandlerKeys;
@@ -176,6 +177,23 @@ public class LayoutExporter {
 	}
 
 	public File exportLayoutsAsFile(
+			long groupId, boolean privateLayout, long[] layoutIds,
+			Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws Exception {
+
+		try {
+			ImportExportThreadLocal.setLayoutExportInProcess(true);
+
+			return doExportLayoutsAsFile(
+				groupId, privateLayout, layoutIds, parameterMap, startDate,
+				endDate);
+		}
+		finally {
+			ImportExportThreadLocal.setLayoutExportInProcess(false);
+		}
+	}
+
+	protected File doExportLayoutsAsFile(
 			long groupId, boolean privateLayout, long[] layoutIds,
 			Map<String, String[]> parameterMap, Date startDate, Date endDate)
 		throws Exception {

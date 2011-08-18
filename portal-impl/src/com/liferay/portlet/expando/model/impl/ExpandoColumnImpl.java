@@ -153,6 +153,6 @@ public class ExpandoColumnImpl extends ExpandoColumnBaseImpl {
 
 	private static Log _log = LogFactoryUtil.getLog(ExpandoColumnImpl.class);
 
-	private UnicodeProperties _typeSettingsProperties = null;
+	private UnicodeProperties _typeSettingsProperties;
 
 }

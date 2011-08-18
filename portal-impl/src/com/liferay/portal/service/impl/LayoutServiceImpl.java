@@ -46,6 +46,7 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import java.io.File;
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -195,6 +196,8 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 			return LayoutConstants.DEFAULT_PLID;
 		}
 
+		PermissionChecker permissionChecker = getPermissionChecker();
+
 		String scopeGroupLayoutUuid = null;
 
 		Group scopeGroup = groupLocalService.getGroup(scopeGroupId);
@@ -206,10 +209,20 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 			scopeGroupLayoutUuid = scopeGroupLayout.getUuid();
 		}
 
-		List<Layout> layouts = layoutPersistence.filterFindByG_P(
-			groupId, privateLayout);
+		List<Layout> layouts = new ArrayList<Layout>();
+
+		layouts.addAll(
+			layoutPersistence.filterFindByG_P(groupId, privateLayout));
+		layouts.addAll(
+			layoutPersistence.filterFindByG_P(scopeGroupId, privateLayout));
 
 		for (Layout layout : layouts) {
+			if (!LayoutPermissionUtil.contains(
+					permissionChecker, layout, ActionKeys.VIEW)) {
+
+				continue;
+			}
+
 			if (!layout.isTypePortlet()) {
 				continue;
 			}

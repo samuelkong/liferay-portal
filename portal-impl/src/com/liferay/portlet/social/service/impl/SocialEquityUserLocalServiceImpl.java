@@ -45,6 +45,7 @@ public class SocialEquityUserLocalServiceImpl
 		}
 	}
 
+	@Override
 	public void deleteSocialEquityUser(long userId) throws SystemException {
 		socialEquityUserPersistence.removeByUserId(userId);
 	}

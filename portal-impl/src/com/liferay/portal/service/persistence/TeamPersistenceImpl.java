@@ -3117,10 +3117,12 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(TeamPersistenceImpl.class);
 	private static Team _nullTeam = new TeamImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Team> toCacheModel() {
 				return _nullTeamCacheModel;
 			}

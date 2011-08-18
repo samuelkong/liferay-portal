@@ -175,6 +175,7 @@ public class EditPageAttachmentAction extends EditFileEntryAction {
 		WikiPageServiceUtil.addPageAttachments(nodeId, title, files);
 	}
 
+	@Override
 	protected void addMultipleFileEntries(
 			ActionRequest actionRequest, ActionResponse actionResponse,
 			String selectedFileName, List<String> validFileNames,
@@ -218,7 +219,8 @@ public class EditPageAttachmentAction extends EditFileEntryAction {
 		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(
 			actionRequest);
 
-		long nodeId = ParamUtil.getLong(uploadRequest, "nodeId");
+		long nodeId = ParamUtil.getLong(actionRequest, "nodeId");
+
 		File file = uploadRequest.getFile("file");
 		String sourceFileName = uploadRequest.getFileName("file");
 

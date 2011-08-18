@@ -6636,10 +6636,12 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(RolePersistenceImpl.class);
 	private static Role _nullRole = new RoleImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Role> toCacheModel() {
 				return _nullRoleCacheModel;
 			}

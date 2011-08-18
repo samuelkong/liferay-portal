@@ -62,7 +62,7 @@ public interface Deployer {
 	public void deployFile(File srcFile, String specifiedContext)
 		throws Exception;
 
-	public void processPluginPackageProperties(
+	public Map<String, String> processPluginPackageProperties(
 			File srcFile, String displayName, PluginPackage pluginPackage)
 		throws Exception;
 

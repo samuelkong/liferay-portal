@@ -1069,11 +1069,15 @@
 			}
 
 			ddmURL.setParameter('structureId', config.structureId);
-			ddmURL.setParameter('struts_action', '/dynamic_data_mapping/view');
 
 			if (config.struts_action) {
 				ddmURL.setParameter('struts_action', config.struts_action);
 			}
+			else {
+				ddmURL.setParameter('struts_action', '/dynamic_data_mapping/view');
+			}
+
+			ddmURL.setParameter('templateId', config.templateId);
 
 			ddmURL.setPortletId(166);
 			ddmURL.setWindowState('pop_up');

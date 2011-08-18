@@ -1867,10 +1867,12 @@ public class LayoutSetPersistenceImpl extends BasePersistenceImpl<LayoutSet>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(LayoutSetPersistenceImpl.class);
 	private static LayoutSet _nullLayoutSet = new LayoutSetImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<LayoutSet> toCacheModel() {
 				return _nullLayoutSetCacheModel;
 			}

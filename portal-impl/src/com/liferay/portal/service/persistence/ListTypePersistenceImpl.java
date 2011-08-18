@@ -1170,10 +1170,12 @@ public class ListTypePersistenceImpl extends BasePersistenceImpl<ListType>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ListTypePersistenceImpl.class);
 	private static ListType _nullListType = new ListTypeImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ListType> toCacheModel() {
 				return _nullListTypeCacheModel;
 			}

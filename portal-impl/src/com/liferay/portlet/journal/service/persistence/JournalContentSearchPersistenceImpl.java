@@ -3999,10 +3999,12 @@ public class JournalContentSearchPersistenceImpl extends BasePersistenceImpl<Jou
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(JournalContentSearchPersistenceImpl.class);
 	private static JournalContentSearch _nullJournalContentSearch = new JournalContentSearchImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<JournalContentSearch> toCacheModel() {
 				return _nullJournalContentSearchCacheModel;
 			}

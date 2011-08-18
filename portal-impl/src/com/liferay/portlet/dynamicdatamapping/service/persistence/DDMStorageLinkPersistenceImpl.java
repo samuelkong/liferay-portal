@@ -1722,10 +1722,12 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DDMStorageLinkPersistenceImpl.class);
 	private static DDMStorageLink _nullDDMStorageLink = new DDMStorageLinkImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DDMStorageLink> toCacheModel() {
 				return _nullDDMStorageLinkCacheModel;
 			}

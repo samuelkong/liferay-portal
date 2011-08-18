@@ -2431,10 +2431,12 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DDLRecordSetPersistenceImpl.class);
 	private static DDLRecordSet _nullDDLRecordSet = new DDLRecordSetImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DDLRecordSet> toCacheModel() {
 				return _nullDDLRecordSetCacheModel;
 			}

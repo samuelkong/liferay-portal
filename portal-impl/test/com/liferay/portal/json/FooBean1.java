@@ -24,6 +24,7 @@ import java.util.Collection;
 public class FooBean1 extends FooBean {
 
 	@JSON
+	@Override
 	public Collection<Object> getCollection() {
 		return super.getCollection();
 	}

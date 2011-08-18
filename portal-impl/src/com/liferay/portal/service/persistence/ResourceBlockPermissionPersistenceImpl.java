@@ -1430,10 +1430,12 @@ public class ResourceBlockPermissionPersistenceImpl extends BasePersistenceImpl<
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ResourceBlockPermissionPersistenceImpl.class);
 	private static ResourceBlockPermission _nullResourceBlockPermission = new ResourceBlockPermissionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ResourceBlockPermission> toCacheModel() {
 				return _nullResourceBlockPermissionCacheModel;
 			}

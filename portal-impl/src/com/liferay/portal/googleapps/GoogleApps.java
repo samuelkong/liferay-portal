@@ -30,6 +30,12 @@ public class GoogleApps {
 		init();
 	}
 
+	public GoogleApps(String domain, String userName, String password) {
+		_gAuthenticator = new GAuthenticator(domain, userName, password);
+
+		init();
+	}
+
 	public GAuthenticator getGAuthenticator() {
 		return _gAuthenticator;
 	}

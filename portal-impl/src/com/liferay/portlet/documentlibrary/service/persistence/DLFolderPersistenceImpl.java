@@ -6053,10 +6053,12 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFolderPersistenceImpl.class);
 	private static DLFolder _nullDLFolder = new DLFolderImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DLFolder> toCacheModel() {
 				return _nullDLFolderCacheModel;
 			}

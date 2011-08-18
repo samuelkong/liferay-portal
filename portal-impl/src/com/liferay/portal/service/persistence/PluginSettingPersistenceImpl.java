@@ -1509,10 +1509,12 @@ public class PluginSettingPersistenceImpl extends BasePersistenceImpl<PluginSett
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(PluginSettingPersistenceImpl.class);
 	private static PluginSetting _nullPluginSetting = new PluginSettingImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<PluginSetting> toCacheModel() {
 				return _nullPluginSettingCacheModel;
 			}

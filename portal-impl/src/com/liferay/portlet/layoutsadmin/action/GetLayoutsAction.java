@@ -56,6 +56,16 @@ public class GetLayoutsAction extends JSONAction {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
+		List<Layout> layoutAncestors = null;
+
+		long selPlid = ParamUtil.getLong(request, "selPlid");
+
+		if (selPlid != 0) {
+			Layout selLayout = LayoutLocalServiceUtil.getLayout(selPlid);
+
+			layoutAncestors = selLayout.getAncestors();
+		}
+
 		List<Layout> layouts = getLayouts(request);
 
 		for (Layout layout : layouts) {
@@ -69,6 +79,11 @@ public class GetLayoutsAction extends JSONAction {
 			jsonObject.put("plid", layout.getPlid());
 			jsonObject.put("priority", layout.getPriority());
 			jsonObject.put("privateLayout", layout.isPrivateLayout());
+
+			if ((layoutAncestors != null) && layoutAncestors.contains(layout)) {
+				jsonObject.put("selLayoutAncestor", true);
+			}
+
 			jsonObject.put("type", layout.getType());
 
 			LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(

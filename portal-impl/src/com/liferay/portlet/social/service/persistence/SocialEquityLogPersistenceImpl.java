@@ -4524,10 +4524,12 @@ public class SocialEquityLogPersistenceImpl extends BasePersistenceImpl<SocialEq
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(SocialEquityLogPersistenceImpl.class);
 	private static SocialEquityLog _nullSocialEquityLog = new SocialEquityLogImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<SocialEquityLog> toCacheModel() {
 				return _nullSocialEquityLogCacheModel;
 			}

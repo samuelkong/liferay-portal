@@ -25,10 +25,10 @@ import com.liferay.portal.security.permission.PermissionChecker;
 public class LayoutPermissionUtil {
 
 	public static void check(
-			PermissionChecker permissionChecker, long plid, String actionId)
+			PermissionChecker permissionChecker, Layout layout, String actionId)
 		throws PortalException, SystemException {
 
-		getLayoutPermission().check(permissionChecker, plid, actionId);
+		getLayoutPermission().check(permissionChecker, layout, actionId);
 	}
 
 	public static void check(
@@ -41,18 +41,27 @@ public class LayoutPermissionUtil {
 	}
 
 	public static void check(
-			PermissionChecker permissionChecker, Layout layout, String actionId)
-		throws PortalException, SystemException {
-
-		getLayoutPermission().check(permissionChecker, layout, actionId);
-	}
-
-	public static boolean contains(
 			PermissionChecker permissionChecker, long plid, String actionId)
 		throws PortalException, SystemException {
 
+		getLayoutPermission().check(permissionChecker, plid, actionId);
+	}
+
+	public static boolean contains(
+			PermissionChecker permissionChecker, Layout layout, String actionId)
+		throws PortalException, SystemException {
+
 		return getLayoutPermission().contains(
-			permissionChecker, plid, actionId);
+			permissionChecker, layout, actionId);
+	}
+
+	public static boolean contains(
+			PermissionChecker permissionChecker, Layout layout,
+			String controlPanelCategory, String actionId)
+		throws PortalException, SystemException {
+
+		return getLayoutPermission().contains(
+			permissionChecker, layout, controlPanelCategory, actionId);
 	}
 
 	public static boolean contains(
@@ -65,11 +74,22 @@ public class LayoutPermissionUtil {
 	}
 
 	public static boolean contains(
-			PermissionChecker permissionChecker, Layout layout, String actionId)
+			PermissionChecker permissionChecker, long groupId,
+			boolean privateLayout, long layoutId, String controlPanelCategory,
+			String actionId)
 		throws PortalException, SystemException {
 
 		return getLayoutPermission().contains(
-			permissionChecker, layout, actionId);
+			permissionChecker, groupId, privateLayout, layoutId,
+			controlPanelCategory, actionId);
+	}
+
+	public static boolean contains(
+			PermissionChecker permissionChecker, long plid, String actionId)
+		throws PortalException, SystemException {
+
+		return getLayoutPermission().contains(
+			permissionChecker, plid, actionId);
 	}
 
 	public static LayoutPermission getLayoutPermission() {

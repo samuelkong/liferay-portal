@@ -66,7 +66,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -109,6 +108,10 @@ public class PluginPackageUtil {
 
 	public static Collection<String> getAvailableTags() {
 		return _instance._getAvailableTags();
+	}
+
+	public static PluginPackage getInstalledPluginPackage(String context) {
+		return _instance._getInstalledPluginPackage(context);
 	}
 
 	public static List<PluginPackage> getInstalledPluginPackages() {
@@ -366,6 +369,10 @@ public class PluginPackageUtil {
 
 	private Collection<String> _getAvailableTags() {
 		return _availableTagsCache;
+	}
+
+	private PluginPackage _getInstalledPluginPackage(String context) {
+		return _installedPluginPackages.getPluginPackage(context);
 	}
 
 	private List<PluginPackage> _getInstalledPluginPackages() {
@@ -749,20 +756,19 @@ public class PluginPackageUtil {
 			return pluginPackageRepository;
 		}
 
-		Document doc = SAXReaderUtil.read(xml);
+		Document document = SAXReaderUtil.read(xml);
 
-		Element root = doc.getRootElement();
+		Element rootElement = document.getRootElement();
 
 		Properties settings = _readProperties(
-			root.element("settings"), "setting");
+			rootElement.element("settings"), "setting");
 
 		pluginPackageRepository.setSettings(settings);
 
-		Iterator<Element> itr1 = root.elements("plugin-package").iterator();
+		List<Element> pluginPackageElements = rootElement.elements(
+			"plugin-package");
 
-		while (itr1.hasNext()) {
-			Element pluginPackageElement = itr1.next();
-
+		for (Element pluginPackageElement : pluginPackageElements) {
 			PluginPackage pluginPackage = _readPluginPackageXml(
 				pluginPackageElement);
 
@@ -772,14 +778,12 @@ public class PluginPackageUtil {
 				continue;
 			}
 
-			Iterator<String> itr2 = pluginPackage.getTypes().iterator();
-
 			boolean containsSupportedTypes = false;
 
-			while (itr2.hasNext()) {
-				String type = itr2.next();
+			List<String> pluginTypes = pluginPackage.getTypes();
 
-				if (supportedPluginTypes.contains(type)) {
+			for (String pluginType : pluginTypes) {
+				if (supportedPluginTypes.contains(pluginType)) {
 					containsSupportedTypes = true;
 
 					break;

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_0_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.1.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_1_0.dtd">
 
 <service-builder package-path="com.liferay.counter">
 	<namespace>Counter</namespace>
-    <entity name="Counter" local-service="true" remote-service="false" cache-enabled="false">
+	<entity name="Counter" local-service="true" remote-service="false" cache-enabled="false">
 
 		<!-- PK fields -->
 
@@ -12,5 +12,5 @@
 		<!-- Other fields -->
 
 		<column name="currentId" type="long" />
-    </entity>
+	</entity>
 </service-builder>

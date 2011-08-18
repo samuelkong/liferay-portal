@@ -25,6 +25,8 @@ import com.liferay.portal.tools.deploy.WebDeployer;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
 
+import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,15 +67,17 @@ public class WebAutoDeployer extends WebDeployer implements AutoDeployer {
 		}
 	}
 
-	public void autoDeploy(String file) throws AutoDeployException {
+	public void autoDeploy(File file, String context)
+		throws AutoDeployException {
+
 		List<String> wars = new ArrayList<String>();
 
-		wars.add(file);
+		wars.add(file.getName());
 
 		this.wars = wars;
 
 		try {
-			deploy();
+			deployFile(file, context);
 		}
 		catch (Exception e) {
 			throw new AutoDeployException(e);

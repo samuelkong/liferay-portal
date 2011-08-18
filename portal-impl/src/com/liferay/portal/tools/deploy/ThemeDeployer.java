@@ -17,7 +17,6 @@ package com.liferay.portal.tools.deploy;
 import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Plugin;
 import com.liferay.portal.util.InitUtil;
@@ -25,10 +24,8 @@ import com.liferay.portal.util.InitUtil;
 import java.io.File;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * @author Brian Wing Shun Chan
@@ -107,79 +104,44 @@ public class ThemeDeployer extends BaseDeployer {
 	}
 
 	@Override
-	public void processPluginPackageProperties(
+	public String getPluginType() {
+		return Plugin.TYPE_THEME;
+	}
+
+	@Override
+	public Map<String, String> processPluginPackageProperties(
 			File srcFile, String displayName, PluginPackage pluginPackage)
 		throws Exception {
 
-		if (pluginPackage == null) {
-			return;
+		Map<String, String> filterMap = super.processPluginPackageProperties(
+			srcFile, displayName, pluginPackage);
+
+		if (filterMap == null) {
+			return null;
 		}
 
-		Properties properties = getPluginPackageProperties(srcFile);
-
-		if ((properties == null) || (properties.size() == 0)) {
-			return;
-		}
-
-		String moduleGroupId = pluginPackage.getGroupId();
-		String moduleArtifactId = pluginPackage.getArtifactId();
-		String moduleVersion = pluginPackage.getVersion();
-
-		String pluginName = pluginPackage.getName();
-		String pluginType = pluginPackage.getTypes().get(0);
-		String pluginTypeName = TextFormatter.format(
-			pluginType, TextFormatter.J);
-
-		if (!pluginType.equals(Plugin.TYPE_THEME)) {
-			return;
-		}
-
-		String tags = getPluginPackageTagsXml(pluginPackage.getTags());
-		String shortDescription = pluginPackage.getShortDescription();
-		String longDescription = pluginPackage.getLongDescription();
-		String changeLog = pluginPackage.getChangeLog();
-		String pageURL = pluginPackage.getPageURL();
-		String author = pluginPackage.getAuthor();
-		String licenses = getPluginPackageLicensesXml(
-			pluginPackage.getLicenses());
-		String liferayVersions = getPluginPackageLiferayVersionsXml(
-			pluginPackage.getLiferayVersions());
+		String moduleArtifactId = filterMap.get("module_artifact_id");
 
 		int pos = moduleArtifactId.indexOf("-theme");
 
 		String themeId = moduleArtifactId.substring(0, pos);
-		String themeName = pluginName;
-
-		Map<String, String> filterMap = new HashMap<String, String>();
-
-		filterMap.put("module_group_id", moduleGroupId);
-		filterMap.put("module_artifact_id", moduleArtifactId);
-		filterMap.put("module_version", moduleVersion);
-
-		filterMap.put("plugin_name", pluginName);
-		filterMap.put("plugin_type", pluginType);
-		filterMap.put("plugin_type_name", pluginTypeName);
-
-		filterMap.put("tags", tags);
-		filterMap.put("short_description", shortDescription);
-		filterMap.put("long_description", longDescription);
-		filterMap.put("change_log", changeLog);
-		filterMap.put("page_url", pageURL);
-		filterMap.put("author", author);
-		filterMap.put("licenses", licenses);
-		filterMap.put("liferay_versions", liferayVersions);
 
 		filterMap.put("theme_id", themeId);
+
+		String themeName = filterMap.get("plugin_name");
+
 		filterMap.put("theme_name", themeName);
+
+		String liferayVersions = filterMap.get("liferay_versions");
+
 		filterMap.put(
 			"theme_versions",
 			StringUtil.replace(liferayVersions, "liferay-version", "version"));
 
 		copyDependencyXml(
 			"liferay-look-and-feel.xml", srcFile + "/WEB-INF", filterMap, true);
-		copyDependencyXml(
-			"liferay-plugin-package.xml", srcFile + "/WEB-INF", filterMap,
-			true);
+
+		return filterMap;
 	}
 
 }

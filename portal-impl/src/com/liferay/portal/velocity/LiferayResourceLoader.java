@@ -28,21 +28,27 @@ import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Shuyang Zhou
  */
 public class LiferayResourceLoader extends ResourceLoader {
 
-	public static void setListeners(String[] listeners) {
-		_listeners = new VelocityResourceListener[listeners.length];
+	public static void setVelocityResourceListeners(
+		String[] velocityResourceListeners) {
 
-		for (int i = 0; i < listeners.length; i++) {
+		_velocityResourceListeners = new VelocityResourceListener[
+			velocityResourceListeners.length];
+
+		for (int i = 0; i < velocityResourceListeners.length; i++) {
 			try {
-				_listeners[i] = (VelocityResourceListener)Class.forName(
-					listeners[i]).newInstance();
-			}
-			catch (Exception ex) {
-				_log.error(ex);
+				Class<?> clazz = Class.forName(velocityResourceListeners[i]);
 
-				_listeners[i] = null;
+				_velocityResourceListeners[i] = (VelocityResourceListener)
+					clazz.newInstance();
+			}
+			catch (Exception e) {
+				_log.error(e);
+
+				_velocityResourceListeners[i] = null;
 			}
 		}
 	}
@@ -60,17 +66,7 @@ public class LiferayResourceLoader extends ResourceLoader {
 	public InputStream getResourceStream(String source)
 		throws ResourceNotFoundException {
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Get resource for " + source);
-		}
-
-		InputStream is = null;
-
-		for (int i = 0; (is == null) && (i < _listeners.length); i++) {
-			if (_listeners[i] != null) {
-				is = _listeners[i].getResourceStream(source);
-			}
-		}
+		InputStream is = doGetResourceStream(source);
 
 		if (is == null) {
 			if (_log.isDebugEnabled()) {
@@ -105,27 +101,14 @@ public class LiferayResourceLoader extends ResourceLoader {
 
 	@Override
 	public boolean resourceExists(String resourceName) {
-		InputStream is = null;
+		InputStream is = doGetResourceStream(resourceName);
 
 		try {
-			is = getResourceStream(resourceName);
-		}
-		catch (ResourceNotFoundException rnfe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Could not load resource " + resourceName + " from " +
-						getClass(),
-					rnfe);
+			if (is != null) {
+				is.close();
 			}
 		}
-		finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			}
-			catch (IOException ioe) {
-			}
+		catch (IOException ioe) {
 		}
 
 		if (is != null) {
@@ -136,10 +119,33 @@ public class LiferayResourceLoader extends ResourceLoader {
 		}
 	}
 
+	protected InputStream doGetResourceStream(String source)
+		throws ResourceNotFoundException {
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Get resource for " + source);
+		}
+
+		InputStream is = null;
+
+		for (int i = 0; (is == null) && (i < _velocityResourceListeners.length);
+				i++) {
+
+			VelocityResourceListener velocityResourceListener =
+				_velocityResourceListeners[i];
+
+			if (velocityResourceListener != null) {
+				is = velocityResourceListener.getResourceStream(source);
+			}
+		}
+
+		return is;
+	}
+
+	private static VelocityResourceListener[] _velocityResourceListeners =
+		new VelocityResourceListener[0];
+
 	private static Log _log = LogFactoryUtil.getLog(
 		LiferayResourceLoader.class);
-
-	private static VelocityResourceListener[] _listeners =
-		new VelocityResourceListener[0];
 
 }

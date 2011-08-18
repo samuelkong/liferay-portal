@@ -2077,10 +2077,12 @@ public class PortletItemPersistenceImpl extends BasePersistenceImpl<PortletItem>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(PortletItemPersistenceImpl.class);
 	private static PortletItem _nullPortletItem = new PortletItemImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<PortletItem> toCacheModel() {
 				return _nullPortletItemCacheModel;
 			}

@@ -5049,10 +5049,12 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(OrganizationPersistenceImpl.class);
 	private static Organization _nullOrganization = new OrganizationImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Organization> toCacheModel() {
 				return _nullOrganizationCacheModel;
 			}

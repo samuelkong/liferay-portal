@@ -2903,10 +2903,12 @@ public class AssetVocabularyPersistenceImpl extends BasePersistenceImpl<AssetVoc
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(AssetVocabularyPersistenceImpl.class);
 	private static AssetVocabulary _nullAssetVocabulary = new AssetVocabularyImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<AssetVocabulary> toCacheModel() {
 				return _nullAssetVocabularyCacheModel;
 			}

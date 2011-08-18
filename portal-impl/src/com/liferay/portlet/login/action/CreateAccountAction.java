@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.model.Address;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.CompanyConstants;
 import com.liferay.portal.model.Layout;
@@ -69,9 +68,6 @@ import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.login.util.LoginUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -258,7 +254,6 @@ public class CreateAccountAction extends PortletAction {
 		long[] organizationIds = null;
 		long[] roleIds = null;
 		long[] userGroupIds = null;
-		List<Address> addresses = new ArrayList<Address>();
 		boolean sendEmail = true;
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
@@ -289,8 +284,8 @@ public class CreateAccountAction extends PortletAction {
 			autoScreenName, screenName, emailAddress, facebookId, openId,
 			themeDisplay.getLocale(), firstName, middleName, lastName, prefixId,
 			suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle,
-			groupIds, organizationIds, roleIds, userGroupIds, addresses,
-			sendEmail, serviceContext);
+			groupIds, organizationIds, roleIds, userGroupIds, sendEmail,
+			serviceContext);
 
 		if (openIdPending) {
 			session.setAttribute(
@@ -356,7 +351,7 @@ public class CreateAccountAction extends PortletAction {
 		User anonymousUser = UserLocalServiceUtil.getUserByEmailAddress(
 			themeDisplay.getCompanyId(), emailAddress);
 
-		UserServiceUtil.deleteUser(anonymousUser.getUserId());
+		UserLocalServiceUtil.deleteUser(anonymousUser.getUserId());
 
 		addUser(actionRequest, actionResponse);
 	}

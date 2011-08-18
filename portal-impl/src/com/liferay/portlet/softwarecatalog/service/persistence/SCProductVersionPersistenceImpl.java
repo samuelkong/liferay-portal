@@ -2022,10 +2022,12 @@ public class SCProductVersionPersistenceImpl extends BasePersistenceImpl<SCProdu
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(SCProductVersionPersistenceImpl.class);
 	private static SCProductVersion _nullSCProductVersion = new SCProductVersionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<SCProductVersion> toCacheModel() {
 				return _nullSCProductVersionCacheModel;
 			}

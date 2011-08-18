@@ -73,8 +73,18 @@ String[] advancedSections = PropsValues.SITES_FORM_ADD_ADVANCED;
 
 if (group != null) {
 	mainSections = PropsValues.SITES_FORM_UPDATE_MAIN;
+
+	if (windowState.equals(LiferayWindowState.POP_UP) && ArrayUtil.contains(mainSections, "site_url")) {
+		mainSections = ArrayUtil.remove(mainSections, "site_url");
+	}
+
 	seoSections = PropsValues.SITES_FORM_UPDATE_SEO;
+
 	advancedSections = PropsValues.SITES_FORM_UPDATE_ADVANCED;
+
+	if (windowState.equals(LiferayWindowState.POP_UP) && ArrayUtil.contains(advancedSections, "staging")) {
+		advancedSections = ArrayUtil.remove(advancedSections, "staging");
+	}
 }
 
 String[][] categorySections = {mainSections, seoSections, advancedSections};

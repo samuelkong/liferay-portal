@@ -2203,10 +2203,12 @@ public class DLFileRankPersistenceImpl extends BasePersistenceImpl<DLFileRank>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFileRankPersistenceImpl.class);
 	private static DLFileRank _nullDLFileRank = new DLFileRankImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DLFileRank> toCacheModel() {
 				return _nullDLFileRankCacheModel;
 			}

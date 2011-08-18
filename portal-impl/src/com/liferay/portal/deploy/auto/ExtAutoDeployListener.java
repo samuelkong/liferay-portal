@@ -30,7 +30,7 @@ public class ExtAutoDeployListener extends BaseAutoDeployListener {
 		_autoDeployer = new ExtAutoDeployer();
 	}
 
-	public void deploy(File file) throws AutoDeployException {
+	public void deploy(File file, String context) throws AutoDeployException {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Invoking deploy for " + file.getPath());
 		}
@@ -43,7 +43,7 @@ public class ExtAutoDeployListener extends BaseAutoDeployListener {
 			_log.info("Copying web plugin for " + file.getPath());
 		}
 
-		_autoDeployer.autoDeploy(file.getName());
+		_autoDeployer.autoDeploy(file, context);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(

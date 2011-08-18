@@ -19,6 +19,7 @@ package com.liferay.taglib.core;
  */
 public class OtherwiseTag extends WhenTag {
 
+	@Override
 	protected boolean condition() {
 		return true;
 	}

@@ -33,7 +33,7 @@ public class PortletAutoDeployListener extends BaseAutoDeployListener {
 		_autoDeployer = new PortletAutoDeployer();
 	}
 
-	public void deploy(File file) throws AutoDeployException {
+	public void deploy(File file, String context) throws AutoDeployException {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Invoking deploy for " + file.getPath());
 		}
@@ -75,7 +75,7 @@ public class PortletAutoDeployListener extends BaseAutoDeployListener {
 			_log.debug("Using deployer " + deployer.getClass().getName());
 		}
 
-		deployer.autoDeploy(file.getName());
+		deployer.autoDeploy(file, context);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(

@@ -1152,10 +1152,12 @@ public class OrgLaborPersistenceImpl extends BasePersistenceImpl<OrgLabor>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(OrgLaborPersistenceImpl.class);
 	private static OrgLabor _nullOrgLabor = new OrgLaborImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<OrgLabor> toCacheModel() {
 				return _nullOrgLaborCacheModel;
 			}

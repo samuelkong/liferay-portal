@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Hugo Huijser
  */
 public interface Http {
 
@@ -293,7 +294,7 @@ public interface Http {
 
 			if (_body != null) {
 				throw new IllegalArgumentException (
-					"Part file cannot be added because a body has already " +
+					"File part cannot be added because a body has already " +
 						"been set");
 			}
 

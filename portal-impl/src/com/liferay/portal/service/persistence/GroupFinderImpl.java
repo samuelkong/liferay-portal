@@ -681,7 +681,11 @@ public class GroupFinderImpl
 
 			Map<String, String> joinMap = _getJoinMap();
 
-			sb.append(joinMap.get(key));
+			String joinValue = joinMap.get(key);
+
+			if (Validator.isNotNull(joinValue)) {
+				sb.append(joinValue);
+			}
 		}
 
 		return sb.toString();
@@ -732,7 +736,11 @@ public class GroupFinderImpl
 
 				Map<String, String> whereMap = _getWhereMap();
 
-				sb.append(whereMap.get(key));
+				String whereValue = whereMap.get(key);
+
+				if (Validator.isNotNull(whereValue)) {
+					sb.append(whereValue);
+				}
 			}
 		}
 
@@ -743,7 +751,16 @@ public class GroupFinderImpl
 		String sql, LinkedHashMap<String, Object> params) {
 
 		if (params.isEmpty()) {
-			return sql;
+			return StringUtil.replace(
+				sql,
+				new String[] {
+					"[$JOIN$]",
+					"[$WHERE$]"
+				},
+				new String[] {
+					StringPool.BLANK,
+					StringPool.BLANK
+				});
 		}
 
 		StringBundler sb = new StringBundler(params.size() + 1);
@@ -970,6 +987,7 @@ public class GroupFinderImpl
 			_removeWhere(
 				CustomSQLUtil.get(JOIN_BY_ROLE_RESOURCE_TYPE_PERMISSIONS)));
 		joinMap.put("site", _removeWhere(CustomSQLUtil.get(JOIN_BY_SITE)));
+		joinMap.put("type", _removeWhere(CustomSQLUtil.get(JOIN_BY_TYPE)));
 		joinMap.put("userGroupRole",
 			_removeWhere(CustomSQLUtil.get(JOIN_BY_USER_GROUP_ROLE)));
 		joinMap.put("usersGroups",

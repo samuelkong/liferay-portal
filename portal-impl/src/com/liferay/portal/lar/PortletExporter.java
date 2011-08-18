@@ -17,6 +17,7 @@ package com.liferay.portal.lar;
 import com.liferay.portal.LayoutImportException;
 import com.liferay.portal.NoSuchPortletPreferencesException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.ImportExportThreadLocal;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataHandlerKeys;
@@ -111,6 +112,22 @@ public class PortletExporter {
 	}
 
 	public File exportPortletInfoAsFile(
+			long plid, long groupId, String portletId,
+			Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws Exception {
+
+		try {
+			ImportExportThreadLocal.setPortletImportInProcess(true);
+
+			return doExportPortletInfoAsFile(
+				plid, groupId, portletId, parameterMap, startDate, endDate);
+		}
+		finally {
+			ImportExportThreadLocal.setPortletImportInProcess(false);
+		}
+	}
+
+	protected File doExportPortletInfoAsFile(
 			long plid, long groupId, String portletId,
 			Map<String, String[]> parameterMap, Date startDate, Date endDate)
 		throws Exception {

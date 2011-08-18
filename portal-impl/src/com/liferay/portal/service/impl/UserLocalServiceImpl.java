@@ -74,7 +74,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 import com.liferay.portal.model.Account;
-import com.liferay.portal.model.Address;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.CompanyConstants;
 import com.liferay.portal.model.Contact;
@@ -463,8 +462,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				autoScreenName, screenName, emailAddress, facebookId, openId,
 				locale, firstName, middleName, lastName, prefixId, suffixId,
 				male, birthdayMonth, birthdayDay, birthdayYear, jobTitle,
-				groupIds, organizationIds, roleIds, userGroupIds,
-				new ArrayList<Address>(), sendEmail, serviceContext);
+				groupIds, organizationIds, roleIds, userGroupIds, sendEmail,
+				serviceContext);
 		}
 		finally {
 			WorkflowThreadLocal.setEnabled(workflowEnabled);
@@ -532,7 +531,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @param  organizationIds the primary keys of the user's organizations
 	 * @param  roleIds the primary keys of the roles this user possesses
 	 * @param  userGroupIds the primary keys of the user's user groups
-	 * @param  addresses the user's addresses
 	 * @param  sendEmail whether to send the user an email notification about
 	 *         their new account
 	 * @param  serviceContext the user's service context (optionally
@@ -551,8 +549,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			String lastName, int prefixId, int suffixId, boolean male,
 			int birthdayMonth, int birthdayDay, int birthdayYear,
 			String jobTitle, long[] groupIds, long[] organizationIds,
-			long[] roleIds, long[] userGroupIds, List<Address> addresses,
-			boolean sendEmail, ServiceContext serviceContext)
+			long[] roleIds, long[] userGroupIds, boolean sendEmail,
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		// User
@@ -718,11 +716,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		contactPersistence.update(contact, false, serviceContext);
 
-		// Addresses
-
-		UsersAdminUtil.updateAddresses(
-			Contact.class.getName(), user.getContactId(), addresses);
-
 		// Group
 
 		groupLocalService.addGroup(
@@ -778,9 +771,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Indexer
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(User.class);
+		if (serviceContext.isIndexingEnabled()) {
+			Indexer indexer = IndexerRegistryUtil.getIndexer(User.class);
 
-		indexer.reindex(user);
+			indexer.reindex(user);
+		}
 
 		// Workflow
 
@@ -1765,6 +1760,18 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		screenName = getScreenName(screenName);
 
 		return userPersistence.fetchByC_SN(companyId, screenName);
+	}
+
+	/**
+	 * Returns the user with the primary key.
+	 *
+	 * @param  userId the primary key of the user
+	 * @return the user with the primary key, or <code>null</code> if a user
+	 *         with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public User fetchUserById(long userId) throws SystemException {
+		return userPersistence.fetchByPrimaryKey(userId);
 	}
 
 	/**
@@ -4616,9 +4623,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Indexer
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(User.class);
+		if (serviceContext.isIndexingEnabled()) {
+			Indexer indexer = IndexerRegistryUtil.getIndexer(User.class);
 
-		indexer.reindex(user);
+			indexer.reindex(user);
+		}
 
 		// Email address verification
 

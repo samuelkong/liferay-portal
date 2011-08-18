@@ -1795,10 +1795,12 @@ public class PollsChoicePersistenceImpl extends BasePersistenceImpl<PollsChoice>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(PollsChoicePersistenceImpl.class);
 	private static PollsChoice _nullPollsChoice = new PollsChoiceImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<PollsChoice> toCacheModel() {
 				return _nullPollsChoiceCacheModel;
 			}

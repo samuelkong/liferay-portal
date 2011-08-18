@@ -1846,4 +1846,14 @@
 			)
 		]]>
 	</sql>
+	<sql id="com.liferay.util.dao.orm.CustomSQL.countBySelectSQL">
+		<![CDATA[
+			SELECT
+				COUNT(*) AS COUNT_VALUE
+			FROM
+				(
+					[$SELECT_SQL$]
+				) TEMP_TABLE
+		]]>
+	</sql>
 </custom-sql>

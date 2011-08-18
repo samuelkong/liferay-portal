@@ -4003,10 +4003,12 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(AnnouncementsEntryPersistenceImpl.class);
 	private static AnnouncementsEntry _nullAnnouncementsEntry = new AnnouncementsEntryImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<AnnouncementsEntry> toCacheModel() {
 				return _nullAnnouncementsEntryCacheModel;
 			}

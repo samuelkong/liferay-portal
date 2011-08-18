@@ -28,21 +28,14 @@ import javax.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Shuyang Zhou
  */
 public class SessionErrors {
 
 	public static final String KEY = SessionErrors.class.getName();
 
-	// Servlet Request
-
 	public static void add(HttpServletRequest request, String key) {
 		add(request.getSession(), key);
-	}
-
-	public static void add(HttpSession session, String key) {
-		Map<String, Object> errors = _getErrors(session);
-
-		errors.put(key, key);
 	}
 
 	public static void add(
@@ -51,8 +44,38 @@ public class SessionErrors {
 		add(request.getSession(), key, value);
 	}
 
+	public static void add(HttpSession session, String key) {
+		Map<String, Object> errors = _getErrors(session, true);
+
+		errors.put(key, key);
+	}
+
 	public static void add(HttpSession session, String key, Object value) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, true);
+
+		errors.put(key, value);
+	}
+
+	public static void add(PortletRequest portletRequest, String key) {
+		add(portletRequest.getPortletSession(), key);
+	}
+
+	public static void add(
+		PortletRequest portletRequest, String key, Object value) {
+
+		add(portletRequest.getPortletSession(), key, value);
+	}
+
+	public static void add(PortletSession portletSession, String key) {
+		Map<String, Object> errors = _getErrors(portletSession, true);
+
+		errors.put(key, key);
+	}
+
+	public static void add(
+		PortletSession portletSession, String key, Object value) {
+
+		Map<String, Object> errors = _getErrors(portletSession, true);
 
 		errors.put(key, value);
 	}
@@ -62,9 +85,23 @@ public class SessionErrors {
 	}
 
 	public static void clear(HttpSession session) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, false);
 
-		errors.clear();
+		if (errors != null) {
+			errors.clear();
+		}
+	}
+
+	public static void clear(PortletRequest portletRequest) {
+		clear(portletRequest.getPortletSession());
+	}
+
+	public static void clear(PortletSession portletSession) {
+		Map<String, Object> errors = _getErrors(portletSession, false);
+
+		if (errors != null) {
+			errors.clear();
+		}
 	}
 
 	public static boolean contains(HttpServletRequest request, String key) {
@@ -72,9 +109,29 @@ public class SessionErrors {
 	}
 
 	public static boolean contains(HttpSession session, String key) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, false);
 
-		return errors.containsKey(key);
+		if (errors == null) {
+			return false;
+		}
+		else {
+			return errors.containsKey(key);
+		}
+	}
+
+	public static boolean contains(PortletRequest portletRequest, String key) {
+		return contains(portletRequest.getPortletSession(), key);
+	}
+
+	public static boolean contains(PortletSession portletSession, String key) {
+		Map<String, Object> errors = _getErrors(portletSession, false);
+
+		if (errors == null) {
+			return false;
+		}
+		else {
+			return errors.containsKey(key);
+		}
 	}
 
 	public static Object get(HttpServletRequest request, String key) {
@@ -82,9 +139,29 @@ public class SessionErrors {
 	}
 
 	public static Object get(HttpSession session, String key) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, false);
 
-		return errors.get(key);
+		if (errors == null) {
+			return null;
+		}
+		else {
+			return errors.get(key);
+		}
+	}
+
+	public static Object get(PortletRequest portletRequest, String key) {
+		return get(portletRequest.getPortletSession(), key);
+	}
+
+	public static Object get(PortletSession portletSession, String key) {
+		Map<String, Object> errors = _getErrors(portletSession, false);
+
+		if (errors == null) {
+			return null;
+		}
+		else {
+			return errors.get(key);
+		}
 	}
 
 	public static boolean isEmpty(HttpServletRequest request) {
@@ -92,9 +169,29 @@ public class SessionErrors {
 	}
 
 	public static boolean isEmpty(HttpSession session) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, false);
 
-		return errors.isEmpty();
+		if (errors == null) {
+			return true;
+		}
+		else {
+			return errors.isEmpty();
+		}
+	}
+
+	public static boolean isEmpty(PortletRequest portletRequest) {
+		return isEmpty(portletRequest.getPortletSession());
+	}
+
+	public static boolean isEmpty(PortletSession portletSession) {
+		Map<String, Object> errors = _getErrors(portletSession, false);
+
+		if (errors == null) {
+			return true;
+		}
+		else {
+			return errors.isEmpty();
+		}
 	}
 
 	public static Iterator<String> iterator(HttpServletRequest request) {
@@ -102,9 +199,29 @@ public class SessionErrors {
 	}
 
 	public static Iterator<String> iterator(HttpSession session) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, false);
 
-		return Collections.unmodifiableSet(errors.keySet()).iterator();
+		if (errors == null) {
+			return Collections.<String>emptyList().iterator();
+		}
+		else {
+			return Collections.unmodifiableSet(errors.keySet()).iterator();
+		}
+	}
+
+	public static Iterator<String> iterator(PortletRequest portletRequest) {
+		return iterator(portletRequest.getPortletSession());
+	}
+
+	public static Iterator<String> iterator(PortletSession portletSession) {
+		Map<String, Object> errors = _getErrors(portletSession, false);
+
+		if (errors == null) {
+			return Collections.<String>emptyList().iterator();
+		}
+		else {
+			return Collections.unmodifiableSet(errors.keySet()).iterator();
+		}
 	}
 
 	public static Set<String> keySet(HttpServletRequest request) {
@@ -112,9 +229,29 @@ public class SessionErrors {
 	}
 
 	public static Set<String> keySet(HttpSession session) {
-		Map<String, Object> errors = _getErrors(session);
+		Map<String, Object> errors = _getErrors(session, false);
 
-		return Collections.unmodifiableSet(errors.keySet());
+		if (errors == null) {
+			return Collections.emptySet();
+		}
+		else {
+			return Collections.unmodifiableSet(errors.keySet());
+		}
+	}
+
+	public static Set<String> keySet(PortletRequest portletRequest) {
+		return keySet(portletRequest.getPortletSession());
+	}
+
+	public static Set<String> keySet(PortletSession portletSession) {
+		Map<String, Object> errors = _getErrors(portletSession, false);
+
+		if (errors == null) {
+			return Collections.emptySet();
+		}
+		else {
+			return Collections.unmodifiableSet(errors.keySet());
+		}
 	}
 
 	public static void print(HttpServletRequest request) {
@@ -129,121 +266,6 @@ public class SessionErrors {
 		}
 	}
 
-	public static int size(HttpServletRequest request) {
-		return size(request.getSession());
-	}
-
-	public static int size(HttpSession session) {
-		Map<String, Object> errors = _getErrors(session);
-
-		return errors.size();
-	}
-
-	private static Map<String, Object> _getErrors(HttpSession session) {
-		Map<String, Object> errors = null;
-
-		try {
-			errors = (Map<String, Object>)session.getAttribute(KEY);
-
-			if (errors == null) {
-				errors = new LinkedHashMap<String, Object>();
-
-				session.setAttribute(KEY, errors);
-			}
-		}
-		catch (IllegalStateException ise) {
-			errors = new LinkedHashMap<String, Object>();
-		}
-
-		return errors;
-	}
-
-	// Portlet Request
-
-	public static void add(PortletRequest portletRequest, String key) {
-		add(portletRequest.getPortletSession(), key);
-	}
-
-	public static void add(PortletSession portletSession, String key) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		errors.put(key, key);
-	}
-
-	public static void add(
-		PortletRequest portletRequest, String key, Object value) {
-
-		add(portletRequest.getPortletSession(), key, value);
-	}
-
-	public static void add(
-		PortletSession portletSession, String key, Object value) {
-
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		errors.put(key, value);
-	}
-
-	public static void clear(PortletRequest portletRequest) {
-		clear(portletRequest.getPortletSession());
-	}
-
-	public static void clear(PortletSession portletSession) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		errors.clear();
-	}
-
-	public static boolean contains(PortletRequest portletRequest, String key) {
-		return contains(portletRequest.getPortletSession(), key);
-	}
-
-	public static boolean contains(PortletSession portletSession, String key) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		return errors.containsKey(key);
-	}
-
-	public static Object get(PortletRequest portletRequest, String key) {
-		return get(portletRequest.getPortletSession(), key);
-	}
-
-	public static Object get(PortletSession portletSession, String key) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		return errors.get(key);
-	}
-
-	public static boolean isEmpty(PortletRequest portletRequest) {
-		return isEmpty(portletRequest.getPortletSession());
-	}
-
-	public static boolean isEmpty(PortletSession portletSession) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		return errors.isEmpty();
-	}
-
-	public static Iterator<String> iterator(PortletRequest portletRequest) {
-		return iterator(portletRequest.getPortletSession());
-	}
-
-	public static Iterator<String> iterator(PortletSession portletSession) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		return Collections.unmodifiableSet(errors.keySet()).iterator();
-	}
-
-	public static Set<String> keySet(PortletRequest portletRequest) {
-		return keySet(portletRequest.getPortletSession());
-	}
-
-	public static Set<String> keySet(PortletSession portletSession) {
-		Map<String, Object> errors = _getErrors(portletSession);
-
-		return Collections.unmodifiableSet(errors.keySet());
-	}
-
 	public static void print(PortletRequest portletRequest) {
 		print(portletRequest.getPortletSession());
 	}
@@ -256,32 +278,77 @@ public class SessionErrors {
 		}
 	}
 
+	public static int size(HttpServletRequest request) {
+		return size(request.getSession());
+	}
+
+	public static int size(HttpSession session) {
+		Map<String, Object> errors = _getErrors(session, false);
+
+		if (errors == null) {
+			return 0;
+		}
+		else {
+			return errors.size();
+		}
+	}
+
 	public static int size(PortletRequest portletRequest) {
 		return size(portletRequest.getPortletSession());
 	}
 
 	public static int size(PortletSession portletSession) {
-		Map<String, Object> errors = _getErrors(portletSession);
+		Map<String, Object> errors = _getErrors(portletSession, false);
 
-		return errors.size();
+		if (errors == null) {
+			return 0;
+		}
+		else {
+			return errors.size();
+		}
 	}
 
 	private static Map<String, Object> _getErrors(
-		PortletSession portletSession) {
+		HttpSession session, boolean createIfAbsent) {
+
+		Map<String, Object> errors = null;
+
+		try {
+			errors = (Map<String, Object>)session.getAttribute(KEY);
+
+			if ((errors == null) && createIfAbsent) {
+				errors = new LinkedHashMap<String, Object>();
+
+				session.setAttribute(KEY, errors);
+			}
+		}
+		catch (IllegalStateException ise) {
+
+			// Session is already invalidated, just return a null map
+
+		}
+
+		return errors;
+	}
+
+	private static Map<String, Object> _getErrors(
+		PortletSession portletSession, boolean createIfAbsent) {
 
 		Map<String, Object> errors = null;
 
 		try {
 			errors = (Map<String, Object>)portletSession.getAttribute(KEY);
 
-			if (errors == null) {
+			if ((errors == null) && createIfAbsent) {
 				errors = new LinkedHashMap<String, Object>();
 
 				portletSession.setAttribute(KEY, errors);
 			}
 		}
 		catch (IllegalStateException ise) {
-			errors = new LinkedHashMap<String, Object>();
+
+			// Session is already invalidated, just return a null map
+
 		}
 
 		return errors;

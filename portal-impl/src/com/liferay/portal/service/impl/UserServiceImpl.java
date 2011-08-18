@@ -20,6 +20,8 @@ import com.liferay.portal.UserEmailAddressException;
 import com.liferay.portal.UserScreenNameException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
@@ -53,7 +55,6 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.announcements.model.AnnouncementsDelivery;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -198,8 +199,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				screenName, emailAddress, facebookId, openId, locale, firstName,
 				middleName, lastName, prefixId, suffixId, male, birthdayMonth,
 				birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
-				roleIds, userGroupIds, new ArrayList<Address>(), sendEmail,
-				serviceContext);
+				roleIds, userGroupIds, sendEmail, serviceContext);
 		}
 		finally {
 			WorkflowThreadLocal.setEnabled(workflowEnabled);
@@ -220,25 +220,45 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			boolean sendEmail, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
-		User user = addUserWithWorkflow(
-			companyId, autoPassword, password1, password2, autoScreenName,
-			screenName, emailAddress, facebookId, openId, locale, firstName,
-			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
-			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
-			roleIds, userGroupIds, addresses, sendEmail, serviceContext);
+		boolean indexingEnabled = serviceContext.isIndexingEnabled();
 
-		UsersAdminUtil.updateEmailAddresses(
-			Contact.class.getName(), user.getContactId(), emailAddresses);
+		serviceContext.setIndexingEnabled(false);
 
-		UsersAdminUtil.updatePhones(
-			Contact.class.getName(), user.getContactId(), phones);
+		try {
+			User user = addUserWithWorkflow(
+				companyId, autoPassword, password1, password2, autoScreenName,
+				screenName, emailAddress, facebookId, openId, locale, firstName,
+				middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+				birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+				roleIds, userGroupIds, sendEmail, serviceContext);
 
-		UsersAdminUtil.updateWebsites(
-			Contact.class.getName(), user.getContactId(), websites);
+			UsersAdminUtil.updateAddresses(
+				Contact.class.getName(), user.getContactId(), addresses);
 
-		updateAnnouncementsDeliveries(user.getUserId(), announcementsDelivers);
+			UsersAdminUtil.updateEmailAddresses(
+				Contact.class.getName(), user.getContactId(), emailAddresses);
 
-		return user;
+			UsersAdminUtil.updatePhones(
+				Contact.class.getName(), user.getContactId(), phones);
+
+			UsersAdminUtil.updateWebsites(
+				Contact.class.getName(), user.getContactId(), websites);
+
+			updateAnnouncementsDeliveries(
+				user.getUserId(), announcementsDelivers);
+
+			if (indexingEnabled) {
+				Indexer indexer = IndexerRegistryUtil.getIndexer(
+					User.class);
+
+				indexer.reindex(user);
+			}
+
+			return user;
+		}
+		finally {
+			serviceContext.setIndexingEnabled(indexingEnabled);
+		}
 	}
 
 	public User addUserWithWorkflow(
@@ -249,8 +269,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			int suffixId, boolean male, int birthdayMonth, int birthdayDay,
 			int birthdayYear, String jobTitle, long[] groupIds,
 			long[] organizationIds, long[] roleIds, long[] userGroupIds,
-			List<Address> addresses, boolean sendEmail,
-			ServiceContext serviceContext)
+			boolean sendEmail, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		Company company = companyPersistence.findByPrimaryKey(companyId);
@@ -287,8 +306,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			autoScreenName, screenName, emailAddress, facebookId, openId,
 			locale, firstName, middleName, lastName, prefixId, suffixId, male,
 			birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
-			organizationIds, roleIds, userGroupIds, addresses, sendEmail,
-			serviceContext);
+			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
 	}
 
 	public void addUserGroupUsers(long userGroupId, long[] userIds)
@@ -689,7 +707,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
-		User user = userLocalService.getUser(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		UsersAdminUtil.updateAddresses(
 			Contact.class.getName(), user.getContactId(), addresses);
@@ -705,15 +723,17 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 		updateAnnouncementsDeliveries(user.getUserId(), announcementsDelivers);
 
-		return updateUser(
+		user = updateUser(
 			userId, oldPassword, newPassword1, newPassword2, passwordReset,
 			reminderQueryQuestion, reminderQueryAnswer, screenName,
 			emailAddress, facebookId, openId, languageId, timeZoneId, greeting,
 			comments, firstName, middleName, lastName, prefixId, suffixId, male,
 			birthdayMonth, birthdayDay, birthdayYear, smsSn, aimSn, facebookSn,
 			icqSn, jabberSn, msnSn, mySpaceSn, skypeSn, twitterSn, ymSn,
-			jobTitle, groupIds, organizationIds, roleIds, userGroupRoles,
-			userGroupIds, serviceContext);
+			jobTitle, groupIds, organizationIds, roleIds,
+			userGroupRoles, userGroupIds, serviceContext);
+
+		return user;
 	}
 
 	public User updateUser(

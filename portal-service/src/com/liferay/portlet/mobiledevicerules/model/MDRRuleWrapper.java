@@ -548,7 +548,8 @@ public class MDRRuleWrapper implements MDRRule {
 		return new MDRRuleWrapper((MDRRule)_mdrRule.clone());
 	}
 
-	public int compareTo(MDRRule mdrRule) {
+	public int compareTo(
+		com.liferay.portlet.mobiledevicerules.model.MDRRule mdrRule) {
 		return _mdrRule.compareTo(mdrRule);
 	}
 
@@ -557,11 +558,11 @@ public class MDRRuleWrapper implements MDRRule {
 		return _mdrRule.hashCode();
 	}
 
-	public com.liferay.portal.model.CacheModel<MDRRule> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<com.liferay.portlet.mobiledevicerules.model.MDRRule> toCacheModel() {
 		return _mdrRule.toCacheModel();
 	}
 
-	public MDRRule toEscapedModel() {
+	public com.liferay.portlet.mobiledevicerules.model.MDRRule toEscapedModel() {
 		return new MDRRuleWrapper(_mdrRule.toEscapedModel());
 	}
 

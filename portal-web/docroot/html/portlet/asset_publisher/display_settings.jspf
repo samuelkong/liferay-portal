@@ -46,35 +46,35 @@
 		<aui:option label="view-in-a-specific-portlet" selected='<%= assetLinkBehavior.equals("viewInPortlet") %>' value="viewInPortlet" />
 	</aui:select>
 
+	<aui:select label="maximum-items-to-display" name="preferences--delta--">
+
+		<%
+		int[] deltas = {1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100};
+
+		for (int currentDelta: deltas) {
+		%>
+
+			<aui:option label="<%= currentDelta %>" selected="<%= (delta == currentDelta) %>" />
+
+		<%
+		}
+		%>
+
+	</aui:select>
+
+	<aui:select name="preferences--paginationType--">
+		<aui:option label="none" selected='<%= paginationType.equals("none") %>' />
+		<aui:option label="simple" selected='<%= paginationType.equals("simple") %>' />
+		<aui:option label="regular" selected='<%= paginationType.equals("regular") %>' />
+	</aui:select>
+
 	<c:if test='<%= selectionStyle.equals("dynamic") %>'>
-		<aui:select label="maximum-items-to-display" name="preferences--delta--">
-
-			<%
-			int[] deltas = {1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100};
-
-			for (int currentDelta: deltas) {
-			%>
-
-				<aui:option label="<%= currentDelta %>" selected="<%= (delta == currentDelta) %>" />
-
-			<%
-			}
-			%>
-
-		</aui:select>
-
-		<aui:select name="preferences--paginationType--">
-			<aui:option label="none" selected='<%= paginationType.equals("none") %>' />
-			<aui:option label="simple" selected='<%= paginationType.equals("simple") %>' />
-			<aui:option label="regular" selected='<%= paginationType.equals("regular") %>' />
-		</aui:select>
-
 		<aui:input label="exclude-assets-with-0-views" name="preferences--excludeZeroViewCount--" type="checkbox" value="<%= excludeZeroViewCount %>" />
 	</c:if>
 
 	<aui:input name="preferences--showAvailableLocales--" type="checkbox" value="<%= showAvailableLocales %>" />
 
-	<aui:input label="set-as-the-default-asset-publisher" helpMessage="set-as-the-default-asset-publisher-help" name="defaultAssetPublisher" type="checkbox" value="<%= defaultAssetPublisher %>" />
+	<aui:input label="set-as-the-default-asset-publisher-for-this-page" helpMessage="set-as-the-default-asset-publisher-for-this-page-help" name="defaultAssetPublisher" type="checkbox" value="<%= defaultAssetPublisher %>" />
 
 	<aui:field-wrapper helpMessage='<%= !openOfficeServerEnabled ? "enabling-openoffice-integration-provides-document-conversion-functionality" : StringPool.BLANK %>' label="enable-conversion-to">
 		<div class="aui-field-row">

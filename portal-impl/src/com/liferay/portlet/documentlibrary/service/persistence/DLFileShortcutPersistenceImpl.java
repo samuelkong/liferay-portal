@@ -3481,10 +3481,12 @@ public class DLFileShortcutPersistenceImpl extends BasePersistenceImpl<DLFileSho
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFileShortcutPersistenceImpl.class);
 	private static DLFileShortcut _nullDLFileShortcut = new DLFileShortcutImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DLFileShortcut> toCacheModel() {
 				return _nullDLFileShortcutCacheModel;
 			}

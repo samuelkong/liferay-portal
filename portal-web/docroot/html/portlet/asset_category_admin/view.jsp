@@ -21,28 +21,41 @@
 <div class="categories-admin-container">
 	<div class="lfr-header-row">
 		<div class="lfr-header-row-content">
-			<div class="toolbar">
-				<aui:button-row cssClass="categories-admin-actions">
-					<c:if test="<%= AssetPermission.contains(permissionChecker, themeDisplay.getParentGroupId(), ActionKeys.ADD_VOCABULARY) %>">
-						<aui:button cssClass="add-vocabulary-button" name="addVocabularyButton" value="add-vocabulary" />
-					</c:if>
+			<div class="categories-admin-actions toolbar">
+				<c:if test="<%= AssetPermission.contains(permissionChecker, themeDisplay.getParentGroupId(), ActionKeys.ADD_VOCABULARY) %>">
+					<aui:button cssClass="add-vocabulary-button" name="addVocabularyButton" value="add-vocabulary" />
+				</c:if>
 
-					<c:if test="<%= AssetPermission.contains(permissionChecker, themeDisplay.getParentGroupId(), ActionKeys.ADD_CATEGORY) %>">
-						<aui:button cssClass="add-category-button" name="addCategoryButton" value="add-category" />
-					</c:if>
+				<c:if test="<%= AssetPermission.contains(permissionChecker, themeDisplay.getParentGroupId(), ActionKeys.ADD_CATEGORY) %>">
+					<aui:button name="addCategoryButton" value="add-category" />
+				</c:if>
 
-					<c:if test="<%= GroupPermissionUtil.contains(permissionChecker, themeDisplay.getParentGroupId(), ActionKeys.PERMISSIONS) %>">
-						<liferay-security:permissionsURL
-							modelResource="com.liferay.portlet.asset"
-							modelResourceDescription="<%= themeDisplay.getScopeGroupName() %>"
-							resourcePrimKey="<%= String.valueOf(themeDisplay.getParentGroupId()) %>"
-							var="permissionsURL"
-							windowState="<%= LiferayWindowState.POP_UP.toString() %>"
-						/>
+				<c:if test="<%= GroupPermissionUtil.contains(permissionChecker, themeDisplay.getParentGroupId(), ActionKeys.PERMISSIONS) %>">
+					<liferay-security:permissionsURL
+						modelResource="com.liferay.portlet.asset"
+						modelResourceDescription="<%= themeDisplay.getScopeGroupName() %>"
+						resourcePrimKey="<%= String.valueOf(themeDisplay.getParentGroupId()) %>"
+						var="permissionsURL"
+						windowState="<%= LiferayWindowState.POP_UP.toString() %>"
+					/>
 
-						<aui:button data-url="<%= permissionsURL %>" name="categoryPermissionsButton" value="permissions" />
-					</c:if>
-				</aui:button-row>
+					<aui:button cssClass="permissions-button" data-url="<%= permissionsURL %>" name="categoryPermissionsButton" value="permissions" />
+				</c:if>
+
+				<liferay-ui:icon-menu
+					cssClass="category-actions"
+					direction="down"
+					icon=""
+					message="actions"
+					showExpanded="<%= false %>"
+					showWhenSingleIcon="true"
+				>
+					<liferay-ui:icon
+						id="deleteSelectedItems"
+						image="delete"
+						url="javascript:;"
+					/>
+				</liferay-ui:icon-menu>
 			</div>
 
 			<div class="lfr-search-combobox search-button-container categories-search-combobox">
@@ -59,13 +72,23 @@
 	<div class="categories-admin-content-wrapper">
 		<aui:layout cssClass="categories-admin-content">
 			<aui:column columnWidth="25" cssClass="vocabulary-list-container">
-				<div class="results-header"><liferay-ui:message key="vocabularies" /></div>
+				<div class="results-header">
+					<aui:input cssClass="select-vocabularies" inline="<%= true %>" label="" name="checkAllVocabularies" type="checkbox" title='<%= LanguageUtil.get(pageContext, "check-all-vocabularies") %>' />
+
+					<liferay-ui:message key="vocabularies" />
+				</div>
 
 				<div class="vocabulary-list lfr-component"></div>
+
+				<div class="vocabularies-paginator"></div>
 			</aui:column>
 
 			<aui:column columnWidth="75" cssClass="vocabulary-categories-container">
-				<div class="results-header"><liferay-ui:message key="categories" /></div>
+				<div class="results-header">
+					<aui:input cssClass="select-categories" inline="<%= true %>" label="" name="checkAllCategories" type="checkbox" title='<%= LanguageUtil.get(pageContext, "check-all-categories") %>' />
+
+					<liferay-ui:message key="categories" />
+				</div>
 
 				<div class="vocabulary-categories"></div>
 			</aui:column>
@@ -95,6 +118,8 @@
 <aui:script use="liferay-category-admin">
 	new Liferay.Portlet.AssetCategoryAdmin(
 		{
+			itemsPerPage: <%= SearchContainer.DEFAULT_DELTA %>,
+			itemsPerPageOptions: [<%= StringUtil.merge(PropsValues.SEARCH_CONTAINER_PAGE_DELTA_VALUES) %>],
 			portletId: '<%= portletDisplay.getId() %>'
 		}
 	);

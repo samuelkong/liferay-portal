@@ -166,7 +166,6 @@
 						<isset property="manifest.bundle.symbolic.name" />
 					</and>
 					<then>
-						<echo>here</echo>
 						<manifest file="classes/META-INF/MANIFEST.MF" mode="update">
 							<attribute name="Bundle-Name" value="${manifest.bundle.name}" />
 							<attribute name="Bundle-SymbolicName" value="${manifest.bundle.symbolic.name}" />

@@ -54,6 +54,7 @@ public class DLFileEntryWorkflowHandler extends BaseWorkflowHandler {
 		return ResourceActionsUtil.getModelResource(locale, CLASS_NAME);
 	}
 
+	@Override
 	public WorkflowDefinitionLink getWorkflowDefinitionLink(
 			long companyId, long groupId, long classPK)
 		throws PortalException, SystemException {

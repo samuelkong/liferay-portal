@@ -2032,10 +2032,12 @@ public class ResourceTypePermissionPersistenceImpl extends BasePersistenceImpl<R
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ResourceTypePermissionPersistenceImpl.class);
 	private static ResourceTypePermission _nullResourceTypePermission = new ResourceTypePermissionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ResourceTypePermission> toCacheModel() {
 				return _nullResourceTypePermissionCacheModel;
 			}

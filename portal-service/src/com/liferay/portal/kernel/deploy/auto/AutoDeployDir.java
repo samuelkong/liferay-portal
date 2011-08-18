@@ -177,7 +177,7 @@ public class AutoDeployDir {
 
 		try {
 			for (AutoDeployListener autoDeployListener : _autoDeployListeners) {
-				autoDeployListener.deploy(file);
+				autoDeployListener.deploy(file, null);
 			}
 
 			if (file.delete()) {

@@ -3926,10 +3926,12 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(MBCategoryPersistenceImpl.class);
 	private static MBCategory _nullMBCategory = new MBCategoryImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<MBCategory> toCacheModel() {
 				return _nullMBCategoryCacheModel;
 			}

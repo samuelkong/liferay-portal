@@ -5547,10 +5547,12 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(MBThreadPersistenceImpl.class);
 	private static MBThread _nullMBThread = new MBThreadImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<MBThread> toCacheModel() {
 				return _nullMBThreadCacheModel;
 			}

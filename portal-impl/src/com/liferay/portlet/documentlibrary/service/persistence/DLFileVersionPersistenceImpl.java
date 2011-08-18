@@ -1818,10 +1818,12 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFileVersionPersistenceImpl.class);
 	private static DLFileVersion _nullDLFileVersion = new DLFileVersionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DLFileVersion> toCacheModel() {
 				return _nullDLFileVersionCacheModel;
 			}

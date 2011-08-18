@@ -2391,10 +2391,12 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(SubscriptionPersistenceImpl.class);
 	private static Subscription _nullSubscription = new SubscriptionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Subscription> toCacheModel() {
 				return _nullSubscriptionCacheModel;
 			}

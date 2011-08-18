@@ -136,7 +136,7 @@ public class AssetVocabularyServiceImpl
 	public List<AssetVocabulary> getGroupVocabularies(
 			long groupId, String name, int start, int end,
 			OrderByComparator obc)
-		throws PortalException, SystemException {
+		throws SystemException {
 
 		return assetVocabularyFinder.filterFindByG_N(
 			groupId, name, start, end, obc);

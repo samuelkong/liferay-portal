@@ -2509,10 +2509,12 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(MembershipRequestPersistenceImpl.class);
 	private static MembershipRequest _nullMembershipRequest = new MembershipRequestImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<MembershipRequest> toCacheModel() {
 				return _nullMembershipRequestCacheModel;
 			}

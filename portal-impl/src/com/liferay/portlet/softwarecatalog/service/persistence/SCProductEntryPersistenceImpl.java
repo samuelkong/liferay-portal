@@ -3697,10 +3697,12 @@ public class SCProductEntryPersistenceImpl extends BasePersistenceImpl<SCProduct
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(SCProductEntryPersistenceImpl.class);
 	private static SCProductEntry _nullSCProductEntry = new SCProductEntryImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<SCProductEntry> toCacheModel() {
 				return _nullSCProductEntryCacheModel;
 			}

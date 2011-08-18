@@ -15,6 +15,7 @@
 package com.liferay.portal.jsonwebservice;
 
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceAction;
+import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceActionMapping;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceActionsManager;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.BinarySearch;
@@ -37,45 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 public class JSONWebServiceActionsManagerImpl
 	implements JSONWebServiceActionsManager {
 
-	public List<String[]> dumpMappings() {
-		List<String[]> mappings = new ArrayList<String[]>();
+	public JSONWebServiceAction getJSONWebServiceAction(
+		HttpServletRequest request) {
 
-		for (JSONWebServiceActionConfig jsonWebServiceActionConfig :
-				_jsonWebServiceActionConfigs) {
-
-			String[] parameterNames =
-				jsonWebServiceActionConfig.getParameterNames();
-
-			Class<?> actionClass = jsonWebServiceActionConfig.getActionClass();
-			Method actionMethod = jsonWebServiceActionConfig.getActionMethod();
-
-			String methodName = actionMethod.getName();
-
-			methodName += "(";
-
-			for (int i = 0; i < parameterNames.length; i++) {
-				if (i != 0) {
-					methodName += ", ";
-				}
-
-				methodName += parameterNames[i];
-			}
-
-			methodName += ")";
-
-			String[] mapping = new String[] {
-				jsonWebServiceActionConfig.getMethod(),
-				jsonWebServiceActionConfig.getPath(),
-				actionClass.getName() + '#' + methodName
-			};
-
-			mappings.add(mapping);
-		}
-
-		return mappings;
-	}
-
-	public JSONWebServiceAction lookup(HttpServletRequest request) {
 		String path = GetterUtil.getString(request.getPathInfo());
 
 		String method = GetterUtil.getString(request.getMethod());
@@ -95,15 +60,12 @@ public class JSONWebServiceActionsManagerImpl
 			if (method.equals(HttpMethods.POST) &&
 				!PortalUtil.isMultipartRequest(request)) {
 
-				jsonRpcRequest = new JSONRPCRequest(request);
+				jsonRpcRequest = JSONRPCRequest.detectJSONRPCRequest(request);
 
-				if (jsonRpcRequest.isValid()) {
+				if (jsonRpcRequest != null) {
 					path += StringPool.SLASH + jsonRpcRequest.getMethod();
 
 					method = null;
-				}
-				else {
-					jsonRpcRequest = null;
 				}
 			}
 		}
@@ -131,6 +93,34 @@ public class JSONWebServiceActionsManagerImpl
 
 		return new JSONWebServiceActionImpl(
 			jsonWebServiceActionConfig, jsonWebServiceActionParameters);
+	}
+
+	public JSONWebServiceActionMapping getJSONWebServiceActionMapping(
+		String signature) {
+
+		for (JSONWebServiceActionConfig jsonWebServiceActionConfig :
+				_jsonWebServiceActionConfigs) {
+
+			if (signature.equals(jsonWebServiceActionConfig.getSignature())) {
+				return jsonWebServiceActionConfig;
+			}
+		}
+
+		return null;
+	}
+
+	public List<JSONWebServiceActionMapping> getJSONWebServiceActionMappings() {
+		List<JSONWebServiceActionMapping> jsonWebServiceActionMappings =
+			new ArrayList<JSONWebServiceActionMapping>(
+				_jsonWebServiceActionConfigs.size());
+
+		for (JSONWebServiceActionConfig jsonWebServiceActionConfig :
+				_jsonWebServiceActionConfigs) {
+
+			jsonWebServiceActionMappings.add(jsonWebServiceActionConfig);
+		}
+
+		return jsonWebServiceActionMappings;
 	}
 
 	public void registerJSONWebServiceAction(

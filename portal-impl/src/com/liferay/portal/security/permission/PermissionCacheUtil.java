@@ -210,6 +210,7 @@ public class PermissionCacheUtil {
 			_groupId = groupId;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			BagKey bagKey = (BagKey)obj;
 
@@ -221,6 +222,7 @@ public class PermissionCacheUtil {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			return (int)(_userId * 11 + _groupId);
 		}
@@ -247,6 +249,7 @@ public class PermissionCacheUtil {
 			_actionId = actionId;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			PermissionKey permissionKey = (PermissionKey)obj;
 
@@ -265,6 +268,7 @@ public class PermissionCacheUtil {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			int hashCode = HashUtil.hash(0, _userId);
 
@@ -303,6 +307,7 @@ public class PermissionCacheUtil {
 			_checkGuest = checkGuest;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			ResourceBlockIdsBagKey resourceBlockIdsKey =
 				(ResourceBlockIdsBagKey)obj;
@@ -320,6 +325,7 @@ public class PermissionCacheUtil {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			int hashCode = HashUtil.hash(0, _companyId);
 

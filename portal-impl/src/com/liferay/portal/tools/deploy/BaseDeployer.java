@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
+import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
@@ -58,6 +59,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -121,8 +123,10 @@ public class BaseDeployer implements Deployer {
 
 		checkArguments();
 
+		String context = System.getProperty("deployer.context");
+
 		try {
-			deploy();
+			deploy(context);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -235,7 +239,8 @@ public class BaseDeployer implements Deployer {
 			boolean overwrite)
 		throws Exception {
 
-		DeployUtil.copyDependencyXml(fileName, targetDir, filterMap, overwrite);
+		DeployUtil.copyDependencyXml(
+			fileName, targetDir, fileName, filterMap, overwrite);
 	}
 
 	public void copyJars(File srcFile, PluginPackage pluginPackage)
@@ -427,7 +432,7 @@ public class BaseDeployer implements Deployer {
 		copyDependencyXml("web.xml", srcFile + "/WEB-INF");
 	}
 
-	public void deploy() throws Exception {
+	public void deploy(String context) throws Exception {
 		try {
 			File baseDirFile = new File(baseDir);
 
@@ -464,7 +469,7 @@ public class BaseDeployer implements Deployer {
 				}
 
 				if (deploy) {
-					deployFile(srcFile);
+					deployFile(srcFile, context);
 				}
 			}
 		}
@@ -658,6 +663,10 @@ public class BaseDeployer implements Deployer {
 					System.currentTimeMillis() + (Time.SECOND * 6));
 			}
 		}
+
+		if (appServerType.equals(ServerDetector.JETTY_ID)) {
+			DeployUtil.redeployJetty(displayName);
+		}
 	}
 
 	public void deployDirectory(
@@ -667,10 +676,6 @@ public class BaseDeployer implements Deployer {
 
 		deployDirectory(
 			srcFile, null, null, displayName, override, pluginPackage);
-	}
-
-	public void deployFile(File srcFile) throws Exception {
-		deployFile(srcFile, null);
 	}
 
 	public void deployFile(File srcFile, String specifiedContext)
@@ -1216,6 +1221,50 @@ public class BaseDeployer implements Deployer {
 		return sb.toString();
 	}
 
+	public Map<String, String> getPluginPackageXmlFilterMap(
+		PluginPackage pluginPackage) {
+
+		List<String> pluginTypes = pluginPackage.getTypes();
+
+		String pluginType = pluginTypes.get(0);
+
+		if (!pluginType.equals(getPluginType())) {
+			return null;
+		}
+
+		Map<String, String> filterMap = new HashMap<String, String>();
+
+		filterMap.put("module_group_id", pluginPackage.getGroupId());
+		filterMap.put("module_artifact_id", pluginPackage.getArtifactId());
+		filterMap.put("module_version", pluginPackage.getVersion());
+
+		filterMap.put("plugin_name", pluginPackage.getName());
+		filterMap.put("plugin_type", pluginType);
+		filterMap.put(
+			"plugin_type_name",
+			TextFormatter.format(pluginType, TextFormatter.J));
+
+		filterMap.put("tags", getPluginPackageTagsXml(pluginPackage.getTags()));
+		filterMap.put("short_description", pluginPackage.getShortDescription());
+		filterMap.put("long_description", pluginPackage.getLongDescription());
+		filterMap.put("change_log", pluginPackage.getChangeLog());
+		filterMap.put("page_url", pluginPackage.getPageURL());
+		filterMap.put("author", pluginPackage.getAuthor());
+		filterMap.put(
+			"licenses",
+			getPluginPackageLicensesXml(pluginPackage.getLicenses()));
+		filterMap.put(
+			"liferay_versions",
+			getPluginPackageLiferayVersionsXml(
+				pluginPackage.getLiferayVersions()));
+
+		return filterMap;
+	}
+
+	public String getPluginType() {
+		return null;
+	}
+
 	public String getServletContextIncludeFiltersContent(
 			double webXmlVersion, File srcFile)
 		throws Exception {
@@ -1301,9 +1350,32 @@ public class BaseDeployer implements Deployer {
 		CopyTask.copyDirectory(mergeDir, targetDir, null, null, true, false);
 	}
 
-	public void processPluginPackageProperties(
+	public Map<String, String> processPluginPackageProperties(
 			File srcFile, String displayName, PluginPackage pluginPackage)
 		throws Exception {
+
+		if (pluginPackage == null) {
+			return null;
+		}
+
+		Properties properties = getPluginPackageProperties(srcFile);
+
+		if ((properties == null) || (properties.size() == 0)) {
+			return null;
+		}
+
+		Map<String, String> filterMap = getPluginPackageXmlFilterMap(
+			pluginPackage);
+
+		if (filterMap == null) {
+			return null;
+		}
+
+		copyDependencyXml(
+			"liferay-plugin-package.xml", srcFile + "/WEB-INF", filterMap,
+			true);
+
+		return filterMap;
 	}
 
 	public PluginPackage readPluginPackage(File file) {

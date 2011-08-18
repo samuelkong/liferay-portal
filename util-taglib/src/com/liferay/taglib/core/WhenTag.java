@@ -22,6 +22,7 @@ import javax.servlet.jsp.tagext.Tag;
  */
 public class WhenTag extends ConditionalTagSupport {
 
+	@Override
 	public int doStartTag() throws JspTagException {
 		Tag parentTag = getParent();
 
@@ -46,6 +47,7 @@ public class WhenTag extends ConditionalTagSupport {
 		}
 	}
 
+	@Override
 	public void release() {
 		super.release();
 
@@ -56,6 +58,7 @@ public class WhenTag extends ConditionalTagSupport {
 		_test = test;
 	}
 
+	@Override
 	protected boolean condition() {
 		return _test;
 	}

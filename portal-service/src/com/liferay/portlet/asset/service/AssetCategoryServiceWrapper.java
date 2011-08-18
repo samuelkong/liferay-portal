@@ -83,6 +83,15 @@ public class AssetCategoryServiceWrapper implements AssetCategoryService {
 			start, end, obc);
 	}
 
+	public com.liferay.portal.kernel.json.JSONObject getJSONVocabularyCategories(
+		long groupId, java.lang.String name, long vocabularyId, int start,
+		int end, com.liferay.portal.kernel.util.OrderByComparator obc)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _assetCategoryService.getJSONVocabularyCategories(groupId, name,
+			vocabularyId, start, end, obc);
+	}
+
 	public java.util.List<com.liferay.portlet.asset.model.AssetCategory> getVocabularyCategories(
 		long vocabularyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator obc)
@@ -99,6 +108,27 @@ public class AssetCategoryServiceWrapper implements AssetCategoryService {
 			com.liferay.portal.kernel.exception.SystemException {
 		return _assetCategoryService.getVocabularyCategories(parentCategoryId,
 			vocabularyId, start, end, obc);
+	}
+
+	public java.util.List<com.liferay.portlet.asset.model.AssetCategory> getVocabularyCategories(
+		long groupId, java.lang.String name, long vocabularyId, int start,
+		int end, com.liferay.portal.kernel.util.OrderByComparator obc)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _assetCategoryService.getVocabularyCategories(groupId, name,
+			vocabularyId, start, end, obc);
+	}
+
+	public int getVocabularyCategoriesCount(long groupId, long vocabularyId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _assetCategoryService.getVocabularyCategoriesCount(groupId,
+			vocabularyId);
+	}
+
+	public int getVocabularyCategoriesCount(long groupId,
+		java.lang.String name, long vocabularyId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _assetCategoryService.getVocabularyCategoriesCount(groupId,
+			name, vocabularyId);
 	}
 
 	public java.util.List<com.liferay.portlet.asset.model.AssetCategory> getVocabularyRootCategories(

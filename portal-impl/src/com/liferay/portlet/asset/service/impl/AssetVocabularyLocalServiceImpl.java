@@ -268,7 +268,7 @@ public class AssetVocabularyLocalServiceImpl
 	public List<AssetVocabulary> getGroupVocabularies(
 			long groupId, String name, int start, int end,
 			OrderByComparator obc)
-		throws PortalException, SystemException {
+		throws SystemException {
 
 		return assetVocabularyFinder.findByG_N(groupId, name, start, end, obc);
 	}

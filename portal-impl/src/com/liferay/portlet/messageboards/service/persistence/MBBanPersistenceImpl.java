@@ -2101,10 +2101,12 @@ public class MBBanPersistenceImpl extends BasePersistenceImpl<MBBan>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(MBBanPersistenceImpl.class);
 	private static MBBan _nullMBBan = new MBBanImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<MBBan> toCacheModel() {
 				return _nullMBBanCacheModel;
 			}

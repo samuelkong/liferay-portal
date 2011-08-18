@@ -70,6 +70,7 @@ public class PortletPreferencesLocalUtil {
 			_ownerType = ownerType;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			PreferencesPoolKey preferencesPoolKey = (PreferencesPoolKey)obj;
 
@@ -83,6 +84,7 @@ public class PortletPreferencesLocalUtil {
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			return (int)(_ownerId * 11 + _ownerType);
 		}

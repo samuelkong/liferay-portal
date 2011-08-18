@@ -2994,10 +2994,12 @@ public class PhonePersistenceImpl extends BasePersistenceImpl<Phone>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(PhonePersistenceImpl.class);
 	private static Phone _nullPhone = new PhoneImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Phone> toCacheModel() {
 				return _nullPhoneCacheModel;
 			}

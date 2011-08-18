@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.ImportExportThreadLocal;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.portal.kernel.lar.UserIdStrategy;
@@ -127,6 +128,72 @@ import org.apache.commons.lang.time.StopWatch;
 public class LayoutImporter {
 
 	public void importLayouts(
+			long userId, long groupId, boolean privateLayout,
+			Map<String, String[]> parameterMap, File file)
+		throws Exception {
+
+		try {
+			ImportExportThreadLocal.setLayoutImportInProcess(true);
+
+			doImportLayouts(userId, groupId, privateLayout, parameterMap, file);
+		}
+		finally {
+			ImportExportThreadLocal.setLayoutImportInProcess(false);
+		}
+	}
+
+	protected String[] appendPortletIds(
+		String[] portletIds, String[] newPortletIds, String portletsMergeMode) {
+
+		for (String portletId : newPortletIds) {
+			if (ArrayUtil.contains(portletIds, portletId)) {
+				continue;
+			}
+
+			if (portletsMergeMode.equals(
+					PortletDataHandlerKeys.PORTLETS_MERGE_MODE_ADD_TO_BOTTOM)) {
+
+				portletIds = ArrayUtil.append(portletIds, portletId);
+			}
+			else {
+				portletIds = ArrayUtil.append(
+					new String[] {portletId}, portletIds);
+			}
+		}
+
+		return portletIds;
+	}
+
+	protected void deleteMissingLayouts(
+			long groupId, boolean privateLayout, Set<Long> newLayoutIds,
+			List<Layout> previousLayouts, ServiceContext serviceContext)
+		throws Exception {
+
+		// Layouts
+
+		if (_log.isDebugEnabled()) {
+			if (newLayoutIds.size() > 0) {
+				_log.debug("Delete missing layouts");
+			}
+		}
+
+		for (Layout layout : previousLayouts) {
+			if (!newLayoutIds.contains(layout.getLayoutId())) {
+				try {
+					LayoutLocalServiceUtil.deleteLayout(
+						layout, false, serviceContext);
+				}
+				catch (NoSuchLayoutException nsle) {
+				}
+			}
+		}
+
+		// Layout set
+
+		LayoutSetLocalServiceUtil.updatePageCount(groupId, privateLayout);
+	}
+
+	protected void doImportLayouts(
 			long userId, long groupId, boolean privateLayout,
 			Map<String, String[]> parameterMap, File file)
 		throws Exception {
@@ -558,57 +625,6 @@ public class LayoutImporter {
 		}
 
 		zipReader.close();
-	}
-
-	protected String[] appendPortletIds(
-		String[] portletIds, String[] newPortletIds, String portletsMergeMode) {
-
-		for (String portletId : newPortletIds) {
-			if (ArrayUtil.contains(portletIds, portletId)) {
-				continue;
-			}
-
-			if (portletsMergeMode.equals(
-					PortletDataHandlerKeys.PORTLETS_MERGE_MODE_ADD_TO_BOTTOM)) {
-
-				portletIds = ArrayUtil.append(portletIds, portletId);
-			}
-			else {
-				portletIds = ArrayUtil.append(
-					new String[] {portletId}, portletIds);
-			}
-		}
-
-		return portletIds;
-	}
-
-	protected void deleteMissingLayouts(
-			long groupId, boolean privateLayout, Set<Long> newLayoutIds,
-			List<Layout> previousLayouts, ServiceContext serviceContext)
-		throws Exception {
-
-		// Layouts
-
-		if (_log.isDebugEnabled()) {
-			if (newLayoutIds.size() > 0) {
-				_log.debug("Delete missing layouts");
-			}
-		}
-
-		for (Layout layout : previousLayouts) {
-			if (!newLayoutIds.contains(layout.getLayoutId())) {
-				try {
-					LayoutLocalServiceUtil.deleteLayout(
-						layout, false, serviceContext);
-				}
-				catch (NoSuchLayoutException nsle) {
-				}
-			}
-		}
-
-		// Layout set
-
-		LayoutSetLocalServiceUtil.updatePageCount(groupId, privateLayout);
 	}
 
 	protected String getLayoutSetPrototype(

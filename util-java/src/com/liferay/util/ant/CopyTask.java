@@ -98,18 +98,30 @@ public class CopyTask {
 		File sourceFile, File destinationDir, Map<String, String> filterMap,
 		boolean overwrite, boolean preserveLastModified) {
 
+		copyFile(
+			sourceFile, destinationDir, null, filterMap, overwrite,
+			preserveLastModified);
+	}
+
+	public static void copyFile(
+		File sourceFile, File destinationDir, String destinationFileName,
+		Map<String, String> filterMap, boolean overwrite,
+		boolean preserveLastModified) {
+
 		Copy copy = new Copy();
 
-		FileSet fileSet = new FileSet();
-
-		fileSet.setFile(sourceFile);
-
-		copy.setProject(AntUtil.getProject());
+		copy.setFile(sourceFile);
 		copy.setFiltering(true);
-		copy.addFileset(fileSet);
-		copy.setTodir(destinationDir);
 		copy.setOverwrite(overwrite);
 		copy.setPreserveLastModified(preserveLastModified);
+		copy.setProject(AntUtil.getProject());
+
+		if (destinationFileName == null) {
+			copy.setTodir(destinationDir);
+		}
+		else {
+			copy.setTofile(new File(destinationDir, destinationFileName));
+		}
 
 		if (filterMap != null) {
 			FilterSet filterSet = copy.createFilterSet();

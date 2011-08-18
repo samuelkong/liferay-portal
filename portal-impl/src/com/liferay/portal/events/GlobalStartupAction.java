@@ -54,6 +54,10 @@ import org.jamwiki.Environment;
 public class GlobalStartupAction extends SimpleAction {
 
 	public static List<AutoDeployListener> getAutoDeployListeners() {
+		if (_autoDeployListeners != null) {
+			return _autoDeployListeners;
+		}
+
 		List<AutoDeployListener> autoDeployListeners =
 			new ArrayList<AutoDeployListener>();
 
@@ -79,10 +83,16 @@ public class GlobalStartupAction extends SimpleAction {
 			}
 		}
 
-		return autoDeployListeners;
+		_autoDeployListeners = autoDeployListeners;
+
+		return _autoDeployListeners;
 	}
 
 	public static List<HotDeployListener> getHotDeployListeners() {
+		if (_hotDeployListeners != null) {
+			return _hotDeployListeners;
+		}
+
 		List<HotDeployListener> hotDeployListeners =
 			new ArrayList<HotDeployListener>();
 
@@ -106,7 +116,9 @@ public class GlobalStartupAction extends SimpleAction {
 			}
 		}
 
-		return hotDeployListeners;
+		_hotDeployListeners = hotDeployListeners;
+
+		return _hotDeployListeners;
 	}
 
 	public static List<SandboxDeployListener> getSandboxDeployListeners() {
@@ -298,5 +310,8 @@ public class GlobalStartupAction extends SimpleAction {
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(GlobalStartupAction.class);
+
+	private static List<AutoDeployListener> _autoDeployListeners;
+	private static List<HotDeployListener> _hotDeployListeners;
 
 }

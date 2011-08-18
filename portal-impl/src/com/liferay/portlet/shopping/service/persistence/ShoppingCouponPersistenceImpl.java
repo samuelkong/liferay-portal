@@ -1313,10 +1313,12 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ShoppingCouponPersistenceImpl.class);
 	private static ShoppingCoupon _nullShoppingCoupon = new ShoppingCouponImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ShoppingCoupon> toCacheModel() {
 				return _nullShoppingCouponCacheModel;
 			}

@@ -3771,10 +3771,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(DLFileEntryTypePersistenceImpl.class);
 	private static DLFileEntryType _nullDLFileEntryType = new DLFileEntryTypeImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<DLFileEntryType> toCacheModel() {
 				return _nullDLFileEntryTypeCacheModel;
 			}

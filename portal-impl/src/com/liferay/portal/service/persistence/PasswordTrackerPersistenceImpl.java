@@ -1146,10 +1146,12 @@ public class PasswordTrackerPersistenceImpl extends BasePersistenceImpl<Password
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(PasswordTrackerPersistenceImpl.class);
 	private static PasswordTracker _nullPasswordTracker = new PasswordTrackerImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<PasswordTracker> toCacheModel() {
 				return _nullPasswordTrackerCacheModel;
 			}

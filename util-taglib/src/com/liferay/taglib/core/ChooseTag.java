@@ -25,6 +25,7 @@ public class ChooseTag extends TagSupport {
 		return !_ran;
 	}
 
+	@Override
 	public int doStartTag() {
 		_ran = false;
 
@@ -39,6 +40,7 @@ public class ChooseTag extends TagSupport {
 		_ran = true;
 	}
 
+	@Override
 	public void release() {
 		super.release();
 

@@ -47,35 +47,40 @@ public class LiferayPackageAutoDeployer implements AutoDeployer {
 		}
 	}
 
-	public void autoDeploy(String file) throws AutoDeployException {
+	public void autoDeploy(File file, String context)
+		throws AutoDeployException {
+
 		try {
-			ZipFile zipFile = new ZipFile(
-				new File(baseDir + StringPool.SLASH + file));
+			ZipFile zipFile = new ZipFile(file);
 
 			Enumeration<? extends ZipEntry> enu = zipFile.entries();
 
 			while (enu.hasMoreElements()) {
-				ZipEntry entry = enu.nextElement();
+				ZipEntry zipEntry = enu.nextElement();
 
-				String fileName = entry.getName();
+				String zipEntryFileName = zipEntry.getName();
 
-				if (!fileName.endsWith(".war") && !fileName.endsWith(".xml") &&
-					!fileName.endsWith(".zip")) {
+				if (!zipEntryFileName.endsWith(".war") &&
+					!zipEntryFileName.endsWith(".xml") &&
+					!zipEntryFileName.endsWith(".zip")) {
 
 					continue;
 				}
 
 				if (_log.isInfoEnabled()) {
-					_log.info("Extracting " + fileName + " from " + file);
+					_log.info(
+						"Extracting " + zipEntryFileName + " from " +
+							file.getName());
 				}
 
 				InputStream inputStream = null;
 
 				try {
-					inputStream = zipFile.getInputStream(entry);
+					inputStream = zipFile.getInputStream(zipEntry);
 
 					FileUtil.write(
-						baseDir + StringPool.SLASH + fileName, inputStream);
+						baseDir + StringPool.SLASH + zipEntryFileName,
+						inputStream);
 				}
 				finally {
 					StreamUtil.cleanUp(inputStream);

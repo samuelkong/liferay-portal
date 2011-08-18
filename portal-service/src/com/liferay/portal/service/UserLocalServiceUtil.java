@@ -498,7 +498,6 @@ public class UserLocalServiceUtil {
 	* @param organizationIds the primary keys of the user's organizations
 	* @param roleIds the primary keys of the roles this user possesses
 	* @param userGroupIds the primary keys of the user's user groups
-	* @param addresses the user's addresses
 	* @param sendEmail whether to send the user an email notification about
 	their new account
 	* @param serviceContext the user's service context (optionally
@@ -519,9 +518,7 @@ public class UserLocalServiceUtil {
 		java.lang.String lastName, int prefixId, int suffixId, boolean male,
 		int birthdayMonth, int birthdayDay, int birthdayYear,
 		java.lang.String jobTitle, long[] groupIds, long[] organizationIds,
-		long[] roleIds, long[] userGroupIds,
-		java.util.List<com.liferay.portal.model.Address> addresses,
-		boolean sendEmail,
+		long[] roleIds, long[] userGroupIds, boolean sendEmail,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
@@ -531,7 +528,7 @@ public class UserLocalServiceUtil {
 			facebookId, openId, locale, firstName, middleName, lastName,
 			prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear,
 			jobTitle, groupIds, organizationIds, roleIds, userGroupIds,
-			addresses, sendEmail, serviceContext);
+			sendEmail, serviceContext);
 	}
 
 	/**
@@ -945,6 +942,19 @@ public class UserLocalServiceUtil {
 		long companyId, java.lang.String screenName)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().fetchUserByScreenName(companyId, screenName);
+	}
+
+	/**
+	* Returns the user with the primary key.
+	*
+	* @param userId the primary key of the user
+	* @return the user with the primary key, or <code>null</code> if a user
+	with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.portal.model.User fetchUserById(long userId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchUserById(userId);
 	}
 
 	/**

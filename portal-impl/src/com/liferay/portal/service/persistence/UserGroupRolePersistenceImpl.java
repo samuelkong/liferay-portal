@@ -2842,10 +2842,12 @@ public class UserGroupRolePersistenceImpl extends BasePersistenceImpl<UserGroupR
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(UserGroupRolePersistenceImpl.class);
 	private static UserGroupRole _nullUserGroupRole = new UserGroupRoleImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<UserGroupRole> toCacheModel() {
 				return _nullUserGroupRoleCacheModel;
 			}

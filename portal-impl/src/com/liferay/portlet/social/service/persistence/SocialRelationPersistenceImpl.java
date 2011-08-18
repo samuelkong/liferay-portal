@@ -4786,10 +4786,12 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(SocialRelationPersistenceImpl.class);
 	private static SocialRelation _nullSocialRelation = new SocialRelationImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<SocialRelation> toCacheModel() {
 				return _nullSocialRelationCacheModel;
 			}

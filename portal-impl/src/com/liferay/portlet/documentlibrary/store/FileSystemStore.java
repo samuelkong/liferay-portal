@@ -332,6 +332,7 @@ public class FileSystemStore extends BaseStore {
 		}
 	}
 
+	@Override
 	public void updateFileVersion(
 			long companyId, long repositoryId, String fileName,
 			String fromVersionLabel, String toVersionLabel)

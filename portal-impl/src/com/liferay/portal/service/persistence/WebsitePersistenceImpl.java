@@ -2995,10 +2995,12 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(WebsitePersistenceImpl.class);
 	private static Website _nullWebsite = new WebsiteImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Website> toCacheModel() {
 				return _nullWebsiteCacheModel;
 			}

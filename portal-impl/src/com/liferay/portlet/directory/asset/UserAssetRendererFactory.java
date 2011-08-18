@@ -47,6 +47,7 @@ public class UserAssetRendererFactory extends BaseAssetRendererFactory {
 		return new UserAssetRenderer(user);
 	}
 
+	@Override
 	public AssetRenderer getAssetRenderer(long groupId, String urlTitle)
 		throws PortalException, SystemException {
 

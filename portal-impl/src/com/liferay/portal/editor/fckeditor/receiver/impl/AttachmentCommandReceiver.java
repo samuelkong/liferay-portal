@@ -45,10 +45,12 @@ import org.w3c.dom.Node;
  */
 public class AttachmentCommandReceiver extends BaseCommandReceiver {
 
+	@Override
 	protected String createFolder(CommandArgument commandArgument) {
 		return "0";
 	}
 
+	@Override
 	protected String fileUpload(
 		CommandArgument commandArgument, String fileName, File file,
 		String extension) {
@@ -83,10 +85,12 @@ public class AttachmentCommandReceiver extends BaseCommandReceiver {
 		return "0";
 	}
 
+	@Override
 	protected void getFolders(
 		CommandArgument commandArgument, Document document, Node rootNode) {
 	}
 
+	@Override
 	protected void getFoldersAndFiles(
 		CommandArgument commandArgument, Document document, Node rootNode) {
 
@@ -98,6 +102,7 @@ public class AttachmentCommandReceiver extends BaseCommandReceiver {
 		}
 	}
 
+	@Override
 	protected boolean isStagedData(Group group) {
 		return group.isStagedPortlet(PortletKeys.WIKI);
 	}

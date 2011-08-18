@@ -330,9 +330,8 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			PortletLocalServiceUtil.getWARDisplay(servletContextName, xml);
 
 		for (long companyId : companyIds) {
-			PortletCategory portletCategory =
-				(PortletCategory)WebAppPool.get(
-					String.valueOf(companyId), WebKeys.PORTLET_CATEGORY);
+			PortletCategory portletCategory = (PortletCategory)WebAppPool.get(
+				companyId, WebKeys.PORTLET_CATEGORY);
 
 			if (portletCategory != null) {
 				portletCategory.merge(newPortletCategory);
@@ -471,7 +470,7 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			for (long companyId : companyIds) {
 				PortletCategory portletCategory =
 					(PortletCategory)WebAppPool.get(
-						String.valueOf(companyId), WebKeys.PORTLET_CATEGORY);
+						companyId, WebKeys.PORTLET_CATEGORY);
 
 				portletCategory.separate(portletIds);
 			}

@@ -1522,10 +1522,12 @@ public class MBDiscussionPersistenceImpl extends BasePersistenceImpl<MBDiscussio
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(MBDiscussionPersistenceImpl.class);
 	private static MBDiscussion _nullMBDiscussion = new MBDiscussionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<MBDiscussion> toCacheModel() {
 				return _nullMBDiscussionCacheModel;
 			}

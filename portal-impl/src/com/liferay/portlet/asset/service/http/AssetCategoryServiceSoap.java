@@ -151,6 +151,23 @@ public class AssetCategoryServiceSoap {
 		}
 	}
 
+	public static java.lang.String getJSONVocabularyCategories(long groupId,
+		java.lang.String name, long vocabularyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator obc)
+		throws RemoteException {
+		try {
+			com.liferay.portal.kernel.json.JSONObject returnValue = AssetCategoryServiceUtil.getJSONVocabularyCategories(groupId,
+					name, vocabularyId, start, end, obc);
+
+			return returnValue.toString();
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	public static com.liferay.portlet.asset.model.AssetCategorySoap[] getVocabularyCategories(
 		long vocabularyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator obc)
@@ -179,6 +196,54 @@ public class AssetCategoryServiceSoap {
 					vocabularyId, start, end, obc);
 
 			return com.liferay.portlet.asset.model.AssetCategorySoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portlet.asset.model.AssetCategorySoap[] getVocabularyCategories(
+		long groupId, java.lang.String name, long vocabularyId, int start,
+		int end, com.liferay.portal.kernel.util.OrderByComparator obc)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.portlet.asset.model.AssetCategory> returnValue =
+				AssetCategoryServiceUtil.getVocabularyCategories(groupId, name,
+					vocabularyId, start, end, obc);
+
+			return com.liferay.portlet.asset.model.AssetCategorySoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static int getVocabularyCategoriesCount(long groupId,
+		long vocabularyId) throws RemoteException {
+		try {
+			int returnValue = AssetCategoryServiceUtil.getVocabularyCategoriesCount(groupId,
+					vocabularyId);
+
+			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static int getVocabularyCategoriesCount(long groupId,
+		java.lang.String name, long vocabularyId) throws RemoteException {
+		try {
+			int returnValue = AssetCategoryServiceUtil.getVocabularyCategoriesCount(groupId,
+					name, vocabularyId);
+
+			return returnValue;
 		}
 		catch (Exception e) {
 			_log.error(e, e);

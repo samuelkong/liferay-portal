@@ -30,6 +30,10 @@ public class UnicodeFormatter_IW {
 		return UnicodeFormatter.byteToHex(b, hexes);
 	}
 
+	public char[] byteToHex(byte b, char[] hexes, boolean upperCase) {
+		return UnicodeFormatter.byteToHex(b, hexes, upperCase);
+	}
+
 	public java.lang.String charToHex(char c) {
 		return UnicodeFormatter.charToHex(c);
 	}

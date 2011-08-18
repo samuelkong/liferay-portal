@@ -21,10 +21,8 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portlet.asset.NoSuchVocabularyException;
 import com.liferay.portlet.asset.model.AssetVocabulary;
 import com.liferay.portlet.asset.model.impl.AssetVocabularyImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
@@ -58,14 +56,14 @@ public class AssetVocabularyFinderImpl
 
 	public List<AssetVocabulary> filterFindByG_N(long groupId, String name,
 			int start, int end, OrderByComparator obc)
-		throws NoSuchVocabularyException, SystemException {
+		throws SystemException {
 
 		return doFindByG_N(groupId, name, start, end, obc, true);
 	}
 
 	public List<AssetVocabulary> findByG_N(long groupId, String name, int start,
  			int end, OrderByComparator obc)
-		throws NoSuchVocabularyException, SystemException {
+		throws SystemException {
 
 		return doFindByG_N(groupId, name, start, end, obc, false);
 	}
@@ -118,9 +116,9 @@ public class AssetVocabularyFinderImpl
 	}
 
 	protected List<AssetVocabulary> doFindByG_N(
-		long groupId, String name, int start, int end,
-		OrderByComparator obc, boolean inlineSQLHelper)
-		throws NoSuchVocabularyException, SystemException {
+			long groupId, String name, int start, int end,
+			OrderByComparator obc, boolean inlineSQLHelper)
+		throws SystemException {
 
 		name = name.trim().toLowerCase();
 
@@ -149,27 +147,8 @@ public class AssetVocabularyFinderImpl
 			qPos.add(name);
 			qPos.add(name);
 
-			List<AssetVocabulary> list = q.list();
-
-			if (list.size() == 0) {
-				StringBundler sb = new StringBundler(6);
-
-				sb.append("No AssetVocabulary exists with the key ");
-				sb.append("{groupId=");
-				sb.append(groupId);
-				sb.append(", name=");
-				sb.append(name);
-				sb.append("}");
-
-				throw new NoSuchVocabularyException(sb.toString());
-			}
-			else {
-				return (List<AssetVocabulary>)QueryUtil.list(
-					q, getDialect(), start, end);
-			}
-		}
-		catch (NoSuchVocabularyException nsve) {
-			throw nsve;
+			return (List<AssetVocabulary>)QueryUtil.list(
+				q, getDialect(), start, end);
 		}
 		catch (Exception e) {
 			throw new SystemException(e);

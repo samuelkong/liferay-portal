@@ -998,10 +998,12 @@ public class PortalPreferencesPersistenceImpl extends BasePersistenceImpl<Portal
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(PortalPreferencesPersistenceImpl.class);
 	private static PortalPreferences _nullPortalPreferences = new PortalPreferencesImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<PortalPreferences> toCacheModel() {
 				return _nullPortalPreferencesCacheModel;
 			}

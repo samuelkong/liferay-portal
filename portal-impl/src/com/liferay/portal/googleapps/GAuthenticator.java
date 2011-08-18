@@ -39,6 +39,14 @@ public class GAuthenticator {
 		init(true);
 	}
 
+	public GAuthenticator(String domain, String userName, String password) {
+		_domain = domain;
+		_userName = userName;
+		_password = password;
+
+		init(true);
+	}
+
 	public String getAuthenticationToken() {
 		init(false);
 
@@ -53,6 +61,10 @@ public class GAuthenticator {
 		return _domain;
 	}
 
+	public String getError() {
+		return _error;
+	}
+
 	public void init(boolean manual) {
 		if (manual || isStale()) {
 			try {
@@ -65,23 +77,29 @@ public class GAuthenticator {
 	}
 
 	protected void doInit() throws Exception {
-		Company company = CompanyLocalServiceUtil.getCompany(_companyId);
+		if (_companyId > 0) {
+			Company company = CompanyLocalServiceUtil.getCompany(_companyId);
 
-		_domain = company.getMx();
-		_userName = PrefsPropsUtil.getString(
-			_companyId, PropsKeys.GOOGLE_APPS_USERNAME);
-		_password = PrefsPropsUtil.getString(
-			_companyId, PropsKeys.GOOGLE_APPS_PASSWORD);
-
-		if (!_userName.contains(StringPool.AT)) {
-			_userName += StringPool.AT + _domain;
+			_domain = company.getMx();
+			_userName = PrefsPropsUtil.getString(
+				_companyId, PropsKeys.GOOGLE_APPS_USERNAME);
+			_password = PrefsPropsUtil.getString(
+				_companyId, PropsKeys.GOOGLE_APPS_PASSWORD);
 		}
 
 		Http.Options options = new Http.Options();
 
-		options.addPart("Email", _userName);
-		options.addPart("Passwd", _password);
 		options.addPart("accountType", "HOSTED");
+
+		String emailAddress = _userName;
+
+		if (!emailAddress.contains(StringPool.AT)) {
+			emailAddress = _userName.concat(StringPool.AT).concat(_domain);
+		}
+
+		options.addPart("Email", emailAddress);
+
+		options.addPart("Passwd", _password);
 		options.addPart("service", "apps");
 		options.setLocation("https://www.google.com/accounts/ClientLogin");
 		options.setPost(true);
@@ -90,13 +108,23 @@ public class GAuthenticator {
 
 		Properties properties = PropertiesUtil.load(content);
 
+		_error = properties.getProperty("Error");
+
+		if (_error != null) {
+			_log.info("Unable to initialize authentication token: " + _error);
+		}
+
 		_authenticationToken = properties.getProperty("Auth");
+
+		if (_authenticationToken != null) {
+			_log.info("Authentication token " + _authenticationToken);
+		}
 
 		_initTime = System.currentTimeMillis();
 	}
 
 	private boolean isStale() {
-		if ((_initTime + (Time.HOUR * 23)) > System.currentTimeMillis()) {
+		if ((_initTime + Time.HOUR) > System.currentTimeMillis()) {
 			return false;
 		}
 		else {
@@ -109,6 +137,7 @@ public class GAuthenticator {
 	private String _authenticationToken;
 	private long _companyId;
 	private String _domain;
+	private String _error;
 	private long _initTime;
 	private String _password;
 	private String _userName;

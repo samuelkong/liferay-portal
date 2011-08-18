@@ -91,6 +91,7 @@ public class LayoutBranchLocalServiceImpl
 		return layoutBranch;
 	}
 
+	@Override
 	public void deleteLayoutBranch(long layoutBranchId)
 		throws PortalException, SystemException {
 

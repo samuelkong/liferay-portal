@@ -1910,10 +1910,12 @@ public class ResourceCodePersistenceImpl extends BasePersistenceImpl<ResourceCod
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ResourceCodePersistenceImpl.class);
 	private static ResourceCode _nullResourceCode = new ResourceCodeImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ResourceCode> toCacheModel() {
 				return _nullResourceCodeCacheModel;
 			}

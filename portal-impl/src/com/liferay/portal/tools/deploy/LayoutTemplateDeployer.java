@@ -15,6 +15,7 @@
 package com.liferay.portal.tools.deploy;
 
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.Plugin;
 import com.liferay.portal.util.InitUtil;
 
 import java.io.File;
@@ -72,6 +73,11 @@ public class LayoutTemplateDeployer extends BaseDeployer {
 		sb.append("</listener>");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String getPluginType() {
+		return Plugin.TYPE_LAYOUT_TEMPLATE;
 	}
 
 }

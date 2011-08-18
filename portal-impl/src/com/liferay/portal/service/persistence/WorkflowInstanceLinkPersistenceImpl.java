@@ -1256,10 +1256,12 @@ public class WorkflowInstanceLinkPersistenceImpl extends BasePersistenceImpl<Wor
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(WorkflowInstanceLinkPersistenceImpl.class);
 	private static WorkflowInstanceLink _nullWorkflowInstanceLink = new WorkflowInstanceLinkImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<WorkflowInstanceLink> toCacheModel() {
 				return _nullWorkflowInstanceLinkCacheModel;
 			}

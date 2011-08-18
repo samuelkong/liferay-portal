@@ -17,6 +17,7 @@ create index IX_9C7EB9F on AnnouncementsFlag (entryId);
 create unique index IX_4539A99C on AnnouncementsFlag (userId, entryId, value);
 
 create index IX_E639E2F6 on AssetCategory (groupId);
+create index IX_2008FACB on AssetCategory (groupId, vocabularyId);
 create index IX_D61ABE08 on AssetCategory (name, vocabularyId);
 create index IX_7BB1826B on AssetCategory (parentCategoryId);
 create index IX_9DDD15EA on AssetCategory (parentCategoryId, name);
@@ -703,17 +704,6 @@ create index IX_786D171A on Subscription (companyId, classNameId, classPK);
 create unique index IX_2E1A92D4 on Subscription (companyId, userId, classNameId, classPK);
 create index IX_54243AFD on Subscription (userId);
 create index IX_E8F34171 on Subscription (userId, classNameId);
-
-create unique index IX_181A4A1B on TasksProposal (classNameId, classPK);
-create index IX_7FB27324 on TasksProposal (groupId);
-create index IX_6EEC675E on TasksProposal (groupId, userId);
-
-create index IX_4D0C7F8D on TasksReview (proposalId);
-create index IX_70AFEA01 on TasksReview (proposalId, stage);
-create index IX_1894B29A on TasksReview (proposalId, stage, completed);
-create index IX_41AFC20C on TasksReview (proposalId, stage, completed, rejected);
-create index IX_36F512E6 on TasksReview (userId);
-create unique index IX_5C6BE4C7 on TasksReview (userId, proposalId);
 
 create index IX_AE6E9907 on Team (groupId);
 create unique index IX_143DC786 on Team (groupId, name);

@@ -1382,10 +1382,12 @@ public class ExpandoTablePersistenceImpl extends BasePersistenceImpl<ExpandoTabl
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ExpandoTablePersistenceImpl.class);
 	private static ExpandoTable _nullExpandoTable = new ExpandoTableImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ExpandoTable> toCacheModel() {
 				return _nullExpandoTableCacheModel;
 			}

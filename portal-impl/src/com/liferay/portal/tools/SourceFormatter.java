@@ -557,8 +557,8 @@ public class SourceFormatter {
 
 		sb.append("<?xml version=\"1.0\"?>\n");
 		sb.append("<!DOCTYPE routes PUBLIC \"-//Liferay//DTD Friendly URL ");
-		sb.append("Routes 6.0.0//EN\" \"http://www.liferay.com/dtd/");
-		sb.append("liferay-friendly-url-routes_6_0_0.dtd\">\n\n<routes>\n");
+		sb.append("Routes 6.1.0//EN\" \"http://www.liferay.com/dtd/");
+		sb.append("liferay-friendly-url-routes_6_1_0.dtd\">\n\n<routes>\n");
 
 		for (ComparableRoute comparableRoute : comparableRoutes) {
 			sb.append("\t<route>\n");

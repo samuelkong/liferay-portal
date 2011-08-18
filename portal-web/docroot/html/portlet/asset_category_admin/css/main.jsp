@@ -21,14 +21,29 @@
 		clear: none;
 		float: left;
 		margin: 0;
+
+		.permissions-button {
+			margin-left: 1em;
+		}
+
+		.category-actions {
+			margin-left: 0.3em;
+			margin-right: 0;
+		}
 	}
 
-	.categories-admin-container .results-header {
-		background: #F0F5F7;
-		font-weight: bold;
-		margin: 2px 0;
-		padding: 5px 10px;
-		position: relative;
+	.categories-admin-container {
+		.categories-actions-toolbar {
+			margin-left: 1em;
+		}
+
+		.results-header {
+			background: #F0F5F7;
+			font-weight: bold;
+			margin: 2px 0;
+			padding: 5px 10px;
+			position: relative;
+		}
 	}
 
 	.categories-admin-content {
@@ -54,6 +69,18 @@
 		background-position: 5px 50%;
 		padding-left: 25px;
 		width: 250px;
+	}
+
+	.categories-treeview-container {
+		padding: 5px;
+	}
+
+	.select-vocabularies, .select-categories {
+		float: left;
+	}
+
+	.select-categories {
+		margin-left: 12px;
 	}
 
 	.vocabulary-list-container-content, .vocabulary-categories-container-content, .vocabulary-edit-category-content {
@@ -82,6 +109,13 @@
 		width: 16px;
 	}
 
+	.vocabulary-item-check {
+		margin-left: 10px;
+		position: static;
+		margin-top: 10px;
+		float: left;
+	}
+
 	.vocabulary-category {
 		&:hover .vocabulary-item-actions-trigger, &:focus .vocabulary-item-actions-trigger, .vocabulary-item-actions-trigger:focus {
 			clip: auto;
@@ -94,10 +128,6 @@
 
 	.vocabulary-item.alt {
 		background: #F0F2F4;
-	}
-
-	.vocabulary-treeview-container {
-		padding: 5px;
 	}
 
 	.vocabulary-item {
@@ -176,7 +206,7 @@
 		margin: 10px;
 	}
 
-	.vocabulary-treeview-container {
+	.categories-treeview-container {
 		.aui-tree-label {
 			cursor: pointer;
 
@@ -288,12 +318,6 @@
 }
 
 .ie6 {
-	.portlet-asset-category-admin {
-		.vocabulary-treeview-container .vocabulary-item.selected {
-			background: none;
-		}
-	}
-
 	.portlet-asset-categories-admin-dialog {
 		.yui3-widget-bd {
 			.asset-category-layer {

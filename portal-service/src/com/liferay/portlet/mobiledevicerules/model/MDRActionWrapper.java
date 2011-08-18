@@ -566,7 +566,8 @@ public class MDRActionWrapper implements MDRAction {
 		return new MDRActionWrapper((MDRAction)_mdrAction.clone());
 	}
 
-	public int compareTo(MDRAction mdrAction) {
+	public int compareTo(
+		com.liferay.portlet.mobiledevicerules.model.MDRAction mdrAction) {
 		return _mdrAction.compareTo(mdrAction);
 	}
 
@@ -575,11 +576,11 @@ public class MDRActionWrapper implements MDRAction {
 		return _mdrAction.hashCode();
 	}
 
-	public com.liferay.portal.model.CacheModel<MDRAction> toCacheModel() {
+	public com.liferay.portal.model.CacheModel<com.liferay.portlet.mobiledevicerules.model.MDRAction> toCacheModel() {
 		return _mdrAction.toCacheModel();
 	}
 
-	public MDRAction toEscapedModel() {
+	public com.liferay.portlet.mobiledevicerules.model.MDRAction toEscapedModel() {
 		return new MDRActionWrapper(_mdrAction.toEscapedModel());
 	}
 

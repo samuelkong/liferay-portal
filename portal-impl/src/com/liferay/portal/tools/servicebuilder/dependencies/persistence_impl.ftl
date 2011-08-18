@@ -3943,10 +3943,12 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 
 	private static ${entity.name} _null${entity.name} = new ${entity.name}Impl() {
 
+		@Override
 		public Object clone() {
 			return this;
 		}
 
+		@Override
 		public CacheModel<${entity.name}> toCacheModel() {
 			return _null${entity.name}CacheModel;
 		}

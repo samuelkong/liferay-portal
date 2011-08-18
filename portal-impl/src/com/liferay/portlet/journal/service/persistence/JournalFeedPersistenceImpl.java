@@ -2479,10 +2479,12 @@ public class JournalFeedPersistenceImpl extends BasePersistenceImpl<JournalFeed>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(JournalFeedPersistenceImpl.class);
 	private static JournalFeed _nullJournalFeed = new JournalFeedImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<JournalFeed> toCacheModel() {
 				return _nullJournalFeedCacheModel;
 			}

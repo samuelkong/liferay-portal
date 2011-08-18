@@ -378,6 +378,7 @@ public class PortletPreferencesLocalServiceImpl
 			_portletId = portletId;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			PreferencesKey preferencesKey = (PreferencesKey)obj;
 
@@ -391,6 +392,7 @@ public class PortletPreferencesLocalServiceImpl
 			}
 		}
 
+		@Override
 		public int hashCode() {
 			return (int)(_plid * 11 + _portletId.hashCode());
 		}

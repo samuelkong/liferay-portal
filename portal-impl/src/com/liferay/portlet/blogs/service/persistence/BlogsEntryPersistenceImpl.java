@@ -10705,10 +10705,12 @@ public class BlogsEntryPersistenceImpl extends BasePersistenceImpl<BlogsEntry>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(BlogsEntryPersistenceImpl.class);
 	private static BlogsEntry _nullBlogsEntry = new BlogsEntryImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<BlogsEntry> toCacheModel() {
 				return _nullBlogsEntryCacheModel;
 			}

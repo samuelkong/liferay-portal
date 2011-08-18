@@ -1903,10 +1903,12 @@ public class CountryPersistenceImpl extends BasePersistenceImpl<Country>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(CountryPersistenceImpl.class);
 	private static Country _nullCountry = new CountryImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Country> toCacheModel() {
 				return _nullCountryCacheModel;
 			}

@@ -24,6 +24,7 @@ import com.liferay.portal.security.permission.PermissionThreadLocal;
  */
 public class UserJSONTransformer extends FlexjsonObjectJSONTransformer {
 
+	@Override
 	public void transform(Object object) {
 		User user = (User)object;
 

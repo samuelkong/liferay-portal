@@ -1371,10 +1371,12 @@ public class WikiPageResourcePersistenceImpl extends BasePersistenceImpl<WikiPag
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(WikiPageResourcePersistenceImpl.class);
 	private static WikiPageResource _nullWikiPageResource = new WikiPageResourceImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<WikiPageResource> toCacheModel() {
 				return _nullWikiPageResourceCacheModel;
 			}

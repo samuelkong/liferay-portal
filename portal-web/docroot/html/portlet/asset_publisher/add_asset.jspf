@@ -68,46 +68,54 @@ Map<String, PortletURL> addPortletURLs = getAddPortletURLs(liferayPortletRequest
 </c:if>
 
 <%!
-public PortletURL getAddPortletURL(LiferayPortletRequest liferayPortletRequest, LiferayPortletResponse liferayPortletResponse, String className, long[] allAssetCategoryIds, String[] allAssetTagNames, String journalStructureId) throws Exception {
+public PortletURL getAddPortletURL(LiferayPortletRequest liferayPortletRequest, LiferayPortletResponse liferayPortletResponse, String className, long[] allAssetCategoryIds, String[] allAssetTagNames, long dlFileEntryTypeId, String journalStructureId) throws Exception {
 	ThemeDisplay themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 	AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
 
-	PortletURL addPortletURL = null;
+	if (assetRendererFactory == null) {
+		return null;
+	}
 
-	if (assetRendererFactory != null) {
-		addPortletURL = assetRendererFactory.getURLAdd(liferayPortletRequest, liferayPortletResponse);
+	PortletURL addPortletURL = assetRendererFactory.getURLAdd(liferayPortletRequest, liferayPortletResponse);
 
-		if (addPortletURL != null) {
-			addPortletURL.setWindowState(LiferayWindowState.POP_UP);
+	if (addPortletURL == null) {
+		return null;
+	}
 
-			addPortletURL.setPortletMode(PortletMode.VIEW);
+	addPortletURL.setWindowState(LiferayWindowState.POP_UP);
 
-			PortletURL redirectURL = liferayPortletResponse.createRenderURL();
+	addPortletURL.setPortletMode(PortletMode.VIEW);
 
-			redirectURL.setWindowState(LiferayWindowState.POP_UP);
+	PortletURL redirectURL = liferayPortletResponse.createRenderURL();
 
-			redirectURL.setParameter("struts_action", "/asset_publisher/add_asset_redirect");
+	redirectURL.setWindowState(LiferayWindowState.POP_UP);
 
-			addPortletURL.setParameter("redirect", HtmlUtil.escapeURL(redirectURL.toString()));
+	redirectURL.setParameter("struts_action", "/asset_publisher/add_asset_redirect");
 
-			String referringPortletResource = ParamUtil.getString(liferayPortletRequest, "portletResource");
+	addPortletURL.setParameter("redirect", HtmlUtil.escapeURL(redirectURL.toString()));
 
-			if (Validator.isNotNull(referringPortletResource)) {
-				addPortletURL.setParameter("referringPortletResource", referringPortletResource);
-			}
-			else {
-				PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+	String referringPortletResource = ParamUtil.getString(liferayPortletRequest, "portletResource");
 
-				addPortletURL.setParameter("referringPortletResource", portletDisplay.getId());
+	if (Validator.isNotNull(referringPortletResource)) {
+		addPortletURL.setParameter("referringPortletResource", referringPortletResource);
+	}
+	else {
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
-				addPortletURL.setParameter("assetCategoryIds", StringUtil.merge(allAssetCategoryIds));
-				addPortletURL.setParameter("assetTagNames", StringUtil.merge(allAssetTagNames));
+		addPortletURL.setParameter("referringPortletResource", portletDisplay.getId());
 
-				if (Validator.isNotNull(journalStructureId)) {
-					addPortletURL.setParameter("structureId", journalStructureId);
-				}
-			}
+		addPortletURL.setParameter("assetCategoryIds", StringUtil.merge(allAssetCategoryIds));
+		addPortletURL.setParameter("assetTagNames", StringUtil.merge(allAssetTagNames));
+
+		if (dlFileEntryTypeId > 0) {
+			addPortletURL.setParameter(Constants.CMD, Constants.ADD);
+			addPortletURL.setParameter("folderId", String.valueOf(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+			addPortletURL.setParameter("fileEntryTypeId", String.valueOf(dlFileEntryTypeId));
+		}
+
+		if (Validator.isNotNull(journalStructureId)) {
+			addPortletURL.setParameter("structureId", journalStructureId);
 		}
 	}
 
@@ -119,25 +127,48 @@ public Map<String, PortletURL> getAddPortletURLs(LiferayPortletRequest liferayPo
 
 	Map<String, PortletURL> addPortletURLs = new TreeMap<String, PortletURL>(new ModelResourceComparator(themeDisplay.getLocale()));
 
+	ClassName dlFileEntryClassName = ClassNameServiceUtil.getClassName(DLFileEntry.class.getName());
+
 	for (long classNameId : classNameIds) {
 		ClassName className = ClassNameServiceUtil.getClassName(classNameId);
 
-		PortletURL addPortletURL = getAddPortletURL(liferayPortletRequest, liferayPortletResponse, className.getValue(), allAssetCategoryIds, allAssetTagNames, StringPool.BLANK);
+		if (className.equals(dlFileEntryClassName)) {
+			List<DLFileEntryType> dlFileEntryTypes = DLFileEntryTypeLocalServiceUtil.getFolderFileEntryTypes(themeDisplay.getScopeGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, true);
 
-		if (addPortletURL != null) {
-			addPortletURLs.put(className.getValue(), addPortletURL);
+			for (DLFileEntryType dlFileEntryType : dlFileEntryTypes) {
+				PortletURL addPortletURL = getAddPortletURL(liferayPortletRequest, liferayPortletResponse, dlFileEntryClassName.getValue(), allAssetCategoryIds, allAssetTagNames, dlFileEntryType.getFileEntryTypeId(), StringPool.BLANK);
+
+				if (addPortletURL != null) {
+					String classNameValue = dlFileEntryClassName.getValue();
+
+					if (Validator.isNotNull(dlFileEntryType.getName())) {
+						 classNameValue += _CLASSNAME_SEPARATOR + dlFileEntryType.getName();
+					}
+
+					addPortletURLs.put(classNameValue, addPortletURL);
+				}
+			}
+		}
+		else {
+			PortletURL addPortletURL = getAddPortletURL(liferayPortletRequest, liferayPortletResponse, className.getValue(), allAssetCategoryIds, allAssetTagNames, 0, StringPool.BLANK);
+
+			if (addPortletURL != null) {
+				addPortletURLs.put(className.getValue(), addPortletURL);
+			}
 		}
 	}
 
-	ClassName className = ClassNameServiceUtil.getClassName(JournalArticle.class.getName());
+	ClassName journalArticleClassName = ClassNameServiceUtil.getClassName(JournalArticle.class.getName());
 
 	List<JournalStructure> journalStructures = JournalStructureServiceUtil.getStructures(themeDisplay.getScopeGroupId());
 
 	for (JournalStructure journalStructure : journalStructures) {
-		PortletURL addPortletURL = getAddPortletURL(liferayPortletRequest, liferayPortletResponse, className.getValue(), allAssetCategoryIds, allAssetTagNames, journalStructure.getStructureId());
+		PortletURL addPortletURL = getAddPortletURL(liferayPortletRequest, liferayPortletResponse, journalArticleClassName.getValue(), allAssetCategoryIds, allAssetTagNames, 0, journalStructure.getStructureId());
 
 		if (addPortletURL != null) {
-			addPortletURLs.put(className.getValue() + _CLASSNAME_SEPARATOR + journalStructure.getName(themeDisplay.getLocale()), addPortletURL);
+			String classNameValue = journalArticleClassName.getValue() + _CLASSNAME_SEPARATOR + journalStructure.getName(themeDisplay.getLocale());
+
+			addPortletURLs.put(classNameValue, addPortletURL);
 		}
 	}
 

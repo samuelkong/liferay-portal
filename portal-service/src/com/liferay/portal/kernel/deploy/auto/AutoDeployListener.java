@@ -22,6 +22,6 @@ import java.io.File;
  */
 public interface AutoDeployListener {
 
-	public void deploy(File file) throws AutoDeployException;
+	public void deploy(File file, String context) throws AutoDeployException;
 
 }

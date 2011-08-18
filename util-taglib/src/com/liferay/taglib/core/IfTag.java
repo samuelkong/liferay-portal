@@ -19,6 +19,7 @@ package com.liferay.taglib.core;
  */
 public class IfTag extends ConditionalTagSupport {
 
+	@Override
 	public void release() {
 		super.release();
 
@@ -29,6 +30,7 @@ public class IfTag extends ConditionalTagSupport {
 		_test = test;
 	}
 
+	@Override
 	protected boolean condition() {
 		return _test;
 	}

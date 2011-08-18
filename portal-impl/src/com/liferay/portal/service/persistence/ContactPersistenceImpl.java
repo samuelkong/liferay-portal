@@ -1152,10 +1152,12 @@ public class ContactPersistenceImpl extends BasePersistenceImpl<Contact>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ContactPersistenceImpl.class);
 	private static Contact _nullContact = new ContactImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<Contact> toCacheModel() {
 				return _nullContactCacheModel;
 			}

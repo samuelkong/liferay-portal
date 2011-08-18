@@ -50,6 +50,8 @@ boolean ratingsEnabled = GetterUtil.getBoolean((String)request.getAttribute("lif
 String redirect = (String)request.getAttribute("liferay-ui:discussion:redirect");
 long userId = GetterUtil.getLong((String)request.getAttribute("liferay-ui:discussion:userId"));
 
+String strutsAction = ParamUtil.getString(request, "struts_action");
+
 String threadView = PropsValues.DISCUSSION_THREAD_VIEW;
 
 MBMessageDisplay messageDisplay = MBMessageLocalServiceUtil.getDiscussionMessageDisplay(userId, scopeGroupId, className, classPK, WorkflowConstants.STATUS_ANY, threadView);
@@ -168,7 +170,7 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 							postReplyButtonLabel = LanguageUtil.get(pageContext, "reply-as");
 						}
 
-						if (WorkflowDefinitionLinkLocalServiceUtil.hasWorkflowDefinitionLink(themeDisplay.getCompanyId(), scopeGroupId, MBDiscussion.class.getName())) {
+						if (WorkflowDefinitionLinkLocalServiceUtil.hasWorkflowDefinitionLink(themeDisplay.getCompanyId(), scopeGroupId, MBDiscussion.class.getName()) && !strutsAction.contains("workflow")) {
 							postReplyButtonLabel = LanguageUtil.get(pageContext, "submit-for-publication");
 						}
 						%>
@@ -302,32 +304,6 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 									userName="<%= HtmlUtil.escape(message.getUserName()) %>"
 									displayStyle="<%= 2 %>"
 								/>
-
-								<div class="lfr-discussion-posted-on">
-									<c:choose>
-										<c:when test="<%= message.getParentMessageId() == rootMessage.getMessageId() %>">
-											<%= LanguageUtil.format(pageContext, "posted-on-x", dateFormatDateTime.format(message.getModifiedDate())) %>
-										</c:when>
-										<c:otherwise>
-
-											<%
-											MBMessage parentMessage = MBMessageLocalServiceUtil.getMessage(message.getParentMessageId());
-
-											StringBundler sb = new StringBundler(7);
-
-											sb.append("<a href=\"#");
-											sb.append(randomNamespace);
-											sb.append("message_");
-											sb.append(parentMessage.getMessageId());
-											sb.append("\">");
-											sb.append(HtmlUtil.escape(parentMessage.getUserName()));
-											sb.append("</a>");
-											%>
-
-											<%= LanguageUtil.format(pageContext, "posted-on-x-in-reply-to-x", new Object[] {dateFormatDateTime.format(message.getModifiedDate()), sb.toString()}) %>
-										</c:otherwise>
-									</c:choose>
-								</div>
 							</div>
 
 							<aui:column cssClass="lfr-discussion-body">
@@ -487,6 +463,32 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 									</c:if>
 
 								</aui:layout>
+
+								<div class="lfr-discussion-posted-on">
+									<c:choose>
+										<c:when test="<%= message.getParentMessageId() == rootMessage.getMessageId() %>">
+											<%= LanguageUtil.format(pageContext, "posted-on-x", dateFormatDateTime.format(message.getModifiedDate())) %>
+										</c:when>
+										<c:otherwise>
+
+											<%
+											MBMessage parentMessage = MBMessageLocalServiceUtil.getMessage(message.getParentMessageId());
+
+											StringBundler sb = new StringBundler(7);
+
+											sb.append("<a href=\"#");
+											sb.append(randomNamespace);
+											sb.append("message_");
+											sb.append(parentMessage.getMessageId());
+											sb.append("\">");
+											sb.append(HtmlUtil.escape(parentMessage.getUserName()));
+											sb.append("</a>");
+											%>
+
+											<%= LanguageUtil.format(pageContext, "posted-on-x-in-reply-to-x", new Object[] {dateFormatDateTime.format(message.getModifiedDate()), sb.toString()}) %>
+										</c:otherwise>
+									</c:choose>
+								</div>
 							</aui:column>
 						</div>
 

@@ -31,7 +31,8 @@ public class LayoutTemplateExplodedTomcatListener
 		_deployer = new LayoutTemplateExplodedTomcatDeployer();
 	}
 
-	public void deploy(File file) throws AutoDeployException {
+	@Override
+	protected void deploy(File file) throws AutoDeployException {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Invoking deploy for " + file.getPath());
 		}

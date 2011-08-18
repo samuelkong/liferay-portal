@@ -2274,10 +2274,12 @@ public class AssetCategoryPropertyPersistenceImpl extends BasePersistenceImpl<As
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(AssetCategoryPropertyPersistenceImpl.class);
 	private static AssetCategoryProperty _nullAssetCategoryProperty = new AssetCategoryPropertyImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<AssetCategoryProperty> toCacheModel() {
 				return _nullAssetCategoryPropertyCacheModel;
 			}

@@ -1508,10 +1508,12 @@ public class ResourceActionPersistenceImpl extends BasePersistenceImpl<ResourceA
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(ResourceActionPersistenceImpl.class);
 	private static ResourceAction _nullResourceAction = new ResourceActionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<ResourceAction> toCacheModel() {
 				return _nullResourceActionCacheModel;
 			}

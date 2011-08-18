@@ -25,9 +25,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface JSONWebServiceActionsManager {
 
-	public List<String[]> dumpMappings();
+	public JSONWebServiceAction getJSONWebServiceAction(
+		HttpServletRequest request);
 
-	public JSONWebServiceAction lookup(HttpServletRequest request);
+	public JSONWebServiceActionMapping getJSONWebServiceActionMapping(
+		String signature);
+
+	public List<JSONWebServiceActionMapping> getJSONWebServiceActionMappings();
 
 	public void registerJSONWebServiceAction(
 		Class<?> actionClass, Method actionMethod, String path, String method);

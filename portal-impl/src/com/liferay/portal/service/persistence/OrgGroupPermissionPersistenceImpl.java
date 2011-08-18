@@ -1559,10 +1559,12 @@ public class OrgGroupPermissionPersistenceImpl extends BasePersistenceImpl<OrgGr
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static Log _log = LogFactoryUtil.getLog(OrgGroupPermissionPersistenceImpl.class);
 	private static OrgGroupPermission _nullOrgGroupPermission = new OrgGroupPermissionImpl() {
+			@Override
 			public Object clone() {
 				return this;
 			}
 
+			@Override
 			public CacheModel<OrgGroupPermission> toCacheModel() {
 				return _nullOrgGroupPermissionCacheModel;
 			}

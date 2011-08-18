@@ -16,6 +16,8 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.model.Address;
 import com.liferay.portal.model.EmailAddress;
@@ -113,26 +115,49 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
-		Organization organization = addOrganization(
-			parentOrganizationId, name, type, recursable, regionId, countryId,
-			statusId, comments, site, addresses, serviceContext);
+		boolean indexingEnabled = serviceContext.isIndexingEnabled();
 
-		UsersAdminUtil.updateEmailAddresses(
-			Organization.class.getName(), organization.getOrganizationId(),
-			emailAddresses);
+		serviceContext.setIndexingEnabled(false);
 
-		UsersAdminUtil.updateOrgLabors(organization.getOrganizationId(),
-			orgLabors);
+		try {
+			Organization organization = addOrganization(
+				parentOrganizationId, name, type, recursable, regionId,
+				countryId, statusId, comments, site, serviceContext);
 
-		UsersAdminUtil.updatePhones(
-			Organization.class.getName(), organization.getOrganizationId(),
-			phones);
+			UsersAdminUtil.updateAddresses(
+				Organization.class.getName(), organization.getOrganizationId(),
+				addresses);
 
-		UsersAdminUtil.updateWebsites(
-			Organization.class.getName(), organization.getOrganizationId(),
-			websites);
+			UsersAdminUtil.updateEmailAddresses(
+				Organization.class.getName(), organization.getOrganizationId(),
+				emailAddresses);
 
-		return organization;
+			UsersAdminUtil.updateOrgLabors(organization.getOrganizationId(),
+				orgLabors);
+
+			UsersAdminUtil.updatePhones(
+				Organization.class.getName(), organization.getOrganizationId(),
+				phones);
+
+			UsersAdminUtil.updateWebsites(
+				Organization.class.getName(), organization.getOrganizationId(),
+				websites);
+
+			if (indexingEnabled) {
+				Indexer indexer = IndexerRegistryUtil.getIndexer(
+					Organization.class);
+
+				indexer.reindex(
+					new String[] {
+						String.valueOf(organization.getOrganizationId())
+					});
+			}
+
+			return organization;
+		}
+		finally {
+			serviceContext.setIndexingEnabled(indexingEnabled);
+		}
 	}
 
 	/**
@@ -155,7 +180,6 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	 * @param  comments the comments about the organization
 	 * @param  site whether the organization is to be associated with a main
 	 *         site
-	 * @param  addresses the organization's addresses
 	 * @param  serviceContext the organization's service context (optionally
 	 *         <code>null</code>). Can specify the organization's asset category
 	 *         IDs, asset tag names, and expando bridge attributes.
@@ -168,8 +192,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	public Organization addOrganization(
 			long parentOrganizationId, String name, String type,
 			boolean recursable, long regionId, long countryId, int statusId,
-			String comments, boolean site, List<Address> addresses,
-			ServiceContext serviceContext)
+			String comments, boolean site, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		if (!OrganizationPermissionUtil.contains(
@@ -185,7 +208,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		return organizationLocalService.addOrganization(
 			getUserId(), parentOrganizationId, name, type, recursable, regionId,
-			countryId, statusId, comments, site, addresses, serviceContext);
+			countryId, statusId, comments, site, serviceContext);
 	}
 
 	/**
