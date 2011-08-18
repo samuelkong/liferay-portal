@@ -398,13 +398,13 @@ public class MainServlet extends ActionServlet {
 
 			return;
 		}
-		
+
 		try {
-			if (processSiteInactiveRequest(request, response)) {
+			if (processGroupInactiveRequest(request, response)) {
 				if (_log.isDebugEnabled()) {
 					_log.debug("Processed site inactive request");
 				}
-	
+
 				return;
 			}
 		}
@@ -679,7 +679,7 @@ public class MainServlet extends ActionServlet {
 	protected long getCompanyId(HttpServletRequest request) {
 		return PortalInstances.getCompanyId(request);
 	}
-	
+
 	protected String getPassword(HttpServletRequest request) {
 		return PortalUtil.getUserPassword(request);
 	}
@@ -1053,23 +1053,30 @@ public class MainServlet extends ActionServlet {
 			return false;
 		}
 
-		response.setContentType(ContentTypes.TEXT_HTML_UTF8);
-
-		Locale locale = LocaleUtil.getDefault();
-
-		String companyInactiveMessage = LanguageUtil.get(
-			locale,
+		processInactiveRequest(
+			request, response,
 			"this-instance-is-inactive-please-contact-the-administrator");
 
-		String html = ContentUtil.get(
-			"com/liferay/portal/dependencies/company_inactive.html");
+		return true;
+	}
 
-		html = StringUtil.replace(
-			html, "[$COMPANY_INACTIVE_MESSAGE$]", companyInactiveMessage);
+	protected boolean processGroupInactiveRequest(
+			HttpServletRequest request, HttpServletResponse response)
+		throws IOException, PortalException, SystemException {
 
-		ServletOutputStream servletOutputStream = response.getOutputStream();
+		long plid = ParamUtil.getLong(request, "p_l_id");
 
-		servletOutputStream.print(html);
+		Layout layout = LayoutLocalServiceUtil.getLayout(plid);
+
+		Group group = layout.getGroup();
+
+		if (group.isActive()) {
+			return false;
+		}
+
+		processInactiveRequest(
+			request, response,
+			"this-site-is-inactive-please-contact-the-administrator");
 
 		return true;
 	}
@@ -1085,6 +1092,28 @@ public class MainServlet extends ActionServlet {
 	protected void processGlobalStartupEvents() throws Exception {
 		EventsProcessorUtil.process(
 			PropsKeys.GLOBAL_STARTUP_EVENTS, PropsValues.GLOBAL_STARTUP_EVENTS);
+	}
+
+	protected void processInactiveRequest(
+			HttpServletRequest request, HttpServletResponse response,
+			String messageKey)
+		throws IOException {
+
+		response.setContentType(ContentTypes.TEXT_HTML_UTF8);
+
+		Locale locale = LocaleUtil.getDefault();
+
+		String message = LanguageUtil.get(locale, messageKey);
+
+		String html = ContentUtil.get(
+			"com/liferay/portal/dependencies/inactive.html");
+
+		html = StringUtil.replace(
+			html, "[$MESSAGE$]", message);
+
+		ServletOutputStream servletOutputStream = response.getOutputStream();
+
+		servletOutputStream.print(html);
 	}
 
 	protected boolean processMaintenanceRequest(
@@ -1221,61 +1250,14 @@ public class MainServlet extends ActionServlet {
 			return false;
 		}
 
-		response.setContentType(ContentTypes.TEXT_HTML_UTF8);
+		String messageKey = ShutdownUtil.getMessage();
 
-		String shutdownMessage = ShutdownUtil.getMessage();
-
-		if (Validator.isNull(shutdownMessage)) {
-			Locale locale = LocaleUtil.getDefault();
-
-			shutdownMessage = LanguageUtil.get(
-				locale, "the-system-is-shutdown-please-try-again-later");
+		if (Validator.isNull(messageKey)) {
+			messageKey = "the-system-is-shutdown-please-try-again-later";
 		}
 
-		String html = ContentUtil.get(
-			"com/liferay/portal/dependencies/shutdown.html");
+		processInactiveRequest(request, response, messageKey);
 
-		html = StringUtil.replace(
-			html, "[$SHUTDOWN_MESSAGE$]", shutdownMessage);
-
-		ServletOutputStream servletOutputStream = response.getOutputStream();
-
-		servletOutputStream.print(html);
-
-		return true;
-	}
-	
-	protected boolean processSiteInactiveRequest(
-			HttpServletRequest request, HttpServletResponse response)
-		throws IOException, PortalException, SystemException {
-
-		long plid = ParamUtil.getLong(request, "p_l_id");
-
-		Layout layout = LayoutLocalServiceUtil.getLayout(plid);
-
-		Group group = layout.getGroup();
-
-		if (group.isActive()) {
-			return false;
-		}
-	
-		response.setContentType(ContentTypes.TEXT_HTML_UTF8);
-	
-		Locale locale = LocaleUtil.getDefault();
-	
-		String siteInactiveMessage = LanguageUtil.get(
-			locale, "this-site-is-inactive-please-contact-the-administrator");
-	
-		String html = ContentUtil.get(
-			"com/liferay/portal/dependencies/site_inactive.html");
-	
-		html = StringUtil.replace(
-			html, "[$SITE_INACTIVE_MESSAGE$]", siteInactiveMessage);
-	
-		ServletOutputStream servletOutputStream = response.getOutputStream();
-	
-		servletOutputStream.print(html);
-	
 		return true;
 	}
 
