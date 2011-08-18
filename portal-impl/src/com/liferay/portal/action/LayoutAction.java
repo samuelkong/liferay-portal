@@ -205,11 +205,12 @@ public class LayoutAction extends Action {
 					authLoginURL = loginURL.toString();
 				}
 
-				String currentURL = PortalUtil.getCurrentURL(request);
-
 				authLoginURL = HttpUtil.setParameter(
 					authLoginURL, "p_p_id",
 					PropsValues.AUTH_LOGIN_PORTLET_NAME);
+
+				String currentURL = PortalUtil.getCurrentURL(request);
+
 				authLoginURL = HttpUtil.setParameter(
 					authLoginURL, redirectParam, currentURL);
 
