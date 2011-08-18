@@ -23,7 +23,7 @@ package com.liferay.portal.model;
  * @see com.liferay.portal.model.impl.RepositoryEntryModelImpl
  * @generated
  */
-public interface RepositoryEntry extends RepositoryEntryModel {
+public interface RepositoryEntry extends RepositoryEntryModel, PersistedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *

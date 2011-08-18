@@ -217,6 +217,11 @@ public class RepositoryEntryWrapper implements RepositoryEntry {
 		return _repositoryEntry.toXmlString();
 	}
 
+	public void persist()
+		throws com.liferay.portal.kernel.exception.SystemException {
+		_repositoryEntry.persist();
+	}
+
 	public RepositoryEntry getWrappedRepositoryEntry() {
 		return _repositoryEntry;
 	}

@@ -1484,7 +1484,7 @@
 		<reference package-path="com.liferay.portlet.documentlibrary" entity="DLFolder" />
 		<reference package-path="com.liferay.portlet.expando" entity="ExpandoValue" />
 	</entity>
-	<entity name="RepositoryEntry" uuid="true" local-service="false" remote-service="false">
+	<entity name="RepositoryEntry" uuid="true" local-service="true" remote-service="false">
 
 		<!-- PK fields -->
 

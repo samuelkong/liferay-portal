@@ -112,6 +112,7 @@
 	<bean id="com.liferay.portal.service.persistence.ReleasePersistence" class="com.liferay.portal.service.persistence.ReleasePersistenceImpl" parent="basePersistence" />
 	<bean id="com.liferay.portal.service.RepositoryService" class="com.liferay.portal.service.impl.RepositoryServiceImpl" />
 	<bean id="com.liferay.portal.service.persistence.RepositoryPersistence" class="com.liferay.portal.service.persistence.RepositoryPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.portal.service.RepositoryEntryLocalService" class="com.liferay.portal.service.impl.RepositoryEntryLocalServiceImpl" />
 	<bean id="com.liferay.portal.service.persistence.RepositoryEntryPersistence" class="com.liferay.portal.service.persistence.RepositoryEntryPersistenceImpl" parent="basePersistence" />
 	<bean id="com.liferay.portal.service.ResourceLocalService" class="com.liferay.portal.service.impl.ResourceLocalServiceImpl" />
 	<bean id="com.liferay.portal.service.ResourceService" class="com.liferay.portal.service.impl.ResourceServiceImpl" />
