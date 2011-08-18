@@ -32,9 +32,10 @@ public class ItalicTextNode extends FormattedTextNode {
 
 	@Override
 	public boolean hasContent() {
-		if (getChildASTNodes() == null && getContent() == null) {
+		if ((getChildASTNodes() == null) && (getContent() == null)) {
 			return false;
 		}
+
 		return true;
 	}
 
