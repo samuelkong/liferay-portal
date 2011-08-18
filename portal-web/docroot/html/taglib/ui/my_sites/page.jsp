@@ -165,26 +165,24 @@ List<Group> mySites = user.getMySites(max);
 							}
 						}
 
-						String cssPosition = StringPool.BLANK;
+						String cssClass = StringPool.BLANK;
 
 						if (firstSite) {
-							cssPosition += " first";
+							cssClass += " first";
 						}
 
 						if (lastSite) {
-							cssPosition += " last";
+							cssClass += " last";
 						}
 						%>
 						
 						<c:choose>
 							<c:when test="<%= mySite.isControlPanel() %>" >
-								<li class="<%= "control-panel" + cssPosition %>">
+								<li class="control-panel<%= cssClass %>">
 									<a href="<%= themeDisplay.getURLControlPanel() %>">
 									
 										<%
-											String siteName = StringPool.BLANK;
-										
-											siteName = mySite.getDescriptiveName();
+										String siteName = mySite.getDescriptiveName();
 										%>
 										
 										<%@ include file="/html/taglib/ui/my_sites/page_site_name.jspf" %>
@@ -196,16 +194,10 @@ List<Group> mySites = user.getMySites(max);
 								
 								<%
 								portletURL.setParameter("privateLayout", Boolean.FALSE.toString());
-								
-								String cssPublicClass = "public-site";
-
-								if (selectedSite && layout.isPublicLayout()) {
-									cssPublicClass += " current-site";
-								}
 								%>
 							
 								<c:if test="<%= showPublicSite && publicLayoutsPageCount > 0 %>">
-									<li class="<%= cssPublicClass + cssPosition %>">
+									<li class="<%= (selectedSite && layout.isPublicLayout()) ? "current-site" : "public-site" %> <%= cssClass %>">
 										<a href="<%= HtmlUtil.escape(portletURL.toString()) %>" onclick="Liferay.Util.forcePost(this); return false;">
 			
 											<%
@@ -233,16 +225,10 @@ List<Group> mySites = user.getMySites(max);
 			
 								<%
 								portletURL.setParameter("privateLayout", Boolean.TRUE.toString());
-								
-								String cssPrivateClass = StringPool.BLANK;
-
-								if (selectedSite && layout.isPrivateLayout()) {
-									cssPrivateClass += " current-site";
-								}
 								%>
 			
 								<c:if test="<%= showPrivateSite && privateLayoutsPageCount > 0 %>">
-									<li class="<%= cssPrivateClass + cssPosition %>">
+									<li class="<%= (selectedSite && layout.isPrivateLayout()) ? "current-site" : "private-site" %> <%= cssClass %>">
 										<a href="<%= HtmlUtil.escape(portletURL.toString()) %>" onclick="Liferay.Util.forcePost(this); return false;">
 			
 											<%
