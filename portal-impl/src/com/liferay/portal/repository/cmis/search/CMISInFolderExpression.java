@@ -14,8 +14,6 @@
 
 package com.liferay.portal.repository.cmis.search;
 
-import com.liferay.portal.kernel.util.StringBundler;
-
 /**
  * @author Mika Koivisto
  */
@@ -26,13 +24,7 @@ public class CMISInFolderExpression implements CMISCriterion {
 	}
 
 	public String toQueryFragment() {
-		StringBundler sb = new StringBundler();
-
-		sb.append("IN_FOLDER('");
-		sb.append(_objectId);
-		sb.append("')");
-
-		return sb.toString();
+		return "IN_FOLDER('".concat(_objectId).concat("')");
 	}
 
 	private String _objectId;

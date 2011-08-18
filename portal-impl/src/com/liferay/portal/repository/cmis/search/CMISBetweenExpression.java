@@ -21,8 +21,9 @@ import com.liferay.portal.kernel.util.StringBundler;
  */
 public class CMISBetweenExpression implements CMISCriterion {
 
-	public CMISBetweenExpression(String field, String lower, String upper,
-		boolean includesLower, boolean includesUpper) {
+	public CMISBetweenExpression(
+		String field, String lower, String upper, boolean includesLower,
+		boolean includesUpper) {
 
 		_field = field;
 		_lower = lower;
@@ -32,7 +33,7 @@ public class CMISBetweenExpression implements CMISCriterion {
 	}
 
 	public String toQueryFragment() {
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("(");
 		sb.append(_field);

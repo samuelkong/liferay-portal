@@ -14,8 +14,6 @@
 
 package com.liferay.portal.repository.cmis.search;
 
-import com.liferay.portal.kernel.util.StringBundler;
-
 /**
  * @author Mika Koivisto
  */
@@ -26,13 +24,7 @@ public class CMISContainsExpression implements CMISCriterion {
 	}
 
 	public String toQueryFragment() {
-		StringBundler sb = new StringBundler();
-
-		sb.append("CONTAINS('");
-		sb.append(_content);
-		sb.append("')");
-
-		return sb.toString();
+		return "CONTAINS('".concat(_content).concat("')");
 	}
 
 	private String _content;

@@ -37,16 +37,22 @@ public class CMISParameterValueUtil {
 	public static String formatParameterValue(
 		String field, String value, boolean wildcard) {
 
-		if (Field.CREATE_DATE.equals(field)) {
+		if (field.equals(Field.CREATE_DATE)) {
 			try {
-				Date createDate = _searchFormat.parse(value);
+				DateFormat searchSimpleDateFormat =
+					DateFormatFactoryUtil.getSimpleDateFormat(
+						PropsValues.INDEX_DATE_FORMAT_PATTERN);
 
-				value = _cmisFormat.format(createDate);
-			}
-			catch (ParseException e) {
-			}
+				Date createDate = searchSimpleDateFormat.parse(value);
 
-			return value;
+				DateFormat cmisSimpleDateFormat =
+					DateFormatFactoryUtil.getSimpleDateFormat(
+						"yyyy-MM-dd'T'HH:mm:ss.sss'Z'");
+
+				value = cmisSimpleDateFormat.format(createDate);
+			}
+			catch (ParseException pe) {
+			}
 		}
 		else {
 			value = StringUtil.replace(value, StringPool.APOSTROPHE, "\\'");
@@ -54,26 +60,12 @@ public class CMISParameterValueUtil {
 
 			if (wildcard) {
 				value = StringUtil.replace(value, StringPool.PERCENT, "\\%");
-				value = StringPool.PERCENT + value + StringPool.PERCENT;
+				value = StringPool.PERCENT.concat(value).concat(
+					StringPool.PERCENT);
 			}
-
-			return value;
 		}
-	}
 
-	private static String _CMIS_TIMESTAMP_PATTERN =
-		"yyyy-MM-dd'T'HH:mm:ss.sss'Z'";
-
-	private static DateFormat _cmisFormat;
-	private static DateFormat _searchFormat;
-
-	static {
-		_cmisFormat =
-			(DateFormat) DateFormatFactoryUtil.getSimpleDateFormat(
-				_CMIS_TIMESTAMP_PATTERN);
-		_searchFormat =
-			(DateFormat) DateFormatFactoryUtil.getSimpleDateFormat(
-				PropsValues.INDEX_DATE_FORMAT_PATTERN);
+		return value;
 	}
 
 }

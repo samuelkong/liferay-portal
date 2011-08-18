@@ -1017,98 +1017,12 @@ public class CMISRepository extends BaseCmisRepository {
 	public Hits search(SearchContext searchContext, Query query)
 		throws SearchException {
 
-		long startTime = System.currentTimeMillis();
-
-		Hits hits = new HitsImpl();
-
-		String queryStmt = CMISQueryBuilder.buildQuery(searchContext, query);
-
 		try {
-			Session session = getSession();
-
-			ItemIterable<QueryResult> results = session.query(queryStmt, false);
-
-			long totalResults = results.getTotalNumItems();
-
-			int start = searchContext.getStart();
-			int end = searchContext.getEnd();
-
-			if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS)) {
-				start = 0;
-				end = (int) totalResults;
-			}
-
-			int subsetTotal = end - start;
-
-			String[] queryTerms = new String[0];
-			com.liferay.portal.kernel.search.Document[] subsetDocs =
-				new DocumentImpl[subsetTotal];
-			String[] subsetSnippets = new String[subsetTotal];
-			float[] subsetScores = new float[subsetTotal];
-
-			QueryConfig queryConfig = query.getQueryConfig();
-
-			boolean scoreEnabled = queryConfig.isScoreEnabled();
-
-			Iterator<QueryResult> iterator = results.skipTo(start).iterator();
-
-			int index = 0;
-
-			for (int i = start; i < end; i++) {
-				QueryResult queryResult = iterator.next();
-
-				String objectId = queryResult.getPropertyValueByQueryName(
-					PropertyIds.OBJECT_ID);
-				float score = queryResult.getPropertyValueByQueryName("SCORE");
-
-				FileEntry fileEntry = toFileEntry(objectId);
-
-				DocumentImpl doc = new DocumentImpl();
-
-				Field entryClassNameField = new Field(
-					Field.ENTRY_CLASS_NAME, fileEntry.getModelClassName());
-
-				Field entryClassPkField = new Field(
-					Field.ENTRY_CLASS_PK, String.valueOf(
-						fileEntry.getFileEntryId()));
-
-				Field titleField = new Field(Field.TITLE, fileEntry.getTitle());
-
-				doc.add(entryClassNameField);
-				doc.add(entryClassPkField);
-				doc.add(titleField);
-
-				subsetDocs[index] = doc;
-
-				if (scoreEnabled) {
-					subsetScores[index] = score;
-				}
-				else {
-					subsetScores[index] = 1;
-				}
-
-				subsetSnippets[index] = StringPool.BLANK;
-
-				index++;
-			}
-
-			float searchTime =
-				(float)(System.currentTimeMillis() - startTime) / Time.SECOND;
-
-			hits.setDocs(subsetDocs);
-			hits.setLength((int)totalResults);
-			hits.setQuery(query);
-			hits.setQueryTerms(queryTerms);
-			hits.setScores(subsetScores);
-			hits.setSearchTime(searchTime);
-			hits.setSnippets(subsetSnippets);
-			hits.setStart(startTime);
+			return doSearch(searchContext, query);
 		}
 		catch (Exception e) {
 			throw new SearchException(e);
 		}
-
-		return hits;
 	}
 
 	@Override
@@ -1511,6 +1425,92 @@ public class CMISRepository extends BaseCmisRepository {
 				}
 			}
 		}
+	}
+
+	protected Hits doSearch(SearchContext searchContext, Query query)
+		throws Exception {
+
+		long startTime = System.currentTimeMillis();
+
+		Session session = getSession();
+
+		String queryString = CMISQueryBuilder.buildQuery(searchContext, query);
+
+		ItemIterable<QueryResult> queryResults = session.query(
+			queryString, false);
+
+		long total = queryResults.getTotalNumItems();
+
+		int start = searchContext.getStart();
+		int end = searchContext.getEnd();
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS)) {
+			start = 0;
+			end = (int)total;
+		}
+
+		int subsetTotal = end - start;
+
+		com.liferay.portal.kernel.search.Document[] documents =
+			new DocumentImpl[subsetTotal];
+		String[] snippets = new String[subsetTotal];
+		float[] scores = new float[subsetTotal];
+
+		QueryConfig queryConfig = query.getQueryConfig();
+
+		int index = 0;
+
+		queryResults = queryResults.skipTo(start);
+
+		Iterator<QueryResult> itr = queryResults.iterator();
+
+		for (int i = start; i < end; i++) {
+			QueryResult queryResult = itr.next();
+
+			com.liferay.portal.kernel.search.Document document =
+				new DocumentImpl();
+
+			String objectId = queryResult.getPropertyValueByQueryName(
+				PropertyIds.OBJECT_ID);
+
+			FileEntry fileEntry = toFileEntry(objectId);
+
+			document.addKeyword(
+				Field.ENTRY_CLASS_NAME, fileEntry.getModelClassName());
+			document.addKeyword(
+				Field.ENTRY_CLASS_PK, fileEntry.getFileEntryId());
+			document.addKeyword(Field.TITLE, fileEntry.getTitle());
+
+			documents[index] = document;
+
+			if (queryConfig.isScoreEnabled()) {
+				scores[index] = queryResult.getPropertyValueByQueryName(
+					"SCORE");
+			}
+			else {
+				scores[index] = 1;
+			}
+
+			snippets[index] = StringPool.BLANK;
+
+			index++;
+		}
+
+		float searchTime =
+			(float)(System.currentTimeMillis() - startTime) / Time.SECOND;
+
+		Hits hits = new HitsImpl();
+
+		hits.setDocs(documents);
+		hits.setLength((int)total);
+		hits.setQuery(query);
+		hits.setQueryTerms(new String[0]);
+		hits.setScores(scores);
+		hits.setSearchTime(searchTime);
+		hits.setSnippets(snippets);
+		hits.setStart(startTime);
+
+		return hits;
 	}
 
 	protected Session getCachedSession() {

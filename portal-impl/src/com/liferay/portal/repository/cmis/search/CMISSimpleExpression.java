@@ -23,19 +23,20 @@ import com.liferay.portal.kernel.util.StringPool;
 public class CMISSimpleExpression implements CMISCriterion {
 
 	public CMISSimpleExpression(
-		String field, String value, CMISSimpleExpressionOperator operator) {
+		String field, String value,
+		CMISSimpleExpressionOperator cmisSimpleExpressionOperator) {
 
 		_field = field;
-		_operator = operator;
 		_value = value;
+		_cmisSimpleExpressionOperator = cmisSimpleExpressionOperator;
 	}
 
 	public String toQueryFragment() {
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(7);
 
 		sb.append(_field);
 		sb.append(StringPool.SPACE);
-		sb.append(_operator);
+		sb.append(_cmisSimpleExpressionOperator);
 		sb.append(StringPool.SPACE);
 		sb.append(StringPool.APOSTROPHE);
 		sb.append(_value);
@@ -44,8 +45,8 @@ public class CMISSimpleExpression implements CMISCriterion {
 		return sb.toString();
 	}
 
+	private CMISSimpleExpressionOperator _cmisSimpleExpressionOperator;
 	private String _field;
-	private CMISSimpleExpressionOperator _operator;
 	private String _value;
 
 }

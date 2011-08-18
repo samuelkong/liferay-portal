@@ -15,30 +15,38 @@
 package com.liferay.portal.repository.cmis.search;
 
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
+
+import java.util.List;
 
 /**
  * @author Mika Koivisto
  */
 public class CMISDisjunction extends CMISJunction {
 
+	@Override
 	public String toQueryFragment() {
-		StringBundler sb = new StringBundler();
-
-		if (!isEmpty()) {
-			boolean first = true;
-			sb.append("(");
-
-			for (CMISCriterion criterion : getCriterions()) {
-				if (!first) {
-					sb.append(" OR ");
-				}
-
-				sb.append(criterion.toQueryFragment());
-
-				first = false;
-			}
-			sb.append(")");
+		if (isEmpty()) {
+			return StringPool.BLANK;
 		}
+
+		List<CMISCriterion> cmisCriterions = list();
+
+		StringBundler sb = new StringBundler(cmisCriterions.size() * 2 + 1);
+
+		sb.append("(");
+
+		for (int i = 0; i < cmisCriterions.size(); i++) {
+			CMISCriterion cmisCriterion = cmisCriterions.get(i);
+
+			if (i != 0) {
+				sb.append(" OR ");
+			}
+
+			sb.append(cmisCriterion.toQueryFragment());
+		}
+
+		sb.append(")");
 
 		return sb.toString();
 	}

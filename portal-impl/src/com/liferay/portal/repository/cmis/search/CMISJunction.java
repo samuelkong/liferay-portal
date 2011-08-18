@@ -23,23 +23,23 @@ import java.util.List;
 public abstract class CMISJunction implements CMISCriterion {
 
 	public CMISJunction() {
-		_criterions = new ArrayList<CMISCriterion>();
+		_cmisCriterions = new ArrayList<CMISCriterion>();
 	}
 
-	public void add(CMISCriterion criterion) {
-		_criterions.add(criterion);
-	}
-
-	public List<CMISCriterion> getCriterions() {
-		return _criterions;
+	public void add(CMISCriterion cmisCriterion) {
+		_cmisCriterions.add(cmisCriterion);
 	}
 
 	public boolean isEmpty() {
-		return _criterions.isEmpty();
+		return _cmisCriterions.isEmpty();
+	}
+
+	public List<CMISCriterion> list() {
+		return _cmisCriterions;
 	}
 
 	public abstract String toQueryFragment();
 
-	private List<CMISCriterion> _criterions;
+	private List<CMISCriterion> _cmisCriterions;
 
 }
