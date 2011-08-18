@@ -440,7 +440,7 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 			tagProperties = new String[0];
 		}
 
-		if (!tag.getName().equals(name) && hasTag(tag.getGroupId(), name)) {
+		if (!name.equals(tag.getName()) && hasTag(tag.getGroupId(), name)) {
 			throw new DuplicateTagException(
 				"A tag with the name " + name + " already exists");
 		}
