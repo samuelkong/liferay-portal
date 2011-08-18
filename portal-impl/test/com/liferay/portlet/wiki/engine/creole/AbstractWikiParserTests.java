@@ -20,6 +20,7 @@ import com.liferay.portal.parsers.creole.parser.Creole10Parser;
 import com.liferay.portal.util.BaseTestCase;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -27,69 +28,45 @@ import org.antlr.runtime.RecognitionException;
 
 import org.junit.Assert;
 
-import org.springframework.core.io.ClassPathResource;
-
 /**
  * @author Miguel Pastor
  */
 public abstract class AbstractWikiParserTests extends BaseTestCase {
 
-	protected Creole10Parser buildParser(String sourceCode)
+	protected Creole10Parser getCreole10Parser(String fileName)
 		throws IOException {
 
-		ANTLRInputStream input = new ANTLRInputStream(
-			new ClassPathResource(sourceCode).getInputStream());
+		Class<?> clazz = getClass();
 
-		Creole10Lexer lexer = new Creole10Lexer(input);
+		InputStream inputStream = clazz.getResourceAsStream(
+			"dependencies/" + fileName);
 
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		ANTLRInputStream antlrInputStream = new ANTLRInputStream(inputStream);
 
-		return new Creole10Parser(tokens);
+		Creole10Lexer creole10Lexer = new Creole10Lexer(antlrInputStream);
+
+		CommonTokenStream commonTokenStream = new CommonTokenStream(
+			creole10Lexer);
+
+		return new Creole10Parser(commonTokenStream);
 	}
 
-	protected WikiPageNode parseFile(String sourceCode) {
+	protected WikiPageNode getWikiPageNode(String fileName) {
 		try {
-			creole10Parser = buildParser(sourceCode);
+			creole10Parser = getCreole10Parser(fileName);
+
 			creole10Parser.wikipage();
 		}
-		catch (IOException e) {
-			Assert.fail(
-				"The file you want to parse does not exists. Review it");
+		catch (IOException ioe) {
+			Assert.fail("File does not exist");
 		}
-		catch (RecognitionException e) {
-			Assert.fail("File has not been parsed correctly");
+		catch (RecognitionException re) {
+			Assert.fail("File could not be parsed");
 		}
 
 		return creole10Parser.getWikiPageNode();
 	}
 
-	protected static final String ESCAPE_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/escape/";
-
-	protected static final String HEADING_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/heading/";
-
-	protected static final String HORIZONTAL_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/horizontal/";
-
-	protected static final String IMAGE_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/image/";
-
-	protected static final String LINK_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/link/";
-
-	protected static final String LISTS_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/lists/";
-
-	protected static final String NOWIKI_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/nowiki/";
-
-	protected static final String TABLE_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/table/";
-
-	protected static final String TEXT_FILES_PREFIX =
-		"com/liferay/portlet/wiki/engine/creole/text/";
-
-	protected Creole10Parser creole10Parser = null;
+	protected Creole10Parser creole10Parser;
 
 }

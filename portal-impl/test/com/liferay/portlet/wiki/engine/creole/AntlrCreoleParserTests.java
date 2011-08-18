@@ -14,6 +14,7 @@
 
 package com.liferay.portlet.wiki.engine.creole;
 
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.parsers.creole.ast.ASTNode;
 import com.liferay.portal.parsers.creole.ast.BaseListNode;
 import com.liferay.portal.parsers.creole.ast.BoldTextNode;
@@ -50,759 +51,844 @@ public class AntlrCreoleParserTests extends AbstractWikiParserTests {
 
 	public void testParseCorrectlyBoldContentInListItems() {
 		UnorderedListNode unorderedListNode =
-			(UnorderedListNode) parseListNode(
-				LISTS_FILES_PREFIX + "list-6.creole");
+			(UnorderedListNode)parseBaseListNode("list-6.creole");
 
 		Assert.assertEquals(1, unorderedListNode.getChildASTNodesCount());
 
-		UnorderedListItemNode unorderedItemNode =
-			(UnorderedListItemNode) unorderedListNode.getChildASTNode(0);
+		UnorderedListItemNode unorderedListItemNode =
+			(UnorderedListItemNode)unorderedListNode.getChildASTNode(0);
 
-		Assert.assertNotNull(unorderedItemNode);
+		Assert.assertNotNull(unorderedListItemNode);
 
-		FormattedTextNode boldTextContent =
-			(FormattedTextNode) unorderedItemNode.getChildASTNode(1);
+		FormattedTextNode formattedTextNode =
+			(FormattedTextNode)unorderedListItemNode.getChildASTNode(1);
 
-		BoldTextNode boldText =
-			(BoldTextNode) boldTextContent.getChildASTNode(0);
-		CollectionNode child =
-			(CollectionNode) boldText.getChildASTNode(0);
-		UnformattedTextNode text = (UnformattedTextNode) child.get(0);
+		BoldTextNode boldTextNode =
+			(BoldTextNode)formattedTextNode.getChildASTNode(0);
 
-		Assert.assertEquals("abcdefg", text.getContent());
-	}
+		CollectionNode collectionNode =
+			(CollectionNode)boldTextNode.getChildASTNode(0);
 
-	protected BaseListNode parseListNode(String file) {
-		WikiPageNode root = parseFile(file);
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)collectionNode.get(0);
 
-		BaseListNode listNode =
-			(BaseListNode) root.getChildASTNode(0);
-		Assert.assertNotNull(listNode);
-
-		return listNode;
+		Assert.assertEquals("abcdefg", unformattedTextNode.getContent());
 	}
 
 	public void testParseCorrectlyItalicContentInListItems() {
 		UnorderedListNode unorderedListNode =
-			(UnorderedListNode) parseListNode(
-				LISTS_FILES_PREFIX + "list-5.creole");
+			(UnorderedListNode)parseBaseListNode("list-5.creole");
 
 		Assert.assertEquals(1, unorderedListNode.getChildASTNodesCount());
 
-		UnorderedListItemNode unorderedItemNode =
-			(UnorderedListItemNode) unorderedListNode.getChildASTNode(0);
+		UnorderedListItemNode unorderedListItemNode =
+			(UnorderedListItemNode)unorderedListNode.getChildASTNode(0);
 
-		Assert.assertNotNull(unorderedItemNode);
-		Assert.assertEquals(2, unorderedItemNode.getChildASTNodesCount());
+		Assert.assertNotNull(unorderedListItemNode);
+		Assert.assertEquals(2, unorderedListItemNode.getChildASTNodesCount());
 
-		FormattedTextNode italicTextContent =
-			(FormattedTextNode) unorderedItemNode.getChildASTNode(1);
+		FormattedTextNode formattedTextNode =
+			(FormattedTextNode)unorderedListItemNode.getChildASTNode(1);
 
-		ItalicTextNode italicTex =
-			(ItalicTextNode) italicTextContent.getChildASTNode(0);
-		CollectionNode child =
-			(CollectionNode) italicTex.getChildASTNode(0);
-		UnformattedTextNode text = (UnformattedTextNode) child.get(0);
+		ItalicTextNode italicTextNode =
+			(ItalicTextNode)formattedTextNode.getChildASTNode(0);
 
-		Assert.assertEquals("abcdefg", text.getContent());
+		CollectionNode collectionNode =
+			(CollectionNode)italicTextNode.getChildASTNode(0);
+
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)collectionNode.get(0);
+
+		Assert.assertEquals("abcdefg", unformattedTextNode.getContent());
 	}
 
 	public void testParseCorrectlyNestedLevels() {
 		UnorderedListNode unorderedListNode =
-			(UnorderedListNode) parseListNode(
-				LISTS_FILES_PREFIX + "list-4.creole");
+			(UnorderedListNode)parseBaseListNode("list-4.creole");
 
 		Assert.assertEquals(7, unorderedListNode.getChildASTNodesCount());
 
-		int sumOfItemsInLevel1 = 0, sumOfItemsInLevel2 = 0,
-			expectedSumOfItemsInLevel1 = 3 * 1,
-			expectedSumOfItemsInLevel2 = 4 * 2;
-		;
+		int level1Count = 0;
+		int level2Count = 0;
 
-		for (Object node : unorderedListNode.getChildASTNodes()) {
-			UnorderedListItemNode listItem =
-				(UnorderedListItemNode) node;
-			int currentLevel = listItem.getLevel();
+		for (ASTNode astNode : unorderedListNode.getChildASTNodes()) {
+			UnorderedListItemNode unorderedListItemNode =
+				(UnorderedListItemNode)astNode;
+
+			int currentLevel = unorderedListItemNode.getLevel();
 
 			if (currentLevel == 1) {
-				sumOfItemsInLevel1 += currentLevel;
+				level1Count += currentLevel;
 			}
 			else if (currentLevel == 2) {
-				sumOfItemsInLevel2 += currentLevel;
+				level2Count += currentLevel;
 			}
 			else {
 				Assert.fail("Parsed has not been achieved correctly");
 			}
 		}
 
-		Assert.assertEquals(sumOfItemsInLevel1, expectedSumOfItemsInLevel1);
-		Assert.assertEquals(sumOfItemsInLevel2, expectedSumOfItemsInLevel2);
+		Assert.assertEquals(level1Count, 3 * 1);
+		Assert.assertEquals(level2Count, 4 * 2);
 	}
 
 	public void testParseCorrectlyOneItemFirstLevel() {
-		execFirstLevelItemListTests(LISTS_FILES_PREFIX + "list-1.creole", 1);
-	}
-
-	protected void execFirstLevelItemListTests(String file, int numOfItems) {
-		BaseListNode listNode = parseListNode(file);
-
-		Assert.assertEquals(numOfItems, listNode.getChildASTNodesCount());
-
-		for (Object node : listNode.getChildASTNodes()) {
-			ItemNode listItem = (ItemNode) node;
-			Assert.assertNotNull(listItem);
-			Assert.assertEquals(1, listItem.getLevel());
-		}
+		executeFirstLevelItemListTests("list-1.creole", 1);
 	}
 
 	public void testParseCorrectlyOneOrderedItemFirstLevel() {
-		execFirstLevelItemListTests(LISTS_FILES_PREFIX + "list-7.creole", 1);
+		executeFirstLevelItemListTests("list-7.creole", 1);
 	}
 
 	public void testParseCorrectlyOrderedNestedLevels() {
-		OrderedListNode orderedListNode = (OrderedListNode) parseListNode(
-			LISTS_FILES_PREFIX + "list-10.creole");
+		OrderedListNode orderedListNode = (OrderedListNode)parseBaseListNode(
+			"list-10.creole");
 
 		Assert.assertEquals(7, orderedListNode.getChildASTNodesCount());
 
-		int sumOfItemsInLevel1 = 0, sumOfItemsInLevel2 = 0,
-			expectedSumOfItemsInLevel1 = 3 * 1,
-			expectedSumOfItemsInLevel2 = 4 * 2;
+		int level1Count = 0;
+		int level2Count = 0;
 
-		for (Object node : orderedListNode.getChildASTNodes()) {
-			OrderedListItemNode listItem =
-				(OrderedListItemNode) node;
-			int currentLevel = listItem.getLevel();
+		for (ASTNode astNode : orderedListNode.getChildASTNodes()) {
+			OrderedListItemNode orderedListItemNode =
+				(OrderedListItemNode)astNode;
+
+			int currentLevel = orderedListItemNode.getLevel();
 
 			if (currentLevel == 1) {
-				sumOfItemsInLevel1 += currentLevel;
+				level1Count += currentLevel;
 			}
 			else if (currentLevel == 2) {
-				sumOfItemsInLevel2 += currentLevel;
+				level2Count += currentLevel;
 			}
 			else {
 				Assert.fail("Parsed has not been achieved correctly");
 			}
 		}
 
-		Assert.assertEquals(sumOfItemsInLevel1, expectedSumOfItemsInLevel1);
-		Assert.assertEquals(sumOfItemsInLevel2, expectedSumOfItemsInLevel2);
+		Assert.assertEquals(level1Count, 3 * 1);
+		Assert.assertEquals(level2Count, 4 * 2);
 	}
 
 	public void testParseCorrectlyThreeItemFirstLevel() {
-		execFirstLevelItemListTests(LISTS_FILES_PREFIX + "list-3.creole", 3);
+		executeFirstLevelItemListTests("list-3.creole", 3);
 	}
 
 	public void testParseCorrectlyThreeOrderedItemFirstLevel() {
-		execFirstLevelItemListTests(LISTS_FILES_PREFIX + "list-9.creole", 3);
+		executeFirstLevelItemListTests("list-9.creole", 3);
 	}
 
 	public void testParseCorrectlyTwoItemFirstLevel() {
-		execFirstLevelItemListTests(LISTS_FILES_PREFIX + "list-2.creole", 2);
+		executeFirstLevelItemListTests("list-2.creole", 2);
 	}
 
 	public void testParseCorrectlyTwoOrderedItemFirstLevel() {
-		execFirstLevelItemListTests(LISTS_FILES_PREFIX + "list-8.creole", 2);
+		executeFirstLevelItemListTests("list-8.creole", 2);
 	}
 
 	public void testParseEmpyImageTag() {
-		WikiPageNode root = parseFile(IMAGE_FILES_PREFIX + "image-4.creole");
-		Assert.assertNotNull(root);
+		WikiPageNode wikiPageNode = getWikiPageNode("image-4.creole");
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
-		Assert.assertEquals(1, line.getChildASTNodesCount());
+		Assert.assertNotNull(wikiPageNode);
 
-		ImageNode image = (ImageNode) line.getChildASTNode(0);
-		Assert.assertEquals("", image.getLink());
+		ParagraphNode paragraphNode = (ParagraphNode)
+			wikiPageNode.getChildASTNode(0);
 
-		CollectionNode alternativeElements = image.getAltNode();
-		Assert.assertNull(alternativeElements);
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
+
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
+
+		ImageNode imageNode = (ImageNode)lineNode.getChildASTNode(0);
+
+		Assert.assertEquals(StringPool.BLANK, imageNode.getLink());
+
+		CollectionNode collectionNode = imageNode.getAltNode();
+
+		Assert.assertNull(collectionNode);
 	}
 
 	public void testParseHeadingBlocksMultiple() {
-		WikiPageNode root = parseFile(
-			HEADING_FILES_PREFIX + "heading-10.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("heading-10.creole");
 
-		Assert.assertEquals(3, root.getChildASTNodesCount());
+		Assert.assertEquals(3, wikiPageNode.getChildASTNodesCount());
 	}
 
-	// Horizontal section related tests
-
 	public void testParseHorizontalBlock() {
-		WikiPageNode root = parseFile(
-			HORIZONTAL_FILES_PREFIX + "horizontal-1.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("horizontal-1.creole");
 
-		Assert.assertEquals(1, root.getChildASTNodesCount());
-		Assert.assertTrue(root.getChildASTNode(0) instanceof HorizontalNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
+		Assert.assertTrue(
+			wikiPageNode.getChildASTNode(0) instanceof HorizontalNode);
 	}
 
 	public void testParseHorizontalMixedBlocks() {
-		WikiPageNode root = parseFile(
-			HORIZONTAL_FILES_PREFIX + "horizontal-3.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("horizontal-3.creole");
 
-		Assert.assertEquals(3, root.getChildASTNodesCount());
-		Assert.assertTrue(root.getChildASTNode(1) instanceof HorizontalNode);
+		Assert.assertEquals(3, wikiPageNode.getChildASTNodesCount());
+		Assert.assertTrue(
+			wikiPageNode.getChildASTNode(1) instanceof HorizontalNode);
 	}
 
 	public void testParseHorizontalTwoBlocks() {
-		WikiPageNode root = parseFile(
-			HORIZONTAL_FILES_PREFIX + "horizontal-2.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("horizontal-2.creole");
 
-		Assert.assertEquals(2, root.getChildASTNodesCount());
-		Assert.assertTrue(root.getChildASTNode(0) instanceof HorizontalNode);
-		Assert.assertTrue(root.getChildASTNode(1) instanceof HorizontalNode);
+		Assert.assertEquals(2, wikiPageNode.getChildASTNodesCount());
+		Assert.assertTrue(
+			wikiPageNode.getChildASTNode(0) instanceof HorizontalNode);
+		Assert.assertTrue(
+			wikiPageNode.getChildASTNode(1) instanceof HorizontalNode);
 	}
 
 	public void testParseMultilineTextParagraph() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-2.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("text-2.creole");
 
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
 
-		ParagraphNode paragraph = (ParagraphNode) root.getChildASTNode(0);
-		List<ASTNode> lines = paragraph.getChildASTNodes();
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(10, lines.size());
+		List<ASTNode> astNodes = paragraphNode.getChildASTNodes();
 
-		int counter = 0;
-		for (ASTNode l : lines) {
-			LineNode line = (LineNode) l;
+		Assert.assertEquals(10, astNodes.size());
 
-			Assert.assertEquals(1, line.getChildASTNodesCount());
+		for (int i = 0; i < astNodes.size(); i++) {
+			ASTNode astNode = astNodes.get(i);
 
-			UnformattedTextNode textNode =
-				(UnformattedTextNode) line.getChildASTNode(
-					0);
-			UnformattedTextNode text =
-				(UnformattedTextNode) textNode.getChildASTNode(
-					0);
+			LineNode lineNode = (LineNode)astNode;
 
-			Assert.assertEquals("Simple P" + counter++, text.getContent());
+			Assert.assertEquals(1, lineNode.getChildASTNodesCount());
+
+			UnformattedTextNode unformattedTextNode =
+				(UnformattedTextNode)lineNode.getChildASTNode(0);
+
+			unformattedTextNode =
+				(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
+
+			Assert.assertEquals(
+				"Simple P" + i, unformattedTextNode.getContent());
 		}
 	}
 
 	public void testParseMultipleImageTags() {
-		WikiPageNode root = parseFile(IMAGE_FILES_PREFIX + "image-5.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("image-5.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(5, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		for (int i = 0; i < line.getChildASTNodes().size(); ) {
-			ImageNode image = (ImageNode) line.getChildASTNode(i);
-			Assert.assertEquals("L" + ++i, image.getLink());
+		Assert.assertEquals(5, lineNode.getChildASTNodesCount());
+
+		List<ASTNode> astNodes = lineNode.getChildASTNodes();
+
+		for (int i = 0; i < astNodes.size();) {
+			ImageNode imageNode = (ImageNode)astNodes.get(i);
+
+			Assert.assertEquals("L" + ++i, imageNode.getLink());
 		}
 	}
 
-	// No wiki block related tests
-
 	public void testParseNoWikiBlock() {
-		WikiPageNode root = parseFile(
-			NOWIKI_FILES_PREFIX + "nowikiblock-1.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("nowikiblock-1.creole");
 
-		Assert.assertEquals(1, root.getChildASTNodesCount());
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
 	}
 
 	public void testParseNoWikiBlockEmpty() {
-		WikiPageNode root = parseFile(
-			NOWIKI_FILES_PREFIX + "nowikiblock-3.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("nowikiblock-3.creole");
 
-		NoWikiSectionNode child = (NoWikiSectionNode) root.getChildASTNode(0);
+		NoWikiSectionNode noWikiSectionNode =
+			(NoWikiSectionNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals("", child.getContent());
+		Assert.assertEquals(StringPool.BLANK, noWikiSectionNode.getContent());
 	}
 
 	public void testParseNoWikiBlockMultiple() {
-		WikiPageNode root = parseFile(
-			NOWIKI_FILES_PREFIX + "nowikiblock-2.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("nowikiblock-2.creole");
 
-		Assert.assertEquals(3, root.getChildASTNodesCount());
+		Assert.assertEquals(3, wikiPageNode.getChildASTNodesCount());
 	}
 
-	 public void testParseNoWikiBlockNonEmpty() {
-		WikiPageNode root = parseFile(
-			NOWIKI_FILES_PREFIX + "nowikiblock-4.creole");
+	public void testParseNoWikiBlockNonEmpty() {
+		WikiPageNode wikiPageNode = getWikiPageNode("nowikiblock-4.creole");
 
-		NoWikiSectionNode child = (NoWikiSectionNode) root.getChildASTNode(0);
+		NoWikiSectionNode noWikiSectionNode =
+			(NoWikiSectionNode)wikiPageNode.getChildASTNode(0);
 
 		Assert.assertEquals(
-			"This is a non \\empty\\ block", child.getContent());
+			"This is a non \\empty\\ block", noWikiSectionNode.getContent());
 	}
 
 	public void testParseOnlySpacesContentInImageTag() {
-		WikiPageNode root = parseFile(IMAGE_FILES_PREFIX + "image-3.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("image-3.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		ImageNode image = (ImageNode) line.getChildASTNode(0);
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
 
-		Assert.assertEquals("  ", image.getLink());
+		ImageNode imageNode = (ImageNode)lineNode.getChildASTNode(0);
 
-		CollectionNode alternativeElements = image.getAltNode();
+		Assert.assertEquals("  ", imageNode.getLink());
 
-		Assert.assertNull(alternativeElements);
+		CollectionNode collectionNode = imageNode.getAltNode();
+
+		Assert.assertNull(collectionNode);
 	}
 
-	public void testParseSimpleImageTag() {
-		WikiPageNode root = parseFile(IMAGE_FILES_PREFIX + "image-1.creole");
+	 public void testParseSimpleImageTag() {
+		WikiPageNode wikiPageNode = getWikiPageNode("image-1.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		ImageNode image = (ImageNode) line.getChildASTNode(0);
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
 
-		Assert.assertEquals("link", image.getLink());
+		ImageNode imageNode = (ImageNode)lineNode.getChildASTNode(0);
 
-		CollectionNode alternativeElements = image.getAltNode();
+		Assert.assertEquals("link", imageNode.getLink());
 
-		Assert.assertNotNull(alternativeElements);
-		Assert.assertEquals(1, alternativeElements.size());
+		CollectionNode collectionNode = imageNode.getAltNode();
 
-		UnformattedTextNode textNode =
-			(UnformattedTextNode) alternativeElements.getASTNodes().get(0);
-		UnformattedTextNode text =
-			(UnformattedTextNode) textNode.getChildASTNode(
-				0);
+		Assert.assertNotNull(collectionNode);
+		Assert.assertEquals(1, collectionNode.size());
 
-		Assert.assertEquals("alternative text", text.getContent());
+		List<ASTNode> astNodes = collectionNode.getASTNodes();
+
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)astNodes.get(0);
+
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
+
+		Assert.assertEquals(
+			"alternative text", unformattedTextNode.getContent());
 	}
 
 	public void testParseSimpleImageTagWithNoAlternative() {
-		WikiPageNode root = parseFile(IMAGE_FILES_PREFIX + "image-2.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("image-2.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		ImageNode image = (ImageNode) line.getChildASTNode(0);
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
 
-		Assert.assertEquals("link", image.getLink());
+		ImageNode imageNode = (ImageNode)lineNode.getChildASTNode(0);
 
-		CollectionNode alternativeElements = image.getAltNode();
+		Assert.assertEquals("link", imageNode.getLink());
 
-		Assert.assertNull(alternativeElements);
+		CollectionNode collectionNode = imageNode.getAltNode();
+
+		Assert.assertNull(collectionNode);
 	}
 
 	public void testParseSimpleLinkTag() {
-		WikiPageNode root = parseFile(LINK_FILES_PREFIX + "link-1.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("link-1.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		LinkNode link = (LinkNode) line.getChildASTNode(0);
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
 
-		Assert.assertEquals("link", link.getLink());
+		LinkNode linkNode = (LinkNode)lineNode.getChildASTNode(0);
 
-		CollectionNode alternativeElements = link.getAltCollectionNode();
+		Assert.assertEquals("link", linkNode.getLink());
 
-		Assert.assertNotNull(alternativeElements);
-		Assert.assertEquals(1, alternativeElements.size());
+		CollectionNode collectionNode = linkNode.getAltCollectionNode();
 
-		UnformattedTextNode textNode =
-			(UnformattedTextNode) alternativeElements.getASTNodes().get(0);
-		CollectionNode textItems = (CollectionNode) textNode.getChildASTNode(0);
-		UnformattedTextNode text = (UnformattedTextNode) textItems.get(0);
+		Assert.assertNotNull(collectionNode);
+		Assert.assertEquals(1, collectionNode.size());
 
-		Assert.assertEquals("alternative text", text.getContent());
+		List<ASTNode> astNodes = collectionNode.getASTNodes();
+
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)astNodes.get(0);
+
+		CollectionNode unformattedTextNodes =
+			(CollectionNode)unformattedTextNode.getChildASTNode(0);
+
+		unformattedTextNode = (UnformattedTextNode)unformattedTextNodes.get(0);
+
+		Assert.assertEquals(
+			"alternative text", unformattedTextNode.getContent());
 	}
 
 	public void testParseSimpleLinkTagWithoutDescription() {
-		WikiPageNode root = parseFile(LINK_FILES_PREFIX + "link-2.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("link-2.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		LinkNode link = (LinkNode) line.getChildASTNode(0);
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
 
-		Assert.assertEquals("link", link.getLink());
-		Assert.assertNull(link.getAltCollectionNode());
+		LinkNode linkNode = (LinkNode)lineNode.getChildASTNode(0);
+
+		Assert.assertEquals("link", linkNode.getLink());
+		Assert.assertNull(linkNode.getAltCollectionNode());
 	}
 
 	public void testParseSimpleLinkTagWithoutDescription2() {
-		WikiPageNode root = parseFile(LINK_FILES_PREFIX + "link-3.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("link-3.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(5, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		List<ASTNode> items = line.getChildASTNodes();
+		Assert.assertEquals(5, lineNode.getChildASTNodesCount());
 
-		for (ASTNode n : items) {
-			if (n instanceof LinkNode) {
-				LinkNode link = (LinkNode) n;
-				Assert.assertEquals("L", link.getLink());
-				CollectionNode alternativeElements =
-					link.getAltCollectionNode();
-				Assert.assertNotNull(alternativeElements);
-				Assert.assertEquals(1, alternativeElements.size());
-				UnformattedTextNode textNode =
-					(UnformattedTextNode) alternativeElements.getASTNodes().
-						get(0);
-				CollectionNode textItems =
-					(CollectionNode) textNode.getChildASTNode(
-						0);
-				UnformattedTextNode text =
-					(UnformattedTextNode) textItems.get(0);
-				Assert.assertEquals("A", text.getContent());
+		List<ASTNode> astNodes = lineNode.getChildASTNodes();
+
+		for (ASTNode astNode : astNodes) {
+			if (!(astNode instanceof LinkNode)) {
+				continue;
 			}
+
+			LinkNode linkNode = (LinkNode)astNode;
+
+			Assert.assertEquals("L", linkNode.getLink());
+
+			CollectionNode collectionNode = linkNode.getAltCollectionNode();
+
+			Assert.assertNotNull(collectionNode);
+			Assert.assertEquals(1, collectionNode.size());
+
+			List<ASTNode> collectionNodeASTNodes = collectionNode.getASTNodes();
+
+			UnformattedTextNode unformattedTextNode =
+				(UnformattedTextNode)collectionNodeASTNodes.get(0);
+
+			collectionNode =
+				(CollectionNode)unformattedTextNode.getChildASTNode(0);
+
+			unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
+
+			Assert.assertEquals("A", unformattedTextNode.getContent());
 		}
 	}
 
 	public void testParseSimpleTextBoldAndItalics() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-6.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("text-6.creole");
 
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
 
-		ParagraphNode paragraph = (ParagraphNode) root.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, paragraph.getChildASTNodesCount());
+		Assert.assertEquals(1, paragraphNode.getChildASTNodesCount());
 
-		LineNode line = (LineNode) paragraph.getChildASTNode(0);
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		Assert.assertEquals(2, line.getChildASTNodesCount());
+		Assert.assertEquals(2, lineNode.getChildASTNodesCount());
 
-		UnformattedTextNode text =
-			(UnformattedTextNode) line.getChildASTNode(0);
-		UnformattedTextNode t = (UnformattedTextNode) text.getChildASTNode(0);
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
 
-		Assert.assertEquals("Text ", t.getContent());
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
 
-		BoldTextNode boldText = (BoldTextNode) line.getChildASTNode(1);
+		Assert.assertEquals("Text ", unformattedTextNode.getContent());
 
-		Assert.assertEquals(1, boldText.getChildASTNodesCount());
-
-		ItalicTextNode it = (ItalicTextNode) boldText.getChildASTNode(0);
-		CollectionNode n = (CollectionNode) it.getChildASTNode(0);
-		UnformattedTextNode node = (UnformattedTextNode) n.get(0);
-
-		Assert.assertEquals("ItalicAndBold", node.getContent());
-	}
-
-	public void testParseSimpleTextParagraph() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-1.creole");
-
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
-
-		ParagraphNode paragraph = (ParagraphNode) root.getChildASTNode(0);
-		List<ASTNode> lines = paragraph.getChildASTNodes();
-
-		Assert.assertEquals(1, lines.size());
-
-		LineNode line = (LineNode) paragraph.getChildASTNode(0);
-
-		Assert.assertEquals(1, line.getChildASTNodesCount());
-
-		UnformattedTextNode textNode =
-			(UnformattedTextNode) line.getChildASTNode(
-				0);
-		UnformattedTextNode text =
-			(UnformattedTextNode) textNode.getChildASTNode(
-				0);
-
-		Assert.assertEquals("Simple paragraph", text.getContent());
-	}
-
-	public void testParseSimpleTextWithBold() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-4.creole");
-
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
-
-		ParagraphNode paragraph = (ParagraphNode) root.getChildASTNode(0);
-
-		Assert.assertEquals(1, paragraph.getChildASTNodesCount());
-
-		LineNode line = (LineNode) paragraph.getChildASTNode(0);
-
-		Assert.assertEquals(2, line.getChildASTNodesCount());
-
-		UnformattedTextNode text =
-			(UnformattedTextNode) line.getChildASTNode(0);
-		UnformattedTextNode t = (UnformattedTextNode) text.getChildASTNode(0);
-
-		Assert.assertEquals("Text with some contents in ", t.getContent());
-
-		BoldTextNode boldTextContent =
-			(BoldTextNode) line.getChildASTNode(1);
-
-		FormattedTextNode boldText =
-			(FormattedTextNode) boldTextContent.getChildASTNode(0);
-		CollectionNode child =
-			(CollectionNode) boldText.getChildASTNode(0);
-
-		UnformattedTextNode unformattedTex = (UnformattedTextNode) child.get(0);
-		Assert.assertEquals("bold", unformattedTex.getContent());
-	}
-
-	public void testParseSimpleTextWithBoldAndItalics() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-5.creole");
-
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
-
-		ParagraphNode paragraph = (ParagraphNode) root.getChildASTNode(0);
-
-		Assert.assertEquals(1, paragraph.getChildASTNodesCount());
-
-		LineNode line = (LineNode) paragraph.getChildASTNode(0);
-
-		Assert.assertEquals(4, line.getChildASTNodesCount());
-
-		UnformattedTextNode text =
-			(UnformattedTextNode) line.getChildASTNode(0);
-		UnformattedTextNode t = (UnformattedTextNode) text.getChildASTNode(0);
-
-		Assert.assertEquals("Text with some contents in ", t.getContent());
-
-		BoldTextNode boldTextNode = (BoldTextNode) line.getChildASTNode(1);
+		BoldTextNode boldTextNode = (BoldTextNode)lineNode.getChildASTNode(1);
 
 		Assert.assertEquals(1, boldTextNode.getChildASTNodesCount());
 
-		FormattedTextNode textInBold =
-			(FormattedTextNode) boldTextNode.getChildASTNode(0);
-		CollectionNode n = (CollectionNode) textInBold.getChildASTNode(0);
-		UnformattedTextNode node =
-			(UnformattedTextNode) n.get(0);
+		ItalicTextNode italicTextNode =
+			(ItalicTextNode)boldTextNode.getChildASTNode(0);
 
-		Assert.assertEquals("bold", node.getContent());
+		CollectionNode collectionNode =
+			(CollectionNode)italicTextNode.getChildASTNode(0);
+
+		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
+
+		Assert.assertEquals(
+			"ItalicAndBold", unformattedTextNode.getContent());
+	}
+
+	public void testParseSimpleTextParagraph() {
+		WikiPageNode wikiPageNode = getWikiPageNode("text-1.creole");
+
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
+
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
+
+		List<ASTNode> astNodes = paragraphNode.getChildASTNodes();
+
+		Assert.assertEquals(1, astNodes.size());
+
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
+
+		Assert.assertEquals(1, lineNode.getChildASTNodesCount());
+
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
+
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
+
+		Assert.assertEquals(
+			"Simple paragraph", unformattedTextNode.getContent());
+	}
+
+	public void testParseSimpleTextWithBold() {
+		WikiPageNode wikiPageNode = getWikiPageNode("text-4.creole");
+
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
+
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
+
+		Assert.assertEquals(1, paragraphNode.getChildASTNodesCount());
+
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
+
+		Assert.assertEquals(2, lineNode.getChildASTNodesCount());
+
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
+
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
+
+		Assert.assertEquals(
+			"Text with some content in ", unformattedTextNode.getContent());
+
+		BoldTextNode boldTextContent = (BoldTextNode)lineNode.getChildASTNode(
+			1);
+
+		FormattedTextNode formattedTextNode =
+			(FormattedTextNode)boldTextContent.getChildASTNode(0);
+
+		CollectionNode collectionNode =
+			(CollectionNode)formattedTextNode.getChildASTNode(0);
+
+		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
+
+		Assert.assertEquals("bold", unformattedTextNode.getContent());
+	}
+
+	public void testParseSimpleTextWithBoldAndItalics() {
+		WikiPageNode wikiPageNode = getWikiPageNode("text-5.creole");
+
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
+
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
+
+		Assert.assertEquals(1, paragraphNode.getChildASTNodesCount());
+
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
+
+		Assert.assertEquals(4, lineNode.getChildASTNodesCount());
+
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
+
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
+
+		Assert.assertEquals(
+			"Text with some content in ", unformattedTextNode.getContent());
+
+		BoldTextNode boldTextNode = (BoldTextNode)lineNode.getChildASTNode(1);
+
+		Assert.assertEquals(1, boldTextNode.getChildASTNodesCount());
+
+		FormattedTextNode formattedTextNode =
+			(FormattedTextNode)boldTextNode.getChildASTNode(0);
+
+		CollectionNode collectionNode =
+			(CollectionNode)formattedTextNode.getChildASTNode(0);
+
+		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
+
+		Assert.assertEquals("bold", unformattedTextNode.getContent());
 	}
 
 	public void testParseSimpleTextWithForcedEndline() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-7.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("text-7.creole");
 
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
 
-		ParagraphNode paragraph = (ParagraphNode) root.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, paragraph.getChildASTNodesCount());
+		Assert.assertEquals(1, paragraphNode.getChildASTNodesCount());
 
-		LineNode line = (LineNode) paragraph.getChildASTNode(0);
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		Assert.assertEquals(3, line.getChildASTNodesCount());
+		Assert.assertEquals(3, lineNode.getChildASTNodesCount());
 
-		UnformattedTextNode text =
-			(UnformattedTextNode) line.getChildASTNode(0);
-		UnformattedTextNode ut = (UnformattedTextNode) text.getChildASTNode(0);
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
 
-		Assert.assertEquals("Text with ", ut.getContent());
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
 
-		CollectionNode newLineText = (CollectionNode) line.getChildASTNode(1);
+		Assert.assertEquals("Text with ", unformattedTextNode.getContent());
 
-		Assert.assertEquals(1, newLineText.size());
-		Assert.assertTrue(newLineText.get(0) instanceof ForcedEndOfLineNode);
+		CollectionNode collectionNode =
+			(CollectionNode)lineNode.getChildASTNode(1);
 
-		CollectionNode t = (CollectionNode) line.getChildASTNode(2);
+		Assert.assertEquals(1, collectionNode.size());
+		Assert.assertTrue(collectionNode.get(0) instanceof ForcedEndOfLineNode);
+
+		collectionNode = (CollectionNode)lineNode.getChildASTNode(2);
+
+		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
 
 		Assert.assertEquals(
-			"forced line break",
-			((UnformattedTextNode) t.get(0)).getContent());
+			"forced line break", unformattedTextNode.getContent());
 	}
 
 	public void testParseSimpleTextWithItalics() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-3.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("text-3.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		List<ASTNode> sections = root.getChildASTNodes();
+		List<ASTNode> astNodes = wikiPageNode.getChildASTNodes();
 
-		Assert.assertEquals(1, sections.size());
+		Assert.assertEquals(1, astNodes.size());
 
-		ParagraphNode paragraph = (ParagraphNode) sections.get(0);
-		List<ASTNode> lines = paragraph.getChildASTNodes();
+		ParagraphNode paragraphNode = (ParagraphNode)astNodes.get(0);
 
-		Assert.assertEquals(1, lines.size());
+		astNodes = paragraphNode.getChildASTNodes();
 
-		LineNode line = (LineNode) paragraph.getChildASTNode(0);
+		Assert.assertEquals(1, astNodes.size());
 
-		Assert.assertEquals(2, line.getChildASTNodesCount());
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		UnformattedTextNode text =
-			(UnformattedTextNode) line.getChildASTNode(0);
-		UnformattedTextNode t = (UnformattedTextNode) text.getChildASTNode(0);
+		Assert.assertEquals(2, lineNode.getChildASTNodesCount());
 
-		Assert.assertEquals("Text with some contents in ", t.getContent());
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
 
-		ItalicTextNode italicTextContent =
-			(ItalicTextNode) line.getChildASTNode(1);
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
 
-		FormattedTextNode italicTex =
-			(FormattedTextNode) italicTextContent.getChildASTNode(0);
-		CollectionNode child =
-			(CollectionNode) italicTex.getChildASTNode(0);
-		UnformattedTextNode unformattedTex = (UnformattedTextNode) child.get(0);
+		Assert.assertEquals(
+			"Text with some content in ", unformattedTextNode.getContent());
 
-		Assert.assertEquals("italic", unformattedTex.getContent());
+		ItalicTextNode italicTextNode =
+			(ItalicTextNode)lineNode.getChildASTNode(1);
+
+		FormattedTextNode formattedTextNode =
+			(FormattedTextNode)italicTextNode.getChildASTNode(0);
+
+		CollectionNode collectionNode =
+			(CollectionNode)formattedTextNode.getChildASTNode(0);
+
+		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
+
+		Assert.assertEquals("italic", unformattedTextNode.getContent());
 	}
 
 	public void testParseSimpleTextWithItalicTextInMultipleLines() {
-		WikiPageNode root = parseFile(TEXT_FILES_PREFIX + "text-8.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("text-8.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 	}
 
 	public void testParseTableMultipleRowsAndCOlumns() {
-		WikiPageNode root = parseFile(TABLE_FILES_PREFIX + "table-2.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("table-2.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		TableNode table = (TableNode) root.getChildASTNode(0);
+		TableNode tableNode = (TableNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertNotNull(table);
-		Assert.assertEquals(4, table.getChildASTNodesCount());
+		Assert.assertNotNull(tableNode);
+		Assert.assertEquals(4, tableNode.getChildASTNodesCount());
 
-		CollectionNode row = (CollectionNode) table.getChildASTNode(0);
+		CollectionNode collectionNode =
+			(CollectionNode)tableNode.getChildASTNode(0);
 
-		Assert.assertEquals(4, row.size());
+		Assert.assertEquals(4, collectionNode.size());
 
-		// test the header
 		for (int i = 0; i < 4; ++i) {
-			TableHeaderNode header = (TableHeaderNode) row.get(i);
+			TableHeaderNode tableHeaderNode =
+				(TableHeaderNode)collectionNode.get(i);
 
-			Assert.assertNotNull(header);
+			Assert.assertNotNull(tableHeaderNode);
 
-			UnformattedTextNode textNode =
-				(UnformattedTextNode) header.getChildASTNode(0);
+			UnformattedTextNode unformattedTextNode =
+				(UnformattedTextNode)tableHeaderNode.getChildASTNode(0);
 
-			Assert.assertNotNull(textNode);
-			Assert.assertEquals(1, textNode.getChildASTNodesCount());
+			Assert.assertNotNull(unformattedTextNode);
+			Assert.assertEquals(1, unformattedTextNode.getChildASTNodesCount());
 
-			UnformattedTextNode text =
-				(UnformattedTextNode) textNode.getChildASTNode(
-					0);
+			unformattedTextNode =
+				(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
 
-			Assert.assertEquals("H" + (i + 1), text.getContent());
+			Assert.assertEquals(
+				"H" + (i + 1), unformattedTextNode.getContent());
 		}
 
-		// test the content rows
-		int content = 1;
+		int count = 1;
 
-		for (int rowIndex = 1; rowIndex < 4; ++rowIndex) {
-			row = (CollectionNode) table.getChildASTNode(rowIndex);
-			Assert.assertEquals(4, row.size());
+		for (int row = 1; row < 4; ++row) {
+			collectionNode = (CollectionNode)tableNode.getChildASTNode(row);
+
+			Assert.assertEquals(4, collectionNode.size());
+
 			for (int column = 0; column < 4; ++column) {
-				TableDataNode cell = (TableDataNode) row.get((column));
+				TableDataNode tableDataNode = (TableDataNode)collectionNode.get(
+					column);
 
-				Assert.assertNotNull(cell);
+				Assert.assertNotNull(tableDataNode);
 
-				UnformattedTextNode textNode =
-					(UnformattedTextNode) cell.getChildASTNode(0);
+				UnformattedTextNode unformattedTextNode =
+					(UnformattedTextNode)tableDataNode.getChildASTNode(0);
 
-				Assert.assertNotNull(textNode);
-				Assert.assertEquals(1, textNode.getChildASTNodesCount());
+				Assert.assertNotNull(unformattedTextNode);
+				Assert.assertEquals(
+					1, unformattedTextNode.getChildASTNodesCount());
 
-				UnformattedTextNode text =
-					(UnformattedTextNode) textNode.getChildASTNode(0);
+				unformattedTextNode =
+					(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
 
-				Assert.assertEquals("C" + content++, text.getContent());
+				Assert.assertEquals(
+					"C" + count++, unformattedTextNode.getContent());
 			}
 		}
 	}
 
 	public void testParseTableOneRowOneColumn() {
-		WikiPageNode root = parseFile(TABLE_FILES_PREFIX + "table-1.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("table-1.creole");
 
-		Assert.assertNotNull(root);
+		Assert.assertNotNull(wikiPageNode);
 
-		TableNode table = (TableNode) root.getChildASTNode(0);
+		TableNode tableNode = (TableNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertNotNull(table);
-		Assert.assertEquals(2, table.getChildASTNodesCount());
+		Assert.assertNotNull(tableNode);
+		Assert.assertEquals(2, tableNode.getChildASTNodesCount());
 
-		CollectionNode firstRow = (CollectionNode) table.getChildASTNode(0);
+		CollectionNode collectionNode =
+			(CollectionNode)tableNode.getChildASTNode(0);
 
-		Assert.assertEquals(1, firstRow.size());
+		Assert.assertEquals(1, collectionNode.size());
 
-		TableHeaderNode header = (TableHeaderNode) firstRow.get(0);
+		TableHeaderNode tableHeaderNode =
+			(TableHeaderNode)collectionNode.get(0);
 
-		Assert.assertNotNull(header);
+		Assert.assertNotNull(tableHeaderNode);
 
-		UnformattedTextNode textNode =
-			(UnformattedTextNode) header.getChildASTNode(
-				0);
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)tableHeaderNode.getChildASTNode(0);
 
-		Assert.assertNotNull(textNode);
-		Assert.assertEquals(1, textNode.getChildASTNodesCount());
+		Assert.assertNotNull(unformattedTextNode);
+		Assert.assertEquals(1, unformattedTextNode.getChildASTNodesCount());
 
-		UnformattedTextNode text =
-			(UnformattedTextNode) textNode.getChildASTNode(
-				0);
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
 
-		Assert.assertEquals("H1", text.getContent());
+		Assert.assertEquals("H1", unformattedTextNode.getContent());
 
-		CollectionNode secondRow =
-			(CollectionNode) table.getChildASTNodes().get(1);
+		List<ASTNode> astNodes = tableNode.getChildASTNodes();
 
-		Assert.assertEquals(1, secondRow.size());
+		collectionNode = (CollectionNode)astNodes.get(1);
 
-		TableDataNode cell = (TableDataNode) secondRow.get(0);
+		Assert.assertEquals(1, collectionNode.size());
 
-		Assert.assertNotNull(cell);
+		TableDataNode tableDataNode = (TableDataNode)collectionNode.get(0);
 
-		textNode = (UnformattedTextNode) cell.getChildASTNode(0);
+		Assert.assertNotNull(tableDataNode);
 
-		Assert.assertNotNull(textNode);
-		Assert.assertEquals(1, textNode.getChildASTNodesCount());
+		unformattedTextNode =
+			(UnformattedTextNode)tableDataNode.getChildASTNode(0);
 
-		text = (UnformattedTextNode) textNode.getChildASTNode(0);
+		Assert.assertNotNull(unformattedTextNode);
+		Assert.assertEquals(1, unformattedTextNode.getChildASTNodesCount());
 
-		Assert.assertEquals("C1.1", text.getContent());
+		unformattedTextNode =
+			(UnformattedTextNode)unformattedTextNode.getChildASTNode(0);
+
+		Assert.assertEquals("C1.1", unformattedTextNode.getContent());
 	}
 
 	public void testSimpleEscapedCharacter() {
-		WikiPageNode root = parseFile(ESCAPE_FILES_PREFIX + "escape-1.creole");
+		WikiPageNode wikiPageNode = getWikiPageNode("escape-1.creole");
 
-		Assert.assertNotNull(root);
-		Assert.assertEquals(1, root.getChildASTNodesCount());
+		Assert.assertNotNull(wikiPageNode);
+		Assert.assertEquals(1, wikiPageNode.getChildASTNodesCount());
 
-		ParagraphNode p = (ParagraphNode) root.getChildASTNode(0);
+		ParagraphNode paragraphNode =
+			(ParagraphNode)wikiPageNode.getChildASTNode(0);
 
-		Assert.assertEquals(2, p.getChildASTNodesCount());
+		Assert.assertEquals(2, paragraphNode.getChildASTNodesCount());
 
-		LineNode line = (LineNode) p.getChildASTNode(0);
+		LineNode lineNode = (LineNode)paragraphNode.getChildASTNode(0);
 
-		Assert.assertEquals(2, line.getChildASTNodesCount());
+		Assert.assertEquals(2, lineNode.getChildASTNodesCount());
 
-		UnformattedTextNode firstline =
-			(UnformattedTextNode) line.getChildASTNode(
-				0);
-		ScapedNode scaped = (ScapedNode) firstline.getChildASTNode(0);
+		UnformattedTextNode unformattedTextNode =
+			(UnformattedTextNode)lineNode.getChildASTNode(0);
 
-		Assert.assertEquals("E", scaped.getContent());
-		CollectionNode notScaped =
-			(CollectionNode) line.getChildASTNode(1);
+		ScapedNode scapedNode = (ScapedNode)unformattedTextNode.getChildASTNode(
+			0);
 
-		UnformattedTextNode t = (UnformattedTextNode) notScaped.get(0);
-		Assert.assertEquals("SCAPED1", t.getContent());
+		Assert.assertEquals("E", scapedNode.getContent());
+
+		CollectionNode collectionNode =
+			(CollectionNode)lineNode.getChildASTNode(1);
+
+		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
+
+		Assert.assertEquals("SCAPED1", unformattedTextNode.getContent());
+	}
+
+	protected void executeFirstLevelItemListTests(String fileName, int count) {
+		BaseListNode baseListNode = parseBaseListNode(fileName);
+
+		Assert.assertEquals(count, baseListNode.getChildASTNodesCount());
+
+		for (ASTNode astNode : baseListNode.getChildASTNodes()) {
+			ItemNode itemNode = (ItemNode)astNode;
+
+			Assert.assertNotNull(itemNode);
+			Assert.assertEquals(1, itemNode.getLevel());
+		}
+	}
+
+	protected BaseListNode parseBaseListNode(String fileName) {
+		WikiPageNode wikiPageNode = getWikiPageNode(fileName);
+
+		BaseListNode baseListNode = (BaseListNode)wikiPageNode.getChildASTNode(
+			0);
+
+		Assert.assertNotNull(baseListNode);
+
+		return baseListNode;
 	}
 
 }
