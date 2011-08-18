@@ -357,11 +357,12 @@ AUI().add(
 			addStructure: function(groupId, structureId, autoStructureId, name, description, xsd, callback) {
 				var instance = this;
 
-				var defaultLocale = instance.getDefaultLocale();
+				var parentStructureId = '';
 
 				var addGroupPermissions = true;
 				var addGuestPermissions = true;
-				var parentStructureId = '';
+
+				var defaultLocale = instance.getDefaultLocale();
 
 				var serviceParameterTypes = [
 					'long',
