@@ -41,13 +41,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class InvokerFilter extends BasePortalLifecycle implements Filter {
 
-	public InvokerFilter() {
-		if (_INVOKER_FILTER_CHAIN_SIZE > 0) {
-			_filterChains = new ConcurrentLRUCache<Integer, InvokerFilterChain>(
-				_INVOKER_FILTER_CHAIN_SIZE);
-		}
-	}
-
 	public void destroy() {
 		portalDestroy();
 	}
@@ -104,8 +97,13 @@ public class InvokerFilter extends BasePortalLifecycle implements Filter {
 
 	@Override
 	protected void doPortalInit() throws Exception {
-		_INVOKER_FILTER_CHAIN_SIZE = GetterUtil.getInteger(
+		_invokerFilterChainSize = GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.INVOKER_FILTER_CHAIN_SIZE));
+
+		if (_invokerFilterChainSize > 0) {
+			_filterChains = new ConcurrentLRUCache<Integer, InvokerFilterChain>(
+				_invokerFilterChainSize);
+		}
 
 		ServletContext servletContext = _filterConfig.getServletContext();
 
@@ -197,7 +195,7 @@ public class InvokerFilter extends BasePortalLifecycle implements Filter {
 		return uri;
 	}
 
-	private static int _INVOKER_FILTER_CHAIN_SIZE;
+	private static int _invokerFilterChainSize;
 
 	private Dispatcher _dispatcher;
 	private ConcurrentLRUCache<Integer, InvokerFilterChain> _filterChains;
