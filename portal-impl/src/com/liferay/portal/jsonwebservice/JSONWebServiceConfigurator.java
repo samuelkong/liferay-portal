@@ -174,31 +174,30 @@ public class JSONWebServiceConfigurator extends ClassFinder {
 			InputStream inputStream = entryData.openInputStream();
 
 			if (!isTypeSignatureInUse(
-				inputStream, _jsonWebServiceAnnotationBytes)) {
+					inputStream, _jsonWebServiceAnnotationBytes)) {
 
 				return;
 			}
 
 			if (!entryData.isArchive()) {
-
 				StreamUtil.cleanUp(inputStream);
 
-				ClassReader classReader =
-					new ClassReader(entryData.openInputStream());
+				ClassReader classReader = new ClassReader(
+					entryData.openInputStream());
 
-				JSONWebServiceClassVisitor classVisitor =
+				JSONWebServiceClassVisitor jsonWebServiceClassVisitor =
 					new JSONWebServiceClassVisitor();
 
 				try {
-					classReader.accept(classVisitor, 0);
+					classReader.accept(jsonWebServiceClassVisitor, 0);
 				}
-				catch (Exception ex) {
+				catch (Exception e) {
 					return;
 				}
 
-				String extractedClassName = classVisitor.getClassName();
+				if (!className.equals(
+						jsonWebServiceClassVisitor.getClassName())) {
 
-				if (!extractedClassName.equals(className)) {
 					return;
 				}
 			}
