@@ -1066,6 +1066,10 @@ public class MainServlet extends ActionServlet {
 
 		long plid = ParamUtil.getLong(request, "p_l_id");
 
+		if (plid <= 0) {
+			return false;
+		}
+
 		Layout layout = LayoutLocalServiceUtil.getLayout(plid);
 
 		Group group = layout.getGroup();
