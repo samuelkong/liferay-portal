@@ -826,13 +826,6 @@ public class PortalImpl implements Portal {
 
 		return actualURL;
 	}
-	
-	public String getAlternateURL(
-			HttpServletRequest request, String url, Locale locale)
-		throws PortalException, SystemException {
-	
-		return getCanonicalAlternateURL(request, url, locale);
-	}
 
 	public Set<String> getAuthTokenIgnoreActions() {
 		return _authTokenIgnoreActions;
@@ -977,26 +970,76 @@ public class PortalImpl implements Portal {
 
 		return userId;
 	}
-	
-	public String getCanonicalURL(HttpServletRequest request) 
-		throws PortalException, SystemException{
+
+	public String getCanonicalAlternateURL(
+			HttpServletRequest request, String url, Locale locale)
+		throws PortalException, SystemException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Layout layout = themeDisplay.getLayout();
+
+		String layoutFriendlyURL = getLayoutFriendlyURL(
+			layout, themeDisplay, locale);
+
+		int pos = url.indexOf(Portal.FRIENDLY_URL_SEPARATOR);
+
+		if (pos == -1) {
+			pos = url.indexOf(StringPool.QUESTION);
+		}
+
+		if (pos != -1) {
+			url = url.substring(pos);
+		}
+		else{
+			url = StringPool.BLANK;
+		}
+
+		String host = StringPool.BLANK;
+
+		Group group = layout.getGroup();
+
+		String groupFriendlyURL = group.getFriendlyURL();
+
+		pos = layoutFriendlyURL.indexOf(groupFriendlyURL);
+
+		if (pos != -1) {
+			host = PortalUtil.getPortalURL(request);
+		}
+
+		if (layout.isFirstParent() && Validator.isNull(url)) {
+			String friendlyURL = layoutFriendlyURL.substring(
+				0, layoutFriendlyURL.indexOf(layout.getFriendlyURL()));
+
+			url = host.concat(friendlyURL);
+		}
+		else{
+			url = host.concat(layoutFriendlyURL).concat(url);
+		}
+
+		return url;
+	}
+
+	public String getCanonicalURL(HttpServletRequest request)
+		throws PortalException, SystemException {
 
 		String canonicalURL = getCurrentCompleteURL(request);
-	
-		Enumeration pars = request.getParameterNames();
-	
-		while (pars.hasMoreElements()) {
-			String par = (String) pars.nextElement();
-			if (par.matches("_.*_redirect$")) {
-				canonicalURL = HttpUtil.removeParameter(canonicalURL, par);
+
+		Enumeration<String> enu = request.getParameterNames();
+
+		while (enu.hasMoreElements()) {
+			String name = enu.nextElement();
+
+			if (name.matches("_.*_redirect$")) {
+				canonicalURL = HttpUtil.removeParameter(canonicalURL, name);
 			}
 		}
-	
+
 		return getCanonicalAlternateURL(
 			request, canonicalURL, LocaleUtil.getDefault());
-	
 	}
-	
+
 	/**
 	 * @deprecated {@link #getCDNHost(boolean)}
 	 */
@@ -5089,54 +5132,6 @@ public class PortalImpl implements Portal {
 		}
 
 		return filteredPortlets;
-	}
-	
-	protected String getCanonicalAlternateURL(
-			HttpServletRequest request, String originalURL, Locale locale)
-		throws PortalException, SystemException {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-	
-		Layout layout = themeDisplay.getLayout();
-	
-		String layoutURL = PortalUtil.getLayoutFriendlyURL(
-			layout, themeDisplay, locale);
-	
-		int pos = originalURL.indexOf(Portal.FRIENDLY_URL_SEPARATOR);
-	
-		if (pos == -1) {
-			pos = originalURL.indexOf(StringPool.QUESTION);
-		}
-		
-		if (pos != -1) {
-			originalURL = originalURL.substring(pos);
-		}
-		else{
-			originalURL = StringPool.BLANK;
-		}
-	
-		String friendlyGroupURL = layout.getGroup().getFriendlyURL();
-	
-		String serverHost = StringPool.BLANK;
-		
-		int posFriendlyGroup = layoutURL.indexOf(friendlyGroupURL);
-		
-		if (posFriendlyGroup != -1) {
-			serverHost = PortalUtil.getPortalURL(request);
-		}
-		
-		if (layout.isFirstParent() && Validator.isNull(originalURL)) {
-			String absolutGroupFriendlyURL = layoutURL.substring(
-				0,layoutURL.indexOf(layout.getFriendlyURL()));
-			
-			originalURL = serverHost.concat(absolutGroupFriendlyURL);
-		}
-		else{
-			originalURL = serverHost.concat(layoutURL).concat(originalURL);
-		}
-	
-		return originalURL;
 	}
 
 	protected long getDefaultScopeGroupId(long companyId)
