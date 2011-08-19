@@ -738,6 +738,12 @@ public class GroupFinderImpl
 
 				String whereValue = whereMap.get(key);
 
+				if (key.equals("rolePermissions_6_block")) {
+					whereValue = StringUtil.replace(
+						whereValue, "AND (ResourcePermission.scope = ?)",
+						StringPool.BLANK);
+				}
+
 				if (Validator.isNotNull(whereValue)) {
 					sb.append(whereValue);
 				}
@@ -767,7 +773,24 @@ public class GroupFinderImpl
 
 		sb.append(sql);
 
-		for (String key : params.keySet()) {
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			String key = entry.getKey();
+
+			if (key.equals("rolePermissions") &&
+				(PropsValues.PERMISSIONS_USER_CHECK_ALGORITHM == 6)) {
+
+				List<Object> values = (List<Object>)entry.getValue();
+
+				String name = (String)values.get(0);
+
+				if (ResourceBlockLocalServiceUtil.isSupported(name)) {
+					key = "rolePermissions_6_block";
+				}
+				else {
+					key = "rolePermissions_6";
+				}
+			}
+
 			sb.append(key);
 		}
 
