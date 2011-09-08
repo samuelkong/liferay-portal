@@ -129,8 +129,8 @@ layoutSetBranches = LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(staging
 					publishScheduleMessage = LanguageUtil.format(pageContext, publishScheduleDialogTitle, layoutSetBranch.getName());
 				}
 				else {
-					publishNowMessage = LanguageUtil.get(pageContext, publishNowDialogTitle);
-					publishScheduleMessage = LanguageUtil.get(pageContext, publishScheduleDialogTitle);
+					publishNowMessage = publishNowDialogTitle;
+					publishScheduleMessage = publishScheduleDialogTitle;
 				}
 
 				String publishLayoutSetBranchToLiveURL = publishToLiveURL.toString();
