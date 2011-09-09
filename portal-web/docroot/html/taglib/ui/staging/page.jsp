@@ -136,13 +136,23 @@ layoutSetBranches = LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(staging
 				String publishLayoutSetBranchToLiveURL = publishToLiveURL.toString();
 				%>
 
-				<liferay-ui:icon url="<%= publishLayoutSetBranchToLiveURL %>" message="<%= publishNowMessage %>" id='<%= layoutSetBranchId + "publishNowLink" %>' image="maximize" />
+				<liferay-ui:icon 
+					url="<%= publishLayoutSetBranchToLiveURL %>" 
+					message="<%= (layoutSetBranchId > 0) ? publishNowMessage : publishNowDialogTitle %>" 
+					id='<%= layoutSetBranchId + "publishNowLink" %>' 
+					image="maximize" 
+				/>
 
 				<%
 				publishLayoutSetBranchToLiveURL = HttpUtil.addParameter(publishLayoutSetBranchToLiveURL, "schedule", String.valueOf(true));
 				%>
 
-				<liferay-ui:icon url="<%= publishLayoutSetBranchToLiveURL.toString() %>" message="<%= publishScheduleMessage %>" id='<%= layoutSetBranchId + "publishScheduleLink" %>' image="time" />
+				<liferay-ui:icon 
+					url="<%= publishLayoutSetBranchToLiveURL.toString() %>" 
+					message="<%= (layoutSetBranchId > 0) ? publishScheduleMessage : publishScheduleDialogTitle %>" 
+					id='<%= layoutSetBranchId + "publishScheduleLink" %>' 
+					image="time" 
+				/>
 
 				<aui:script use="aui-base">
 					var publishnowLink = A.one('#<portlet:namespace /><%= layoutSetBranchId + "publishNowLink" %>');
