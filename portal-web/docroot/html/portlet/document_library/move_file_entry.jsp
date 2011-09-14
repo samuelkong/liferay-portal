@@ -97,7 +97,8 @@ portletURL.setParameter("fileEntryId", String.valueOf(fileEntryId));
 
 		<%
 		String folderName = StringPool.BLANK;
-
+		String folderNameIcon = StringPool.BLANK;
+		
 		if (folderId > 0) {
 			Folder folder = DLAppLocalServiceUtil.getFolder(folderId);
 
@@ -105,9 +106,11 @@ portletURL.setParameter("fileEntryId", String.valueOf(fileEntryId));
 
 			folderId = folder.getFolderId();
 			folderName = folder.getName();
+			folderNameIcon = folder.getName();
 		}
 		else {
 			folderName = LanguageUtil.get(pageContext, "documents-home");
+			folderNameIcon = "documents-home";
 		}
 
 		%>
@@ -121,7 +124,7 @@ portletURL.setParameter("fileEntryId", String.valueOf(fileEntryId));
 			<liferay-ui:icon
 				image="folder"
 				label="true"
-				message="<%= folderName %>"
+				message="<%= folderNameIcon %>"
 				url="<%= viewFolderURL %>"
 			/>
 		</aui:field-wrapper>
