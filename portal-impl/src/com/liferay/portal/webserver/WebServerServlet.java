@@ -69,6 +69,7 @@ import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 import com.liferay.portlet.documentlibrary.NoSuchFolderException;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFileShortcut;
+import com.liferay.portlet.documentlibrary.model.DLFileVersion;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
@@ -751,7 +752,8 @@ public class WebServerServlet extends HttpServlet {
 		String contentType = fileEntry.getMimeType(version);
 
 		if (!converted) {
-			if (DLUtil.compareVersions(version, fileEntry.getVersion()) >= 0) {
+			if (DLUtil.compareVersions(version, fileEntry.getVersion()) >= 0 &&
+				fileVersion.isApproved()) {
 				contentLength = fileEntry.getSize();
 			}
 			else {
