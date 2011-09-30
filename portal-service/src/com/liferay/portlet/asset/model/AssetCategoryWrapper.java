@@ -342,6 +342,14 @@ public class AssetCategoryWrapper implements AssetCategory {
 		return _assetCategory.getTitle(languageId, useDefault);
 	}
 
+	public java.lang.String getTitleCurrentLanguageId() {
+		return _assetCategory.getTitleCurrentLanguageId();
+	}
+
+	public java.lang.String getTitleCurrentValue() {
+		return _assetCategory.getTitleCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized titles of this asset category.
 	*
@@ -380,6 +388,10 @@ public class AssetCategoryWrapper implements AssetCategory {
 	public void setTitle(java.lang.String title, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_assetCategory.setTitle(title, locale, defaultLocale);
+	}
+
+	public void setTitleCurrentLanguageId(java.lang.String languageId) {
+		_assetCategory.setTitleCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -457,6 +469,14 @@ public class AssetCategoryWrapper implements AssetCategory {
 		return _assetCategory.getDescription(languageId, useDefault);
 	}
 
+	public java.lang.String getDescriptionCurrentLanguageId() {
+		return _assetCategory.getDescriptionCurrentLanguageId();
+	}
+
+	public java.lang.String getDescriptionCurrentValue() {
+		return _assetCategory.getDescriptionCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized descriptions of this asset category.
 	*
@@ -496,6 +516,10 @@ public class AssetCategoryWrapper implements AssetCategory {
 	public void setDescription(java.lang.String description,
 		java.util.Locale locale, java.util.Locale defaultLocale) {
 		_assetCategory.setDescription(description, locale, defaultLocale);
+	}
+
+	public void setDescriptionCurrentLanguageId(java.lang.String languageId) {
+		_assetCategory.setDescriptionCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -556,10 +580,6 @@ public class AssetCategoryWrapper implements AssetCategory {
 
 	public boolean isEscapedModel() {
 		return _assetCategory.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_assetCategory.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

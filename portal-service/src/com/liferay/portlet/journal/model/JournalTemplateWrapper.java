@@ -306,6 +306,14 @@ public class JournalTemplateWrapper implements JournalTemplate {
 		return _journalTemplate.getName(languageId, useDefault);
 	}
 
+	public java.lang.String getNameCurrentLanguageId() {
+		return _journalTemplate.getNameCurrentLanguageId();
+	}
+
+	public java.lang.String getNameCurrentValue() {
+		return _journalTemplate.getNameCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized names of this journal template.
 	*
@@ -344,6 +352,10 @@ public class JournalTemplateWrapper implements JournalTemplate {
 	public void setName(java.lang.String name, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_journalTemplate.setName(name, locale, defaultLocale);
+	}
+
+	public void setNameCurrentLanguageId(java.lang.String languageId) {
+		_journalTemplate.setNameCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -421,6 +433,14 @@ public class JournalTemplateWrapper implements JournalTemplate {
 		return _journalTemplate.getDescription(languageId, useDefault);
 	}
 
+	public java.lang.String getDescriptionCurrentLanguageId() {
+		return _journalTemplate.getDescriptionCurrentLanguageId();
+	}
+
+	public java.lang.String getDescriptionCurrentValue() {
+		return _journalTemplate.getDescriptionCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized descriptions of this journal template.
 	*
@@ -460,6 +480,10 @@ public class JournalTemplateWrapper implements JournalTemplate {
 	public void setDescription(java.lang.String description,
 		java.util.Locale locale, java.util.Locale defaultLocale) {
 		_journalTemplate.setDescription(description, locale, defaultLocale);
+	}
+
+	public void setDescriptionCurrentLanguageId(java.lang.String languageId) {
+		_journalTemplate.setDescriptionCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -628,10 +652,6 @@ public class JournalTemplateWrapper implements JournalTemplate {
 
 	public boolean isEscapedModel() {
 		return _journalTemplate.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_journalTemplate.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

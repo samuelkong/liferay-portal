@@ -270,6 +270,14 @@ public class PollsQuestionWrapper implements PollsQuestion {
 		return _pollsQuestion.getTitle(languageId, useDefault);
 	}
 
+	public java.lang.String getTitleCurrentLanguageId() {
+		return _pollsQuestion.getTitleCurrentLanguageId();
+	}
+
+	public java.lang.String getTitleCurrentValue() {
+		return _pollsQuestion.getTitleCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized titles of this polls question.
 	*
@@ -308,6 +316,10 @@ public class PollsQuestionWrapper implements PollsQuestion {
 	public void setTitle(java.lang.String title, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_pollsQuestion.setTitle(title, locale, defaultLocale);
+	}
+
+	public void setTitleCurrentLanguageId(java.lang.String languageId) {
+		_pollsQuestion.setTitleCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -385,6 +397,14 @@ public class PollsQuestionWrapper implements PollsQuestion {
 		return _pollsQuestion.getDescription(languageId, useDefault);
 	}
 
+	public java.lang.String getDescriptionCurrentLanguageId() {
+		return _pollsQuestion.getDescriptionCurrentLanguageId();
+	}
+
+	public java.lang.String getDescriptionCurrentValue() {
+		return _pollsQuestion.getDescriptionCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized descriptions of this polls question.
 	*
@@ -424,6 +444,10 @@ public class PollsQuestionWrapper implements PollsQuestion {
 	public void setDescription(java.lang.String description,
 		java.util.Locale locale, java.util.Locale defaultLocale) {
 		_pollsQuestion.setDescription(description, locale, defaultLocale);
+	}
+
+	public void setDescriptionCurrentLanguageId(java.lang.String languageId) {
+		_pollsQuestion.setDescriptionCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -502,10 +526,6 @@ public class PollsQuestionWrapper implements PollsQuestion {
 
 	public boolean isEscapedModel() {
 		return _pollsQuestion.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_pollsQuestion.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

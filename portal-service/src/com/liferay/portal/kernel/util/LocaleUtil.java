@@ -152,7 +152,7 @@ public class LocaleUtil {
 	}
 
 	private Locale _getDefault() {
-		Locale locale = LocaleThreadLocal.getLocale();
+		Locale locale = LocaleThreadLocal.getDefaultLocale();
 
 		if (locale != null) {
 			return locale;

@@ -270,6 +270,14 @@ public class DDMContentWrapper implements DDMContent {
 		return _ddmContent.getName(languageId, useDefault);
 	}
 
+	public java.lang.String getNameCurrentLanguageId() {
+		return _ddmContent.getNameCurrentLanguageId();
+	}
+
+	public java.lang.String getNameCurrentValue() {
+		return _ddmContent.getNameCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized names of this d d m content.
 	*
@@ -308,6 +316,10 @@ public class DDMContentWrapper implements DDMContent {
 	public void setName(java.lang.String name, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_ddmContent.setName(name, locale, defaultLocale);
+	}
+
+	public void setNameCurrentLanguageId(java.lang.String languageId) {
+		_ddmContent.setNameCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -386,10 +398,6 @@ public class DDMContentWrapper implements DDMContent {
 
 	public boolean isEscapedModel() {
 		return _ddmContent.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_ddmContent.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

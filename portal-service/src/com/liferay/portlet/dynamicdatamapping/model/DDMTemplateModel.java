@@ -219,6 +219,7 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param locale the locale of the language
 	 * @return the localized name of this d d m template
 	 */
+	@AutoEscape
 	public String getName(Locale locale);
 
 	/**
@@ -228,6 +229,7 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param useDefault whether to use the default language if no localization exists for the requested language
 	 * @return the localized name of this d d m template. If <code>useDefault</code> is <code>false</code> and no localization exists for the requested language, an empty string will be returned.
 	 */
+	@AutoEscape
 	public String getName(Locale locale, boolean useDefault);
 
 	/**
@@ -236,6 +238,7 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param languageId the ID of the language
 	 * @return the localized name of this d d m template
 	 */
+	@AutoEscape
 	public String getName(String languageId);
 
 	/**
@@ -245,7 +248,14 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param useDefault whether to use the default language if no localization exists for the requested language
 	 * @return the localized name of this d d m template
 	 */
+	@AutoEscape
 	public String getName(String languageId, boolean useDefault);
+
+	@AutoEscape
+	public String getNameCurrentLanguageId();
+
+	@AutoEscape
+	public String getNameCurrentValue();
 
 	/**
 	 * Returns a map of the locales and localized names of this d d m template.
@@ -278,6 +288,8 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 */
 	public void setName(String name, Locale locale, Locale defaultLocale);
 
+	public void setNameCurrentLanguageId(String languageId);
+
 	/**
 	 * Sets the localized names of this d d m template from the map of locales and localized names.
 	 *
@@ -306,6 +318,7 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param locale the locale of the language
 	 * @return the localized description of this d d m template
 	 */
+	@AutoEscape
 	public String getDescription(Locale locale);
 
 	/**
@@ -315,6 +328,7 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param useDefault whether to use the default language if no localization exists for the requested language
 	 * @return the localized description of this d d m template. If <code>useDefault</code> is <code>false</code> and no localization exists for the requested language, an empty string will be returned.
 	 */
+	@AutoEscape
 	public String getDescription(Locale locale, boolean useDefault);
 
 	/**
@@ -323,6 +337,7 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param languageId the ID of the language
 	 * @return the localized description of this d d m template
 	 */
+	@AutoEscape
 	public String getDescription(String languageId);
 
 	/**
@@ -332,7 +347,14 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 * @param useDefault whether to use the default language if no localization exists for the requested language
 	 * @return the localized description of this d d m template
 	 */
+	@AutoEscape
 	public String getDescription(String languageId, boolean useDefault);
+
+	@AutoEscape
+	public String getDescriptionCurrentLanguageId();
+
+	@AutoEscape
+	public String getDescriptionCurrentValue();
 
 	/**
 	 * Returns a map of the locales and localized descriptions of this d d m template.
@@ -365,6 +387,8 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	 */
 	public void setDescription(String description, Locale locale,
 		Locale defaultLocale);
+
+	public void setDescriptionCurrentLanguageId(String languageId);
 
 	/**
 	 * Sets the localized descriptions of this d d m template from the map of locales and localized descriptions.
@@ -436,8 +460,6 @@ public interface DDMTemplateModel extends BaseModel<DDMTemplate>, GroupedModel {
 	public void setCachedModel(boolean cachedModel);
 
 	public boolean isEscapedModel();
-
-	public void setEscapedModel(boolean escapedModel);
 
 	public Serializable getPrimaryKeyObj();
 

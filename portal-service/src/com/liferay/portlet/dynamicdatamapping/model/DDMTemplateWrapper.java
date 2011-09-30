@@ -288,6 +288,14 @@ public class DDMTemplateWrapper implements DDMTemplate {
 		return _ddmTemplate.getName(languageId, useDefault);
 	}
 
+	public java.lang.String getNameCurrentLanguageId() {
+		return _ddmTemplate.getNameCurrentLanguageId();
+	}
+
+	public java.lang.String getNameCurrentValue() {
+		return _ddmTemplate.getNameCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized names of this d d m template.
 	*
@@ -326,6 +334,10 @@ public class DDMTemplateWrapper implements DDMTemplate {
 	public void setName(java.lang.String name, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_ddmTemplate.setName(name, locale, defaultLocale);
+	}
+
+	public void setNameCurrentLanguageId(java.lang.String languageId) {
+		_ddmTemplate.setNameCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -403,6 +415,14 @@ public class DDMTemplateWrapper implements DDMTemplate {
 		return _ddmTemplate.getDescription(languageId, useDefault);
 	}
 
+	public java.lang.String getDescriptionCurrentLanguageId() {
+		return _ddmTemplate.getDescriptionCurrentLanguageId();
+	}
+
+	public java.lang.String getDescriptionCurrentValue() {
+		return _ddmTemplate.getDescriptionCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized descriptions of this d d m template.
 	*
@@ -442,6 +462,10 @@ public class DDMTemplateWrapper implements DDMTemplate {
 	public void setDescription(java.lang.String description,
 		java.util.Locale locale, java.util.Locale defaultLocale) {
 		_ddmTemplate.setDescription(description, locale, defaultLocale);
+	}
+
+	public void setDescriptionCurrentLanguageId(java.lang.String languageId) {
+		_ddmTemplate.setDescriptionCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -538,10 +562,6 @@ public class DDMTemplateWrapper implements DDMTemplate {
 
 	public boolean isEscapedModel() {
 		return _ddmTemplate.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_ddmTemplate.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

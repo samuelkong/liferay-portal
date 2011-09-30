@@ -373,6 +373,14 @@ public class JournalArticleWrapper implements JournalArticle {
 		return _journalArticle.getTitle(languageId, useDefault);
 	}
 
+	public java.lang.String getTitleCurrentLanguageId() {
+		return _journalArticle.getTitleCurrentLanguageId();
+	}
+
+	public java.lang.String getTitleCurrentValue() {
+		return _journalArticle.getTitleCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized titles of this journal article.
 	*
@@ -411,6 +419,10 @@ public class JournalArticleWrapper implements JournalArticle {
 	public void setTitle(java.lang.String title, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_journalArticle.setTitle(title, locale, defaultLocale);
+	}
+
+	public void setTitleCurrentLanguageId(java.lang.String languageId) {
+		_journalArticle.setTitleCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -506,6 +518,14 @@ public class JournalArticleWrapper implements JournalArticle {
 		return _journalArticle.getDescription(languageId, useDefault);
 	}
 
+	public java.lang.String getDescriptionCurrentLanguageId() {
+		return _journalArticle.getDescriptionCurrentLanguageId();
+	}
+
+	public java.lang.String getDescriptionCurrentValue() {
+		return _journalArticle.getDescriptionCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized descriptions of this journal article.
 	*
@@ -545,6 +565,10 @@ public class JournalArticleWrapper implements JournalArticle {
 	public void setDescription(java.lang.String description,
 		java.util.Locale locale, java.util.Locale defaultLocale) {
 		_journalArticle.setDescription(description, locale, defaultLocale);
+	}
+
+	public void setDescriptionCurrentLanguageId(java.lang.String languageId) {
+		_journalArticle.setDescriptionCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -956,10 +980,6 @@ public class JournalArticleWrapper implements JournalArticle {
 
 	public boolean isEscapedModel() {
 		return _journalArticle.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_journalArticle.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

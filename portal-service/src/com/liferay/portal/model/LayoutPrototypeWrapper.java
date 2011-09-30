@@ -160,6 +160,14 @@ public class LayoutPrototypeWrapper implements LayoutPrototype {
 		return _layoutPrototype.getName(languageId, useDefault);
 	}
 
+	public java.lang.String getNameCurrentLanguageId() {
+		return _layoutPrototype.getNameCurrentLanguageId();
+	}
+
+	public java.lang.String getNameCurrentValue() {
+		return _layoutPrototype.getNameCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized names of this layout prototype.
 	*
@@ -198,6 +206,10 @@ public class LayoutPrototypeWrapper implements LayoutPrototype {
 	public void setName(java.lang.String name, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_layoutPrototype.setName(name, locale, defaultLocale);
+	}
+
+	public void setNameCurrentLanguageId(java.lang.String languageId) {
+		_layoutPrototype.setNameCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -303,10 +315,6 @@ public class LayoutPrototypeWrapper implements LayoutPrototype {
 
 	public boolean isEscapedModel() {
 		return _layoutPrototype.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_layoutPrototype.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

@@ -450,6 +450,14 @@ public class AssetEntryWrapper implements AssetEntry {
 		return _assetEntry.getTitle(languageId, useDefault);
 	}
 
+	public java.lang.String getTitleCurrentLanguageId() {
+		return _assetEntry.getTitleCurrentLanguageId();
+	}
+
+	public java.lang.String getTitleCurrentValue() {
+		return _assetEntry.getTitleCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized titles of this asset entry.
 	*
@@ -488,6 +496,10 @@ public class AssetEntryWrapper implements AssetEntry {
 	public void setTitle(java.lang.String title, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_assetEntry.setTitle(title, locale, defaultLocale);
+	}
+
+	public void setTitleCurrentLanguageId(java.lang.String languageId) {
+		_assetEntry.setTitleCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -674,10 +686,6 @@ public class AssetEntryWrapper implements AssetEntry {
 
 	public boolean isEscapedModel() {
 		return _assetEntry.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_assetEntry.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

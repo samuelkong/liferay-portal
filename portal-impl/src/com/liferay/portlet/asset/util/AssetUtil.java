@@ -16,7 +16,6 @@ package com.liferay.portlet.asset.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
@@ -81,8 +80,6 @@ public class AssetUtil {
 			PortletURL portletURL)
 		throws Exception {
 
-		String languageId = LanguageUtil.getLanguageId(request);
-
 		AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getCategory(
 			assetCategoryId);
 
@@ -95,14 +92,15 @@ public class AssetUtil {
 				ancestorCategory.getCategoryId()));
 
 			addPortletBreadcrumbEntry(
-				request, ancestorCategory.getTitle(languageId),
+				request, ancestorCategory.getTitleCurrentValue(),
 				portletURL.toString());
 		}
 
 		portletURL.setParameter("categoryId", String.valueOf(assetCategoryId));
 
 		addPortletBreadcrumbEntry(
-			request, assetCategory.getTitle(languageId), portletURL.toString());
+			request, assetCategory.getTitleCurrentValue(),
+			portletURL.toString());
 	}
 
 	public static void addPortletBreadcrumbEntry(

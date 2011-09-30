@@ -333,6 +333,14 @@ public class MDRActionWrapper implements MDRAction {
 		return _mdrAction.getName(languageId, useDefault);
 	}
 
+	public java.lang.String getNameCurrentLanguageId() {
+		return _mdrAction.getNameCurrentLanguageId();
+	}
+
+	public java.lang.String getNameCurrentValue() {
+		return _mdrAction.getNameCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized names of this m d r action.
 	*
@@ -371,6 +379,10 @@ public class MDRActionWrapper implements MDRAction {
 	public void setName(java.lang.String name, java.util.Locale locale,
 		java.util.Locale defaultLocale) {
 		_mdrAction.setName(name, locale, defaultLocale);
+	}
+
+	public void setNameCurrentLanguageId(java.lang.String languageId) {
+		_mdrAction.setNameCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -448,6 +460,14 @@ public class MDRActionWrapper implements MDRAction {
 		return _mdrAction.getDescription(languageId, useDefault);
 	}
 
+	public java.lang.String getDescriptionCurrentLanguageId() {
+		return _mdrAction.getDescriptionCurrentLanguageId();
+	}
+
+	public java.lang.String getDescriptionCurrentValue() {
+		return _mdrAction.getDescriptionCurrentValue();
+	}
+
 	/**
 	* Returns a map of the locales and localized descriptions of this m d r action.
 	*
@@ -487,6 +507,10 @@ public class MDRActionWrapper implements MDRAction {
 	public void setDescription(java.lang.String description,
 		java.util.Locale locale, java.util.Locale defaultLocale) {
 		_mdrAction.setDescription(description, locale, defaultLocale);
+	}
+
+	public void setDescriptionCurrentLanguageId(java.lang.String languageId) {
+		_mdrAction.setDescriptionCurrentLanguageId(languageId);
 	}
 
 	/**
@@ -565,10 +589,6 @@ public class MDRActionWrapper implements MDRAction {
 
 	public boolean isEscapedModel() {
 		return _mdrAction.isEscapedModel();
-	}
-
-	public void setEscapedModel(boolean escapedModel) {
-		_mdrAction.setEscapedModel(escapedModel);
 	}
 
 	public java.io.Serializable getPrimaryKeyObj() {

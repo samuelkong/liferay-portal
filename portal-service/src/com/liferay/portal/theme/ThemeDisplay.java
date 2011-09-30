@@ -21,7 +21,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mobile.device.Device;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.TimeZoneThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Account;
 import com.liferay.portal.model.ColorScheme;
@@ -840,6 +842,8 @@ public class ThemeDisplay implements Serializable {
 
 	public void setLocale(Locale locale) {
 		_locale = locale;
+
+		LocaleThreadLocal.setThemeDisplayLocale(locale);
 	}
 
 	public void setLookAndFeel(
@@ -1152,6 +1156,8 @@ public class ThemeDisplay implements Serializable {
 
 	public void setTimeZone(TimeZone timeZone) {
 		_timeZone = timeZone;
+
+		TimeZoneThreadLocal.setThemeDisplayTimeZone(timeZone);
 	}
 
 	public void setUnfilteredLayouts(List<Layout> unfilteredLayouts) {
