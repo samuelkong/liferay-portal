@@ -33,15 +33,13 @@
 <#-- Field value -->
 
 <#assign fieldValue = predefinedValue>
+<#assign fieldRawValue = "">
 
 <#if fields?? && fields.get(fieldName)??>
-	<#assign fieldValue = fields.get(fieldName).getValue()>
+	<#assign field = fields.get(fieldName)>
 
-	<#if fieldValue?is_date>
-		<#assign fieldValue = fieldValue?string("MM/dd/yyyy")>
-	<#else>
-		<#assign fieldValue = fieldValue?string>
-	</#if>
+	<#assign fieldValue = field.getRenderedValue(themeDisplay)>
+	<#assign fieldRawValue = field.getValue()>
 </#if>
 
 <#-- Label -->
@@ -59,3 +57,23 @@
 <#if field.required?? && (field.required == "true")>
 	<#assign required = true>
 </#if>
+
+<#-- Util -->
+
+<#assign jsonFactoryUtil = utilLocator.findUtil("com.liferay.portal.kernel.json.JSONFactory")>
+
+<#function getFileJSONObject fieldValue>
+	<#return jsonFactoryUtil.createJSONObject(fieldValue)>>
+</#function>
+
+<#assign dlAppServiceUtil = serviceLocator.findService("com.liferay.portlet.documentlibrary.service.DLAppService")>
+
+<#function getFileEntry fileJSONObject>
+	<#assign fileEntryUUID = fileJSONObject.getString("uuid")>
+
+	<#return dlAppServiceUtil.getFileEntryByUuidAndGroupId(fileEntryUUID, scopeGroupId)>
+</#function>
+
+<#function getFileEntryURL fileEntry>
+	<#return themeDisplay.getPathContext() + "/documents/" + scopeGroupId?c + "/" + (fileEntry.getFolderId())?c + "/" +  httpUtil.encodeURL(htmlUtil.unescape(fileEntry.getTitle()))>
+</#function>

@@ -301,6 +301,12 @@ public class DDLRecordLocalServiceWrapper implements DDLRecordLocalService {
 		_ddlRecordLocalService.deleteRecords(recordSetId);
 	}
 
+	public com.liferay.portlet.dynamicdatalists.model.DDLRecord fetchRecord(
+		long recordId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _ddlRecordLocalService.fetchRecord(recordId);
+	}
+
 	public com.liferay.portlet.dynamicdatalists.model.DDLRecordVersion getLatestRecordVersion(
 		long recordId)
 		throws com.liferay.portal.kernel.exception.PortalException,
