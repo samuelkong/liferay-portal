@@ -50,7 +50,7 @@ request.setAttribute("search.jsp-portletURL", portletURL);
 </liferay-portlet:renderURL>
 
 <aui:form action="<%= searchURL %>" method="get" name="fm" onSubmit='<%= "event.preventDefault();" %>'>
-	<liferay-portlet:renderURLParams varImpl="searchURL" />
+	<liferay-portlet:renderURLParams varImpl="searchURL" windowState="<%= WindowState.MAXIMIZED.toString() %>" />
 	<aui:input name="format" type="hidden" value="<%= format %>" />
 
 	<aui:fieldset>
