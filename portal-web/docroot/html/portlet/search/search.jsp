@@ -45,7 +45,7 @@ portletURL.setParameter("format", format);
 request.setAttribute("search.jsp-portletURL", portletURL);
 %>
 
-<liferay-portlet:renderURL varImpl="searchURL">
+<liferay-portlet:renderURL varImpl="searchURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 	<portlet:param name="struts_action" value="/search/search" />
 </liferay-portlet:renderURL>
 
