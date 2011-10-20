@@ -20,6 +20,8 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.portlet.social.model.SocialActivityLimit;
 
+import java.io.Serializable;
+
 /**
  * The cache model class for representing SocialActivityLimit in entity cache.
  *
@@ -27,7 +29,8 @@ import com.liferay.portlet.social.model.SocialActivityLimit;
  * @see SocialActivityLimit
  * @generated
  */
-public class SocialActivityLimitCacheModel implements CacheModel<SocialActivityLimit> {
+public class SocialActivityLimitCacheModel implements CacheModel<SocialActivityLimit>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(19);

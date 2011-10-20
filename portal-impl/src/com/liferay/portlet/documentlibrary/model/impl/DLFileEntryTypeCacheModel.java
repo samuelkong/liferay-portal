@@ -20,6 +20,8 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.portlet.documentlibrary.model.DLFileEntryType;
 
+import java.io.Serializable;
+
 import java.util.Date;
 
 /**
@@ -29,7 +31,8 @@ import java.util.Date;
  * @see DLFileEntryType
  * @generated
  */
-public class DLFileEntryTypeCacheModel implements CacheModel<DLFileEntryType> {
+public class DLFileEntryTypeCacheModel implements CacheModel<DLFileEntryType>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(21);

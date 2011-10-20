@@ -149,7 +149,7 @@ public class DDMTemplateFinderImpl
 			qPos.add(modes, 2);
 			qPos.add(languages, 2);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();
