@@ -275,7 +275,7 @@ public class DLFolderFinderImpl
 
 			int count = 0;
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			while (itr.hasNext()) {
 				Long l = itr.next();
@@ -372,7 +372,7 @@ public class DLFolderFinderImpl
 
 			int count = 0;
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			while (itr.hasNext()) {
 				Long l = itr.next();

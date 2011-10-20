@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.Company;
 
+import java.io.Serializable;
+
 /**
  * The cache model class for representing Company in entity cache.
  *
@@ -26,7 +28,7 @@ import com.liferay.portal.model.Company;
  * @see Company
  * @generated
  */
-public class CompanyCacheModel implements CacheModel<Company> {
+public class CompanyCacheModel implements CacheModel<Company>, Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(21);

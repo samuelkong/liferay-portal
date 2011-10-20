@@ -20,6 +20,8 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 
+import java.io.Serializable;
+
 import java.util.Date;
 
 /**
@@ -29,7 +31,8 @@ import java.util.Date;
  * @see DDMTemplate
  * @generated
  */
-public class DDMTemplateCacheModel implements CacheModel<DDMTemplate> {
+public class DDMTemplateCacheModel implements CacheModel<DDMTemplate>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(31);

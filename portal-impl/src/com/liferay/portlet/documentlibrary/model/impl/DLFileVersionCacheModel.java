@@ -20,6 +20,8 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.portlet.documentlibrary.model.DLFileVersion;
 
+import java.io.Serializable;
+
 import java.util.Date;
 
 /**
@@ -29,7 +31,8 @@ import java.util.Date;
  * @see DLFileVersion
  * @generated
  */
-public class DLFileVersionCacheModel implements CacheModel<DLFileVersion> {
+public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(45);

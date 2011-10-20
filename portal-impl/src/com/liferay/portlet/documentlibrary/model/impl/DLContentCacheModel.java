@@ -20,6 +20,8 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.portlet.documentlibrary.model.DLContent;
 
+import java.io.Serializable;
+
 /**
  * The cache model class for representing DLContent in entity cache.
  *
@@ -27,7 +29,7 @@ import com.liferay.portlet.documentlibrary.model.DLContent;
  * @see DLContent
  * @generated
  */
-public class DLContentCacheModel implements CacheModel<DLContent> {
+public class DLContentCacheModel implements CacheModel<DLContent>, Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(15);

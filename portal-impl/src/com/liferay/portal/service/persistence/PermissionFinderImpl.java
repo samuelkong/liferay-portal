@@ -222,7 +222,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			qPos.add(userId);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			while (itr.hasNext()) {
 				Long count = itr.next();
@@ -326,7 +326,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			qPos.add(userId);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			while (itr.hasNext()) {
 				Long count = itr.next();
@@ -372,7 +372,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			setGroupIds(qPos, groups);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();
@@ -418,7 +418,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			setGroupIds(qPos, groups);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();
@@ -520,7 +520,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			qPos.add(userId);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();
@@ -564,7 +564,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			qPos.add(userId);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();
@@ -607,7 +607,7 @@ public class PermissionFinderImpl
 			setPermissionIds(qPos, permissions);
 			qPos.add(userId);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();
@@ -647,7 +647,7 @@ public class PermissionFinderImpl
 			qPos.add(actionId);
 			qPos.add(codeId);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();

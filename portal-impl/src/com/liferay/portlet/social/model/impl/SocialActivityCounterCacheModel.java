@@ -20,6 +20,8 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.portlet.social.model.SocialActivityCounter;
 
+import java.io.Serializable;
+
 /**
  * The cache model class for representing SocialActivityCounter in entity cache.
  *
@@ -27,7 +29,8 @@ import com.liferay.portlet.social.model.SocialActivityCounter;
  * @see SocialActivityCounter
  * @generated
  */
-public class SocialActivityCounterCacheModel implements CacheModel<SocialActivityCounter> {
+public class SocialActivityCounterCacheModel implements CacheModel<SocialActivityCounter>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(25);

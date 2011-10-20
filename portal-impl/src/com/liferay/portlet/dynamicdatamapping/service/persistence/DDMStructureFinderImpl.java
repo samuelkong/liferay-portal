@@ -135,7 +135,7 @@ public class DDMStructureFinderImpl
 			qPos.add(descriptions, 2);
 			qPos.add(storageTypes, 2);
 
-			Iterator<Long> itr = q.list().iterator();
+			Iterator<Long> itr = q.iterate();
 
 			if (itr.hasNext()) {
 				Long count = itr.next();

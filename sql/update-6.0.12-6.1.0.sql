@@ -147,7 +147,7 @@ create table DDMTemplate (
 	name STRING null,
 	description STRING null,
 	type_ VARCHAR(75) null,
-	mode VARCHAR(75) null,
+	mode_ VARCHAR(75) null,
 	language VARCHAR(75) null,
 	script TEXT null
 );
@@ -489,7 +489,7 @@ create table SocialActivityCounter (
 	classNameId LONG,
 	classPK LONG,
 	name VARCHAR(75) null,
-	type_ INTEGER,
+	ownerType INTEGER,
 	currentValue INTEGER,
 	totalValue INTEGER,
 	graceValue INTEGER,
