@@ -55,7 +55,8 @@ public class DeployUtil {
 
 		if (!targetFile.exists()) {
 			CopyTask.copyFile(
-				file, new File(targetDir), filterMap, overwrite, true);
+				file, new File(targetDir), targetFileName, filterMap, overwrite,
+				true);
 		}
 	}
 
@@ -138,7 +139,8 @@ public class DeployUtil {
 			return;
 		}
 
-		if (!appServerType.startsWith(ServerDetector.JBOSS_ID) &&
+		if (!appServerType.equals(ServerDetector.JBOSS_ID) &&
+			!appServerType.equals(ServerDetector.JETTY_ID) &&
 			!appServerType.equals(ServerDetector.TOMCAT_ID)) {
 
 			return;
@@ -162,13 +164,13 @@ public class DeployUtil {
 
 		DeleteTask.deleteDirectory(deployDir);
 
-		if (ServerDetector.isJetty()) {
+		if (appServerType.equals(ServerDetector.JETTY_ID)) {
 			FileUtil.delete(
 				System.getProperty("jetty.home") + "/contexts/" +
 					deployDir.getName() + ".xml");
 		}
 
-		if (ServerDetector.isJBoss()) {
+		if (appServerType.equals(ServerDetector.JBOSS_ID)) {
 			File deployedFile = new File(
 				deployDir.getParent(), deployDir.getName() + ".deployed");
 

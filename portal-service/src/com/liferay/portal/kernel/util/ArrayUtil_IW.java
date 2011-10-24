@@ -346,6 +346,10 @@ public class ArrayUtil_IW {
 		return ArrayUtil.toArray(array);
 	}
 
+	public java.lang.Long[] toLongArray(java.lang.Object[] array) {
+		return ArrayUtil.toLongArray(array);
+	}
+
 	public java.lang.String[] toStringArray(boolean[] array) {
 		return ArrayUtil.toStringArray(array);
 	}

@@ -31,6 +31,12 @@ long ddmStructureId = BeanParamUtil.getLong(ddmStructure, request, "structureId"
 
 String script = BeanParamUtil.getString(ddmStructure, request, "xsd");
 
+JSONArray scriptJSONArray = null;
+
+if (Validator.isNotNull(script)) {
+	scriptJSONArray = DDMXSDUtil.getJSONArray(script);
+}
+
 List<DDMStructure> ddmStructures = null;
 
 if (fileEntryType != null) {

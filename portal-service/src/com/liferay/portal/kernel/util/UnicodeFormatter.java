@@ -67,6 +67,27 @@ public class UnicodeFormatter {
 		return new String(array);
 	}
 
+	public static byte[] hexToBytes(String hexString) {
+		if ((hexString.length() % 2) != 0) {
+			return new byte[0];
+		}
+
+		byte[] bytes = new byte[hexString.length() / 2];
+
+		for (int i = 0; i < hexString.length(); i = i + 2) {
+			String s = hexString.substring(i, i + 2);
+
+			try {
+				bytes[i / 2] = (byte)Integer.parseInt(s, 16);
+			}
+			catch (NumberFormatException nfe) {
+				return new byte[0];
+			}
+		}
+
+		return bytes;
+	}
+
 	public static String parseString(String hexString) {
 		StringBuilder sb = new StringBuilder();
 

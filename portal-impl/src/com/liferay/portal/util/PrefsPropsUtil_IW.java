@@ -317,6 +317,12 @@ public class PrefsPropsUtil_IW {
 		return PrefsPropsUtil.getStringArray(name, delimiter, defaultValue);
 	}
 
+	public java.lang.String getStringFromNames(long companyId,
+		java.lang.String... names)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return PrefsPropsUtil.getStringFromNames(companyId, names);
+	}
+
 	private PrefsPropsUtil_IW() {
 	}
 

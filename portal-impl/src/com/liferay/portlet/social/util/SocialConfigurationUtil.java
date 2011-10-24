@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.util.JavaFieldsParser;
 import com.liferay.portlet.social.model.SocialAchievement;
 import com.liferay.portlet.social.model.SocialActivityCounterConstants;
 import com.liferay.portlet.social.model.SocialActivityCounterDefinition;
@@ -139,6 +140,8 @@ public class SocialConfigurationUtil {
 		if (xml == null) {
 			return;
 		}
+
+		xml = JavaFieldsParser.parse(classLoader, xml);
 
 		Document document = SAXReaderUtil.read(xml);
 

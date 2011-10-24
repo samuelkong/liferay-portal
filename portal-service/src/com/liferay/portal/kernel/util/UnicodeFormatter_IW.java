@@ -42,6 +42,10 @@ public class UnicodeFormatter_IW {
 		return UnicodeFormatter.charToHex(c);
 	}
 
+	public byte[] hexToBytes(java.lang.String hexString) {
+		return UnicodeFormatter.hexToBytes(hexString);
+	}
+
 	public java.lang.String parseString(java.lang.String hexString) {
 		return UnicodeFormatter.parseString(hexString);
 	}
