@@ -65,14 +65,15 @@ if (row == null) {
 <liferay-ui:icon-menu showExpanded="<%= view %>" showWhenSingleIcon="<%= view %>">
 	<c:if test="<%= (folder != null) && BookmarksFolderPermission.contains(permissionChecker, folder, ActionKeys.UPDATE) %>">
 
-  		<portlet:renderURL var="redirectURL">
+  		<portlet:renderURL var="mergeredirectURL">
 			<portlet:param name="struts_action" value="/bookmarks/view" />
 			<portlet:param name="folderId" value="<%= String.valueOf(folder.getParentFolderId()) %>" />
 		</portlet:renderURL>
 
 		<portlet:renderURL var="editURL">
 			<portlet:param name="struts_action" value="/bookmarks/edit_folder" />
-			<portlet:param name="redirect" value="<%= redirectURL%>" />
+			<portlet:param name="mergeredirect" value="<%= mergeredirectURL%>" />
+			<portlet:param name="redirect" value="<%= currentURL%>" />
 			<portlet:param name="folderId" value="<%= String.valueOf(folder.getFolderId()) %>" />
 		</portlet:renderURL>
 
