@@ -464,7 +464,7 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 	}
 
 	@BufferedIncrement(incrementClass = NumberIncrement.class)
-	public MBThread incrementViewCounter(long threadId, int increment)
+	public void incrementViewCounter(long threadId, int increment)
 		throws PortalException, SystemException {
 
 		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
@@ -472,8 +472,6 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 		thread.setViewCount(thread.getViewCount() + increment);
 
 		mbThreadPersistence.update(thread, false);
-
-		return thread;
 	}
 
 	public MBThread moveThread(long groupId, long categoryId, long threadId)
