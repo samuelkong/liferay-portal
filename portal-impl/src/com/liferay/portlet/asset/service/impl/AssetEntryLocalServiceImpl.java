@@ -334,39 +334,33 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	}
 
 	@BufferedIncrement(incrementClass = NumberIncrement.class)
-	public AssetEntry incrementViewCounter(
+	public void incrementViewCounter(
 			long userId, String className, long classPK, int increment)
 		throws PortalException, SystemException {
 
-		if (!PropsValues.ASSET_ENTRY_INCREMENT_VIEW_COUNTER_ENABLED) {
-			return null;
+		if (classPK > 0 && 
+				PropsValues.ASSET_ENTRY_INCREMENT_VIEW_COUNTER_ENABLED) {
+
+			long classNameId = PortalUtil.getClassNameId(className);
+
+			AssetEntry entry = assetEntryPersistence.fetchByC_C(
+				classNameId, classPK);
+
+			if (entry != null) {
+
+				entry.setViewCount(entry.getViewCount() + increment);
+
+				assetEntryPersistence.update(entry, false);
+
+				// Social
+
+				if ((userId > 0) && (entry.getUserId() != userId)) {
+					socialEquityLogLocalService.addEquityLogs(
+						userId, entry.getEntryId(), ActionKeys.VIEW, 
+						StringPool.BLANK);
+				}
+			}
 		}
-
-		if (classPK <= 0) {
-			return null;
-		}
-
-		long classNameId = PortalUtil.getClassNameId(className);
-
-		AssetEntry entry = assetEntryPersistence.fetchByC_C(
-			classNameId, classPK);
-
-		if (entry == null) {
-			return null;
-		}
-
-		entry.setViewCount(entry.getViewCount() + increment);
-
-		assetEntryPersistence.update(entry, false);
-
-		// Social
-
-		if ((userId > 0) && (entry.getUserId() != userId)) {
-			socialEquityLogLocalService.addEquityLogs(
-				userId, entry.getEntryId(), ActionKeys.VIEW, StringPool.BLANK);
-		}
-
-		return entry;
 	}
 
 	public void reindex(List<AssetEntry> entries) throws PortalException {
