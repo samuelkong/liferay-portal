@@ -12,19 +12,29 @@
  * details.
  */
 
-package com.liferay.portal.poller;
+package com.liferay.portlet.documentlibrary;
 
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.poller.PollerHeader;
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
- * @author Edward Han
+ * @author Brian Wing Shun Chan
  */
-public interface PollerRequestHandler {
+public class FileMimeTypeException extends PortalException {
 
-	public PollerHeader getPollerHeader(String pollerRequestString);
+	public FileMimeTypeException() {
+		super();
+	}
 
-	public JSONObject processRequest(String path, String pollerRequestString)
-		throws Exception;
+	public FileMimeTypeException(String msg) {
+		super(msg);
+	}
+
+	public FileMimeTypeException(String msg, Throwable cause) {
+		super(msg, cause);
+	}
+
+	public FileMimeTypeException(Throwable cause) {
+		super(cause);
+	}
 
 }

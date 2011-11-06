@@ -68,14 +68,6 @@ public class JournalContentImpl implements JournalContent {
 	}
 
 	public String getContent(
-		long groupId, String articleId, String viewMode, String languageId,
-		ThemeDisplay themeDisplay) {
-
-		return getContent(
-			groupId, articleId, null, viewMode, languageId, themeDisplay);
-	}
-
-	public String getContent(
 		long groupId, String articleId, String templateId, String viewMode,
 		String languageId, String xmlRequest) {
 
@@ -109,53 +101,17 @@ public class JournalContentImpl implements JournalContent {
 		}
 	}
 
-	public JournalArticleDisplay getDisplay(
-		long groupId, String articleId, String viewMode, String languageId,
-		String xmlRequest) {
-
-		return getDisplay(
-			groupId, articleId, null, viewMode, languageId, null, 1,
-			xmlRequest);
-	}
-
-	public JournalArticleDisplay getDisplay(
+	public String getContent(
 		long groupId, String articleId, String viewMode, String languageId,
 		ThemeDisplay themeDisplay) {
 
-		return getDisplay(
-			groupId, articleId, viewMode, languageId, themeDisplay, 1);
+		return getContent(
+			groupId, articleId, null, viewMode, languageId, themeDisplay);
 	}
 
 	public JournalArticleDisplay getDisplay(
-		long groupId, String articleId, String viewMode, String languageId,
-		ThemeDisplay themeDisplay, int page) {
-
-		return getDisplay(
-			groupId, articleId, null, viewMode, languageId, themeDisplay, page,
-			null);
-	}
-
-	public JournalArticleDisplay getDisplay(
-		long groupId, String articleId, String templateId, String viewMode,
-		String languageId, String xmlRequest) {
-
-		return getDisplay(
-			groupId, articleId, templateId, viewMode, languageId, null, 1,
-			xmlRequest);
-	}
-
-	public JournalArticleDisplay getDisplay(
-		long groupId, String articleId, String templateId, String viewMode,
-		String languageId, ThemeDisplay themeDisplay) {
-
-		return getDisplay(
-			groupId, articleId, templateId, viewMode, languageId, themeDisplay,
-			1, null);
-	}
-
-	public JournalArticleDisplay getDisplay(
-		long groupId, String articleId, String templateId, String viewMode,
-		String languageId, ThemeDisplay themeDisplay, int page,
+		long groupId, String articleId, double version, String templateId,
+		String viewMode, String languageId, ThemeDisplay themeDisplay, int page,
 		String xmlRequest) {
 
 		StopWatch stopWatch = null;
@@ -187,8 +143,8 @@ public class JournalContentImpl implements JournalContent {
 		}
 
 		String key = encodeKey(
-			groupId, articleId, templateId, layoutSetId, viewMode, languageId,
-			page, secure);
+			groupId, articleId, version, templateId, layoutSetId, viewMode,
+			languageId, page, secure);
 
 		JournalArticleDisplay articleDisplay =
 			(JournalArticleDisplay)portalCache.get(key);
@@ -230,9 +186,64 @@ public class JournalContentImpl implements JournalContent {
 		return articleDisplay;
 	}
 
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String viewMode, String languageId,
+		String xmlRequest) {
+
+		return getDisplay(
+			groupId, articleId, null, viewMode, languageId, null, 1,
+			xmlRequest);
+	}
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String templateId, String viewMode,
+		String languageId, String xmlRequest) {
+
+		return getDisplay(
+			groupId, articleId, templateId, viewMode, languageId, null, 1,
+			xmlRequest);
+	}
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String templateId, String viewMode,
+		String languageId, ThemeDisplay themeDisplay) {
+
+		return getDisplay(
+			groupId, articleId, templateId, viewMode, languageId, themeDisplay,
+			1, null);
+	}
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String templateId, String viewMode,
+		String languageId, ThemeDisplay themeDisplay, int page,
+		String xmlRequest) {
+
+		return getDisplay(
+			groupId, articleId, 0, templateId, viewMode, languageId,
+			themeDisplay, 1, null);
+	}
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String viewMode, String languageId,
+		ThemeDisplay themeDisplay) {
+
+		return getDisplay(
+			groupId, articleId, viewMode, languageId, themeDisplay, 1);
+	}
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String viewMode, String languageId,
+		ThemeDisplay themeDisplay, int page) {
+
+		return getDisplay(
+			groupId, articleId, null, viewMode, languageId, themeDisplay, page,
+			null);
+	}
+
 	protected String encodeKey(
-		long groupId, String articleId, String templateId, long layoutSetId,
-		String viewMode, String languageId, int page, boolean secure) {
+		long groupId, String articleId, double version, String templateId,
+		long layoutSetId, String viewMode, String languageId, int page,
+		boolean secure) {
 
 		StringBundler sb = new StringBundler();
 
@@ -241,6 +252,8 @@ public class JournalContentImpl implements JournalContent {
 		sb.append(StringUtil.toHexString(groupId));
 		sb.append(ARTICLE_SEPARATOR);
 		sb.append(articleId);
+		sb.append(VERSION_SEPARATOR);
+		sb.append(version);
 		sb.append(TEMPLATE_SEPARATOR);
 		sb.append(templateId);
 
@@ -269,7 +282,6 @@ public class JournalContentImpl implements JournalContent {
 
 		return sb.toString();
 	}
-
 	protected JournalArticleDisplay getArticleDisplay(
 		long groupId, String articleId, String templateId, String viewMode,
 		String languageId, int page, String xmlRequest,

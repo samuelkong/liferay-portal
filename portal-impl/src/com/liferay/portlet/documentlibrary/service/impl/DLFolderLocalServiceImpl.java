@@ -598,7 +598,7 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 
 		// File entry types
 
-		dlFileEntryTypeLocalService.deleteFileEntryTypes(
+		dlFileEntryTypeLocalService.unsetFolderFileEntryTypes(
 			dlFolder.getFolderId());
 
 		// Expando

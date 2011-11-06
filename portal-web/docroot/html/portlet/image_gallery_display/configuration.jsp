@@ -49,9 +49,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 					List leftList = new ArrayList();
 
-					for (int i = 0; i < mimeTypes.length; i++) {
-						String mimeType = mimeTypes[i];
+					String[] mediaGalleryMimeTypes = DLUtil.getMediaGalleryMimeTypes(preferences, renderRequest);
 
+					for (String mimeType : mediaGalleryMimeTypes) {
 						leftList.add(new KeyValuePair(mimeType, LanguageUtil.get(pageContext, mimeType)));
 					}
 
@@ -59,19 +59,13 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 					List rightList = new ArrayList();
 
-					Arrays.sort(mimeTypes);
+					Set<String> allMediaGalleryMimeTypes = DLUtil.getAllMediaGalleryMimeTypes();
 
-					Iterator itr = _allMimeTypes.iterator();
-
-					while (itr.hasNext()) {
-						String mimeType = (String)itr.next();
-
-						if (Arrays.binarySearch(mimeTypes, mimeType) < 0) {
+					for (String mimeType : allMediaGalleryMimeTypes) {
+						if (Arrays.binarySearch(mediaGalleryMimeTypes, mimeType) < 0) {
 							rightList.add(new KeyValuePair(mimeType, LanguageUtil.get(pageContext, mimeType)));
 						}
 					}
-
-					rightList = ListUtil.sort(rightList, new KeyValuePairComparator(false, true));
 					%>
 
 					<liferay-ui:input-move-boxes

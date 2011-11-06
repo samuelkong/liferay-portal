@@ -111,27 +111,42 @@ if (!paginationType.equals("none")) {
 %>
 
 <c:if test="<%= showMetadataDescriptions %>">
-	<c:if test='<%= (assetCategoryId > 0) && selectionStyle.equals("dynamic") %>'>
-		<h1 class="asset-categorization-title">
-			<%= LanguageUtil.format(pageContext, "content-with-x-x", new String[] {assetVocabularyTitle, assetCategoryTitle}) %>
-		</h1>
+	<c:choose>
+		<c:when test='<%= (assetCategoryId > 0) && Validator.isNotNull(assetTagName) && selectionStyle.equals("dynamic") %>'>
+			<h1 class="asset-categorization-title">
+				<liferay-ui:message arguments="<%= new String[] {assetVocabularyTitle, assetCategoryTitle, assetTagName} %>" key="content-with-x-x-and-tag-x" />
+			</h1>
 
-		<%
-		AssetUtil.addPortletBreadcrumbEntries(assetCategoryId, request, portletURL);
-		%>
+			<%
+			AssetUtil.addPortletBreadcrumbEntries(assetCategoryId, request, portletURL);
+			AssetUtil.addPortletBreadcrumbEntry(request, assetTagName, currentURL);
+			%>
 
-	</c:if>
+		</c:when>
+		<c:otherwise>
+			<c:if test='<%= (assetCategoryId > 0) && selectionStyle.equals("dynamic") %>'>
+				<h1 class="asset-categorization-title">
+					<liferay-ui:message arguments="<%= new String[] {assetVocabularyTitle, assetCategoryTitle} %>" key="content-with-x-x" />
+				</h1>
 
-	<c:if test='<%= Validator.isNotNull(assetTagName) && selectionStyle.equals("dynamic") %>'>
-		<h1 class="asset-categorization-title">
-			<%= LanguageUtil.format(pageContext, "content-with-tag-x", HtmlUtil.escape(assetTagName)) %>
-		</h1>
+				<%
+				AssetUtil.addPortletBreadcrumbEntries(assetCategoryId, request, portletURL);
+				%>
 
-		<%
-		AssetUtil.addPortletBreadcrumbEntry(request, assetTagName, currentURL);
-		%>
+			</c:if>
 
-	</c:if>
+			<c:if test='<%= Validator.isNotNull(assetTagName) && selectionStyle.equals("dynamic") %>'>
+				<h1 class="asset-categorization-title">
+					<liferay-ui:message arguments="<%= assetTagName %>" key="content-with-tag-x" />
+				</h1>
+
+				<%
+				AssetUtil.addPortletBreadcrumbEntry(request, assetTagName, currentURL);
+				%>
+
+			</c:if>
+		</c:otherwise>
+	</c:choose>
 
 	<c:if test='<%= portletName.equals(PortletKeys.RELATED_ASSETS) && (assetEntryQuery.getLinkedAssetEntryId() > 0) %>'>
 		<h1 class="related-assets-title">
@@ -140,7 +155,7 @@ if (!paginationType.equals("none")) {
 			AssetEntry assetEntry = AssetEntryServiceUtil.getEntry(assetEntryQuery.getLinkedAssetEntryId());
 			%>
 
-			<%= LanguageUtil.format(pageContext, "content-related-to-x", assetEntry.getTitle(locale)) %>
+			<liferay-ui:message arguments="<%= assetEntry.getTitle(locale) %>" key="content-related-to-x" />
 		</h1>
 	</c:if>
 </c:if>

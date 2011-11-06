@@ -89,6 +89,8 @@ public interface AssetRenderer {
 
 	public boolean isConvertible();
 
+	public boolean isDisplayable();
+
 	public boolean isLocalizable();
 
 	public boolean isPrintable();

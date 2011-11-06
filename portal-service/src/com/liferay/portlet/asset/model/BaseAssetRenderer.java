@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class BaseAssetRenderer implements AssetRenderer {
 
 	public String[] getAvailableLocales() {
-		return _EMPTY_ARRAY;
+		return _AVAILABLE_LOCALES;
 	}
 
 	public String getDiscussionPath() {
@@ -115,6 +115,10 @@ public abstract class BaseAssetRenderer implements AssetRenderer {
 		return false;
 	}
 
+	public boolean isDisplayable() {
+		return true;
+	}
+
 	public boolean isLocalizable() {
 		return false;
 	}
@@ -180,6 +184,6 @@ public abstract class BaseAssetRenderer implements AssetRenderer {
 		return sb.toString();
 	}
 
-	private static final String[] _EMPTY_ARRAY = new String[0];
+	private static final String[] _AVAILABLE_LOCALES = new String[0];
 
 }

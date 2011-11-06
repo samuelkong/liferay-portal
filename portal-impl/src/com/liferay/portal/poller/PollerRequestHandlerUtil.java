@@ -15,11 +15,16 @@
 package com.liferay.portal.poller;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.poller.PollerHeader;
 
 /**
  * @author Edward Han
  */
 public class PollerRequestHandlerUtil {
+
+	public static PollerHeader getPollerHeader(String pollerRequestString) {
+		return getPollerRequestHandler().getPollerHeader(pollerRequestString);
+	}
 
 	public static PollerRequestHandler getPollerRequestHandler() {
 		return _pollerRequestHandler;

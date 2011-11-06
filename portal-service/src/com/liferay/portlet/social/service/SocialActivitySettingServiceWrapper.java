@@ -65,13 +65,22 @@ public class SocialActivitySettingServiceWrapper
 			enabled);
 	}
 
+	public void updateActivitySetting(long groupId, java.lang.String className,
+		int activityType,
+		com.liferay.portlet.social.model.SocialActivityCounterDefinition activityCounterDefinition)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_socialActivitySettingService.updateActivitySetting(groupId, className,
+			activityType, activityCounterDefinition);
+	}
+
 	public void updateActivitySettings(long groupId,
 		java.lang.String className, int activityType,
-		java.util.List<com.liferay.portlet.social.model.SocialActivityCounterDefinition> counters)
+		java.util.List<com.liferay.portlet.social.model.SocialActivityCounterDefinition> activityCounterDefinitions)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		_socialActivitySettingService.updateActivitySettings(groupId,
-			className, activityType, counters);
+			className, activityType, activityCounterDefinitions);
 	}
 
 	/**

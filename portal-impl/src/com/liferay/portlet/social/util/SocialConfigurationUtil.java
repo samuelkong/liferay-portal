@@ -393,6 +393,16 @@ public class SocialConfigurationUtil {
 		SocialActivityCounterDefinition activityCounterDefinition =
 			new SocialActivityCounterDefinition();
 
+		int increment = GetterUtil.getInteger(
+			counterElement.elementText("increment"), 1);
+
+		activityCounterDefinition.setIncrement(increment);
+
+		boolean enabled = GetterUtil.getBoolean(
+			counterElement.elementText("enabled"), true);
+
+		activityCounterDefinition.setEnabled(enabled);
+
 		String name = GetterUtil.getString(counterElement.elementText("name"));
 
 		activityCounterDefinition.setName(name);
@@ -401,11 +411,6 @@ public class SocialConfigurationUtil {
 			counterElement.elementText("owner-type"));
 
 		activityCounterDefinition.setOwnerType(ownerType);
-
-		int increment = GetterUtil.getInteger(
-			counterElement.elementText("increment"), 1);
-
-		activityCounterDefinition.setIncrement(increment);
 
 		if (activityCounterDefinition.getOwnerType() == 0) {
 			if (_log.isWarnEnabled()) {

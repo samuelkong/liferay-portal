@@ -125,9 +125,24 @@ public class SocialActivitySettingServiceImpl
 			groupId, className, enabled);
 	}
 
+	public void updateActivitySetting(
+			long groupId, String className, int activityType,
+			SocialActivityCounterDefinition activityCounterDefinition)
+		throws PortalException, SystemException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isGroupAdmin(groupId)) {
+			throw new PrincipalException();
+		}
+
+		socialActivitySettingLocalService.updateActivitySetting(
+			groupId, className, activityType, activityCounterDefinition);
+	}
+
 	public void updateActivitySettings(
 			long groupId, String className, int activityType,
-			List<SocialActivityCounterDefinition> counters)
+			List<SocialActivityCounterDefinition> activityCounterDefinitions)
 		throws PortalException, SystemException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -137,7 +152,7 @@ public class SocialActivitySettingServiceImpl
 		}
 
 		socialActivitySettingLocalService.updateActivitySettings(
-			groupId, className, activityType, counters);
+			groupId, className, activityType, activityCounterDefinitions);
 	}
 
 }

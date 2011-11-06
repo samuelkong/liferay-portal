@@ -34,6 +34,8 @@ public interface JournalContent {
 
 	public static final String TEMPLATE_SEPARATOR = "_TEMPLATE_";
 
+	public static final String VERSION_SEPARATOR = "_VERSION_";
+
 	public static final String VIEW_MODE_SEPARATOR = "_VIEW_MODE_";
 
 	public void clearCache();
@@ -43,10 +45,6 @@ public interface JournalContent {
 	public String getContent(
 		long groupId, String articleId, String viewMode, String languageId,
 		String xmlRequest);
-
-	public String getContent(
-		long groupId, String articleId, String viewMode, String languageId,
-		ThemeDisplay themeDisplay);
 
 	public String getContent(
 		long groupId, String articleId, String templateId, String viewMode,
@@ -60,17 +58,18 @@ public interface JournalContent {
 		long groupId, String articleId, String templateId, String viewMode,
 		String languageId, ThemeDisplay themeDisplay, String xmlRequest);
 
-	public JournalArticleDisplay getDisplay(
-		long groupId, String articleId, String viewMode, String languageId,
-		String xmlRequest);
-
-	public JournalArticleDisplay getDisplay(
+	public String getContent(
 		long groupId, String articleId, String viewMode, String languageId,
 		ThemeDisplay themeDisplay);
 
 	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, double version, String templateId,
+		String viewMode, String languageId, ThemeDisplay themeDisplay, int page,
+		String xmlRequest);
+
+	public JournalArticleDisplay getDisplay(
 		long groupId, String articleId, String viewMode, String languageId,
-		ThemeDisplay themeDisplay, int page);
+		String xmlRequest);
 
 	public JournalArticleDisplay getDisplay(
 		long groupId, String articleId, String templateId, String viewMode,
@@ -84,5 +83,13 @@ public interface JournalContent {
 		long groupId, String articleId, String templateId, String viewMode,
 		String languageId, ThemeDisplay themeDisplay, int page,
 		String xmlRequest);
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String viewMode, String languageId,
+		ThemeDisplay themeDisplay);
+
+	public JournalArticleDisplay getDisplay(
+		long groupId, String articleId, String viewMode, String languageId,
+		ThemeDisplay themeDisplay, int page);
 
 }

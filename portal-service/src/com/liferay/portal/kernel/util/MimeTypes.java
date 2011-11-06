@@ -17,6 +17,8 @@ package com.liferay.portal.kernel.util;
 import java.io.File;
 import java.io.InputStream;
 
+import java.util.Set;
+
 /**
  * @author Jorge Ferrer
  * @author Brian Wing Shun Chan
@@ -30,5 +32,7 @@ public interface MimeTypes {
 	public String getContentType(InputStream inputStream, String fileName);
 
 	public String getContentType(String fileName);
+
+	public Set<String> getExtensions(String contentType);
 
 }

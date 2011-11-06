@@ -17,26 +17,26 @@
 <%@ include file="/html/portlet/blogs/init.jsp" %>
 
 <%
-long categoryId = ParamUtil.getLong(request, "categoryId");
+long assetCategoryId = ParamUtil.getLong(request, "categoryId");
 
-String categoryTitle = null;
-String vocabularyTitle = null;
+String assetCategoryTitle = null;
+String assetVocabularyTitle = null;
 
-if (categoryId != 0) {
-	AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getAssetCategory(categoryId);
+if (assetCategoryId != 0) {
+	AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getAssetCategory(assetCategoryId);
 
 	assetCategory = assetCategory.toEscapedModel();
 
-	categoryTitle = assetCategory.getTitle(locale);
+	assetCategoryTitle = assetCategory.getTitle(locale);
 
 	AssetVocabulary assetVocabulary = AssetVocabularyLocalServiceUtil.getAssetVocabulary(assetCategory.getVocabularyId());
 
 	assetVocabulary = assetVocabulary.toEscapedModel();
 
-	vocabularyTitle = assetVocabulary.getTitle(locale);
+	assetVocabularyTitle = assetVocabulary.getTitle(locale);
 }
 
-String tagName = ParamUtil.getString(request, "tag");
+String assetTagName = ParamUtil.getString(request, "tag");
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -61,7 +61,7 @@ portletURL.setParameter("struts_action", "/blogs/view");
 	int total = 0;
 	List results = null;
 
-	if ((categoryId != 0) || Validator.isNotNull(tagName)) {
+	if ((assetCategoryId != 0) || Validator.isNotNull(assetTagName)) {
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery(BlogsEntry.class.getName(), searchContainer);
 
 		assetEntryQuery.setExcludeZeroViewCount(false);

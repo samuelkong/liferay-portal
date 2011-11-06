@@ -29,6 +29,10 @@ for (int assetEntryIndex = 0; assetEntryIndex < results.size(); assetEntryIndex+
 
 	AssetRenderer assetRenderer = assetRendererFactory.getAssetRenderer(classPK);
 
+	if (!assetRenderer.isDisplayable()) {
+		continue;
+	}
+
 	String title = assetRenderer.getTitle(locale);
 
 	boolean show = true;

@@ -31,6 +31,7 @@ import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalArticleConstants;
 import com.liferay.portlet.journal.service.permission.JournalArticlePermission;
 
+import java.util.Date;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -189,6 +190,25 @@ public class JournalArticleAssetRenderer extends BaseAssetRenderer {
 
 	@Override
 	public boolean isConvertible() {
+		return true;
+	}
+
+	@Override
+	public boolean isDisplayable() {
+		Date now = new Date();
+
+		Date displayDate = _article.getDisplayDate();
+
+		if ((displayDate != null) && displayDate.after(now)) {
+			return false;
+		}
+
+		Date expirationDate = _article.getExpirationDate();
+
+		if ((expirationDate != null) && expirationDate.before(now)) {
+			return false;
+		}
+
 		return true;
 	}
 

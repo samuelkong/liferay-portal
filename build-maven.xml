@@ -50,16 +50,16 @@ for GPG setup instructions.
 
 	<target name="deploy-release-artifacts">
 		<antcall target="deploy-artifacts">
-			<param name="lp.maven.repository.id" value="sonatype-staging" />
-			<param name="lp.maven.repository.url" value="http://oss.sonatype.org/service/local/staging/deploy/maven2" />
+			<param name="lp.maven.repository.id" value="${lp.maven.release.repository.id}" />
+			<param name="lp.maven.repository.url" value="${lp.maven.release.repository.url}" />
 			<param name="lp.maven.version" value="${lp.version}" />
 		</antcall>
 	</target>
 
 	<target name="deploy-snapshot-artifacts">
 		<antcall target="deploy-artifacts">
-			<param name="lp.maven.repository.id" value="sonatype-snapshot" />
-			<param name="lp.maven.repository.url" value="http://oss.sonatype.org/content/repositories/snapshots" />
+			<param name="lp.maven.repository.id" value="${lp.maven.snapshot.repository.id}" />
+			<param name="lp.maven.repository.url" value="${lp.maven.snapshot.repository.url}" />
 			<param name="lp.maven.version" value="${lp.version}-SNAPSHOT" />
 		</antcall>
 	</target>

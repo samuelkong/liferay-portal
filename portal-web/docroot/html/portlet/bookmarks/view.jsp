@@ -37,27 +37,27 @@ if ((folder == null) && (defaultFolderId != BookmarksFolderConstants.DEFAULT_PAR
 int foldersCount = BookmarksFolderServiceUtil.getFoldersCount(scopeGroupId, folderId);
 int entriesCount = BookmarksEntryServiceUtil.getEntriesCount(scopeGroupId, folderId);
 
-long categoryId = ParamUtil.getLong(request, "categoryId");
-String tagName = ParamUtil.getString(request, "tag");
+long assetCategoryId = ParamUtil.getLong(request, "categoryId");
+String assetTagName = ParamUtil.getString(request, "tag");
 
-String categoryTitle = null;
-String vocabularyTitle = null;
+String assetCategoryTitle = null;
+String assetVocabularyTitle = null;
 
-if (categoryId != 0) {
-	AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getAssetCategory(categoryId);
+if (assetCategoryId != 0) {
+	AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getAssetCategory(assetCategoryId);
 
 	assetCategory = assetCategory.toEscapedModel();
 
-	categoryTitle = assetCategory.getTitle(locale);
+	assetCategoryTitle = assetCategory.getTitle(locale);
 
 	AssetVocabulary assetVocabulary = AssetVocabularyLocalServiceUtil.getAssetVocabulary(assetCategory.getVocabularyId());
 
 	assetVocabulary = assetVocabulary.toEscapedModel();
 
-	vocabularyTitle = assetVocabulary.getTitle(locale);
+	assetVocabularyTitle = assetVocabulary.getTitle(locale);
 }
 
-boolean useAssetEntryQuery = (categoryId > 0) || Validator.isNotNull(tagName);
+boolean useAssetEntryQuery = (assetCategoryId > 0) || Validator.isNotNull(assetTagName);
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -78,24 +78,33 @@ request.setAttribute("view.jsp-useAssetEntryQuery", String.valueOf(useAssetEntry
 
 <c:choose>
 	<c:when test="<%= useAssetEntryQuery %>">
-		<c:if test="<%= Validator.isNotNull(categoryTitle) %>">
-			<h1 class="entry-title">
-				<%= LanguageUtil.format(pageContext, "bookmarks-with-x-x", new String[] {vocabularyTitle, categoryTitle}) %>
-			</h1>
-		</c:if>
+		<c:choose>
+			<c:when test="<%= Validator.isNotNull(assetCategoryTitle) && Validator.isNotNull(assetTagName) %>">
+				<h1 class="entry-title">
+					<liferay-ui:message arguments="<%= new String[] {assetVocabularyTitle, assetCategoryTitle, assetTagName} %>" key="bookmarks-with-x-x-and-tag-x" />
+				</h1>
+			</c:when>
+			<c:otherwise>
+				<c:if test="<%= Validator.isNotNull(assetCategoryTitle) %>">
+					<h1 class="entry-title">
+						<liferay-ui:message arguments="<%= new String[] {assetVocabularyTitle, assetCategoryTitle} %>" key="bookmarks-with-x-x" />
+					</h1>
+				</c:if>
 
-		<c:if test="<%= Validator.isNotNull(tagName) %>">
-			<h1 class="entry-title">
-				<%= LanguageUtil.format(pageContext, "bookmarks-with-tag-x", tagName) %>
-			</h1>
-		</c:if>
+				<c:if test="<%= Validator.isNotNull(assetTagName) %>">
+					<h1 class="entry-title">
+						<liferay-ui:message arguments="<%= assetTagName %>" key="bookmarks-with-tag-x" />
+					</h1>
+				</c:if>
+			</c:otherwise>
+		</c:choose>
 
 		<%@ include file="/html/portlet/bookmarks/view_entries.jspf" %>
 
 		<%
 		if (portletName.equals(PortletKeys.BOOKMARKS)) {
-			PortalUtil.addPageKeywords(tagName, request);
-			PortalUtil.addPageKeywords(categoryTitle, request);
+			PortalUtil.addPageKeywords(assetTagName, request);
+			PortalUtil.addPageKeywords(assetCategoryTitle, request);
 		}
 		%>
 

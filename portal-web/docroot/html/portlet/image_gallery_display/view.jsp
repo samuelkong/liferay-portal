@@ -49,27 +49,27 @@ if (permissionChecker.isCompanyAdmin() || permissionChecker.isGroupAdmin(scopeGr
 int foldersCount = DLAppServiceUtil.getFoldersCount(repositoryId, folderId);
 int imagesCount = DLAppServiceUtil.getFileEntriesAndFileShortcutsCount(repositoryId, folderId, status);
 
-long categoryId = ParamUtil.getLong(request, "categoryId");
-String tagName = ParamUtil.getString(request, "tag");
+long assetCategoryId = ParamUtil.getLong(request, "categoryId");
+String assetTagName = ParamUtil.getString(request, "tag");
 
-String categoryTitle = null;
-String vocabularyTitle = null;
+String assetCategoryTitle = null;
+String assetVocabularyTitle = null;
 
-if (categoryId != 0) {
-	AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getAssetCategory(categoryId);
+if (assetCategoryId != 0) {
+	AssetCategory assetCategory = AssetCategoryLocalServiceUtil.getAssetCategory(assetCategoryId);
 
 	assetCategory = assetCategory.toEscapedModel();
 
-	categoryTitle = assetCategory.getTitle(locale);
+	assetCategoryTitle = assetCategory.getTitle(locale);
 
 	AssetVocabulary assetVocabulary = AssetVocabularyLocalServiceUtil.getAssetVocabulary(assetCategory.getVocabularyId());
 
 	assetVocabulary = assetVocabulary.toEscapedModel();
 
-	vocabularyTitle = assetVocabulary.getTitle(locale);
+	assetVocabularyTitle = assetVocabulary.getTitle(locale);
 }
 
-boolean useAssetEntryQuery = (categoryId > 0) || Validator.isNotNull(tagName);
+boolean useAssetEntryQuery = (assetCategoryId > 0) || Validator.isNotNull(assetTagName);
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -96,17 +96,26 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 
 <c:choose>
 	<c:when test="<%= useAssetEntryQuery %>">
-		<c:if test="<%= Validator.isNotNull(categoryTitle) %>">
-			<h1 class="entry-title">
-				<%= LanguageUtil.format(pageContext, "images-with-x-x", new String[] {vocabularyTitle, categoryTitle}) %>
-			</h1>
-		</c:if>
+		<c:choose>
+			<c:when test="<%= Validator.isNotNull(assetCategoryTitle) && Validator.isNotNull(assetTagName) %>">
+				<h1 class="entry-title">
+					<liferay-ui:message arguments="<%= new String[] {assetVocabularyTitle, assetCategoryTitle, assetTagName} %>" key="images-with-x-x-and-tag-x" />
+				</h1>
+			</c:when>
+			<c:otherwise>
+				<c:if test="<%= Validator.isNotNull(assetCategoryTitle) %>">
+					<h1 class="entry-title">
+						<liferay-ui:message arguments="<%= new String[] {assetVocabularyTitle, assetCategoryTitle} %>" key="images-with-x-x" />
+					</h1>
+				</c:if>
 
-		<c:if test="<%= Validator.isNotNull(tagName) %>">
-			<h1 class="entry-title">
-				<%= LanguageUtil.format(pageContext, "images-with-tag-x", HtmlUtil.escape(tagName)) %>
-			</h1>
-		</c:if>
+				<c:if test="<%= Validator.isNotNull(assetTagName) %>">
+					<h1 class="entry-title">
+						<liferay-ui:message arguments="<%= assetTagName %>" key="images-with-tag-x" />
+					</h1>
+				</c:if>
+			</c:otherwise>
+		</c:choose>
 
 		<%
 		SearchContainer searchContainer = new SearchContainer(renderRequest, null, null, "cur2", SearchContainer.DEFAULT_DELTA, portletURL, null, null);
@@ -132,8 +141,8 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 
 		<%
 		if (portletName.equals(PortletKeys.MEDIA_GALLERY_DISPLAY)) {
-			PortalUtil.addPageKeywords(tagName, request);
-			PortalUtil.addPageKeywords(categoryTitle, request);
+			PortalUtil.addPageKeywords(assetTagName, request);
+			PortalUtil.addPageKeywords(assetCategoryTitle, request);
 		}
 		%>
 
@@ -181,11 +190,13 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 					<%
 					SearchContainer searchContainer = new SearchContainer(renderRequest, null, null, "cur2", SearchContainer.DEFAULT_DELTA, portletURL, null, null);
 
-					int total = DLAppServiceUtil.getFoldersAndFileEntriesAndFileShortcutsCount(repositoryId, folderId, status, mimeTypes, false);
+					String[] mediaGalleryMimeTypes = DLUtil.getMediaGalleryMimeTypes(preferences, renderRequest);
+
+					int total = DLAppServiceUtil.getFoldersAndFileEntriesAndFileShortcutsCount(repositoryId, folderId, status, mediaGalleryMimeTypes, false);
 
 					searchContainer.setTotal(total);
 
-					List results = DLAppServiceUtil.getFoldersAndFileEntriesAndFileShortcuts(repositoryId, folderId, status, mimeTypes, false, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
+					List results = DLAppServiceUtil.getFoldersAndFileEntriesAndFileShortcuts(repositoryId, folderId, status, mediaGalleryMimeTypes, false, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
 
 					searchContainer.setResults(results);
 

@@ -132,30 +132,38 @@ public class DLFileEntryTypeLocalServiceImpl
 			defaultFileEntryTypeId, fileEntryTypeIds, serviceContext);
 	}
 
-	public void deleteFileEntryType(long fileEntryTypeId)
+	public void deleteFileEntryType(DLFileEntryType dlFileEntryType)
 		throws PortalException, SystemException {
 
-		DLFileEntryType dlFileEntryType =
-			dlFileEntryTypePersistence.findByPrimaryKey(fileEntryTypeId);
-
 		DDMStructure ddmStructure = ddmStructureLocalService.fetchStructure(
-			dlFileEntryType.getGroupId(), "auto_" + fileEntryTypeId);
+			dlFileEntryType.getGroupId(),
+			"auto_" + dlFileEntryType.getFileEntryTypeId());
 
 		if (ddmStructure != null) {
 			ddmStructureLocalService.deleteStructure(
 				ddmStructure.getStructureId());
 		}
 
-		dlFileEntryTypePersistence.remove(fileEntryTypeId);
+		dlFileEntryTypePersistence.remove(dlFileEntryType);
 	}
 
-	public void deleteFileEntryTypes(long folderId) throws SystemException {
+	public void deleteFileEntryType(long fileEntryTypeId)
+		throws PortalException, SystemException {
+
+		DLFileEntryType dlFileEntryType =
+			dlFileEntryTypePersistence.findByPrimaryKey(fileEntryTypeId);
+
+		deleteFileEntryType(dlFileEntryType);
+	}
+
+	public void deleteFileEntryTypes(long groupId)
+		throws PortalException, SystemException {
+
 		List<DLFileEntryType> dlFileEntryTypes =
-			dlFolderPersistence.getDLFileEntryTypes(folderId);
+			dlFileEntryTypePersistence.findByGroupId(groupId);
 
 		for (DLFileEntryType dlFileEntryType : dlFileEntryTypes) {
-			dlFolderPersistence.removeDLFileEntryType(
-				folderId, dlFileEntryType);
+			deleteFileEntryType(dlFileEntryType);
 		}
 	}
 
@@ -247,6 +255,18 @@ public class DLFileEntryTypeLocalServiceImpl
 
 		return dlFileEntryTypeFinder.countByKeywords(
 			companyId, groupIds, keywords, includeBasicFileEntryType);
+	}
+
+	public void unsetFolderFileEntryTypes(long folderId)
+		throws SystemException {
+
+		List<DLFileEntryType> dlFileEntryTypes =
+			dlFolderPersistence.getDLFileEntryTypes(folderId);
+
+		for (DLFileEntryType dlFileEntryType : dlFileEntryTypes) {
+			dlFolderPersistence.removeDLFileEntryType(
+				folderId, dlFileEntryType);
+		}
 	}
 
 	public void updateFileEntryType(

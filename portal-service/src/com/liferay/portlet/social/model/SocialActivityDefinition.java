@@ -55,7 +55,7 @@ public class SocialActivityDefinition implements Serializable {
 
 		activityDefinition.setActivityProcessor(_activityProcessor);
 		activityDefinition.setActivityType(_activityType);
-		activityDefinition.setCounterEnabled(_counterEnabled);
+		activityDefinition.setEnabled(_enabled);
 		activityDefinition.setLanguageKey(_languageKey);
 		activityDefinition.setLogActivity(_logActivity);
 		activityDefinition.setModelName(_modelName);
@@ -101,8 +101,8 @@ public class SocialActivityDefinition implements Serializable {
 			"social.activity." + _modelName + "." + _languageKey);
 	}
 
-	public boolean isCounterEnabled() {
-		return _counterEnabled;
+	public boolean isEnabled() {
+		return _enabled;
 	}
 
 	public boolean isLogActivity() {
@@ -119,10 +119,6 @@ public class SocialActivityDefinition implements Serializable {
 		_activityType = activityKey;
 	}
 
-	public void setCounterEnabled(boolean counterEnabled) {
-		_counterEnabled = counterEnabled;
-	}
-
 	public void setCounters(
 		List<SocialActivityCounterDefinition> activityCounterDefinitions) {
 
@@ -134,6 +130,10 @@ public class SocialActivityDefinition implements Serializable {
 			_activityCounterDefinitions.put(
 				activityCounterDefinition.getName(), activityCounterDefinition);
 		}
+	}
+
+	public void setEnabled(boolean enabled) {
+		_enabled = enabled;
 	}
 
 	public void setLanguageKey(String languageKey) {
@@ -155,7 +155,7 @@ public class SocialActivityDefinition implements Serializable {
 			new HashMap<String, SocialActivityCounterDefinition>();
 	private SocialActivityProcessor _activityProcessor;
 	private int _activityType;
-	private boolean _counterEnabled = true;
+	private boolean _enabled = true;
 	private String _languageKey;
 	private boolean _logActivity;
 	private String _modelName;

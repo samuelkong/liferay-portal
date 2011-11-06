@@ -186,6 +186,7 @@ public class VerifyProperties extends VerifyProcess {
 		"jbi.workflow.url",
 		"lucene.analyzer",
 		"message.boards.thread.locking.enabled",
+		"portal.security.manager.enable",
 		"shard.available.names",
 		"webdav.storage.class",
 		"webdav.storage.show.edit.url",

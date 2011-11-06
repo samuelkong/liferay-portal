@@ -1154,6 +1154,15 @@ public class StagingImpl implements Staging {
 			PortletDataContext portletDataContext)
 		throws Exception {
 
+		Map<String, String[]> parameterMap =
+			portletDataContext.getParameterMap();
+
+		String cmd = MapUtil.getString(parameterMap, "cmd");
+
+		if (!cmd.equals("publish_to_live")) {
+			return;
+		}
+
 		UnicodeProperties typeSettingsProperties =
 			layout.getTypeSettingsProperties();
 
@@ -1165,9 +1174,6 @@ public class StagingImpl implements Staging {
 
 		typeSettingsProperties.setProperty(
 			"last-import-layout-revision-id", layoutRevisionId);
-
-		Map<String, String[]> parameterMap =
-			portletDataContext.getParameterMap();
 
 		String layoutSetBranchId = MapUtil.getString(
 			parameterMap, "layoutSetBranchId");

@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.staging.StagingUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -83,6 +84,8 @@ public class EditGroupAction extends PortletAction {
 
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
 		try {
 			String closeRedirect = ParamUtil.getString(
 				actionRequest, "closeRedirect");
@@ -94,6 +97,8 @@ public class EditGroupAction extends PortletAction {
 				String oldFriendlyURL = (String)returnValue[1];
 				String oldStagingFriendlyURL = (String)returnValue[2];
 
+				redirect = HttpUtil.setParameter(
+					redirect, "doAsGroupId", group.getGroupId());
 				closeRedirect = updateCloseRedirect(
 					closeRedirect, group, themeDisplay, oldFriendlyURL,
 					oldStagingFriendlyURL);
@@ -114,7 +119,7 @@ public class EditGroupAction extends PortletAction {
 					closeRedirect);
 			}
 
-			sendRedirect(actionRequest, actionResponse);
+			sendRedirect(actionRequest, actionResponse, redirect);
 		}
 		catch (Exception e) {
 			if (e instanceof NoSuchGroupException ||
@@ -137,9 +142,6 @@ public class EditGroupAction extends PortletAction {
 				if (cmd.equals(Constants.DEACTIVATE) ||
 					cmd.equals(Constants.DELETE) ||
 					cmd.equals(Constants.RESTORE)) {
-
-					String redirect = PortalUtil.escapeRedirect(
-						ParamUtil.getString(actionRequest, "redirect"));
 
 					if (Validator.isNotNull(redirect)) {
 						actionResponse.sendRedirect(redirect);
@@ -249,7 +251,7 @@ public class EditGroupAction extends PortletAction {
 			String oldFriendlyURL, String oldStagingFriendlyURL)
 		throws SystemException, PortalException {
 
-		if (group == null) {
+		if (Validator.isNull(closeRedirect) || (group == null)) {
 			return closeRedirect;
 		}
 

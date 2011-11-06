@@ -263,12 +263,18 @@ public interface DLFileEntryTypeLocalService extends PersistedModelLocalService 
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	public void deleteFileEntryType(
+		com.liferay.portlet.documentlibrary.model.DLFileEntryType dlFileEntryType)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
+
 	public void deleteFileEntryType(long fileEntryTypeId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
-	public void deleteFileEntryTypes(long folderId)
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public void deleteFileEntryTypes(long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portlet.documentlibrary.model.DLFileEntryType fetchFileEntryType(
@@ -313,6 +319,9 @@ public interface DLFileEntryTypeLocalService extends PersistedModelLocalService 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int searchCount(long companyId, long[] groupIds,
 		java.lang.String keywords, boolean includeBasicFileEntryType)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	public void unsetFolderFileEntryTypes(long folderId)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	public void updateFileEntryType(long userId, long fileEntryTypeId,
