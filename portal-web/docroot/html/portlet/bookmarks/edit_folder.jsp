@@ -32,6 +32,11 @@ long parentFolderId = BeanParamUtil.getLong(folder, request, "parentFolderId", B
 	<portlet:param name="struts_action" value="/bookmarks/edit_folder" />
 </portlet:actionURL>
 
+<portlet:renderURL var="mergeRedirectURL">
+	<portlet:param name="struts_action" value="/bookmarks/view" />
+	<portlet:param name="folderId" value="<%= String.valueOf(parentFolderId) %>" />
+</portlet:renderURL>
+
 <aui:form action="<%= editFolderURL %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveFolder();" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
@@ -124,6 +129,15 @@ long parentFolderId = BeanParamUtil.getLong(folder, request, "parentFolderId", B
 <aui:script>
 	function <portlet:namespace />saveFolder() {
 		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "<%= (folder == null) ? Constants.ADD : Constants.UPDATE %>";
+		
+		if(document.<portlet:namespace />fm.<portlet:namespace />mergeWithParentFolderCheckbox){
+			var ismerge = document.getElementById("<portlet:namespace />mergeWithParentFolderCheckbox");
+	
+			if(ismerge.checked){
+				document.<portlet:namespace />fm.<portlet:namespace />redirect.value = "<%= HtmlUtil.escape(mergeRedirectURL) %>";
+			}
+		}
+
 		submitForm(document.<portlet:namespace />fm);
 	}
 
