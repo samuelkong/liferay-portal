@@ -1391,6 +1391,11 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 
 						String name = HttpUtil.decodeURL(pathArray[4]);
 
+						if(name.indexOf(CharPool.QUESTION) > 0) {
+							name = name.substring(
+									0, name.indexOf(CharPool.QUESTION));
+						}
+
 						map.put("name", new String[] {name});
 					}
 				}
