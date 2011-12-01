@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * @author Brian Wing Shun Chan
  * @author Charles May
- * @author Raymond Aug√©
+ * @author Raymond Aug®¶
  */
 public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 
@@ -374,7 +374,7 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 			throw new NodeNameException(name + " is reserved");
 		}
 
-		if (!Validator.isAlphanumericName(name)) {
+		if (!Validator.isValidName(name)) {
 			throw new NodeNameException();
 		}
 

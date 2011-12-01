@@ -859,6 +859,23 @@ public class Validator {
 	}
 
 	/**
+	 * Returns <code>true</code> if the character is a special character.
+	 *
+	 * @param  c the character to check
+	 * @return <code>true</code> if the character is a special character.
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isSpecialChar(char c) {
+			for (int i = 0; i < _NAME_SPECIAL_CHAR.length; i++) {
+				if (c == _NAME_SPECIAL_CHAR[i]) {
+					return true;
+				}
+			}
+
+		return false;
+	}
+
+	/**
 	 * Returns <code>true</code> if the string is a valid URL based on the rules
 	 * in {@link java.net.URL}.
 	 *
@@ -882,6 +899,30 @@ public class Validator {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns <code>true</code> if the string is an valid name, meaning
+	 * it contains nothing but English letters, numbers, spaces and special
+	 * character.
+	 *
+	 * @param  name the string to check
+	 * @return <code>true</code> if the string is an valid name;
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isValidName(String name) {
+		if (isNull(name)) {
+			return false;
+		}
+
+		for (char c : name.trim().toCharArray()) {
+			if (!isChar(c) && !isDigit(c) && !Character.isWhitespace(c) && 
+				!isSpecialChar(c)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -977,6 +1018,11 @@ public class Validator {
 	};
 
 	private static final String _LOCALHOST = "localhost";
+
+	private static final char[] _NAME_SPECIAL_CHAR = new char[] {
+		' ', ',', '\\', '\'', '\"', '(', ')', '{', '}', '?', '#', '@', '+',
+		'~', ';', '$', '%'
+	};
 
 	private static final String _VARIABLE_TERM_BEGIN = "[$";
 
