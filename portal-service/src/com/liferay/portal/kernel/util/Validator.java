@@ -447,6 +447,28 @@ public class Validator {
 	}
 
 	/**
+	 * Returns <code>true</code> if the character is in the extended ASCII 
+	 * character set.
+	 * This includes characters with integer values between 128 and 255
+	 * (inclusive).
+	 *
+	 * @param  c the character to check
+	 * @return <code>true</code> if the character is in the extended ASCII 
+	 * character set;
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isExtendedAscii(char c) {
+		int i = c;
+
+		if ((i >= 128) && (i <= 255)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
 	 * Returns <code>true</code> if the date is valid in the Gregorian calendar.
 	 *
 	 * @param  month the month (0-based, meaning 0 for January)
@@ -859,23 +881,6 @@ public class Validator {
 	}
 
 	/**
-	 * Returns <code>true</code> if the character is a special character.
-	 *
-	 * @param  c the character to check
-	 * @return <code>true</code> if the character is a special character.
-	 *         <code>false</code> otherwise
-	 */
-	public static boolean isSpecialChar(char c) {
-			for (int i = 0; i < _NAME_SPECIAL_CHAR.length; i++) {
-				if (c == _NAME_SPECIAL_CHAR[i]) {
-					return true;
-				}
-			}
-
-		return false;
-	}
-
-	/**
 	 * Returns <code>true</code> if the string is a valid URL based on the rules
 	 * in {@link java.net.URL}.
 	 *
@@ -916,8 +921,7 @@ public class Validator {
 		}
 
 		for (char c : name.trim().toCharArray()) {
-			if (!isChar(c) && !isDigit(c) && !Character.isWhitespace(c) && 
-				!isSpecialChar(c)) {
+			if (!isAscii(c) && !isExtendedAscii(c)) {
 				return false;
 			}
 		}
@@ -1018,11 +1022,6 @@ public class Validator {
 	};
 
 	private static final String _LOCALHOST = "localhost";
-
-	private static final char[] _NAME_SPECIAL_CHAR = new char[] {
-		' ', ',', '\\', '\'', '\"', '(', ')', '{', '}', '?', '#', '@', '+',
-		'~', ';', '$', '%'
-	};
 
 	private static final String _VARIABLE_TERM_BEGIN = "[$";
 
