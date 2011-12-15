@@ -447,6 +447,28 @@ public class Validator {
 	}
 
 	/**
+	 * Returns <code>true</code> if the character is in the extended ASCII 
+	 * character set.
+	 * This includes characters with integer values between 128 and 255
+	 * (inclusive).
+	 *
+	 * @param  c the character to check
+	 * @return <code>true</code> if the character is in the extended ASCII 
+	 * character set;
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isExtendedAscii(char c) {
+		int i = c;
+
+		if ((i >= 128) && (i <= 255)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
 	 * Returns <code>true</code> if the date is valid in the Gregorian calendar.
 	 *
 	 * @param  month the month (0-based, meaning 0 for January)
@@ -882,6 +904,29 @@ public class Validator {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns <code>true</code> if the string is an valid name, meaning
+	 * it contains nothing but English letters, numbers, spaces and special
+	 * character.
+	 *
+	 * @param  name the string to check
+	 * @return <code>true</code> if the string is an valid name;
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isValidName(String name) {
+		if (isNull(name)) {
+			return false;
+		}
+
+		for (char c : name.trim().toCharArray()) {
+			if (!isAscii(c) && !isExtendedAscii(c)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
