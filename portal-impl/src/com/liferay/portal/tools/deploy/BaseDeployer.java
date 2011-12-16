@@ -993,6 +993,17 @@ public class BaseDeployer implements Deployer {
 			}
 		}
 
+		sb.append("<servlet>");
+		sb.append("<servlet-name>");
+		sb.append("Set Portlet Class Loader Servlet");
+		sb.append("</servlet-name>");
+		sb.append("<servlet-class>");
+		sb.append("com.liferay.portal.kernel.servlet.");
+		sb.append("SetPortletClassLoaderServlet");
+		sb.append("</servlet-class>");
+		sb.append("<load-on-startup>0</load-on-startup>");
+		sb.append("</servlet>");
+
 		boolean hasTaglib = false;
 
 		if (Validator.isNotNull(auiTaglibDTD) ||

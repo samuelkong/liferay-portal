@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.cache.MultiVMPoolUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
+import com.liferay.portal.kernel.deploy.hot.HotDeployUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalLifecycleUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -59,7 +61,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -88,23 +89,16 @@ public class SetupWizardUtil {
 		return hsqldb && !jndi;
 	}
 
-	public static boolean isSetupFinished(HttpServletRequest request) {
-		if (!PropsValues.SETUP_WIZARD_ENABLED) {
-			return true;
-		}
-
-		HttpSession session = request.getSession();
-
-		ServletContext servletContext = session.getServletContext();
-
-		Boolean setupWizardFinished = (Boolean)servletContext.getAttribute(
-			WebKeys.SETUP_WIZARD_FINISHED);
-
-		if (setupWizardFinished != null) {
-			return setupWizardFinished;
+	public static boolean isSetupFinished() {
+		if (PropsValues.SETUP_WIZARD_ENABLED) {
+			return _setupFinished;
 		}
 
 		return true;
+	}
+
+	public static void setSetupFinished(boolean setupFinished) {
+		_setupFinished = setupFinished;
 	}
 
 	public static void testDatabase(HttpServletRequest request)
@@ -187,6 +181,8 @@ public class SetupWizardUtil {
 		}
 
 		_resetAdminPassword(request);
+
+		_initPlugins();
 	}
 
 	private static String _getParameter(
@@ -195,6 +191,15 @@ public class SetupWizardUtil {
 		name = _PROPERTIES_PREFIX.concat(name).concat(StringPool.DOUBLE_DASH);
 
 		return ParamUtil.getString(request, name, defaultValue);
+	}
+
+	/**
+	 * @see {@link com.liferay.portal.servlet.MainServlet#initPlugins}
+	 */
+	private static void _initPlugins() {
+		HotDeployUtil.setCapturePrematureEvents(false);
+
+		PortalLifecycleUtil.flushInits();
 	}
 
 	private static boolean _isDatabaseConfigured(
@@ -403,5 +408,7 @@ public class SetupWizardUtil {
 	private final static String _PROPERTIES_PREFIX = "properties--";
 
 	private static Log _log = LogFactoryUtil.getLog(SetupWizardUtil.class);
+
+	private static boolean _setupFinished = false;
 
 }

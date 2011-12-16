@@ -221,7 +221,7 @@ public class PortletDeployer extends BaseDeployer {
 			sb.append(portletClass);
 			sb.append("</param-value>");
 			sb.append("</init-param>");
-			sb.append("<load-on-startup>0</load-on-startup>");
+			sb.append("<load-on-startup>1</load-on-startup>");
 			sb.append("</servlet>");
 
 			sb.append("<servlet-mapping>");

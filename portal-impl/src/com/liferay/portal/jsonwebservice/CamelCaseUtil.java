@@ -15,7 +15,6 @@
 package com.liferay.portal.jsonwebservice;
 
 import com.liferay.portal.kernel.util.CharPool;
-import com.liferay.portal.kernel.util.StringBundler;
 
 /**
  * @author Igor Spasic
@@ -23,7 +22,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 public class CamelCaseUtil {
 
 	public static String fromCamelCase(String s) {
-		StringBundler sb = new StringBundler();
+		StringBuilder sb = new StringBuilder();
 
 		boolean upperCase = false;
 
@@ -56,7 +55,7 @@ public class CamelCaseUtil {
 	}
 
 	public static String normalizeCamelCase(String s) {
-		StringBundler sb = new StringBundler();
+		StringBuilder sb = new StringBuilder();
 
 		boolean upperCase = false;
 
@@ -86,7 +85,7 @@ public class CamelCaseUtil {
 	}
 
 	public static String toCamelCase(String s) {
-		StringBundler sb = new StringBundler(s.length());
+		StringBuilder sb = new StringBuilder(s.length());
 
 		boolean upperCase = false;
 

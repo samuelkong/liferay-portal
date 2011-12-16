@@ -71,6 +71,7 @@ import com.liferay.portal.service.ThemeLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.servlet.filters.absoluteredirects.AbsoluteRedirectsResponse;
 import com.liferay.portal.servlet.filters.i18n.I18nFilter;
+import com.liferay.portal.setup.SetupWizardUtil;
 import com.liferay.portal.struts.PortletRequestProcessor;
 import com.liferay.portal.struts.StrutsUtil;
 import com.liferay.portal.util.ExtRegistry;
@@ -347,10 +348,6 @@ public class MainServlet extends ActionServlet {
 		}
 		catch (Exception e) {
 			_log.error(e, e);
-		}
-
-		if (PropsValues.SETUP_WIZARD_ENABLED) {
-			servletContext.setAttribute(WebKeys.SETUP_WIZARD_FINISHED, false);
 		}
 
 		servletContext.setAttribute(WebKeys.STARTUP_FINISHED, true);
@@ -802,14 +799,19 @@ public class MainServlet extends ActionServlet {
 			servletContext);
 	}
 
+	/**
+	 * @see {@link SetupWizardUtil#_initPlugins}
+	 */
 	protected void initPlugins() throws Exception {
 
 		// See LEP-2885. Don't flush hot deploy events until after the portal
 		// has initialized.
 
-		HotDeployUtil.setCapturePrematureEvents(false);
+		if (SetupWizardUtil.isSetupFinished()) {
+			HotDeployUtil.setCapturePrematureEvents(false);
 
-		PortalLifecycleUtil.flushInits();
+			PortalLifecycleUtil.flushInits();
+		}
 	}
 
 	protected void initPortletApp(

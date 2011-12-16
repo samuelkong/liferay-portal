@@ -27,7 +27,12 @@
 		<div id="heading">
 			<h1 class="site-title">
 				<span class="logo" title="<liferay-ui:message key="welcome-to-liferay" />">
-					<img alt="<%= HtmlUtil.escape(layout.getGroup().getDescriptiveName()) %>" height="<%= themeDisplay.getCompanyLogoHeight() %>" src="<%= HtmlUtil.escape(themeDisplay.getCompanyLogo()) %>" width="<%= themeDisplay.getCompanyLogoWidth() %>" />
+
+					<%
+					Group group = layout.getGroup();
+					%>
+
+					<img alt="<%= HtmlUtil.escape(group.getDescriptiveName()) %>" height="<%= themeDisplay.getCompanyLogoHeight() %>" src="<%= HtmlUtil.escape(themeDisplay.getCompanyLogo()) %>" width="<%= themeDisplay.getCompanyLogoWidth() %>" />
 				</span>
 
 				<span class="site-name" title="<liferay-ui:message key="basic-configuration" />">
@@ -45,7 +50,7 @@
 			%>
 
 			<c:choose>
-				<c:when test="<%= !propertiesFileUpdated && !SetupWizardUtil.isSetupFinished(request) %>">
+				<c:when test="<%= !propertiesFileUpdated && !SetupWizardUtil.isSetupFinished() %>">
 
 					<%
 					boolean defaultDatabase = SetupWizardUtil.isDefaultDatabase(request);
@@ -176,7 +181,7 @@
 										data.put("url", url);
 									%>
 
-										<aui:option data="<%= data %>" label='<%= "database." + databaseType %>' selected="<%= PropsValues.JDBC_DEFAULT_URL.contains(databaseType) %>" value="<%= databaseType %>" />
+										<aui:option data="<%= data %>" label='<%= "database." + databaseType %>' selected='<%= databaseType.equals("hypersonic") %>' value="<%= databaseType %>" />
 
 									<%
 									}
@@ -333,7 +338,7 @@
 				<c:otherwise>
 
 					<%
-					application.setAttribute(WebKeys.SETUP_WIZARD_FINISHED, true);
+					SetupWizardUtil.setSetupFinished(true);
 					%>
 
 					<c:choose>

@@ -673,7 +673,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		// Setup wizard
 
-		if (!SetupWizardUtil.isSetupFinished(request)) {
+		if (!SetupWizardUtil.isSetupFinished()) {
 			return _PATH_PORTAL_SETUP_WIZARD;
 		}
 		else if (path.equals(_PATH_PORTAL_SETUP_WIZARD)) {
