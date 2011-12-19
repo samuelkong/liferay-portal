@@ -171,7 +171,7 @@ int total = 0;
 	</div>
 </c:if>
 
-<liferay-util:buffer var="results">
+<liferay-util:buffer var="searchResults">
 	<liferay-portlet:renderURL varImpl="searchURL">
 		<portlet:param name="struts_action" value="/document_library/search" />
 	</liferay-portlet:renderURL>
@@ -416,7 +416,7 @@ int total = 0;
 					>
 						<liferay-ui:section>
 							<div class="local-search-results" id='<%= liferayPortletResponse.getNamespace() + "searchResults" + searchRepositoryId %>'>
-								<%= results %>
+								<%= searchResults %>
 							</div>
 						</liferay-ui:section>
 
@@ -441,19 +441,19 @@ int total = 0;
 			</c:when>
 			<c:when test="<%= (searchRepositoryId != scopeGroupId) %>">
 				<div class="repository-search-results" id='<%= liferayPortletResponse.getNamespace() + "searchResults" + searchRepositoryId %>'>
-					<%= results %>
+					<%= searchResults %>
 				</div>
 			</c:when>
 		</c:choose>
 	</c:when>
 	<c:when test="<%= searchType == DLSearchConstants.SINGLE %>">
 		<div id="<portlet:namespace />singleSearchResults">
-			<%= results %>
+			<%= searchResults %>
 		</div>
 	</c:when>
 	<c:when test="<%= searchType == DLSearchConstants.FRAGMENT %>">
 		<div id="<portlet:namespace />fragmentSearchResults">
-			<%= results %>
+			<%= searchResults %>
 		</div>
 	</c:when>
 </c:choose>
