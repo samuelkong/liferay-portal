@@ -33,6 +33,7 @@ String portletId = portlet.getPortletId();
 		portletDisplay.setNamespace(PortalUtil.getPortletNamespace(portletId));
 
 		String url = PortletURLUtil.getRefreshURL(request, themeDisplay);
+		System.out.println("HtmlUtil Said:"+HtmlUtil.escapeJS(url));
 		%>
 
 		<div class="loading-animation" id="p_load<%= portletDisplay.getNamespace() %>"></div>
@@ -43,12 +44,13 @@ String portletId = portlet.getPortletId();
 			Liferay.Portlet.addHTML(
 				{
 					onComplete: function(portlet, portletId) {
-						portlet.refreshURL = '<%= HtmlUtil.escape(url) %>';
+						portlet.refreshURL = '<%= HtmlUtil.escapeJS(url) %>';
 					},
 					placeHolder: A.one('#p_load' + ns),
-					url: '<%= url %>'
+					url: '<%= HtmlUtil.escapeJS(url) %>'
 				}
 			);
 		</aui:script>
+		
 	</c:otherwise>
 </c:choose>
