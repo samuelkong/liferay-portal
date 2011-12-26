@@ -33,7 +33,6 @@ String portletId = portlet.getPortletId();
 		portletDisplay.setNamespace(PortalUtil.getPortletNamespace(portletId));
 
 		String url = PortletURLUtil.getRefreshURL(request, themeDisplay);
-		System.out.println("HtmlUtil Said:"+HtmlUtil.escapeJS(url));
 		%>
 
 		<div class="loading-animation" id="p_load<%= portletDisplay.getNamespace() %>"></div>
