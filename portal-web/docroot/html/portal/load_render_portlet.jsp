@@ -43,7 +43,7 @@ String portletId = portlet.getPortletId();
 			Liferay.Portlet.addHTML(
 				{
 					onComplete: function(portlet, portletId) {
-						portlet.refreshURL = '<%= url %>';
+						portlet.refreshURL = '<%= HtmlUtil.escape(url) %>';
 					},
 					placeHolder: A.one('#p_load' + ns),
 					url: '<%= url %>'
