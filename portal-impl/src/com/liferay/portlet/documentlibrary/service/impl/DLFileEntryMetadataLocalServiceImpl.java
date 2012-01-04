@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryMetadataException;
 import com.liferay.portlet.documentlibrary.model.DLFileEntryMetadata;
 import com.liferay.portlet.documentlibrary.model.DLFileEntryType;
 import com.liferay.portlet.documentlibrary.service.base.DLFileEntryMetadataLocalServiceBaseImpl;
@@ -125,21 +124,21 @@ public class DLFileEntryMetadataLocalServiceImpl
 			ServiceContext serviceContext)
 		throws StorageException, SystemException {
 
-		try {
-			DLFileEntryMetadata fileEntryMetadata =
-				dlFileEntryMetadataPersistence.findByD_F(
-					ddmStructure.getStructureId(), fileVersionId);
+		DLFileEntryMetadata fileEntryMetadata =
+			dlFileEntryMetadataPersistence.fetchByD_F(
+				ddmStructure.getStructureId(), fileVersionId);
 
+		if (fileEntryMetadata != null) {
 			StorageEngineUtil.update(
 				fileEntryMetadata.getDDMStorageId(), fields, serviceContext);
 		}
-		catch (NoSuchFileEntryMetadataException nsdmse) {
+		else {
 
 			// File entry metadata
 
 			long fileEntryMetadataId = counterLocalService.increment();
 
-			DLFileEntryMetadata fileEntryMetadata =
+			fileEntryMetadata =
 				dlFileEntryMetadataPersistence.create(fileEntryMetadataId);
 
 			long ddmStorageId = StorageEngineUtil.create(

@@ -163,8 +163,6 @@ public class SetupWizardUtil {
 		UnicodeProperties unicodeProperties =
 			PropertiesParamUtil.getProperties(request, _PROPERTIES_PREFIX);
 
-		PropsUtil.addProperties(unicodeProperties);
-
 		unicodeProperties.setProperty(
 			PropsKeys.LIFERAY_HOME,
 			SystemProperties.get(PropsKeys.LIFERAY_HOME));
@@ -179,6 +177,8 @@ public class SetupWizardUtil {
 
 		unicodeProperties.put(
 			PropsKeys.SETUP_WIZARD_ENABLED, String.valueOf(false));
+
+		PropsUtil.addProperties(unicodeProperties);
 
 		HttpSession session = request.getSession();
 
