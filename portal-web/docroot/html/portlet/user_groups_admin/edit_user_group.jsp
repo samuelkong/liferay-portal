@@ -114,7 +114,7 @@ long userGroupId = BeanParamUtil.getLong(userGroup, request, "userGroupId");
 
 		<c:if test="<%= (userGroupGroup != null) || !layoutSetPrototypes.isEmpty() %>">
 			<c:choose>
-				<c:when test="<%= ((userGroupGroup == null) || (userGroupGroup.getPublicLayoutsPageCount() == 0)) && !layoutSetPrototypes.isEmpty() %>">
+				<c:when test="<%= ((userGroupGroup == null) || (publicLayoutSetPrototype == null)) && !layoutSetPrototypes.isEmpty() %>">
 					<aui:select label="public-pages" name="publicLayoutSetPrototypeId">
 						<aui:option label="none" selected="<%= true %>" value="" />
 
@@ -181,7 +181,7 @@ long userGroupId = BeanParamUtil.getLong(userGroup, request, "userGroupId");
 			</c:choose>
 
 			<c:choose>
-				<c:when test="<%= ((userGroup == null) || (userGroup.getPrivateLayoutsPageCount() == 0)) && !layoutSetPrototypes.isEmpty() %>">
+				<c:when test="<%= ((userGroup == null) || (privateLayoutSetPrototype == null)) && !layoutSetPrototypes.isEmpty() %>">
 					<aui:select label="private-pages" name="privateLayoutSetPrototypeId">
 						<aui:option label="none" selected="<%= true %>" value="" />
 
