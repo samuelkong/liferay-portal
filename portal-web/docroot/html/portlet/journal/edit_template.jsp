@@ -251,9 +251,20 @@ if (template == null) {
 	</aui:fieldset>
 
 	<aui:button-row>
-		<aui:button type="submit" />
 
-		<aui:button onClick='<%= renderResponse.getNamespace() + "saveAndContinueTemplate();" %>' value="save-and-continue" />
+		<%
+		boolean hasUpdateTemplatePermission = true;
+
+		if (template != null) {
+			hasUpdateTemplatePermission = JournalTemplatePermission.contains(permissionChecker, template, ActionKeys.UPDATE);
+		}
+		%>
+
+		<c:if test="<%= hasUpdateTemplatePermission %>">
+			<aui:button type="submit" />
+
+			<aui:button onClick='<%= renderResponse.getNamespace() + "saveAndContinueTemplate();" %>' value="save-and-continue" />
+		</c:if>
 
 		<aui:button href="<%= redirect %>" type="cancel" />
 	</aui:button-row>
