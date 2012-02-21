@@ -16,6 +16,7 @@ package com.liferay.portal.search;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.DummyIndexer;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -61,7 +62,7 @@ public class IndexerRegistryImpl implements IndexerRegistry {
 
 	private static Log _log = LogFactoryUtil.getLog(IndexerRegistryImpl.class);
 
-	private Indexer _dummyIndexer;
+	private Indexer _dummyIndexer = new DummyIndexer();
 	private Map<String, Indexer> _indexers =
 		new ConcurrentHashMap<String, Indexer>();
 
