@@ -253,6 +253,7 @@ request.setAttribute("view.jsp-viewCategory", Boolean.TRUE.toString());
 
 							<liferay-portlet:renderURL varImpl="rowURL">
 								<portlet:param name="struts_action" value="/message_boards/view_message" />
+								<portlet:param name="mbCategoryId" value="<%= String.valueOf(categoryId) %>" />
 								<portlet:param name="messageId" value="<%= String.valueOf(message.getMessageId()) %>" />
 							</liferay-portlet:renderURL>
 
@@ -415,8 +416,14 @@ request.setAttribute("view.jsp-viewCategory", Boolean.TRUE.toString());
 				<liferay-ui:search-container-results>
 
 					<%
-					results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, false, false, searchContainer.getStart(), searchContainer.getEnd());
-					total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, false, false);
+					if (categoryId == 0) {
+						results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, false, false, searchContainer.getStart(), searchContainer.getEnd());
+						total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, false, false);
+					}
+					else {
+						results = MBThreadServiceUtil.getThreads(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd());
+						total = MBThreadServiceUtil.getThreadsCount(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED);
+					}
 
 					pageContext.setAttribute("results", results);
 					pageContext.setAttribute("total", total);
@@ -451,6 +458,7 @@ request.setAttribute("view.jsp-viewCategory", Boolean.TRUE.toString());
 
 					<liferay-portlet:renderURL varImpl="rowURL">
 						<portlet:param name="struts_action" value="/message_boards/view_message" />
+						<portlet:param name="mbCategoryId" value="<%= String.valueOf(categoryId) %>" />
 						<portlet:param name="messageId" value="<%= String.valueOf(message.getMessageId()) %>" />
 					</liferay-portlet:renderURL>
 

@@ -110,6 +110,7 @@ PortletURL portletURL = (PortletURL)request.getAttribute("view.jsp-portletURL");
 
 				<liferay-portlet:renderURL varImpl="rowURL">
 					<portlet:param name="struts_action" value="/message_boards/view_message" />
+					<portlet:param name="mbCategoryId" value="<%= String.valueOf(categoryId) %>" />
 					<portlet:param name="messageId" value="<%= String.valueOf(message.getMessageId()) %>" />
 				</liferay-portlet:renderURL>
 
