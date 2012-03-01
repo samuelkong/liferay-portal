@@ -28,6 +28,7 @@ boolean viewCategory = GetterUtil.getBoolean((String)request.getAttribute("view.
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("struts_action", "/message_boards/view");
+portletURL.setParameter("mbCategoryId", String.valueOf(categoryId));
 %>
 
 <div class="top-links-container">

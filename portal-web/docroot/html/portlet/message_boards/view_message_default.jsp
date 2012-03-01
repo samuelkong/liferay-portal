@@ -35,6 +35,7 @@ MBThread thread = messageDisplay.getThread();
 		PortletURL portletURL = renderResponse.createRenderURL();
 
 		portletURL.setParameter("tabs1", "message-boards-home");
+		portletURL.setParameter("mbCategoryId", String.valueOf(category.getCategoryId()));
 		%>
 
 		<liferay-ui:tabs
