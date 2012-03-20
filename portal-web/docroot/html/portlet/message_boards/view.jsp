@@ -175,7 +175,7 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 		%>
 
 	</c:when>
-	<c:when test='<%= topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("recent-posts") %>'>
+	<c:when test='<%= topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("recent-posts") || topLink.equals("recent-posts-in-current-category") %>'>
 
 		<%
 		long groupThreadsUserId = ParamUtil.getLong(request, "groupThreadsUserId");
@@ -245,6 +245,9 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 			else if (topLink.equals("recent-posts")) {
 				emptyResultsMessage = "there-are-no-recent-posts";
 			}
+			else if (topLink.equals("recent-posts-in-current-category")) {
+				emptyResultsMessage = "there-are-no-recent-posts-in-current-category";
+			}
 
 			searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 			%>
@@ -263,6 +266,11 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 				else if (topLink.equals("recent-posts")) {
 					results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, false, false, searchContainer.getStart(), searchContainer.getEnd());
 					total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, false, false);
+				}
+				else if (topLink.equals("recent-posts-in-current-category")) {
+					long currentCategoryId = ParamUtil.getLong(request, "currentCategoryId");
+					results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, currentCategoryId, WorkflowConstants.STATUS_APPROVED, false, false, searchContainer.getStart(), searchContainer.getEnd());
+					total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, currentCategoryId, WorkflowConstants.STATUS_APPROVED, false, false);
 				}
 
 				pageContext.setAttribute("results", results);

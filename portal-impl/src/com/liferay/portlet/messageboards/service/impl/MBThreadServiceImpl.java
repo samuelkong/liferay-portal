@@ -65,15 +65,25 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 			long groupId, long userId, int status, boolean subscribed,
 			boolean includeAnonymous, int start, int end)
 		throws PortalException, SystemException {
+		return getGroupThreads(groupId, userId,
+				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, status,
+				subscribed, includeAnonymous, start, end);
+	}
 
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+	public List<MBThread> getGroupThreads(
+			long groupId, long userId, long categoryId, int status,
+			boolean subscribed, boolean includeAnonymous, int start, int end)
+		throws PortalException, SystemException {
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId) &&
+				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID == categoryId) {
 			return doGetGroupThreads(
 				groupId, userId, status, subscribed, includeAnonymous, start,
 				end);
 		}
 
 		long[] categoryIds = mbCategoryService.getCategoryIds(
-			groupId, MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+			groupId, categoryId);
 
 		if (categoryIds.length == 0) {
 			return Collections.emptyList();
@@ -156,13 +166,24 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 			boolean includeAnonymous)
 		throws SystemException {
 
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+		return getGroupThreadsCount(
+				groupId, userId, MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+				status, subscribed, includeAnonymous);
+	}
+
+	public int getGroupThreadsCount(
+			long groupId, long userId, long categoryId, int status,
+			boolean subscribed, boolean includeAnonymous)
+		throws SystemException {
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId) &&
+				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID == categoryId) {
 			return doGetGroupThreadsCount(
 				groupId, userId, status, subscribed, includeAnonymous);
 		}
 
 		long[] categoryIds = mbCategoryService.getCategoryIds(
-			groupId, MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+				groupId, categoryId);
 
 		if (categoryIds.length == 0) {
 			return 0;
