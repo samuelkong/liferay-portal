@@ -346,6 +346,8 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 
 	</c:when>
 	<c:when test='<%= topLink.equals("statistics") %>'>
+	<c:choose>
+		<c:when test='<%= themeDisplay.isSignedIn() %>'>
 		<liferay-ui:panel-container cssClass="statistics-panel" extended="<%= false %>" id="messageBoardsStatisticsPanelContainer" persistState="<%= true %>">
 			<liferay-ui:panel collapsible="<%= true %>" cssClass="statistics-panel-content" extended="<%= true %>" id="messageBoardsGeneralStatisticsPanel" persistState="<%= true %>" title="general">
 				<dl>
@@ -394,6 +396,15 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 				</liferay-ui:search-container>
 			</liferay-ui:panel>
 		</liferay-ui:panel-container>
+		</c:when>
+			<c:otherwise>
+
+				<div class="portlet-msg-info">
+					<liferay-ui:message key="please-sign-in-to-access-this-application" />
+				</div>
+
+			</c:otherwise>
+	</c:choose>
 
 		<%
 		PortalUtil.setPageSubtitle(LanguageUtil.get(pageContext, StringUtil.replace(topLink, StringPool.UNDERLINE, StringPool.DASH)), request);
