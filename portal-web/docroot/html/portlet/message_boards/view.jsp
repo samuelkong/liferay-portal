@@ -398,11 +398,9 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 		</liferay-ui:panel-container>
 		</c:when>
 			<c:otherwise>
-
 				<div class="portlet-msg-info">
 					<liferay-ui:message key="please-sign-in-to-access-this-application" />
 				</div>
-
 			</c:otherwise>
 	</c:choose>
 
