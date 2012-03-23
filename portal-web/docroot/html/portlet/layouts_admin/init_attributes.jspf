@@ -190,6 +190,10 @@ request.setAttribute(WebKeys.LAYOUT_LISTER_LIST, layoutList);
 	<portlet:param name="groupId" value="<%= String.valueOf(liveGroupId) %>" />
 </liferay-portlet:renderURL>
 
+<liferay-portlet:renderURL varImpl="deleteRedirectURL">
+	<portlet:param name="struts_action" value="/layouts_admin/edit_layouts" />
+</liferay-portlet:renderURL>
+
 <liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" varImpl="portletURL">
 	<portlet:param name="struts_action" value="/layouts_admin/edit_layouts" />
 	<portlet:param name="tabs1" value="<%= tabs1 %>" />
@@ -226,6 +230,7 @@ request.setAttribute("edit_pages.jsp-layoutList", layoutList);
 
 request.setAttribute("edit_pages.jsp-portletURL", portletURL);
 request.setAttribute("edit_pages.jsp-redirectURL", redirectURL);
+request.setAttribute("edit_pages.jsp-deleteRedirectURL", deleteRedirectURL);
 %>
 
 <%!

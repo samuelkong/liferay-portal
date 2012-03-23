@@ -35,6 +35,14 @@ boolean privateLayout = ((Boolean)request.getAttribute("edit_pages.jsp-privateLa
 
 PortletURL portletURL = (PortletURL)request.getAttribute("edit_pages.jsp-portletURL");
 PortletURL redirectURL = (PortletURL)request.getAttribute("edit_pages.jsp-redirectURL");
+PortletURL deleteRedirectURL = (PortletURL)request.getAttribute("edit_pages.jsp-deleteRedirectURL");
+
+if (selLayout.isRootLayout()) {
+	deleteRedirectURL.setParameter("historyKey", "lookAndFeel");
+}
+else {
+	deleteRedirectURL.setParameter("historyKey", "details");
+}
 
 long refererPlid = ParamUtil.getLong(request, "refererPlid", LayoutConstants.DEFAULT_PLID);
 
@@ -345,7 +353,7 @@ String[][] categorySections = {mainSections};
 				}
 
 				<c:if test="<%= layoutRevision == null || incomplete %>">
-					document.<portlet:namespace />fm.<portlet:namespace />redirect.value = '<%= HttpUtil.setParameter(redirectURL.toString(), liferayPortletResponse.getNamespace() + "selPlid", selLayout.getParentPlid()) %>';
+					document.<portlet:namespace />fm.<portlet:namespace />redirect.value = '<%= HttpUtil.setParameter(deleteRedirectURL.toString(), liferayPortletResponse.getNamespace() + "selPlid", selLayout.getParentPlid()) %>';
 				</c:if>
 			}
 			else {
