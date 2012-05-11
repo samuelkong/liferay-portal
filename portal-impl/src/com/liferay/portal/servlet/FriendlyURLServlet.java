@@ -20,9 +20,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.struts.LastPath;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
+import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.Portal;
@@ -110,6 +112,23 @@ public class FriendlyURLServlet extends HttpServlet {
 				HttpServletResponse.SC_NOT_FOUND, nsle, request, response);
 
 			return;
+		}
+		catch (PrincipalException pe) {
+			if (request.getRemoteUser() == null) {
+				redirect =
+					request.getContextPath() + Portal.PATH_MAIN +
+						"/portal/login";
+
+				String currentURL = PortalUtil.getCurrentURL(request);
+
+				redirect = HttpUtil.addParameter(
+					redirect, "redirect", currentURL);
+			}
+			else {
+				if (_log.isWarnEnabled()) {
+					_log.warn(pe);
+				}
+			}
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -239,9 +258,18 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		requestContext.put("request", request);
 
-		return PortalUtil.getActualURL(
-			group.getGroupId(), _private, mainPath, friendlyURL, params,
-			requestContext);
+		try {
+			return PortalUtil.getActualURL(
+				group.getGroupId(), _private, mainPath, friendlyURL, params,
+				requestContext);
+		}
+		catch (NoSuchLayoutException nsle) {
+			if (request.getRemoteUser() == null) {
+				throw new PrincipalException();
+			}
+
+			throw nsle;
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(FriendlyURLServlet.class);
