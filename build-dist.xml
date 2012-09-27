@@ -1689,6 +1689,8 @@ ${env.JAVA_HOME}/bin/java weblogic.WLST create-weblogic-domain.py</echo>
 			<replacefilter token="@app.server.websphere.dir@" value="${app.server.websphere.dir}" />
 			<replacefilter token="@app.server.websphere.dir.windows@" value="${app.server.websphere.dir.windows}" />
 			<replacefilter token="@app.server.websphere.dir.windows.escaped@" value="${app.server.websphere.dir.windows.escaped}" />
+			<replacefilter token="@env.COMPUTERNAME@" value="${env.COMPUTERNAME}" />
+			<replacefilter token="@env.JAVA_HOME@" value="${env.JAVA_HOME}" />
 		</replace>
 	</target>
 
@@ -2384,6 +2386,10 @@ plugins.includes=</echo>
 			replace="\\\\:"
 		/>
 
+		<antelope:stringutil property="env.COMPUTERNAME.lowercase" string="${env.COMPUTERNAME}">
+			<antelope:lowercase />
+		</antelope:stringutil>
+
 		<replace
 			dir="${app.server.weblogic.dir}"
 			includes="**/*.cmd,**/*.domains,**/*.properties,**/*.sh,**/*.xml"
@@ -2399,6 +2405,8 @@ plugins.includes=</echo>
 			<replacefilter token="${app.server.weblogic.dir}" value="@app.server.weblogic.dir@" />
 			<replacefilter token="${app.server.weblogic.dir.windows}" value="@app.server.weblogic.dir.windows@" />
 			<replacefilter token="${app.server.weblogic.dir.windows.escaped}" value="@app.server.weblogic.dir.windows.escaped@" />
+			<replacefilter token="${env.COMPUTERNAME.lowercase}" value="@env.COMPUTERNAME@" />
+			<replacefilter token="${env.JAVA_HOME}" value="@env.JAVA_HOME@" />
 		</replace>
 
 		<zip
