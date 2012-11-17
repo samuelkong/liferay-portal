@@ -35,6 +35,9 @@ if (!workflowAssetPreview && article.isApproved()) {
 else {
 	articleDisplay = JournalArticleLocalServiceUtil.getArticleDisplay(article, null, null, languageId, 1, null, themeDisplay);
 }
+
+
+String viewURL=(String)request.getAttribute("assetpubliser.viewURL");
 %>
 
 <c:if test="<%= articleDisplay.isSmallImage() %>">
@@ -51,7 +54,16 @@ else {
 	%>
 
 	<div class="asset-small-image">
-		<img alt="" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
+		<c:choose>
+			<c:when test="<%= Validator.isNotNull(viewURL) %>">
+				<a href="<%= viewURL %>">
+					<img alt="" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
+				</a>		
+			</c:when>
+			<c:otherwise>
+				<img alt="" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
+			</c:otherwise>
+		</c:choose>
 	</div>
 </c:if>
 
