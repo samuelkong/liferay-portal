@@ -2472,6 +2472,15 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		}
 	}
 
+	/**
+	 * Subscribe the user to changes in documents of the file entry type. This
+	 * method is only supported by the Liferay repository.
+	 *
+	 * @param  groupId the group ID of the file entry type
+	 * @param  fileEntryTypeId the primary key of the file entry type
+	 * @throws PortalException if the user or group is not found
+	 * @throws SystemException if a system exception occurred
+	 */
 	public void subscribeFileEntryType(long groupId, long fileEntryTypeId)
 		throws PortalException, SystemException {
 
@@ -2482,6 +2491,15 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			getUserId(), groupId, fileEntryTypeId);
 	}
 
+	/**
+	 * Subscribe the user to document changes in the folder. This method is only
+	 * supported by the Liferay repository.
+	 *
+	 * @param  groupId the group ID of the folder
+	 * @param  folderId the primary key of the folder
+	 * @throws PortalException if the user or group is not found
+	 * @throws SystemException if a system exception occurred
+	 */
 	public void subscribeFolder(long groupId, long folderId)
 		throws PortalException, SystemException {
 
@@ -2548,6 +2566,15 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		repository.unlockFolder(parentFolderId, name, lockUuid);
 	}
 
+	/**
+	 * Unsubscribe the user to changes in documents of the file entry type. This
+	 * method is only supported by the Liferay repository.
+	 *
+	 * @param  groupId the group ID of the file entry type
+	 * @param  fileEntryTypeId the primary key of the file entry type
+	 * @throws PortalException if the user or group is not found
+	 * @throws SystemException if a system exception occurred
+	 */
 	public void unsubscribeFileEntryType(long groupId, long fileEntryTypeId)
 		throws PortalException, SystemException {
 
@@ -2558,6 +2585,15 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			getUserId(), groupId, fileEntryTypeId);
 	}
 
+	/**
+	 * Unsubscribe the user to document changes in the folder. This method is
+	 * only supported by the Liferay repository.
+	 *
+	 * @param  groupId the group ID of the folder
+	 * @param  folderId the primary key of the folder
+	 * @throws PortalException if the user or group is not found
+	 * @throws SystemException if a system exception occurred
+	 */
 	public void unsubscribeFolder(long groupId, long folderId)
 		throws PortalException, SystemException {
 

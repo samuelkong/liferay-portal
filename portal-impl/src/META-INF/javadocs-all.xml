@@ -284543,269 +284543,450 @@ The method searches the system roles map first for default roles. If a role with
 		<author><![CDATA[Zsolt Berentey]]></author>
 		<method>
 			<name>addSubscription</name>
+			<comment><![CDATA[Subscribe the user to an entity with an instant frequency for notifications.
+
+<p>
+If there is no assetEntry with the className and classPK a new one will
+be created.
+
+<p>
+A social activity for the subscription is created using the assetEntry
+associated with the className and classPK or the recently created
+AssetEntry.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>groupId</name>
 				<type>long</type>
+				<comment><![CDATA[the group id of entity]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscription]]></comment>
+			</return>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>addSubscription</name>
+			<comment><![CDATA[Subscribe the user to an entity with an instant frequency for notifications.
+
+<p>
+If there is no assetEntry with the className and classPK a new one will
+be created.
+
+<p>
+A social activity for the subscription is created using the assetEntry
+associated with the className and classPK or the recently created
+AssetEntry.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>groupId</name>
 				<type>long</type>
+				<comment><![CDATA[the group id of the entity]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
 			<param>
 				<name>frequency</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the frequency for notifications]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscription]]></comment>
+			</return>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>deleteSubscription</name>
+			<comment><![CDATA[Deletes the subscription with the primary key from the database. A social activity with the unsubscribe action is created.]]></comment>
 			<param>
 				<name>subscriptionId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the subscription]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscription that was removed]]></comment>
+			</return>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if a subscription with the primary key could not be found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>deleteSubscription</name>
+			<comment><![CDATA[Deletes the subscription of a user to an entity from the database. A social activity with the unsubscribe action is created.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or the subscription could not be found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>deleteSubscription</name>
+			<comment><![CDATA[Deletes the subscription from the database. A social activity with the unsubscribe action is created.]]></comment>
 			<param>
 				<name>subscription</name>
 				<type>com.liferay.portal.model.Subscription</type>
+				<comment><![CDATA[the subscription]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscription that was removed]]></comment>
+			</return>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group associated to the subscription are not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>deleteSubscriptions</name>
+			<comment><![CDATA[Deletes all the subscriptions of the user.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group associated to the subscription are not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>deleteSubscriptions</name>
+			<comment><![CDATA[Deletes all the subscriptions to the entity.]]></comment>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the company]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group associated to any subscription are not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>getSubscription</name>
+			<comment><![CDATA[Returns the subscription of the user to an entity.]]></comment>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the company]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscription]]></comment>
+			</return>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the subscription could not be found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>getSubscriptions</name>
+			<comment><![CDATA[Returns all the subscription of the user to several entities.]]></comment>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the company]]></comment>
+			</param>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
+			</param>
+			<param>
+				<name>classPKs</name>
+				<type>long[]</type>
+				<comment><![CDATA[the primary key of the entities]]></comment>
+			</param>
+			<return>
+				<comment><![CDATA[the subscriptions]]></comment>
+			</return>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>getSubscriptions</name>
+			<comment><![CDATA[Returns all the subscriptions to the entity.]]></comment>
+			<param>
+				<name>companyId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the company]]></comment>
+			</param>
+			<param>
+				<name>className</name>
+				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscriptions]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>getUserSubscriptions</name>
+			<comment><![CDATA[Returns an ordered range of all the subscriptions of the user.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[the lower bound of the range of results]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[the upper bound of the range of results (not inclusive)]]></comment>
 			</param>
 			<param>
 				<name>orderByComparator</name>
 				<type>com.liferay.portal.kernel.util.OrderByComparator</type>
 			</param>
+			<return>
+				<comment><![CDATA[the range of all the subscriptions of the user]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>getUserSubscriptions</name>
+			<comment><![CDATA[Returns all the subscriptions of the user to an entity's class name.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the subscriptions]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>getUserSubscriptionsCount</name>
+			<comment><![CDATA[Returns the number of subscriptions of the user.]]></comment>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[the number of subscriptions of the user]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 		<method>
 			<name>isSubscribed</name>
+			<comment><![CDATA[Returns <code>true</code> if the user is subscribed to the entity.]]></comment>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the company]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
 			</param>
 			<param>
 				<name>className</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
 			</param>
 			<param>
 				<name>classPK</name>
 				<type>long</type>
+				<comment><![CDATA[the primary key of the entity]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[<code>true</code> if the user is subscribed to the entity; <code>false</code> otherwise]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>isSubscribed</name>
+			<comment><![CDATA[Returns <code>true</code> if the user is subscribed to any of the entities.]]></comment>
+			<param>
+				<name>companyId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the company]]></comment>
+			</param>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
+			</param>
+			<param>
+				<name>className</name>
+				<type>java.lang.String</type>
+				<comment><![CDATA[the entity's class name]]></comment>
+			</param>
+			<param>
+				<name>classPKs</name>
+				<type>long[]</type>
+				<comment><![CDATA[the primary key of the entities]]></comment>
+			</param>
+			<return>
+				<comment><![CDATA[<code>true</code> if the user is subscribed to any of the entities; <code>false</code> otherwise]]></comment>
+			</return>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
 			</throws>
 		</method>
 	</javadoc>
@@ -429952,7 +430133,7 @@ This method takes two file names, the <code>sourceFileName</code> and the <code>
 			<param>
 				<name>uuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the file entry's universally unique identifier]]></comment>
+				<comment><![CDATA[the file entry's UUID]]></comment>
 			</param>
 			<param>
 				<name>groupId</name>
@@ -430193,6 +430374,122 @@ This method takes two file names, the <code>sourceFileName</code> and the <code>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
 				<comment><![CDATA[if the file entry could not be found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>subscribeFileEntryType</name>
+			<comment><![CDATA[Subscribe the user to changes in documents of a file entry type. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
+			</param>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the file entry type]]></comment>
+			</param>
+			<param>
+				<name>fileEntryTypeId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the file entry type]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>subscribeFolder</name>
+			<comment><![CDATA[Subscribe the user to document changes in a folder. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
+			</param>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the folder]]></comment>
+			</param>
+			<param>
+				<name>folderId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the folder]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>unsubscribeFileEntryType</name>
+			<comment><![CDATA[Unsubscribe the user to changes in documents of a file entry type. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
+			</param>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the file entry type]]></comment>
+			</param>
+			<param>
+				<name>fileEntryTypeId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the file entry type]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>unsubscribeFolder</name>
+			<comment><![CDATA[Unsubscribe the user to document changes in a folder. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the user]]></comment>
+			</param>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the folder]]></comment>
+			</param>
+			<param>
+				<name>folderId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the folder]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
@@ -431239,7 +431536,7 @@ When a file entry is checked out, a PWC (private working copy) is created and th
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<param>
 				<name>serviceContext</name>
@@ -432022,7 +432319,7 @@ Useful when paginating results. Returns a maximum of <code>end - start</code> in
 			<param>
 				<name>uuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the file entry's universally unique identifier]]></comment>
+				<comment><![CDATA[the file entry's UUID]]></comment>
 			</param>
 			<param>
 				<name>groupId</name>
@@ -433673,7 +433970,7 @@ Useful when paginating results. Returns a maximum of <code>end - start</code> in
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<param>
 				<name>companyId</name>
@@ -433705,7 +434002,7 @@ Useful when paginating results. Returns a maximum of <code>end - start</code> in
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<param>
 				<name>companyId</name>
@@ -433852,6 +434149,54 @@ Useful when paginating results. Returns a maximum of <code>end - start</code> in
 			</throws>
 		</method>
 		<method>
+			<name>subscribeFileEntryType</name>
+			<comment><![CDATA[Subscribe the user to changes in documents of the file entry type. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the file entry type]]></comment>
+			</param>
+			<param>
+				<name>fileEntryTypeId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the file entry type]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>subscribeFolder</name>
+			<comment><![CDATA[Subscribe the user to document changes in the folder. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the folder]]></comment>
+			</param>
+			<param>
+				<name>folderId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the folder]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
 			<name>unlockFileEntry</name>
 			<param>
 				<name>fileEntryId</name>
@@ -433903,7 +434248,7 @@ Useful when paginating results. Returns a maximum of <code>end - start</code> in
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<throws>
 				<name>PortalException</name>
@@ -433937,12 +434282,60 @@ Useful when paginating results. Returns a maximum of <code>end - start</code> in
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<throws>
 				<name>PortalException</name>
 				<type>com.liferay.portal.kernel.exception.PortalException</type>
 				<comment><![CDATA[if the repository or folder could not be found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>unsubscribeFileEntryType</name>
+			<comment><![CDATA[Unsubscribe the user to changes in documents of the file entry type. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the file entry type]]></comment>
+			</param>
+			<param>
+				<name>fileEntryTypeId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the file entry type]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
+			</throws>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[if a system exception occurred]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>unsubscribeFolder</name>
+			<comment><![CDATA[Unsubscribe the user to document changes in the folder. This method is only supported by the Liferay repository.]]></comment>
+			<param>
+				<name>groupId</name>
+				<type>long</type>
+				<comment><![CDATA[the group id of the folder]]></comment>
+			</param>
+			<param>
+				<name>folderId</name>
+				<type>long</type>
+				<comment><![CDATA[the primary key of the folder]]></comment>
+			</param>
+			<throws>
+				<name>PortalException</name>
+				<type>com.liferay.portal.kernel.exception.PortalException</type>
+				<comment><![CDATA[if the user or group is not found]]></comment>
 			</throws>
 			<throws>
 				<name>SystemException</name>
@@ -434341,7 +434734,7 @@ This method takes two file names, the <code>sourceFileName</code> and the <code>
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<return>
 				<comment><![CDATA[<code>true</code> if the file entry is checked out; <code>false</code> otherwise]]></comment>
@@ -434396,7 +434789,7 @@ This method takes two file names, the <code>sourceFileName</code> and the <code>
 			<param>
 				<name>lockUuid</name>
 				<type>java.lang.String</type>
-				<comment><![CDATA[the lock's universally unique identifier]]></comment>
+				<comment><![CDATA[the lock's UUID]]></comment>
 			</param>
 			<return>
 				<comment><![CDATA[<code>true</code> if the inheritable lock exists; <code>false</code> otherwise]]></comment>
