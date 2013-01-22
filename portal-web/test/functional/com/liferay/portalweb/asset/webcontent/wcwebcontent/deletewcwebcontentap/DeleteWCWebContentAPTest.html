@@ -19,9 +19,19 @@
 	<td>Asset Publisher Test Page</td>
 </tr>
 <tr>
+	<td>assertVisible</td>
+	<td>//section</td>
+	<td>Portlet</td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//section</td>
+	<td>Portlet</td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//nav[@class='site-breadcrumbs aui-helper-hidden lfr-hudcrumbs']</td>
-	<td>AUI Help Hidden LFR Hudcrumbs</td>
+	<td>//script[contains(@src,'/aui/aui-editable/aui-editable-min.js')]</td>
+	<td>AUI Editable Min</td>
 </tr>
 <tr>
 	<td>waitForVisible</td>
@@ -65,27 +75,27 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>//td[1]/a</td>
+	<td>//td[@id='_86_ocerSearchContainer_col-type_row-1']</td>
 	<td>Web Content</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//td[1]/a</td>
+	<td>//td[@id='_86_ocerSearchContainer_col-type_row-1']</td>
 	<td>Web Content</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//td[2]/a</td>
+	<td>//td[@id='_86_ocerSearchContainer_col-title_row-1']</td>
 	<td>WC Web Content Title</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//img[@alt='Delete']</td>
+	<td>//td[@id='_86_ocerSearchContainer_col-4_row-1']/span/a/img</td>
 	<td>Delete</td>
 </tr>
 <tr>
 	<td>assertConfirmation</td>
-	<td>Are you sure you want to delete this?</td>
+	<td>Are you sure you want to delete this? It will be deleted immediately.</td>
 	<td></td>
 </tr>
 <tr>

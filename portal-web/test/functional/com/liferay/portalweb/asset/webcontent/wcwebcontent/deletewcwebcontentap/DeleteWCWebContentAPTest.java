@@ -28,8 +28,10 @@ public class DeleteWCWebContentAPTest extends BaseTestCase {
 		selenium.clickAt("link=Asset Publisher Test Page",
 			RuntimeVariables.replace("Asset Publisher Test Page"));
 		selenium.waitForPageToLoad("30000");
+		assertTrue(selenium.isVisible("//section"));
+		selenium.clickAt("//section", RuntimeVariables.replace("Portlet"));
 		selenium.waitForElementPresent(
-			"//nav[@class='site-breadcrumbs aui-helper-hidden lfr-hudcrumbs']");
+			"//script[contains(@src,'/aui/aui-editable/aui-editable-min.js')]");
 		selenium.waitForVisible("//span[@title='Options']/ul/li/strong/a");
 		assertEquals(RuntimeVariables.replace("Options"),
 			selenium.getText("//span[@title='Options']/ul/li/strong/a"));
@@ -46,15 +48,19 @@ public class DeleteWCWebContentAPTest extends BaseTestCase {
 			"//iframe[contains(@id,'configurationIframeDialog')]");
 		selenium.selectFrame(
 			"//iframe[contains(@id,'configurationIframeDialog')]");
-		selenium.waitForVisible("//td[1]/a");
+		selenium.waitForVisible(
+			"//td[@id='_86_ocerSearchContainer_col-type_row-1']");
 		assertEquals(RuntimeVariables.replace("Web Content"),
-			selenium.getText("//td[1]/a"));
+			selenium.getText(
+				"//td[@id='_86_ocerSearchContainer_col-type_row-1']"));
 		assertEquals(RuntimeVariables.replace("WC Web Content Title"),
-			selenium.getText("//td[2]/a"));
-		selenium.click(RuntimeVariables.replace("//img[@alt='Delete']"));
+			selenium.getText(
+				"//td[@id='_86_ocerSearchContainer_col-title_row-1']"));
+		selenium.click(RuntimeVariables.replace(
+				"//td[@id='_86_ocerSearchContainer_col-4_row-1']/span/a/img"));
 		selenium.waitForPageToLoad("30000");
 		assertTrue(selenium.getConfirmation()
-						   .matches("^Are you sure you want to delete this[\\s\\S]$"));
+						   .matches("^Are you sure you want to delete this[\\s\\S] It will be deleted immediately.$"));
 		selenium.waitForText("//div[@class='portlet-msg-success']",
 			"You have successfully updated the setup.");
 		assertEquals(RuntimeVariables.replace(

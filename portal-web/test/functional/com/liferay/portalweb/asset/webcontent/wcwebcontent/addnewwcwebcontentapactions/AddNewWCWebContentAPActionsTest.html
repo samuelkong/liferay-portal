@@ -19,9 +19,9 @@
 	<td>Asset Publisher Test Page</td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>//nav[@class='site-breadcrumbs aui-helper-hidden lfr-hudcrumbs']</td>
-	<td>AUI Help Hidden LFR Hudcrumbs</td>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
 </tr>
 <tr>
 	<td>assertText</td>
@@ -35,17 +35,17 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>//div[@class='lfr-component lfr-menu-list']/ul/li[5]/a</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Web Content')]</td>
 	<td>Web Content</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@class='lfr-component lfr-menu-list']/ul/li[5]/a</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Web Content')]</td>
 	<td>Web Content</td>
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>//div[@class='lfr-component lfr-menu-list']/ul/li[5]/a</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Web Content')]</td>
 	<td>Web Content</td>
 </tr>
 <tr>
@@ -58,7 +58,6 @@
 	<td>//iframe[contains(@id,'editAsset')]</td>
 	<td>Web Content IFrame</td>
 </tr>
-<tr>
 <tr>
 	<td>waitForVisible</td>
 	<td>//input[@id='_15_title_en_US']</td>

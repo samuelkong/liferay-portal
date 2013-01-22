@@ -19,9 +19,19 @@
 	<td>Asset Publisher Test Page</td>
 </tr>
 <tr>
+	<td>assertVisible</td>
+	<td>//section</td>
+	<td>Portlet</td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//section</td>
+	<td>Portlet</td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//nav[@class='site-breadcrumbs aui-helper-hidden lfr-hudcrumbs']</td>
-	<td>AUI Help Hidden LFR Hudcrumbs</td>
+	<td>//script[contains(@src,'/aui/aui-editable/aui-editable-min.js')]</td>
+	<td>AUI Editable Min</td>
 </tr>
 <tr>
 	<td>waitForVisible</td>
@@ -70,18 +80,18 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>//span[@title='Select Existing']/ul/li/strong/a/span</td>
-	<td>Select Existing</td>
+	<td>//a[@id='_86_tiym_menuButton']/span</td>
+	<td>Select</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//span[@title='Select Existing']/ul/li/strong/a/span</td>
-	<td>Select Existing</td>
+	<td>//a[@id='_86_tiym_menuButton']/span</td>
+	<td>Select</td>
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>//span[@title='Select Existing']/ul/li/strong/a/span</td>
-	<td>Select Existing</td>
+	<td>//a[@id='_86_tiym_menuButton']/span</td>
+	<td>Select</td>
 </tr>
 <tr>
 	<td>waitForVisible</td>
@@ -97,6 +107,16 @@
 	<td>clickAtAndWait</td>
 	<td>//div[@class='lfr-component lfr-menu-list']/ul/li[contains(.,'Web Content')]/a</td>
 	<td>Web Content</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//iframe[@id='_86_selectAsset']</td>
+	<td>iFrame</td>
+</tr>
+<tr>
+	<td>selectFrame</td>
+	<td>//iframe[@id='_86_selectAsset']</td>
+	<td>iFrame</td>
 </tr>
 <tr>
 	<td>assertText</td>
@@ -115,13 +135,13 @@
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//td[1]/a</td>
-	<td>Web Content</td>
+	<td>//td[@id='_86_ocerSearchContainer_col-title_row-1']</td>
+	<td>WC Web Content Title</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//td[2]/a</td>
-	<td>WC Web Content Title</td>
+	<td>//td[@id='_86_ocerSearchContainer_col-type_row-1']</td>
+	<td>Web Content</td>
 </tr>
 <tr>
 	<td>selectFrame</td>
