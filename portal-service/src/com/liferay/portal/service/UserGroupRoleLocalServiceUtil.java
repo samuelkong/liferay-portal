@@ -285,6 +285,12 @@ public class UserGroupRoleLocalServiceUtil {
 	}
 
 	public static void deleteUserGroupRoles(long[] userIds, long groupId,
+		int roleType)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getService().deleteUserGroupRoles(userIds, groupId, roleType);
+	}
+
+	public static void deleteUserGroupRoles(long[] userIds, long groupId,
 		long roleId) throws com.liferay.portal.kernel.exception.SystemException {
 		getService().deleteUserGroupRoles(userIds, groupId, roleId);
 	}
