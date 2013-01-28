@@ -41,7 +41,7 @@ import com.liferay.portlet.PortletURLFactoryUtil;
 import com.liferay.portlet.bookmarks.model.BookmarksEntry;
 import com.liferay.portlet.bookmarks.model.BookmarksFolder;
 import com.liferay.portlet.bookmarks.model.BookmarksFolderConstants;
-import com.liferay.portlet.bookmarks.service.BookmarksEntryServiceUtil;
+import com.liferay.portlet.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.portlet.bookmarks.service.BookmarksFolderLocalServiceUtil;
 import com.liferay.portlet.bookmarks.util.comparator.EntryCreateDateComparator;
 import com.liferay.portlet.bookmarks.util.comparator.EntryModifiedDateComparator;
@@ -347,18 +347,28 @@ public class BookmarksUtil {
 			preferences, companyId, PropsValues.BOOKMARKS_EMAIL_FROM_NAME);
 	}
 
-	public static List<BookmarksEntry> getEntries(Hits hits) {
-		List<BookmarksEntry> entries = new ArrayList<BookmarksEntry>();
+	public static List<Object> getEntries(Hits hits) {
+		List<Object> entries = new ArrayList<Object>();
 
 		for (Document document : hits.getDocs()) {
+			String entryClassName = document.get(Field.ENTRY_CLASS_NAME);
 			long entryClassPK = GetterUtil.getLong(
 				document.get(Field.ENTRY_CLASS_PK));
 
 			try {
-				BookmarksEntry entry = BookmarksEntryServiceUtil.getEntry(
-					entryClassPK);
+				Object obj = null;
 
-				entries.add(entry);
+				if (entryClassName.equals(BookmarksEntry.class.getName())) {
+					obj = BookmarksEntryLocalServiceUtil.getEntry(entryClassPK);
+				}
+				else if (entryClassName.equals(
+							BookmarksFolder.class.getName())) {
+
+					obj = BookmarksFolderLocalServiceUtil.getFolder(
+						entryClassPK);
+				}
+
+				entries.add(obj);
 			}
 			catch (Exception e) {
 				if (_log.isWarnEnabled()) {

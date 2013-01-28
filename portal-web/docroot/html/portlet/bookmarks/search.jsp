@@ -75,7 +75,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 	>
 
 		<%
-		Indexer indexer = IndexerRegistryUtil.getIndexer(BookmarksEntry.class);
+		Indexer indexer = BookmarksSearcher.getInstance();
 
 		SearchContext searchContext = SearchContextFactory.getInstance(request);
 
@@ -94,42 +94,112 @@ String keywords = ParamUtil.getString(request, "keywords");
 		/>
 
 		<liferay-ui:search-container-row
-			className="com.liferay.portlet.bookmarks.model.BookmarksEntry"
-			modelVar="entry"
+			className="Object"
+			modelVar="obj"
 		>
 
-			<%
-			entry = entry.toEscapedModel();
+			<c:choose>
+				<c:when test="<%= obj instanceof BookmarksEntry %>">
 
-			BookmarksFolder folder = entry.getFolder();
+					<%
+					BookmarksEntry entry = (BookmarksEntry)obj;
 
-			String rowHREF = themeDisplay.getPathMain().concat("/bookmarks/open_entry?entryId=").concat(String.valueOf(entry.getEntryId()));
-			%>
+					entry = entry.toEscapedModel();
 
-			<liferay-ui:search-container-column-text
-				name="#"
-				value="<%= (index + 1) + StringPool.PERIOD %>"
-			/>
+					BookmarksFolder folder = entry.getFolder();
 
-			<liferay-ui:search-container-column-text
-				href="<%= rowHREF %>"
-				name="folder"
-				target="_blank"
-				title="<%= entry.getDescription() %>"
-				value="<%= folder.getName() %>"
-			/>
+					String rowHREF = themeDisplay.getPathMain().concat("/bookmarks/open_entry?entryId=").concat(String.valueOf(entry.getEntryId()));
+					%>
 
-			<liferay-ui:search-container-column-text
-				href="<%= rowHREF %>"
-				name="entry"
-				target="_blank"
-				title="<%= entry.getDescription() %>"
-				value="<%= entry.getName() %>"
-			/>
+					<liferay-ui:search-container-column-text
+						name="entry"
+						title="<%= entry.getDescription() %>"
+					>
+						<liferay-ui:icon
+							image="../ratings/star_hover"
+							label="<%= true %>"
+							message="<%= entry.getName() %>"
+							target="_blank"
+							url="<%= rowHREF %>"
+						/>
+					</liferay-ui:search-container-column-text>
 
-			<liferay-ui:search-container-column-jsp
-				path="/html/portlet/bookmarks/entry_action.jsp"
-			/>
+					<liferay-ui:search-container-column-text
+						href="<%= rowHREF %>"
+						name="type"
+						target="_blank"
+						title="<%= entry.getDescription() %>"
+						value='<%= LanguageUtil.get(locale, "entry") %>'
+					/>
+
+					<liferay-ui:search-container-column-text
+						href="<%= rowHREF %>"
+						name="folder"
+						target="_blank"
+						title="<%= entry.getDescription() %>"
+						value="<%= folder.getName() %>"
+					/>
+
+					<liferay-ui:search-container-column-jsp
+						path="/html/portlet/bookmarks/entry_action.jsp"
+					/>
+				</c:when>
+
+				<c:when test="<%= obj instanceof BookmarksFolder %>">
+
+					<%
+					BookmarksFolder folder = (BookmarksFolder)obj;
+
+					BookmarksFolder parentFolder = folder.getParentFolder();
+					%>
+
+					<liferay-portlet:renderURL var="rowURL">
+						<portlet:param name="struts_action" value="/bookmarks/view" />
+						<portlet:param name="folderId" value="<%= String.valueOf(folder.getFolderId()) %>" />
+						<portlet:param name="redirect" value="<%= currentURL %>" />
+					</liferay-portlet:renderURL>
+
+
+					<%
+					String folderImage = "folder_empty";
+
+					if (BookmarksFolderLocalServiceUtil.getFoldersAndEntriesCount(folder.getGroupId(), folder.getFolderId(), WorkflowConstants.STATUS_ANY) > 0) {
+						folderImage = "folder_full_document";
+					}
+					%>
+
+					<liferay-ui:search-container-column-text
+						name="entry"
+						title="<%= folder.getDescription() %>"
+					>
+						<liferay-ui:icon
+							image="<%= folderImage %>"
+							label="<%= true %>"
+							message="<%= folder.getName() %>"
+							url="<%= rowURL %>"
+						/>
+					</liferay-ui:search-container-column-text>
+
+					<liferay-ui:search-container-column-text
+						href="<%= rowURL %>"
+						name="type"
+						title="<%= folder.getDescription() %>"
+						value='<%= LanguageUtil.get(locale, "folder") %>'
+					/>
+
+					<liferay-ui:search-container-column-text
+						href="<%= rowURL %>"
+						name="folder"
+						title="<%= folder.getDescription() %>"
+						value='<%= (parentFolder != null) ? parentFolder.getName() : LanguageUtil.get(locale, "home") %>'
+					/>
+
+					<liferay-ui:search-container-column-jsp
+						path="/html/portlet/bookmarks/folder_action.jsp"
+					/>
+
+				</c:when>
+			</c:choose>
 		</liferay-ui:search-container-row>
 
 		<span class="aui-search-bar">
