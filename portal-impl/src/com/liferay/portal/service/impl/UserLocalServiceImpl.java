@@ -3634,7 +3634,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			long groupId, long[] userIds, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
-		userGroupRoleLocalService.deleteUserGroupRoles(userIds, groupId);
+		Group group = groupLocalService.getGroup(groupId);
+
+		if (group.isSite()) {
+			userGroupRoleLocalService.deleteUserSiteRoles(userIds, groupId);
+		}
+		else {
+			userGroupRoleLocalService.deleteUserGroupRoles(userIds, groupId);
+		}
 
 		userLocalService.unsetGroupTeamsUsers(groupId, userIds);
 
@@ -3665,7 +3672,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		long groupId = group.getGroupId();
 
-		userGroupRoleLocalService.deleteUserGroupRoles(userIds, groupId);
+		userGroupRoleLocalService.deleteUserOrganizationRoles(userIds, groupId);
 
 		organizationPersistence.removeUsers(organizationId, userIds);
 
