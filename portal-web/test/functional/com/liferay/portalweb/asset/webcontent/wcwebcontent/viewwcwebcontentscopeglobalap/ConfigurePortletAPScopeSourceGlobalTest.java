@@ -29,9 +29,7 @@ public class ConfigurePortletAPScopeSourceGlobalTest extends BaseTestCase {
 		selenium.clickAt("link=Asset Publisher Test Page",
 			RuntimeVariables.replace("Asset Publisher Test Page"));
 		selenium.waitForPageToLoad("30000");
-		Thread.sleep(5000);
-		assertEquals(RuntimeVariables.replace("There are no results."),
-			selenium.getText("//div[@class='portlet-msg-info']"));
+		Thread.sleep(1000);
 		assertEquals(RuntimeVariables.replace("Options"),
 			selenium.getText("//span[@title='Options']/ul/li/strong/a"));
 		selenium.clickAt("//span[@title='Options']/ul/li/strong/a",
@@ -52,9 +50,8 @@ public class ConfigurePortletAPScopeSourceGlobalTest extends BaseTestCase {
 		selenium.waitForVisible("//select[@id='_86_defaultScope']");
 		selenium.select("//select[@id='_86_defaultScope']",
 			RuntimeVariables.replace("Global"));
-		selenium.clickAt("//input[@value='Save']",
-			RuntimeVariables.replace("Save"));
 		selenium.waitForPageToLoad("30000");
+		selenium.waitForVisible("//div[@class='portlet-msg-success']");
 		assertEquals(RuntimeVariables.replace(
 				"You have successfully updated the setup."),
 			selenium.getText("//div[@class='portlet-msg-success']"));
