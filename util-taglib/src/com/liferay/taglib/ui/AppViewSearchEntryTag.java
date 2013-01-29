@@ -14,6 +14,7 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.taglib.util.IncludeTag;
@@ -34,6 +35,22 @@ public class AppViewSearchEntryTag extends IncludeTag {
 
 	public void setActionJsp(String actionJsp) {
 		_actionJsp = actionJsp;
+	}
+
+	public void setAttachments(List<FileEntry> attachments) {
+		_attachments = attachments;
+	}
+
+	public void setContainerIcon(String containerIcon) {
+		_containerIcon = containerIcon;
+	}
+
+	public void setContainerName(String containerName) {
+		_containerName = containerName;
+	}
+
+	public void setContainerType(String containerType) {
+		_containerType = containerType;
 	}
 
 	public void setCssClass(String cssClass) {
@@ -91,6 +108,10 @@ public class AppViewSearchEntryTag extends IncludeTag {
 	@Override
 	protected void cleanUp() {
 		_actionJsp = null;
+		_attachments = null;
+		_containerIcon = null;
+		_containerName = null;
+		_containerType = null;
 		_cssClass = null;
 		_description = null;
 		_folderName = null;
@@ -120,6 +141,14 @@ public class AppViewSearchEntryTag extends IncludeTag {
 	protected void setAttributes(HttpServletRequest request) {
 		request.setAttribute(
 			"liferay-ui:app-view-search-entry:actionJsp", _actionJsp);
+		request.setAttribute(
+			"liferay-ui:app-view-search-entry:attachments", _attachments);
+		request.setAttribute(
+			"liferay-ui:app-view-search-entry:containerIcon", _containerIcon);
+		request.setAttribute(
+			"liferay-ui:app-view-search-entry:containerName", _containerName);
+		request.setAttribute(
+			"liferay-ui:app-view-search-entry:containerType", _containerType);
 		request.setAttribute(
 			"liferay-ui:app-view-search-entry:cssClass", _cssClass);
 		request.setAttribute(
@@ -152,6 +181,10 @@ public class AppViewSearchEntryTag extends IncludeTag {
 		"/html/taglib/ui/app_view_search_entry/page.jsp";
 
 	private String _actionJsp;
+	private List<FileEntry> _attachments;
+	private String _containerIcon;
+	private String _containerName;
+	private String _containerType;
 	private String _cssClass;
 	private String _description;
 	private String _folderName;
