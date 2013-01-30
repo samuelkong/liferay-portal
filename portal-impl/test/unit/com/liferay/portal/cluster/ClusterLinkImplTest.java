@@ -637,7 +637,9 @@ public class ClusterLinkImplTest extends BaseClusterTestCase {
 	}
 
 	protected boolean isOpen(JChannel jChannel) {
-		return !jChannel.getState().equals(State.CLOSED.toString());
+		String state = jChannel.getState();
+
+		return !state.equals(State.CLOSED.toString());
 	}
 
 	private class TestReceiver extends BaseReceiver {
