@@ -198,7 +198,7 @@ public class ActionUtil {
 			if (folder.getModel() instanceof DLFolder) {
 				DLFolder dlFolder = (DLFolder)folder.getModel();
 
-				if ((dlFolder.isInTrash() || dlFolder.isInTrashContainer())) {
+				if (dlFolder.isInTrash() || dlFolder.isInTrashContainer()) {
 					throw new NoSuchFolderException();
 				}
 			}

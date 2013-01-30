@@ -14,7 +14,6 @@
 
 package com.liferay.portlet.bookmarks.action;
 
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -28,7 +27,6 @@ import com.liferay.portlet.bookmarks.model.BookmarksFolderConstants;
 import com.liferay.portlet.bookmarks.service.BookmarksEntryServiceUtil;
 import com.liferay.portlet.bookmarks.service.BookmarksFolderServiceUtil;
 import com.liferay.portlet.bookmarks.service.permission.BookmarksPermission;
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 
 import javax.portlet.PortletRequest;
 
@@ -48,7 +46,7 @@ public class ActionUtil {
 			entry = BookmarksEntryServiceUtil.getEntry(entryId);
 		}
 
-		if ((entry.isInTrash() || entry.isInTrashContainer())) {
+		if (entry.isInTrash() || entry.isInTrashContainer()) {
 			throw new NoSuchEntryException();
 		}
 
@@ -77,7 +75,7 @@ public class ActionUtil {
 
 			folder = BookmarksFolderServiceUtil.getFolder(folderId);
 
-			if ((folder.isInTrash() || folder.isInTrashContainer())) {
+			if (folder.isInTrash() || folder.isInTrashContainer()) {
 				throw new NoSuchFolderException();
 			}
 		}
