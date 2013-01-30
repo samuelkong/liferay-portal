@@ -246,19 +246,6 @@ public class BookmarksPortletDataHandlerImpl extends BasePortletDataHandler {
 		return sb.toString();
 	}
 
-	protected String getFolderPath(
-		PortletDataContext portletDataContext, BookmarksFolder folder) {
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(portletDataContext.getPortletPath(PortletKeys.BOOKMARKS));
-		sb.append("/folders/");
-		sb.append(folder.getFolderId());
-		sb.append(".xml");
-
-		return sb.toString();
-	}
-
 	protected String getImportFolderPath(
 		PortletDataContext portletDataContext, long folderId) {
 
