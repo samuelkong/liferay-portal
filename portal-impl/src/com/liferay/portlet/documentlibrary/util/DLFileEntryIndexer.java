@@ -355,6 +355,7 @@ public class DLFileEntryIndexer extends BaseIndexer {
 
 			document.addText(Field.DESCRIPTION, dlFileEntry.getDescription());
 			document.addKeyword(Field.FOLDER_ID, dlFileEntry.getFolderId());
+			document.addKeyword(Field.HIDDEN, dlFileEntry.isInHiddenFolder());
 			document.addText(
 				Field.PROPERTIES, dlFileEntry.getLuceneProperties());
 			document.addText(Field.TITLE, dlFileEntry.getTitle());
@@ -364,7 +365,6 @@ public class DLFileEntryIndexer extends BaseIndexer {
 			document.addKeyword("extension", dlFileEntry.getExtension());
 			document.addKeyword(
 				"fileEntryTypeId", dlFileEntry.getFileEntryTypeId());
-			document.addKeyword(Field.HIDDEN, dlFileEntry.isInHiddenFolder());
 			document.addKeyword("path", dlFileEntry.getTitle());
 
 			ExpandoBridge expandoBridge =
