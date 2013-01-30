@@ -14,17 +14,21 @@
 
 package com.liferay.portlet.bookmarks.action;
 
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
+import com.liferay.portlet.bookmarks.NoSuchEntryException;
+import com.liferay.portlet.bookmarks.NoSuchFolderException;
 import com.liferay.portlet.bookmarks.model.BookmarksEntry;
 import com.liferay.portlet.bookmarks.model.BookmarksFolder;
 import com.liferay.portlet.bookmarks.model.BookmarksFolderConstants;
 import com.liferay.portlet.bookmarks.service.BookmarksEntryServiceUtil;
 import com.liferay.portlet.bookmarks.service.BookmarksFolderServiceUtil;
 import com.liferay.portlet.bookmarks.service.permission.BookmarksPermission;
+import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 
 import javax.portlet.PortletRequest;
 
@@ -42,6 +46,10 @@ public class ActionUtil {
 
 		if (entryId > 0) {
 			entry = BookmarksEntryServiceUtil.getEntry(entryId);
+		}
+
+		if ((entry.isInTrash() || entry.isInTrashContainer())) {
+			throw new NoSuchEntryException();
 		}
 
 		request.setAttribute(WebKeys.BOOKMARKS_ENTRY, entry);
@@ -68,6 +76,10 @@ public class ActionUtil {
 			(folderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
 
 			folder = BookmarksFolderServiceUtil.getFolder(folderId);
+
+			if ((folder.isInTrash() || folder.isInTrashContainer())) {
+				throw new NoSuchFolderException();
+			}
 		}
 		else {
 			BookmarksPermission.check(
