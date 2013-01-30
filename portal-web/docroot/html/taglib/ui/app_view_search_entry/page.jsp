@@ -18,12 +18,12 @@
 
 <%
 String actionJsp = (String)request.getAttribute("liferay-ui:app-view-search-entry:actionJsp");
-List<FileEntry> attachments = (List<FileEntry>)request.getAttribute("liferay-ui:app-view-search-entry:attachments");
 String containerIcon = GetterUtil.getString(request.getAttribute("liferay-ui:app-view-search-entry:containerIcon"), "folder");
 String containerName = (String)request.getAttribute("liferay-ui:app-view-search-entry:containerName");
 String containerType = GetterUtil.getString(request.getAttribute("liferay-ui:app-view-search-entry:containerType"), LanguageUtil.get(locale, "folder"));
 String cssClass = (String)request.getAttribute("liferay-ui:app-view-search-entry:cssClass");
 String description = (String)request.getAttribute("liferay-ui:app-view-search-entry:description");
+List<FileEntry> fileEntries = (List<FileEntry>)request.getAttribute("liferay-ui:app-view-search-entry:fileEntries");
 boolean locked = GetterUtil.getBoolean(request.getAttribute("liferay-ui:app-view-search-entry:locked"));
 List<MBMessage> mbMessages = (List<MBMessage>)request.getAttribute("liferay-ui:app-view-search-entry:mbMessages");
 String[] queryTerms = (String[])request.getAttribute("liferay-ui:app-view-search-entry:queryTerms");
@@ -78,11 +78,11 @@ String url = (String)request.getAttribute("liferay-ui:app-view-search-entry:url"
 		</span>
 	</a>
 
-	<c:if test="<%= attachments != null %>">
+	<c:if test="<%= fileEntries != null %>">
 
 
 		<%
-		for (FileEntry fileEntry : attachments) {
+		for (FileEntry fileEntry : fileEntries) {
 		%>
 
 			<div class="entry-attachment">

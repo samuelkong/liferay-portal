@@ -27,7 +27,7 @@ import java.util.List;
 public class SearchResult {
 
 	public SearchResult(String className, long classPK) {
-		_attachments = new ArrayList<FileEntry>();
+		_fileEntries = new ArrayList<FileEntry>();
 
 		_className = className;
 		_classPK = classPK;
@@ -35,8 +35,8 @@ public class SearchResult {
 		_mbMessages = new ArrayList<MBMessage>();
 	}
 
-	public void addAttachment(FileEntry attachment) {
-		_attachments.add(attachment);
+	public void addFileEntry(FileEntry fileEntry) {
+		_fileEntries.add(fileEntry);
 	}
 
 	public void addMBMessage(MBMessage mbMessage) {
@@ -64,16 +64,16 @@ public class SearchResult {
 		return false;
 	}
 
-	public List<FileEntry> getAttachments() {
-		return _attachments;
-	}
-
 	public String getClassName() {
 		return _className;
 	}
 
 	public long getClassPK() {
 		return _classPK;
+	}
+
+	public List<FileEntry> getFileEntries() {
+		return _fileEntries;
 	}
 
 	public List<MBMessage> getMBMessages() {
@@ -92,9 +92,9 @@ public class SearchResult {
 		_mbMessages = mbMessages;
 	}
 
-	private List<FileEntry> _attachments;
 	private String _className;
 	private long _classPK;
+	private List<FileEntry> _fileEntries;
 	private List<MBMessage> _mbMessages;
 
 }

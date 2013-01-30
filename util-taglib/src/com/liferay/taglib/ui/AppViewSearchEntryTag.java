@@ -37,10 +37,6 @@ public class AppViewSearchEntryTag extends IncludeTag {
 		_actionJsp = actionJsp;
 	}
 
-	public void setAttachments(List<FileEntry> attachments) {
-		_attachments = attachments;
-	}
-
 	public void setContainerIcon(String containerIcon) {
 		_containerIcon = containerIcon;
 	}
@@ -61,8 +57,8 @@ public class AppViewSearchEntryTag extends IncludeTag {
 		_description = HtmlUtil.unescape(description);
 	}
 
-	public void setFolderName(String folderName) {
-		_folderName = folderName;
+	public void setFileEntries(List<FileEntry> fileEntries) {
+		_fileEntries = fileEntries;
 	}
 
 	public void setLocked(boolean locked) {
@@ -108,13 +104,12 @@ public class AppViewSearchEntryTag extends IncludeTag {
 	@Override
 	protected void cleanUp() {
 		_actionJsp = null;
-		_attachments = null;
 		_containerIcon = null;
 		_containerName = null;
 		_containerType = null;
 		_cssClass = null;
 		_description = null;
-		_folderName = null;
+		_fileEntries = null;
 		_locked = false;
 		_mbMessages = null;
 		_queryTerms = null;
@@ -142,8 +137,6 @@ public class AppViewSearchEntryTag extends IncludeTag {
 		request.setAttribute(
 			"liferay-ui:app-view-search-entry:actionJsp", _actionJsp);
 		request.setAttribute(
-			"liferay-ui:app-view-search-entry:attachments", _attachments);
-		request.setAttribute(
 			"liferay-ui:app-view-search-entry:containerIcon", _containerIcon);
 		request.setAttribute(
 			"liferay-ui:app-view-search-entry:containerName", _containerName);
@@ -154,7 +147,7 @@ public class AppViewSearchEntryTag extends IncludeTag {
 		request.setAttribute(
 			"liferay-ui:app-view-search-entry:description", _description);
 		request.setAttribute(
-			"liferay-ui:app-view-search-entry:folderName", _folderName);
+			"liferay-ui:app-view-search-entry:fileEntries", _fileEntries);
 		request.setAttribute(
 			"liferay-ui:app-view-search-entry:locked", _locked);
 		request.setAttribute(
@@ -181,13 +174,12 @@ public class AppViewSearchEntryTag extends IncludeTag {
 		"/html/taglib/ui/app_view_search_entry/page.jsp";
 
 	private String _actionJsp;
-	private List<FileEntry> _attachments;
 	private String _containerIcon;
 	private String _containerName;
 	private String _containerType;
 	private String _cssClass;
 	private String _description;
-	private String _folderName;
+	private List<FileEntry> _fileEntries;
 	private boolean _locked;
 	private List<MBMessage> _mbMessages;
 	private String[] _queryTerms;

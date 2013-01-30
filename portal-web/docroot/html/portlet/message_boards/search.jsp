@@ -91,12 +91,10 @@ String keywords = ParamUtil.getString(request, "keywords");
 		searchContext.setStart(searchContainer.getStart());
 
 		Hits hits = indexer.search(searchContext);
-
-		PortletURL hitURL = renderResponse.createRenderURL();
 		%>
 
 		<liferay-ui:search-container-results
-			results="<%= SearchResultUtil.getSearchResults(hits, locale, hitURL) %>"
+			results="<%= SearchResultUtil.getSearchResults(hits) %>"
 			total="<%= hits.getLength() %>"
 		/>
 
@@ -116,12 +114,12 @@ String keywords = ParamUtil.getString(request, "keywords");
 			</portlet:renderURL>
 
 			<liferay-ui:app-view-search-entry
-				attachments="<%= searchResult.getAttachments() %>"
 				containerIcon="../common/conversation"
 				containerName="<%= MBUtil.getAbsolutePath(renderRequest, message.getCategoryId()) %>"
 				containerType='<%= LanguageUtil.get(locale, "category") %>'
 				cssClass='<%= MathUtil.isEven(index) ? "search alt" : "search" %>'
 				description="<%= StringPool.BLANK %>"
+				fileEntries="<%= searchResult.getFileEntries() %>"
 				queryTerms="<%= hits.getQueryTerms() %>"
 				title="<%= HtmlUtil.escape(message.getSubject()) %>"
 				url="<%= rowURL %>"

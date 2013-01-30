@@ -48,7 +48,9 @@ public class SearchResultUtil {
 				FileEntry fileEntry = null;
 				MBMessage mbMessage = null;
 
-				if (entryClassName.equals(DLFileEntry.class.getName())) {
+				if (entryClassName.equals(DLFileEntry.class.getName()) ||
+					entryClassName.equals(MBMessage.class.getName())) {
+
 					classPK = GetterUtil.getLong(document.get(Field.CLASS_PK));
 					long classNameId = GetterUtil.getLong(
 						document.get(Field.CLASS_NAME_ID));
@@ -56,24 +58,18 @@ public class SearchResultUtil {
 					if ((classPK > 0) && (classNameId > 0)) {
 						className = PortalUtil.getClassName(classNameId);
 
-						fileEntry = DLAppLocalServiceUtil.getFileEntry(
-							entryClassPK);
-					}
-					else {
-						className = entryClassName;
-						classPK = entryClassPK;
-					}
-				}
-				else if (entryClassName.equals(MBMessage.class.getName())) {
-					classPK = GetterUtil.getLong(document.get(Field.CLASS_PK));
-					long classNameId = GetterUtil.getLong(
-						document.get(Field.CLASS_NAME_ID));
+						if (entryClassName.equals(
+								DLFileEntry.class.getName())) {
 
-					if ((classPK > 0) && (classNameId > 0)) {
-						className = PortalUtil.getClassName(classNameId);
+							fileEntry = DLAppLocalServiceUtil.getFileEntry(
+								entryClassPK);
+						}
+						else if (entryClassName.equals(
+							MBMessage.class.getName())) {
 
-						mbMessage = MBMessageLocalServiceUtil.getMessage(
-							entryClassPK);
+							mbMessage = MBMessageLocalServiceUtil.getMessage(
+								entryClassPK);
+						}
 					}
 					else {
 						className = entryClassName;
@@ -94,7 +90,7 @@ public class SearchResultUtil {
 				}
 
 				if (fileEntry != null) {
-					searchResult.addAttachment(fileEntry);
+					searchResult.addFileEntry(fileEntry);
 				}
 
 				if (mbMessage != null) {
