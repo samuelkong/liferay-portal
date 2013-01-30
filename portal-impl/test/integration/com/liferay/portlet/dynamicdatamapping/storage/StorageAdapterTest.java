@@ -57,16 +57,6 @@ import org.junit.runner.RunWith;
 @Transactional
 public class StorageAdapterTest extends BaseDDMServiceTestCase {
 
-	public StorageAdapterTest() {
-		_classNameId = PortalUtil.getClassNameId(DDLRecordSet.class);
-
-		_enLocale = LocaleUtil.fromLanguageId("en_US");
-		_ptLocale = LocaleUtil.fromLanguageId("pt_BR");
-
-		_expandoStorageAdapater = new ExpandoStorageAdapter();
-		_xmlStorageAdapater = new XMLStorageAdapter();
-	}
-
 	@Test
 	public void testBooleanField() throws Exception {
 		String xsd = readText("ddm-structure-boolean-field.xsd");
@@ -423,27 +413,28 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 	protected void validate(long ddmStructureId, Fields fields)
 		throws Exception {
 
-		// XML
+		// Expando
 
-		long classPK = create(_xmlStorageAdapater, ddmStructureId, fields);
+		long classPK = create(_expandoStorageAdapater, ddmStructureId, fields);
 
-		Fields actualFields = _xmlStorageAdapater.getFields(classPK);
+		Fields actualFields = _expandoStorageAdapater.getFields(classPK);
 
 		Assert.assertEquals(fields, actualFields);
 
-		// Expando
+		// XML
 
-		classPK = create(_expandoStorageAdapater, ddmStructureId, fields);
+		classPK = create(_xmlStorageAdapater, ddmStructureId, fields);
 
-		actualFields = _expandoStorageAdapater.getFields(classPK);
+		actualFields = _xmlStorageAdapater.getFields(classPK);
 
 		Assert.assertEquals(fields, actualFields);
 	}
 
-	private long _classNameId;
-	private Locale _enLocale;
-	private StorageAdapter _expandoStorageAdapater;
-	private Locale _ptLocale;
-	private StorageAdapter _xmlStorageAdapater;
+	private long _classNameId = PortalUtil.getClassNameId(DDLRecordSet.class);
+	private Locale _enLocale = LocaleUtil.fromLanguageId("en_US");
+	private StorageAdapter _expandoStorageAdapater =
+		new ExpandoStorageAdapter();
+	private Locale _ptLocale = LocaleUtil.fromLanguageId("pt_BR");
+	private StorageAdapter _xmlStorageAdapater = new XMLStorageAdapter();
 
 }
