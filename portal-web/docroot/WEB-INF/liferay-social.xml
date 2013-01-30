@@ -216,18 +216,6 @@
 	</activity>
 	<activity>
 		<model-name>com.liferay.portlet.wiki.model.WikiPage</model-name>
-		<activity-type>${com.liferay.portlet.social.model.SocialActivityConstants.TYPE_MOVE_ATTACHMENT_TO_TRASH}</activity-type>
-		<language-key>MOVE_ATTACHMENT_TO_TRASH</language-key>
-		<log-activity>true</log-activity>
-	</activity>
-	<activity>
-		<model-name>com.liferay.portlet.wiki.model.WikiPage</model-name>
-		<activity-type>${com.liferay.portlet.social.model.SocialActivityConstants.TYPE_RESTORE_ATTACHMENT_FROM_TRASH}</activity-type>
-		<language-key>RESTORE_ATTACHMENT_FROM_TRASH</language-key>
-		<log-activity>true</log-activity>
-	</activity>
-	<activity>
-		<model-name>com.liferay.portlet.wiki.model.WikiPage</model-name>
 		<activity-type>${com.liferay.portlet.social.model.SocialActivityConstants.TYPE_ADD_COMMENT}</activity-type>
 		<language-key>ADD_COMMENT</language-key>
 		<log-activity>true</log-activity>
@@ -257,6 +245,18 @@
 			<name>user.wikis</name>
 			<owner-type>actor</owner-type>
 		</counter>
+	</activity>
+	<activity>
+		<model-name>com.liferay.portlet.wiki.model.WikiPage</model-name>
+		<activity-type>${com.liferay.portlet.social.model.SocialActivityConstants.TYPE_MOVE_ATTACHMENT_TO_TRASH}</activity-type>
+		<language-key>MOVE_ATTACHMENT_TO_TRASH</language-key>
+		<log-activity>true</log-activity>
+	</activity>
+	<activity>
+		<model-name>com.liferay.portlet.wiki.model.WikiPage</model-name>
+		<activity-type>${com.liferay.portlet.social.model.SocialActivityConstants.TYPE_RESTORE_ATTACHMENT_FROM_TRASH}</activity-type>
+		<language-key>RESTORE_ATTACHMENT_FROM_TRASH</language-key>
+		<log-activity>true</log-activity>
 	</activity>
 	<activity>
 		<model-name>com.liferay.portlet.wiki.model.WikiPage</model-name>
