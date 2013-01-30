@@ -596,6 +596,16 @@ public interface TrashHandler {
 			long classPK, long containerModelId, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
+	/**
+	 * Restores the model entity thas is related to a model entity (i.e., an
+	 * attachment)
+	 * 
+	 * @param className the class name of the model entity related
+	 * @param classPK the primary key of the model entity related
+	 * @throws PortalException if a model entity with the primary key could not
+	 *         be found
+	 * @throws SystemException if a system exception occurred
+	 */
 	public void restoreRelatedTrashEntry(String className, long classPK)
 		throws PortalException, SystemException;
 
