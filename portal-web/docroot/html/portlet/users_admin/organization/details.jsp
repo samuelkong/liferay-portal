@@ -241,10 +241,6 @@ if (parentOrganization != null) {
 	url='<%= "javascript:" + renderResponse.getNamespace() + "openOrganizationSelector();" %>'
 />
 
-<portlet:renderURL var="organizationSelectorURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="struts_action" value="/users_admin/select_organization" />
-</portlet:renderURL>
-
 <aui:script>
 	function <portlet:namespace />openOrganizationSelector() {
 		<c:choose>
@@ -266,7 +262,7 @@ if (parentOrganization != null) {
 				},
 				id: '<portlet:namespace />selectOrganizationDialog',
 				title: '<%= UnicodeLanguageUtil.get(pageContext, "select").concat(" ").concat(UnicodeLanguageUtil.get(pageContext, "parent-organization")) %>',
-				uri: '<%= organizationSelectorURL.toString() %>'
+				uri: '<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="struts_action" value="/users_admin/select_organization" /></portlet:renderURL>'
 			}
 		);
 	}

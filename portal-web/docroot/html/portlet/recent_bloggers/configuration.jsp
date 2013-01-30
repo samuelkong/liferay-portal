@@ -84,11 +84,6 @@ if (organizationId > 0) {
 	</aui:button-row>
 </aui:form>
 
-<portlet:renderURL var="organizationSelectorURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="struts_action" value="/portlet_configuration/select_organization" />
-	<portlet:param name="tabs1" value="organizations" />
-</portlet:renderURL>
-
 <aui:script>
 	function <portlet:namespace />openOrganizationSelector() {
 		Liferay.Util.openWindow(
@@ -102,7 +97,7 @@ if (organizationId > 0) {
 				},
 				id: '<portlet:namespace />selectOrganizationDialog',
 				title: '<%= UnicodeLanguageUtil.get(pageContext, "select").concat(" ").concat(UnicodeLanguageUtil.get(pageContext, "organization")) %>',
-				uri: '<%= organizationSelectorURL.toString() %>'
+				uri: '<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="struts_action" value="/portlet_configuration/select_organization" /><portlet:param name="tabs1" value="organizations" /></portlet:renderURL>'
 			}
 		);
 	}
