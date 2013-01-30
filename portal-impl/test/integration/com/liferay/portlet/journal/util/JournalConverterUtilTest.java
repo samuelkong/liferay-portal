@@ -75,6 +75,7 @@ public class JournalConverterUtilTest extends BaseDDMServiceTestCase {
 	}
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		group = ServiceTestUtil.addGroup();
 
@@ -707,6 +708,7 @@ public class JournalConverterUtilTest extends BaseDDMServiceTestCase {
 		return values;
 	}
 
+	@Override
 	protected String readText(String fileName) throws Exception {
 		Class<?> clazz = getClass();
 
