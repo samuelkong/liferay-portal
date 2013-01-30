@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.XPath;
-import com.liferay.portal.service.ServiceTestUtil;
 import com.liferay.portal.test.EnvironmentExecutionTestListener;
 import com.liferay.portal.test.LiferayIntegrationJUnitTestRunner;
 import com.liferay.portal.test.TransactionalExecutionTestListener;
@@ -69,15 +68,10 @@ import org.junit.runner.RunWith;
 @Transactional
 public class JournalConverterUtilTest extends BaseDDMServiceTestCase {
 
-	public JournalConverterUtilTest() throws Exception {
-		_enLocale = LocaleUtil.fromLanguageId("en_US");
-		_ptLocale = LocaleUtil.fromLanguageId("pt_BR");
-	}
-
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		group = ServiceTestUtil.addGroup();
+		super.setUp();
 
 		long classNameId = PortalUtil.getClassNameId(JournalArticle.class);
 
@@ -765,7 +759,7 @@ public class JournalConverterUtilTest extends BaseDDMServiceTestCase {
 	}
 
 	private DDMStructure _ddmStructure;
-	private Locale _enLocale;
-	private Locale _ptLocale;
+	private Locale _enLocale = LocaleUtil.fromLanguageId("en_US");
+	private Locale _ptLocale = LocaleUtil.fromLanguageId("pt_BR");
 
 }
