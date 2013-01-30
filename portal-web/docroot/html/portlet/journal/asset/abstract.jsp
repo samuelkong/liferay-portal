@@ -19,6 +19,7 @@
 <%
 AssetRenderer assetRenderer = (AssetRenderer)request.getAttribute(WebKeys.ASSET_RENDERER);
 int abstractLength = (Integer)request.getAttribute(WebKeys.ASSET_PUBLISHER_ABSTRACT_LENGTH);
+String viewURL = (String)request.getAttribute("asset_publisher.jsp-viewURL");
 
 JournalArticle article = (JournalArticle)request.getAttribute(WebKeys.JOURNAL_ARTICLE);
 JournalArticleResource articleResource = JournalArticleResourceLocalServiceUtil.getArticleResource(article.getResourcePrimKey());
@@ -35,9 +36,6 @@ if (!workflowAssetPreview && article.isApproved()) {
 else {
 	articleDisplay = JournalArticleLocalServiceUtil.getArticleDisplay(article, null, null, languageId, 1, null, themeDisplay);
 }
-
-
-String viewURL=(String)request.getAttribute("assetpubliser.viewURL");
 %>
 
 <c:if test="<%= articleDisplay.isSmallImage() %>">
@@ -58,7 +56,7 @@ String viewURL=(String)request.getAttribute("assetpubliser.viewURL");
 			<c:when test="<%= Validator.isNotNull(viewURL) %>">
 				<a href="<%= viewURL %>">
 					<img alt="" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
-				</a>		
+				</a>
 			</c:when>
 			<c:otherwise>
 				<img alt="" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
