@@ -132,7 +132,7 @@ public class EditGroupAssignmentsAction extends PortletAction {
 				renderRequest, "portlet.sites_admin.edit_site_assignments"));
 	}
 
-	protected long[] filterUserIdsToAdd(long groupId, long[] userIds)
+	protected long[] filterAddUserIds(long groupId, long[] userIds)
 		throws Exception {
 
 		Set<Long> filteredUserIds = new HashSet<Long>(userIds.length);
@@ -147,7 +147,7 @@ public class EditGroupAssignmentsAction extends PortletAction {
 			filteredUserIds.toArray(new Long[filteredUserIds.size()]));
 	}
 
-	protected long[] filterUserIdsToRemove(long groupId, long[] userIds)
+	protected long[] filterRemoveUserIds(long groupId, long[] userIds)
 		throws Exception {
 
 		Set<Long> filteredUserIds = new HashSet<Long>(userIds.length);
@@ -203,12 +203,12 @@ public class EditGroupAssignmentsAction extends PortletAction {
 		long[] addUserIds = StringUtil.split(
 			ParamUtil.getString(actionRequest, "addUserIds"), 0L);
 
-		addUserIds = filterUserIdsToAdd(groupId, addUserIds);
+		addUserIds = filterAddUserIds(groupId, addUserIds);
 
 		long[] removeUserIds = StringUtil.split(
 			ParamUtil.getString(actionRequest, "removeUserIds"), 0L);
 
-		removeUserIds = filterUserIdsToRemove(groupId, removeUserIds);
+		removeUserIds = filterRemoveUserIds(groupId, removeUserIds);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
