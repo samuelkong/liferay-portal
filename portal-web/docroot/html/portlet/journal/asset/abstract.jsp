@@ -19,7 +19,7 @@
 <%
 AssetRenderer assetRenderer = (AssetRenderer)request.getAttribute(WebKeys.ASSET_RENDERER);
 int abstractLength = (Integer)request.getAttribute(WebKeys.ASSET_PUBLISHER_ABSTRACT_LENGTH);
-String viewURL = (String)request.getAttribute("asset_publisher.jsp-viewURL");
+String viewURL = (String)request.getAttribute("asset_publisher.abstracts.jsp-viewURL");
 
 JournalArticle article = (JournalArticle)request.getAttribute(WebKeys.JOURNAL_ARTICLE);
 JournalArticleResource articleResource = JournalArticleResourceLocalServiceUtil.getArticleResource(article.getResourcePrimKey());
@@ -55,7 +55,7 @@ else {
 		<c:choose>
 			<c:when test="<%= Validator.isNotNull(viewURL) %>">
 				<a href="<%= viewURL %>">
-					<img alt="" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
+					<img alt="<%= articleDisplay.getTitle() %>" class="asset-small-image" src="<%= HtmlUtil.escape(src) %>" width="150" />
 				</a>
 			</c:when>
 			<c:otherwise>
