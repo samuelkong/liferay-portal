@@ -60,15 +60,14 @@ public class StagedModelDataHandlerUtil {
 
 	public static void importStagedModel(
 			String className, PortletDataContext portletDataContext,
-			Element stagedModelElement)
+			Element element)
 		throws PortletDataException {
 
 		StagedModelDataHandler<?> stagedModelDataHandler =
 			StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
 				className);
 
-		stagedModelDataHandler.importStagedModel(
-			portletDataContext, stagedModelElement);
+		stagedModelDataHandler.importStagedModel(portletDataContext, element);
 	}
 
 	private static <T extends StagedModel> StagedModelDataHandler<T>

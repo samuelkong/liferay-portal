@@ -55,13 +55,13 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 	public abstract String getClassName();
 
 	public void importStagedModel(
-			PortletDataContext portletDataContext, Element stagedModelElement)
+			PortletDataContext portletDataContext, Element element)
 		throws PortletDataException {
 
-		String path = stagedModelElement.attributeValue("path");
+		String path = element.attributeValue("path");
 
 		T stagedModel = (T)portletDataContext.getZipEntryAsObject(
-			stagedModelElement, path);
+			element, path);
 
 		importStagedModel(portletDataContext, path, stagedModel);
 	}
