@@ -3869,7 +3869,7 @@
 		</licenses>
 	</library>
 	<library>
-		<file-name>osgi/lib/felix/portal/org.apache.felix.scr</file-name>
+		<file-name>osgi/lib/felix/portal/org.apache.felix.scr.jar</file-name>
 		<version>1.6.2</version>
 		<project-name>Apache Felix</project-name>
 		<project-url>http://felix.apache.org</project-url>
