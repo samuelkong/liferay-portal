@@ -35,7 +35,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class LogBridge
 	implements BundleActivator, LogListener,
-		ServiceTrackerCustomizer<LogReaderService, LogReaderService> {
+			   ServiceTrackerCustomizer<LogReaderService, LogReaderService> {
 
 	public LogReaderService addingService(
 		ServiceReference<LogReaderService> serviceReference) {
@@ -103,11 +103,11 @@ public class LogBridge
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
+		_bundleContext = null;
+
 		_serviceTracker.close();
 
 		_serviceTracker = null;
-
-		_bundleContext = null;
 	}
 
 	private BundleContext _bundleContext;
