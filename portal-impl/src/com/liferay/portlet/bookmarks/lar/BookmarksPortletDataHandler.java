@@ -172,10 +172,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		for (Element folderElement : foldersElement.elements("folder")) {
 			String path = folderElement.attributeValue("path");
 
-			if (!portletDataContext.isPathNotProcessed(path)) {
-				continue;
-			}
-
 			BookmarksFolder folder =
 				(BookmarksFolder)portletDataContext.getZipEntryAsObject(path);
 
@@ -187,10 +183,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 		for (Element entryElement : entriesElement.elements("entry")) {
 			String path = entryElement.attributeValue("path");
-
-			if (!portletDataContext.isPathNotProcessed(path)) {
-				continue;
-			}
 
 			BookmarksEntry entry =
 				(BookmarksEntry)portletDataContext.getZipEntryAsObject(path);
