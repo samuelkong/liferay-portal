@@ -133,7 +133,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext.getScopeGroupId());
 
 		for (BookmarksFolder folder : folders) {
-			exportFolder(portletDataContext, foldersElement, folder);
+			StagedModelDataHandlerUtil.exportStagedModel(
+				portletDataContext, foldersElement, folder);
 		}
 
 		List<BookmarksEntry> entries = BookmarksEntryUtil.findByG_F(
@@ -174,7 +175,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolder folder =
 				(BookmarksFolder)portletDataContext.getZipEntryAsObject(path);
 
-			importFolder(portletDataContext, path, folder);
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, path, folder);
 		}
 
 		Element entriesElement = rootElement.element("entries");
@@ -205,7 +207,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		if (foldersElement != null) {
-			exportFolder(portletDataContext, foldersElement, entry.getFolder());
+			StagedModelDataHandlerUtil.exportStagedModel(
+				portletDataContext, foldersElement, entry.getFolder());
 		}
 
 		String path = getEntryPath(portletDataContext, entry);
@@ -216,15 +219,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext.addClassedModel(
 				entryElement, path, entry, NAMESPACE);
 		}
-	}
-
-	protected void exportFolder(
-			PortletDataContext portletDataContext, Element foldersElement,
-			BookmarksFolder folder)
-		throws Exception {
-
-		StagedModelDataHandlerUtil.exportStagedModel(
-			portletDataContext, foldersElement, folder);
 	}
 
 	protected String getEntryPath(
@@ -276,7 +270,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolder folder =
 				(BookmarksFolder)portletDataContext.getZipEntryAsObject(path);
 
-			importFolder(portletDataContext, path, folder);
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, path, folder);
 
 			folderId = MapUtil.getLong(
 				folderIds, entry.getFolderId(), entry.getFolderId());
@@ -315,15 +310,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(entry, importedEntry, NAMESPACE);
-	}
-
-	protected void importFolder(
-			PortletDataContext portletDataContext, String folderPath,
-			BookmarksFolder folder)
-		throws Exception {
-
-		StagedModelDataHandlerUtil.importStagedModel(
-			portletDataContext, folderPath, folder);
 	}
 
 	private static final boolean _ALWAYS_EXPORTABLE = true;
