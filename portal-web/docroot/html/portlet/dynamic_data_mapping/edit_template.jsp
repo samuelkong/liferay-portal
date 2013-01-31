@@ -17,7 +17,7 @@
 <%@ include file="/html/portlet/dynamic_data_mapping/init.jsp" %>
 
 <%
-String redirect = ParamUtil.getString(request, "redirect");
+	String redirect = ParamUtil.getString(request, "redirect");
 String backURL = ParamUtil.getString(request, "backURL");
 
 String portletResource = ParamUtil.getString(request, "portletResource");
@@ -52,7 +52,7 @@ if (Validator.isNull(script)) {
 	if (portletDisplayTemplateHandler != null) {
 		script = ContentUtil.get(portletDisplayTemplateHandler.getTemplatesHelpPath(language));
 
-		String propertyNamePrefix = portletDisplayTemplateHandler.getTemplatesHelpKey();
+		String propertyNamePrefix = portletDisplayTemplateHandler.getTemplatesHelpPropertyKey();
 
 		supportedLanguageTypes = TemplateManagerUtil.getSupportedLanguageTypes(propertyNamePrefix);
 	}

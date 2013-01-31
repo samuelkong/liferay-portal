@@ -50,11 +50,9 @@ public class TemplateManagerUtil {
 		}
 	}
 
-	public static Set<String> getSupportedLanguageTypes(
-		String propertyNamePrefix) {
-
-		Set<String> supportedLanguageTypes = _supportedLanguageTypesMap.get(
-			propertyNamePrefix);
+	public static Set<String> getSupportedLanguageTypes(String propertyKey) {
+		Set<String> supportedLanguageTypes = _supportedLanguageTypes.get(
+			propertyKey);
 
 		if (supportedLanguageTypes != null) {
 			return supportedLanguageTypes;
@@ -66,7 +64,7 @@ public class TemplateManagerUtil {
 
 		for (String templateManagerName : templateManagers.keySet()) {
 			String content = PropsUtil.get(
-				propertyNamePrefix, new Filter(templateManagerName));
+				propertyKey, new Filter(templateManagerName));
 
 			if (Validator.isNotNull(content)) {
 				supportedLanguageTypes.add(templateManagerName);
@@ -76,8 +74,7 @@ public class TemplateManagerUtil {
 		supportedLanguageTypes = Collections.unmodifiableSet(
 			supportedLanguageTypes);
 
-		_supportedLanguageTypesMap.put(
-			propertyNamePrefix, supportedLanguageTypes);
+		_supportedLanguageTypes.put(propertyKey, supportedLanguageTypes);
 
 		return supportedLanguageTypes;
 	}
@@ -194,7 +191,7 @@ public class TemplateManagerUtil {
 		return _templateManagers;
 	}
 
-	private static Map<String, Set<String>> _supportedLanguageTypesMap =
+	private static Map<String, Set<String>> _supportedLanguageTypes =
 		new ConcurrentHashMap<String, Set<String>>();
 	private static Map<String, TemplateManager> _templateManagers =
 		new ConcurrentHashMap<String, TemplateManager>();

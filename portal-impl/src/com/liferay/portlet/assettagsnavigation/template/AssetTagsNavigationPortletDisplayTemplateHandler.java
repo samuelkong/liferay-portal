@@ -48,7 +48,7 @@ public class AssetTagsNavigationPortletDisplayTemplateHandler
 	}
 
 	@Override
-	public String getTemplatesHelpKey() {
+	public String getTemplatesHelpPropertyKey() {
 		return PropsKeys.ASSET_TAGS_NAVIGATION_DISPLAY_TEMPLATES_HELP;
 	}
 

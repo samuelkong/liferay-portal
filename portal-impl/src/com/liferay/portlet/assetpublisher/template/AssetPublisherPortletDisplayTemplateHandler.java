@@ -48,7 +48,7 @@ public class AssetPublisherPortletDisplayTemplateHandler
 	}
 
 	@Override
-	public String getTemplatesHelpKey() {
+	public String getTemplatesHelpPropertyKey() {
 		return PropsKeys.ASSET_PUBLISHER_DISPLAY_TEMPLATES_HELP;
 	}
 

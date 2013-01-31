@@ -48,7 +48,7 @@ public class BlogsPortletDisplayTemplateHandler
 	}
 
 	@Override
-	public String getTemplatesHelpKey() {
+	public String getTemplatesHelpPropertyKey() {
 		return PropsKeys.BLOGS_DISPLAY_TEMPLATES_HELP;
 	}
 

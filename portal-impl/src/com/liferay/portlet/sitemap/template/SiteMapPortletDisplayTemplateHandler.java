@@ -48,7 +48,7 @@ public class SiteMapPortletDisplayTemplateHandler
 	}
 
 	@Override
-	public String getTemplatesHelpKey() {
+	public String getTemplatesHelpPropertyKey() {
 		return PropsKeys.SITEMAP_DISPLAY_TEMPLATES_HELP;
 	}
 

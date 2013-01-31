@@ -48,7 +48,7 @@ public class DocumentLibraryPortletDisplayTemplateHandler
 	}
 
 	@Override
-	public String getTemplatesHelpKey() {
+	public String getTemplatesHelpPropertyKey() {
 		return PropsKeys.DL_DISPLAY_TEMPLATES_HELP;
 	}
 
