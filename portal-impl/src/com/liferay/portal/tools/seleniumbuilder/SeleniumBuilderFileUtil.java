@@ -52,14 +52,14 @@ public class SeleniumBuilderFileUtil {
 		return content;
 	}
 
-	public Element getRootElementByFileName(String fileName) throws Exception {
+	public Element getRootElement(String fileName) throws Exception {
 		String content = getNormalizedContent(fileName);
 
 		Document document = SAXReaderUtil.read(content, true);
 
 		Element rootElement = document.getRootElement();
 
-		_isValidName(fileName, rootElement);
+		validateDocument(fileName, rootElement);
 
 		return rootElement;
 	}
@@ -73,8 +73,8 @@ public class SeleniumBuilderFileUtil {
 		return FileUtil.read(getBaseDir() + "/" + fileName);
 	}
 
-	public void writeFile(
-		String fileName, String content, boolean format) throws Exception {
+	public void writeFile(String fileName, String content, boolean format)
+		throws Exception {
 
 		File file = new File(getBaseDir() + "-generated/" + fileName);
 
@@ -88,53 +88,46 @@ public class SeleniumBuilderFileUtil {
 		}
 	}
 
-	private void _isValidName(String fileName, Element rootElement)
+	protected void validateDocument(String fileName, Element rootElement)
 		throws Exception {
 
 		int x = fileName.lastIndexOf(StringPool.SLASH);
 		int y = fileName.indexOf(CharPool.PERIOD);
 
-		String fileObjectName = fileName.substring(x + 1, y);
+		String shortFileName = fileName.substring(x + 1, y);
 
 		if (fileName.endsWith(".path")) {
-			Element head = rootElement.element("head");
-			Element title = head.element("title");
+			Element headElement = rootElement.element("head");
 
-			String titleText = title.getText();
+			Element titleElement = headElement.element("title");
 
-			Element body = rootElement.element("body");
-			Element table = body.element("table");
-			Element thead = table.element("thead");
-			Element tr = thead.element("tr");
-			Element td = tr.element("td");
+			String title = titleElement.getText();
 
-			String tdText = td.getText();
-
-			if ((titleText == null) || (tdText == null) ||
-				!fileObjectName.equals(titleText) ||
-				!fileObjectName.equals(tdText)) {
-
-				System.out.println(fileName + " has an invalid name");
+			if ((title == null) || !shortFileName.equals(title)) {
+				System.out.println(fileName + " has an <title>");
 			}
-		}
-		else if (fileName.endsWith(".testcase") ||
-				 fileName.endsWith(".testsuite")) {
 
-			String elementObjectName = rootElement.attributeValue("name");
+			Element bodyElement = rootElement.element("body");
 
-			if ((elementObjectName == null) ||
-				!elementObjectName.equals(fileObjectName)) {
+			Element tableElement = bodyElement.element("table");
 
-				System.out.println(fileName + " has an invalid name");
+			Element theadElement = tableElement.element("thead");
+
+			Element trElement = theadElement.element("tr");
+
+			Element tdElement = trElement.element("td");
+
+			String tdText = tdElement.getText();
+
+			if ((tdText == null) || !shortFileName.equals(tdText)) {
+				System.out.println(fileName + " has an invalid <td>");
 			}
 		}
 		else {
-			String elementObjectName = rootElement.attributeValue("object");
+			String name = rootElement.attributeValue("name");
 
-			if ((elementObjectName == null) ||
-				!elementObjectName.equals(fileObjectName)) {
-
-				System.out.println(fileName + " has an invalid name");
+			if ((name == null) || !name.equals(shortFileName)) {
+				System.out.println(fileName + " has an invalid name=\"\"");
 			}
 		}
 	}
