@@ -3677,7 +3677,7 @@
 		<project-url>http://glassfish.java.net</project-url>
 		<licenses>
 			<license>
-				<license-name>CDDL+GPL</license-name>
+				<license-name>CDDL 1.0</license-name>
 			</license>
 		</licenses>
 	</library>
