@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.model.User;
-import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.persistence.UserUtil;
 import com.liferay.portal.util.PortletKeys;
@@ -133,10 +132,6 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			MBThreadLocalServiceUtil.deleteThreads(
 				portletDataContext.getScopeGroupId(),
 				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
-
-			PortletFileRepositoryUtil.deletePortletRepository(
-				portletDataContext.getScopeGroupId(),
-				PortletKeys.MESSAGE_BOARDS);
 		}
 
 		return null;

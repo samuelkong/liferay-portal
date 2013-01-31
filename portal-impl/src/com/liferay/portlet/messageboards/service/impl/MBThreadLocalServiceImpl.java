@@ -29,6 +29,7 @@ import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.messageboards.NoSuchCategoryException;
 import com.liferay.portlet.messageboards.SplitThreadException;
 import com.liferay.portlet.messageboards.model.MBCategory;
@@ -237,6 +238,11 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 			if (includeTrashedEntries || !thread.isInTrash()) {
 				deleteThread(thread);
 			}
+		}
+
+		if (mbThreadPersistence.countByGroupId(groupId) == 0) {
+			PortletFileRepositoryUtil.deletePortletRepository(
+				groupId, PortletKeys.MESSAGE_BOARDS);
 		}
 	}
 
