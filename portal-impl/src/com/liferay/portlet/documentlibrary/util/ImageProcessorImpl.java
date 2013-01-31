@@ -35,6 +35,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 
+import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 
 import java.io.File;
@@ -274,7 +275,9 @@ public class ImageProcessorImpl
 				return;
 			}
 
-			if (renderedImage.getColorModel().getNumColorComponents() == 4) {
+			ColorModel colorModel = renderedImage.getColorModel(); 
+
+			if (colorModel.getNumColorComponents() == 4) {
 				Future<RenderedImage> future = ImageToolUtil.convertCMYKtoRGB(
 					bytes, imageBag.getType());
 
