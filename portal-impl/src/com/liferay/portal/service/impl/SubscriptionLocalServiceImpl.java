@@ -34,6 +34,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * The subscription local service is a framework responsible for accessing,
+ * creating, and deleting notification subscriptions to entities. It handles
+ * subscriptions to entities found in many different places in the portal,
+ * including message boards, blogs, and documents and media.
+ *
  * @author Charles May
  * @author Zsolt Berentey
  */
@@ -41,24 +46,26 @@ public class SubscriptionLocalServiceImpl
 	extends SubscriptionLocalServiceBaseImpl {
 
 	/**
-	 * Subscribe the user to an entity with an instant frequency for
-	 * notifications.
+	 * Subscribes the user to the entity, notifying him the instant the entity
+	 * is created, deleted, or modified.
 	 *
 	 * <p>
-	 * If there is no assetEntry with the className and classPK a new one will
-	 * be created.
+	 * If there is no asset entry with the class name and class PK a new asset
+	 * entry is created.
+	 * </p>
 	 *
 	 * <p>
-	 * A social activity for the subscription is created using the assetEntry
-	 * associated with the className and classPK or the recently created
-	 * AssetEntry.
+	 * A social activity for the subscription is created using the asset entry
+	 * associated with the class name and class PK, or the newly created asset
+	 * entry.
+	 * </p>
 	 *
 	 * @param  userId the primary key of the user
-	 * @param  groupId the group ID of entity
+	 * @param  groupId the primary key of the entity's group
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
+	 * @param  classPK the primary key of the entity's instance
 	 * @return the subscription
-	 * @throws PortalException if the user or group is not found
+	 * @throws PortalException if a matching user or group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public Subscription addSubscription(
@@ -71,25 +78,26 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Subscribe the user to an entity with an instant frequency for
-	 * notifications.
+	 * Subscribes the user to the entity, notifying him at the given frequency.
 	 *
 	 * <p>
-	 * If there is no assetEntry with the className and classPK a new one will
-	 * be created.
+	 * If there is no asset entry with the class name and class PK a new asset
+	 * entry is created.
+	 * </p>
 	 *
 	 * <p>
-	 * A social activity for the subscription is created using the assetEntry
-	 * associated with the className and classPK or the recently created
-	 * AssetEntry.
+	 * A social activity for the subscription is created using the asset entry
+	 * associated with the class name and class PK, or the newly created asset
+	 * entry.
+	 * </p>
 	 *
 	 * @param  userId the primary key of the user
-	 * @param  groupId the group ID of the entity
+	 * @param  groupId the primary key of the entity's group
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
+	 * @param  classPK the primary key of the entity's instance
 	 * @param  frequency the frequency for notifications
 	 * @return the subscription
-	 * @throws PortalException if the user or group is not found
+	 * @throws PortalException if a matching user or group could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public Subscription addSubscription(
@@ -167,13 +175,12 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Deletes the subscription with the primary key from the database. A social
-	 * activity with the unsubscribe action is created.
+	 * Deletes the subscription with the primary key. A social activity with the
+	 * unsubscribe action is created.
 	 *
 	 * @param  subscriptionId the primary key of the subscription
 	 * @return the subscription that was removed
-	 * @throws PortalException if a subscription with the primary key could not
-	 *         be found
+	 * @throws PortalException if a portal exception occurred
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -187,13 +194,13 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Deletes the subscription of a user to an entity from the database. A
-	 * social activity with the unsubscribe action is created.
+	 * Deletes the user's subscription to the entity. A social activity with the
+	 * unsubscribe action is created.
 	 *
 	 * @param  userId the primary key of the user
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
-	 * @throws PortalException if the user or the subscription could not be
+	 * @param  classPK the primary key of the entity's instance
+	 * @throws PortalException if a matching user or subscription could not be
 	 *         found
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -210,13 +217,12 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Deletes the subscription from the database. A social activity with the
-	 * unsubscribe action is created.
+	 * Deletes the subscription. A social activity with the unsubscribe action
+	 * is created.
 	 *
 	 * @param  subscription the subscription
 	 * @return the subscription that was removed
-	 * @throws PortalException if the user or group associated to the
-	 *         subscription are not found
+	 * @throws PortalException if a portal exception occurred
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
@@ -249,8 +255,7 @@ public class SubscriptionLocalServiceImpl
 	 * Deletes all the subscriptions of the user.
 	 *
 	 * @param  userId the primary key of the user
-	 * @throws PortalException if the user or group associated to the
-	 *         subscription are not found
+	 * @throws PortalException if a portal exception occurred
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void deleteSubscriptions(long userId)
@@ -269,9 +274,8 @@ public class SubscriptionLocalServiceImpl
 	 *
 	 * @param  companyId the primary key of the company
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
-	 * @throws PortalException if the user or group associated to any
-	 *         subscription are not found
+	 * @param  classPK the primary key of the entity's instance
+	 * @throws PortalException if a portal exception occurred
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void deleteSubscriptions(
@@ -289,14 +293,14 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Returns the subscription of the user to an entity.
+	 * Returns the subscription of the user to the entity.
 	 *
 	 * @param  companyId the primary key of the company
 	 * @param  userId the primary key of the user
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
-	 * @return the subscription
-	 * @throws PortalException if the subscription could not be found
+	 * @param  classPK the primary key of the entity's instance
+	 * @return the subscription of the user to the entity
+	 * @throws PortalException if a matching subscription could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public Subscription getSubscription(
@@ -310,13 +314,13 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Returns all the subscription of the user to several entities.
+	 * Returns all the subscriptions of the user to the entities.
 	 *
 	 * @param  companyId the primary key of the company
 	 * @param  userId the primary key of the user
 	 * @param  className the entity's class name
 	 * @param  classPKs the primary key of the entities
-	 * @return the subscriptions
+	 * @return the subscriptions of the user to the entities
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<Subscription> getSubscriptions(
@@ -334,8 +338,8 @@ public class SubscriptionLocalServiceImpl
 	 *
 	 * @param  companyId the primary key of the company
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
-	 * @return the subscriptions
+	 * @param  classPK the primary key of the entity's instance
+	 * @return the subscriptions to the entity
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<Subscription> getSubscriptions(
@@ -354,7 +358,8 @@ public class SubscriptionLocalServiceImpl
 	 * @param  userId the primary key of the user
 	 * @param  start the lower bound of the range of results
 	 * @param  end the upper bound of the range of results (not inclusive)
-	 * @return the range of all the subscriptions of the user
+	 * @param
+	 * @return the range of subscriptions of the user
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<Subscription> getUserSubscriptions(
@@ -367,11 +372,12 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Returns all the subscriptions of the user to an entity's class name.
+	 * Returns all the subscriptions of the user to the entities with the class
+	 * name.
 	 *
 	 * @param  userId the primary key of the user
 	 * @param  className the entity's class name
-	 * @return the subscriptions
+	 * @return the subscriptions of the user to the entities with the class name
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<Subscription> getUserSubscriptions(
@@ -400,7 +406,7 @@ public class SubscriptionLocalServiceImpl
 	 * @param  companyId the primary key of the company
 	 * @param  userId the primary key of the user
 	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity
+	 * @param  classPK the primary key of the entity's instance
 	 * @return <code>true</code> if the user is subscribed to the entity;
 	 *         <code>false</code> otherwise
 	 * @throws SystemException if a system exception occurred
