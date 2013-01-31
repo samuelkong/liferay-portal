@@ -71,16 +71,18 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences)
 		throws Exception {
 
-		if (!portletDataContext.addPrimaryKey(
+		if (portletDataContext.addPrimaryKey(
 				BookmarksPortletDataHandler.class, "deleteData")) {
 
-			BookmarksFolderLocalServiceUtil.deleteFolders(
-				portletDataContext.getScopeGroupId());
-
-			BookmarksEntryLocalServiceUtil.deleteEntries(
-				portletDataContext.getScopeGroupId(),
-				BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+			return null;
 		}
+
+		BookmarksFolderLocalServiceUtil.deleteFolders(
+			portletDataContext.getScopeGroupId());
+
+		BookmarksEntryLocalServiceUtil.deleteEntries(
+			portletDataContext.getScopeGroupId(),
+			BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return null;
 	}
