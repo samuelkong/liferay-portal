@@ -159,21 +159,12 @@ String keywords = ParamUtil.getString(request, "keywords");
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</liferay-portlet:renderURL>
 
-
-					<%
-					String folderImage = "folder_empty";
-
-					if (BookmarksFolderLocalServiceUtil.getFoldersAndEntriesCount(folder.getGroupId(), folder.getFolderId(), WorkflowConstants.STATUS_ANY) > 0) {
-						folderImage = "folder_full_document";
-					}
-					%>
-
 					<liferay-ui:search-container-column-text
 						name="entry"
 						title="<%= folder.getDescription() %>"
 					>
 						<liferay-ui:icon
-							image="<%= folderImage %>"
+							image='<%= (BookmarksFolderLocalServiceUtil.getFoldersAndEntriesCount(folder.getGroupId(), folder.getFolderId(), WorkflowConstants.STATUS_ANY) > 0) ? "folder_full_document" : "folder_empty" %>'
 							label="<%= true %>"
 							message="<%= folder.getName() %>"
 							url="<%= rowURL %>"
