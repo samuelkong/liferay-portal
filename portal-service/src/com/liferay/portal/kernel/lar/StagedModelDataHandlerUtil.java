@@ -23,40 +23,52 @@ import com.liferay.portal.model.StagedModel;
  */
 public class StagedModelDataHandlerUtil {
 
-	public static <T extends StagedModel> void exportModelData(
-			T stagedModel, PortletDataContext portletDataContext,
-			Element... elements)
+	public static <T extends StagedModel> void exportStagedModel(
+			PortletDataContext portletDataContext, Element element,
+			T stagedModel)
 		throws PortletDataException {
 
 		StagedModelDataHandler<T> stagedModelDataHandler =
 			_getStagedModelDataHandler(stagedModel);
 
-		stagedModelDataHandler.exportModelData(
-			stagedModel, portletDataContext, elements);
+		stagedModelDataHandler.exportStagedModel(
+			portletDataContext, element, stagedModel);
 	}
 
-	public static void importModelData(
-			String className, Element stagedModelElement,
-			PortletDataContext portletDataContext)
+	public static <T extends StagedModel> void exportStagedModel(
+			PortletDataContext portletDataContext, Element[] elements,
+			T stagedModel)
+		throws PortletDataException {
+
+		StagedModelDataHandler<T> stagedModelDataHandler =
+			_getStagedModelDataHandler(stagedModel);
+
+		stagedModelDataHandler.exportStagedModel(
+			portletDataContext, elements, stagedModel);
+	}
+
+	public static <T extends StagedModel> void importStagedModel(
+			PortletDataContext portletDataContext, String path, T stagedModel)
+		throws PortletDataException {
+
+		StagedModelDataHandler<T> stagedModelDataHandler =
+			_getStagedModelDataHandler(stagedModel);
+
+		stagedModelDataHandler.importStagedModel(
+			portletDataContext, path, stagedModel);
+	}
+
+	public static void importStagedModel(
+			String className, PortletDataContext portletDataContext,
+			Element stagedModelElement)
 		throws PortletDataException {
 
 		StagedModelDataHandler<?> stagedModelDataHandler =
 			StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
 				className);
 
-		stagedModelDataHandler.importModelData(
-			stagedModelElement, portletDataContext);
-	}
-
-	public static <T extends StagedModel> void importModelData(
-			T stagedModel, String path, PortletDataContext portletDataContext)
-		throws PortletDataException {
-
-		StagedModelDataHandler<T> stagedModelDataHandler =
-			_getStagedModelDataHandler(stagedModel);
-
-		stagedModelDataHandler.importModelData(
-			stagedModel, path, portletDataContext);
+		stagedModelDataHandler.importStagedModel(
+			portletDataContext, stagedModelElement);
 	}
 
 	private static <T extends StagedModel> StagedModelDataHandler<T>
