@@ -34,11 +34,9 @@ import java.util.Map;
 public class BookmarksFolderStagedModelDataHandler
 	extends BaseStagedModelDataHandler<BookmarksFolder> {
 
-	public static final String CLASS_NAME = BookmarksFolder.class.getName();
-
 	@Override
 	public String getClassName() {
-		return CLASS_NAME;
+		return BookmarksFolder.class.getName();
 	}
 
 	@Override

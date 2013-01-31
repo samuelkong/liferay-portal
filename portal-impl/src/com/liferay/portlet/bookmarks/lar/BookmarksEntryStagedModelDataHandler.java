@@ -36,11 +36,9 @@ import java.util.Map;
 public class BookmarksEntryStagedModelDataHandler
 	extends BaseStagedModelDataHandler<BookmarksEntry> {
 
-	public static final String CLASS_NAME = BookmarksEntry.class.getName();
-
 	@Override
 	public String getClassName() {
-		return CLASS_NAME;
+		return BookmarksEntry.class.getName();
 	}
 
 	@Override
@@ -50,7 +48,6 @@ public class BookmarksEntryStagedModelDataHandler
 		throws Exception {
 
 		Element foldersElement = elements[0];
-		Element entriesElement = elements[1];
 
 		if (entry.getFolderId() !=
 				BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
@@ -58,6 +55,8 @@ public class BookmarksEntryStagedModelDataHandler
 			StagedModelDataHandlerUtil.exportStagedModel(
 				portletDataContext, foldersElement, entry.getFolder());
 		}
+
+		Element entriesElement = elements[1];
 
 		Element entryElement = entriesElement.addElement("entry");
 
