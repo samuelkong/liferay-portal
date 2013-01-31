@@ -3674,7 +3674,7 @@
 		<file-name>osgi/lib/common/portal/javax.servlet.jsp.jstl.jar</file-name>
 		<version>1.2.0.v201105211821</version>
 		<project-name>Glassfish</project-name>
-		<project-url>http://glassfish.java.net/</project-url>
+		<project-url>http://glassfish.java.net</project-url>
 		<licenses>
 			<license>
 				<license-name>CDDL+GPL</license-name>
@@ -3685,7 +3685,7 @@
 		<file-name>osgi/lib/common/portal/jetty-continuation.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3696,7 +3696,7 @@
 		<file-name>osgi/lib/common/portal/jetty-http.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3707,7 +3707,7 @@
 		<file-name>osgi/lib/common/portal/jetty-io.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3718,7 +3718,7 @@
 		<file-name>osgi/lib/common/portal/jetty-security.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3729,7 +3729,7 @@
 		<file-name>osgi/lib/common/portal/jetty-server.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3740,7 +3740,7 @@
 		<file-name>osgi/lib/common/portal/jetty-servlet.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3751,7 +3751,7 @@
 		<file-name>osgi/lib/common/portal/jetty-util.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3762,7 +3762,7 @@
 		<file-name>osgi/lib/common/portal/jetty-websocket.jar</file-name>
 		<version>7.6.7.v20120910</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://download.eclipse.org/jetty/</project-url>
+		<project-url>http://download.eclipse.org/jetty</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3773,7 +3773,7 @@
 		<file-name>osgi/lib/common/portal/org.eclipse.gemini.mgmt.jar</file-name>
 		<version>1.0.1.RELEASE</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://www.eclipse.org/gemini/management/</project-url>
+		<project-url>http://www.eclipse.org/gemini/management</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
@@ -3784,7 +3784,7 @@
 		<file-name>osgi/lib/common/portal/org.phidias.compile.jar</file-name>
 		<version>0.2.1</version>
 		<project-name>Jetty</project-name>
-		<project-url>http://www.eclipse.org/gemini/management/</project-url>
+		<project-url>http://www.eclipse.org/gemini/management</project-url>
 		<licenses>
 			<license>
 				<license-name>Apache License 2.0</license-name>
