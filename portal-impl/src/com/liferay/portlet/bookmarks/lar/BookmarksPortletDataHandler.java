@@ -135,6 +135,12 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext.getScopeGroupId());
 
 		for (BookmarksFolder folder : folders) {
+			if (!portletDataContext.isWithinDateRange(
+					folder.getModifiedDate())) {
+
+				continue;
+			}
+
 			StagedModelDataHandlerUtil.exportStagedModel(
 				portletDataContext, foldersElement, folder);
 		}
@@ -144,6 +150,12 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		for (BookmarksEntry entry : entries) {
+			if (!portletDataContext.isWithinDateRange(
+					entry.getModifiedDate())) {
+
+				continue;
+			}
+
 			StagedModelDataHandlerUtil.exportStagedModel(
 				portletDataContext,
 				new Element[] {foldersElement, entriesElement}, entry);
@@ -198,10 +210,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			PortletDataContext portletDataContext, Element foldersElement,
 			Element entriesElement, BookmarksEntry entry)
 		throws Exception {
-
-		if (!portletDataContext.isWithinDateRange(entry.getModifiedDate())) {
-			return;
-		}
 
 		if (foldersElement != null) {
 			StagedModelDataHandlerUtil.exportStagedModel(
