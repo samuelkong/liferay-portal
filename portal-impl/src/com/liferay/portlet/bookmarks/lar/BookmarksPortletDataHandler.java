@@ -44,6 +44,8 @@ import javax.portlet.PortletPreferences;
  * @author Bruno Farache
  * @author Raymond Augé
  * @author Juan Fernández
+ * @author Mate Thurzo
+ * @author Daniel Kocsis
  */
 public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
@@ -142,7 +144,9 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		for (BookmarksEntry entry : entries) {
-			exportEntry(portletDataContext, null, entriesElement, entry);
+			StagedModelDataHandlerUtil.exportStagedModel(
+				portletDataContext,
+				new Element[] {foldersElement, entriesElement}, entry);
 		}
 
 		return document.formattedString();
@@ -191,7 +195,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksEntry entry =
 				(BookmarksEntry)portletDataContext.getZipEntryAsObject(path);
 
-			importEntry(portletDataContext, entryElement, entry);
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, path, entry);
 		}
 
 		return null;
