@@ -403,7 +403,7 @@ if ((row == null) && ((portletName.equals(PortletKeys.DOCUMENT_LIBRARY_DISPLAY) 
 </liferay-util:buffer>
 
 <c:choose>
-	<c:when test="<%= !showMinimalActionButtons %>">
+	<c:when test="<%= portletName.equals(PortletKeys.DOCUMENT_LIBRARY_DISPLAY) && !showMinimalActionButtons %>">
 
 		<%= iconMenu %>
 
