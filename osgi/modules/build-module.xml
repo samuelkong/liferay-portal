@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<project name="build-module">
+	<property name="project.dir" value="../../.." />
+
+	<import file="../../build-common-java.xml" />
+</project>

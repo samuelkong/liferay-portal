@@ -3,12 +3,16 @@
 <project name="modules" basedir="." default="compile" xmlns:antelope="antlib:ise.antelope.tasks">
 	<property name="project.dir" value="../.." />
 
-	<import file="../../build-common-java.xml" />
+	<import file="${project.dir}/build-common.xml" />
 
 	<target name="clean">
 		<antcall target="loop-modules">
 			<param name="loop.modules.cmd" value="clean-module" />
 		</antcall>
+	</target>
+
+	<target name="clean-module">
+		<ant dir="${project.dir}/osgi/modules/${module.name}" target="clean" inheritAll="false" />
 	</target>
 
 	<target name="compile">
@@ -17,15 +21,44 @@
 		</antcall>
 	</target>
 
+	<target name="compile-module">
+		<ant dir="${project.dir}/osgi/modules/${module.name}" target="compile" inheritAll="false" />
+	</target>
+
 	<target name="deploy">
 		<antcall target="loop-modules">
 			<param name="loop.modules.cmd" value="deploy-module" />
 		</antcall>
 	</target>
 
+	<target name="deploy-module">
+		<ant dir="${project.dir}/osgi/modules/${module.name}" target="deploy" inheritAll="false" />
+	</target>
+
 	<target name="jar">
 		<antcall target="loop-modules">
 			<param name="loop.modules.cmd" value="jar-module" />
 		</antcall>
+	</target>
+
+	<target name="jar-module">
+		<ant dir="${project.dir}/osgi/modules/${module.name}" target="jar" inheritAll="false" />
+	</target>
+
+	<target name="loop-modules">
+		<for param="module.name">
+			<path>
+				<dirset dir="${project.dir}/osgi/modules" includes="*" />
+			</path>
+			<sequential>
+				<antelope:stringutil string="@{module.name}" property="module.name.unix">
+					<antelope:replace regex="\\" replacement="/" />
+				</antelope:stringutil>
+
+				<antelope:grep in="${module.name.unix}" regex="(.*/)(.*)" group="2" property="module.name" />
+
+				<antcall target="${loop.modules.cmd}" />
+			</sequential>
+		</for>
 	</target>
 </project>

@@ -437,15 +437,7 @@ Please set the environment variable ANT_OPTS to the recommended value of
 		</sequential>
 	</macrodef>
 
-	<target name="clean-module">
-		<ant dir="${project.dir}/osgi/modules/${module.name}" target="clean" inheritAll="false" />
-	</target>
-
 	<target name="compile">
-	</target>
-
-	<target name="compile-module">
-		<ant dir="${project.dir}/osgi/modules/${module.name}" target="compile" inheritAll="false" />
 	</target>
 
 	<target name="compile-test">
@@ -513,10 +505,6 @@ Please set the environment variable ANT_OPTS to the recommended value of
 		</ant>
 	</target>
 
-	<target name="deploy-module">
-		<ant dir="${project.dir}/osgi/modules/${module.name}" target="deploy" inheritAll="false" />
-	</target>
-
 	<target name="format-javadoc">
 		<echo message="Run &quot;ant compile compile-test&quot; before using format-javadoc to generate @Override tags." />
 
@@ -557,27 +545,6 @@ Please set the environment variable ANT_OPTS to the recommended value of
 				</cobertura-instrument>
 			</then>
 		</if>
-	</target>
-
-	<target name="jar-module">
-		<ant dir="${project.dir}/osgi/modules/${module.name}" target="jar" inheritAll="false" />
-	</target>
-
-	<target name="loop-modules">
-		<for param="module.name">
-			<path>
-				<dirset dir="${project.dir}/osgi/modules" includes="*" />
-			</path>
-			<sequential>
-				<antelope:stringutil string="@{module.name}" property="module.name.unix">
-					<antelope:replace regex="\\" replacement="/" />
-				</antelope:stringutil>
-
-				<antelope:grep in="${module.name.unix}" regex="(.*/)(.*)" group="2" property="module.name" />
-
-				<antcall target="${loop.modules.cmd}" />
-			</sequential>
-		</for>
 	</target>
 
 	<target name="print-current-time">

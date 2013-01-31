@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 
-<project name="log-bridge" basedir="." default="compile" xmlns:antelope="antlib:ise.antelope.tasks">
-	<property name="project.dir" value="../../.." />
-
-	<import file="../../../build-common-java.xml" />
+<project name="log-bridge" basedir="." default="compile">
+	<import file="../build-module.xml" />
 
 	<property name="deploy.dir" value="${app.server.lib.portal.dir}" />
 	<property name="jar.file" value="${ant.project.name}" />
