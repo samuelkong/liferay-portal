@@ -40,6 +40,10 @@ public class WikiNodeImpl extends WikiNodeBaseImpl {
 	public long getAttachmentsFolderId()
 		throws PortalException, SystemException {
 
+		if (_attachmentsFolderId > 0) {
+			return _attachmentsFolderId;
+		}
+
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setAddGroupPermissions(true);
@@ -53,7 +57,9 @@ public class WikiNodeImpl extends WikiNodeBaseImpl {
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			String.valueOf(getNodeId()), serviceContext);
 
-		return folder.getFolderId();
+		_attachmentsFolderId = folder.getFolderId();
+
+		return _attachmentsFolderId;
 	}
 
 	public List<FileEntry> getDeletedAttachmentsFiles()
@@ -70,5 +76,7 @@ public class WikiNodeImpl extends WikiNodeBaseImpl {
 
 		return fileEntries;
 	}
+
+	private long _attachmentsFolderId;
 
 }
