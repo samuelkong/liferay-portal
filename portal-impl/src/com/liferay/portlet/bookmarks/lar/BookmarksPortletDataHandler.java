@@ -49,37 +49,20 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 	public BookmarksPortletDataHandler() {
 		setAlwaysExportable(true);
+		setExportControl(
+			new PortletDataHandlerBoolean(
+				NAMESPACE, "folders-and-entries", true, true));
+		setExportMetadataControl(
+			new PortletDataHandlerBoolean(
+				NAMESPACE, "bookmarks", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "categories"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
+		setImportControls(getExportControls());
+		setImportMetadataControls(getExportMetadataControls());
 		setPublishToLiveByDefault(true);
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_foldersAndEntries
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				NAMESPACE, "bookmarks", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_foldersAndEntries
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				NAMESPACE, "bookmarks", true, _metadataControls)
-		};
 	}
 
 	@Override
@@ -206,16 +189,5 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 		return null;
 	}
-
-	private static PortletDataHandlerBoolean _foldersAndEntries =
-		new PortletDataHandlerBoolean(
-			NAMESPACE, "folders-and-entries", true, true);
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(NAMESPACE, "categories"),
-			new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(NAMESPACE, "tags")
-		};
 
 }

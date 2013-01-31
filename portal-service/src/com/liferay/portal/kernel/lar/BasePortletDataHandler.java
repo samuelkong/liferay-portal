@@ -89,23 +89,23 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 	}
 
 	public String[] getDataPortletPreferences() {
-		return new String[0];
+		return _dataPortletPreferences;
 	}
 
 	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[0];
+		return _exportControls;
 	}
 
 	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[0];
+		return _exportMetadataControls;
 	}
 
 	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[0];
+		return _importControls;
 	}
 
 	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[0];
+		return _importMetadataControls;
 	}
 
 	public PortletPreferences importData(
@@ -170,6 +170,52 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 		return _publishToLiveByDefault;
 	}
 
+	public void setDataPortletPreferences(String[] dataPortletPreferences) {
+		_dataPortletPreferences = dataPortletPreferences;
+	}
+
+	public void setExportControl(PortletDataHandlerControl exportControl) {
+		setExportControls(new PortletDataHandlerControl[] {exportControl});
+	}
+
+	public void setExportControls(PortletDataHandlerControl[] exportControls) {
+		_exportControls = exportControls;
+	}
+
+	public void setExportMetadataControl(
+		PortletDataHandlerControl exportMetadataControl) {
+
+		setExportMetadataControls(
+			new PortletDataHandlerControl[] {exportMetadataControl});
+	}
+
+	public void setExportMetadataControls(
+		PortletDataHandlerControl[] exportMetadataControls) {
+
+		_exportMetadataControls = exportMetadataControls;
+	}
+
+	public void setImportControl(PortletDataHandlerControl importControl) {
+		setImportControls(new PortletDataHandlerControl[] {importControl});
+	}
+
+	public void setImportControls(PortletDataHandlerControl[] importControls) {
+		_importControls = importControls;
+	}
+
+	public void setImportMetadataControl(
+		PortletDataHandlerControl importMetadataControl) {
+
+		setImportMetadataControls(
+			new PortletDataHandlerControl[] {importMetadataControl});
+	}
+
+	public void setImportMetadataControls(
+		PortletDataHandlerControl[] importMetadataControls) {
+
+		_importMetadataControls = importMetadataControls;
+	}
+
 	protected PortletPreferences doDeleteData(
 			PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences)
@@ -216,6 +262,15 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 	private boolean _alwaysExportable;
 	private boolean _alwaysStaged;
 	private boolean _dataLocalized;
+	private String[] _dataPortletPreferences = new String[0];
+	private PortletDataHandlerControl[] _exportControls =
+		new PortletDataHandlerControl[0];
+	private PortletDataHandlerControl[] _exportMetadataControls =
+		new PortletDataHandlerControl[0];
+	private PortletDataHandlerControl[] _importControls =
+		new PortletDataHandlerControl[0];
+	private PortletDataHandlerControl[] _importMetadataControls =
+		new PortletDataHandlerControl[0];
 	private boolean _publishToLiveByDefault;
 
 }
