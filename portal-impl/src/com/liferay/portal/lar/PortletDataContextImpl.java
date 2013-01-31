@@ -17,6 +17,9 @@ package com.liferay.portal.lar;
 import com.liferay.portal.NoSuchRoleException;
 import com.liferay.portal.NoSuchTeamException;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.PortletDataContext;
@@ -385,6 +388,23 @@ public class PortletDataContextImpl implements PortletDataContext {
 		String className, long classPK, List<MBMessage> messages) {
 
 		_commentsMap.put(getPrimaryKeyString(className, classPK), messages);
+	}
+
+	/**
+	 * @see #isWithinDateRange(Date)
+	 */
+	public void addDateRangeCriteria(
+		DynamicQuery dynamicQuery, String modifiedDatePropertyName) {
+
+		if (!hasDateRange()) {
+			return;
+		}
+
+		Property modifiedDateProperty = PropertyFactoryUtil.forName(
+			modifiedDatePropertyName);
+
+		dynamicQuery.add(modifiedDateProperty.ge(_startDate));
+		dynamicQuery.add(modifiedDateProperty.lt(_endDate));
 	}
 
 	public void addExpando(
@@ -1237,6 +1257,9 @@ public class PortletDataContextImpl implements PortletDataContext {
 		return _privateLayout;
 	}
 
+	/**
+	 * @see #addDateRangeCriteria(DynamicQuery, String)
+	 */
 	public boolean isWithinDateRange(Date modifiedDate) {
 		if (!hasDateRange()) {
 			return true;

@@ -14,7 +14,9 @@
 
 package com.liferay.portlet.bookmarks.lar;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
@@ -28,9 +30,8 @@ import com.liferay.portlet.bookmarks.model.BookmarksFolder;
 import com.liferay.portlet.bookmarks.model.BookmarksFolderConstants;
 import com.liferay.portlet.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.portlet.bookmarks.service.BookmarksFolderLocalServiceUtil;
-import com.liferay.portlet.bookmarks.service.persistence.BookmarksFolderUtil;
-
-import java.util.List;
+import com.liferay.portlet.bookmarks.service.persistence.BookmarksEntryActionableDynamicQuery;
+import com.liferay.portlet.bookmarks.service.persistence.BookmarksFolderActionableDynamicQuery;
 
 import javax.portlet.PortletPreferences;
 
@@ -108,7 +109,7 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	protected String doExportData(
-			PortletDataContext portletDataContext, String portletId,
+			final PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences)
 		throws Exception {
 
@@ -123,39 +124,58 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		rootElement.addAttribute(
 			"group-id", String.valueOf(portletDataContext.getScopeGroupId()));
 
-		Element foldersElement = rootElement.addElement("folders");
-		Element entriesElement = rootElement.addElement("entries");
+		final Element foldersElement = rootElement.addElement("folders");
 
-		List<BookmarksFolder> folders = BookmarksFolderUtil.findByGroupId(
+		ActionableDynamicQuery foldersActionableDynamicQuery =
+			new BookmarksFolderActionableDynamicQuery() {
+
+			@Override
+			protected void addCriteria(DynamicQuery dynamicQuery) {
+				portletDataContext.addDateRangeCriteria(
+					dynamicQuery, "modifiedDate");
+			}
+
+			@Override
+			protected void performAction(Object object) throws PortalException {
+				BookmarksFolder folder = (BookmarksFolder)object;
+
+				StagedModelDataHandlerUtil.exportStagedModel(
+					portletDataContext, foldersElement, folder);
+			}
+
+		};
+
+		foldersActionableDynamicQuery.setGroupId(
 			portletDataContext.getScopeGroupId());
 
-		for (BookmarksFolder folder : folders) {
-			if (!portletDataContext.isWithinDateRange(
-					folder.getModifiedDate())) {
+		foldersActionableDynamicQuery.performActions();
 
-				continue;
+		final Element entriesElement = rootElement.addElement("entries");
+
+		ActionableDynamicQuery entriesActionableDynamicQuery =
+			new BookmarksEntryActionableDynamicQuery() {
+
+			@Override
+			protected void addCriteria(DynamicQuery dynamicQuery) {
+				portletDataContext.addDateRangeCriteria(
+					dynamicQuery, "modifiedDate");
 			}
 
-			StagedModelDataHandlerUtil.exportStagedModel(
-				portletDataContext, foldersElement, folder);
-		}
+			@Override
+			protected void performAction(Object object) throws PortalException {
+				BookmarksEntry entry = (BookmarksEntry)object;
 
-		List<BookmarksEntry> entries =
-			BookmarksEntryLocalServiceUtil.getGroupEntries(
-				portletDataContext.getScopeGroupId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		for (BookmarksEntry entry : entries) {
-			if (!portletDataContext.isWithinDateRange(
-					entry.getModifiedDate())) {
-
-				continue;
+				StagedModelDataHandlerUtil.exportStagedModel(
+					portletDataContext,
+					new Element[] {foldersElement, entriesElement}, entry);
 			}
 
-			StagedModelDataHandlerUtil.exportStagedModel(
-				portletDataContext,
-				new Element[] {foldersElement, entriesElement}, entry);
-		}
+		};
+
+		entriesActionableDynamicQuery.setGroupId(
+			portletDataContext.getScopeGroupId());
+
+		entriesActionableDynamicQuery.performActions();
 
 		return document.formattedString();
 	}
