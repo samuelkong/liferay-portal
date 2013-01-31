@@ -1,5 +1,5 @@
 Bundle-SymbolicName: portal-impl
-Export-Package: \
+Export-Package:\
 	com.liferay.*,\
 	content,\
 	custom-sql,\
@@ -7,6 +7,6 @@ Export-Package: \
 	resource-actions
 Import-Package: *;resolution:=optional
 Include-Resource: classes
-Private-Package: \
+Private-Package:\
 	com.liferay.portal.module.framework,\
 	*
