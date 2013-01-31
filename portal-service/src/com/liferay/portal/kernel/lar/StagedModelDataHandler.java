@@ -23,19 +23,24 @@ import com.liferay.portal.model.StagedModel;
  */
 public interface StagedModelDataHandler<T extends StagedModel> {
 
-	public void exportModelData(
-			T stagedModel, PortletDataContext portletDataContext,
-			Element... elements)
+	public void exportStagedModel(
+			PortletDataContext portletDataContext, Element element,
+			T stagedModel)
+		throws PortletDataException;
+
+	public void exportStagedModel(
+			PortletDataContext portletDataContext, Element[] elements,
+			T stagedModel)
 		throws PortletDataException;
 
 	public String getClassName();
 
-	public void importModelData(
-			Element stagedModelElement, PortletDataContext portletDataContext)
+	public void importStagedModel(
+			PortletDataContext portletDataContext, Element stagedModelElement)
 		throws PortletDataException;
 
-	public void importModelData(
-			T stagedModel, String path, PortletDataContext portletDataContext)
+	public void importStagedModel(
+			PortletDataContext portletDataContext, String path, T stagedModel)
 		throws PortletDataException;
 
 }
