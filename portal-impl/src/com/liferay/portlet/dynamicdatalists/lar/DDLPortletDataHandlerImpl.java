@@ -26,7 +26,7 @@ import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.dynamicdatalists.model.DDLRecordSet;
 import com.liferay.portlet.dynamicdatalists.service.DDLRecordSetLocalServiceUtil;
 import com.liferay.portlet.dynamicdatalists.service.persistence.DDLRecordSetUtil;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 
@@ -62,7 +62,7 @@ public class DDLPortletDataHandlerImpl
 
 		DDMStructure ddmStructure = recordSet.getDDMStructure();
 
-		DDMPortletDataHandlerImpl.exportStructure(
+		DDMPortletDataHandler.exportStructure(
 			portletDataContext, ddmStructuresElement, ddmStructure);
 
 		Element ddmTemplatesElement = recordSetElement.addElement(
@@ -71,7 +71,7 @@ public class DDLPortletDataHandlerImpl
 		List<DDMTemplate> ddmTemplates = ddmStructure.getTemplates();
 
 		for (DDMTemplate ddmTemplate : ddmTemplates) {
-			DDMPortletDataHandlerImpl.exportTemplate(
+			DDMPortletDataHandler.exportTemplate(
 				portletDataContext, ddmTemplatesElement, ddmTemplate);
 		}
 	}
@@ -259,7 +259,7 @@ public class DDLPortletDataHandlerImpl
 			ddmStructureReferencesElement.elements("structure");
 
 		for (Element ddmStructureElement : ddmStructureElements) {
-			DDMPortletDataHandlerImpl.importStructure(
+			DDMPortletDataHandler.importStructure(
 				portletDataContext, ddmStructureElement);
 		}
 	}
@@ -273,7 +273,7 @@ public class DDLPortletDataHandlerImpl
 			ddmTemplateReferencesElement.elements("template");
 
 		for (Element ddmTemplateElement : ddmTemplateElements) {
-			DDMPortletDataHandlerImpl.importTemplate(
+			DDMPortletDataHandler.importTemplate(
 				portletDataContext, ddmTemplateElement);
 		}
 	}

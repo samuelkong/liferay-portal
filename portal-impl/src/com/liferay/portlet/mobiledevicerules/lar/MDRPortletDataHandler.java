@@ -56,7 +56,7 @@ import javax.portlet.PortletPreferences;
  * @author Michael C. Han
  * @author Brian Wing Shun Chan
  */
-public class MDRPortletDataHandlerImpl extends BasePortletDataHandler {
+public class MDRPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {
@@ -87,7 +87,7 @@ public class MDRPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				MDRPortletDataHandlerImpl.class, "deleteData")) {
+				MDRPortletDataHandler.class, "deleteData")) {
 
 			MDRRuleGroupInstanceLocalServiceUtil.deleteGroupRuleGroupInstances(
 				portletDataContext.getScopeGroupId());
@@ -738,7 +738,7 @@ public class MDRPortletDataHandlerImpl extends BasePortletDataHandler {
 	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
 
 	private static Log _log = LogFactoryUtil.getLog(
-		MDRPortletDataHandlerImpl.class);
+		MDRPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _ruleGroupInstances =
 		new PortletDataHandlerBoolean(

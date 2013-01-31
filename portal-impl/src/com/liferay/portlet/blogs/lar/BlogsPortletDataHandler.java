@@ -37,8 +37,8 @@ import com.liferay.portlet.blogs.model.BlogsEntry;
 import com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.portlet.blogs.service.BlogsStatsUserLocalServiceUtil;
 import com.liferay.portlet.blogs.service.persistence.BlogsEntryUtil;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 
 import java.io.InputStream;
 
@@ -52,7 +52,7 @@ import javax.portlet.PortletPreferences;
  * @author Raymond Augé
  * @author Juan Fernández
  */
-public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
+public class BlogsPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {
@@ -101,7 +101,7 @@ public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				BlogsPortletDataHandlerImpl.class, "deleteData")) {
+				BlogsPortletDataHandler.class, "deleteData")) {
 
 			BlogsEntryLocalServiceUtil.deleteEntries(
 				portletDataContext.getScopeGroupId());
@@ -172,7 +172,7 @@ public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
 		Element entriesElement = rootElement.element("entries");
 
 		if (entriesElement != null) {
-			JournalPortletDataHandlerImpl.importReferencedData(
+			JournalPortletDataHandler.importReferencedData(
 				portletDataContext, entriesElement);
 		}
 		else {
@@ -233,7 +233,7 @@ public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
 			entryElement = entriesElement.addElement("entry");
 		}
 
-		String content = DDMPortletDataHandlerImpl.exportReferencedContent(
+		String content = DDMPortletDataHandler.exportReferencedContent(
 			portletDataContext, dlFileEntryTypesElement, dlFoldersElement,
 			dlFileEntriesElement, dlFileRanksElement, dlRepositoriesElement,
 			dlRepositoryEntriesElement, entryElement, entry.getContent());
@@ -250,7 +250,7 @@ public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
 
 			if (Validator.isNotNull(entry.getSmallImageURL())) {
 				String smallImageURL =
-					DDMPortletDataHandlerImpl.exportReferencedContent(
+					DDMPortletDataHandler.exportReferencedContent(
 						portletDataContext, dlFileEntryTypesElement,
 						dlFoldersElement, dlFileEntriesElement,
 						dlFileRanksElement, dlRepositoriesElement,
@@ -326,7 +326,7 @@ public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
 
 		long userId = portletDataContext.getUserId(entry.getUserUuid());
 
-		String content = JournalPortletDataHandlerImpl.importReferencedContent(
+		String content = JournalPortletDataHandler.importReferencedContent(
 			portletDataContext, entryElement, entry.getContent());
 
 		entry.setContent(content);
@@ -360,7 +360,7 @@ public class BlogsPortletDataHandlerImpl extends BasePortletDataHandler {
 
 				if (Validator.isNotNull(entry.getSmallImageURL())) {
 					String smallImageURL =
-						JournalPortletDataHandlerImpl.importReferencedContent(
+						JournalPortletDataHandler.importReferencedContent(
 							portletDataContext, entryElement,
 							entry.getSmallImageURL());
 

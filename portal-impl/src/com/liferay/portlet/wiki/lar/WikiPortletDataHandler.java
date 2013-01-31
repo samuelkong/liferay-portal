@@ -32,8 +32,8 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 import com.liferay.portlet.wiki.NoSuchNodeException;
 import com.liferay.portlet.wiki.NoSuchPageException;
 import com.liferay.portlet.wiki.model.WikiNode;
@@ -59,7 +59,7 @@ import javax.portlet.PortletPreferences;
  * @author Marcellus Tavares
  * @author Juan Fernández
  */
-public class WikiPortletDataHandlerImpl extends BasePortletDataHandler {
+public class WikiPortletDataHandler extends BasePortletDataHandler {
 
 	public static void exportNode(
 			PortletDataContext portletDataContext, Element nodesElement,
@@ -188,7 +188,7 @@ public class WikiPortletDataHandlerImpl extends BasePortletDataHandler {
 		long nodeId = MapUtil.getLong(
 			nodeIds, page.getNodeId(), page.getNodeId());
 
-		String content = JournalPortletDataHandlerImpl.importReferencedContent(
+		String content = JournalPortletDataHandler.importReferencedContent(
 			portletDataContext, pageElement, page.getContent());
 
 		page.setContent(content);
@@ -356,7 +356,7 @@ public class WikiPortletDataHandlerImpl extends BasePortletDataHandler {
 				pageElement = pagesElement.addElement("page");
 			}
 
-			String content = DDMPortletDataHandlerImpl.exportReferencedContent(
+			String content = DDMPortletDataHandler.exportReferencedContent(
 				portletDataContext, dlFileEntryTypesElement, dlFoldersElement,
 				dlFileEntriesElement, dlFileRanksElement, dlRepositoriesElement,
 				dlRepositoryEntriesElement, pageElement, page.getContent());
@@ -483,7 +483,7 @@ public class WikiPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				WikiPortletDataHandlerImpl.class, "deleteData")) {
+				WikiPortletDataHandler.class, "deleteData")) {
 
 			WikiNodeLocalServiceUtil.deleteNodes(
 				portletDataContext.getScopeGroupId());
@@ -552,7 +552,7 @@ public class WikiPortletDataHandlerImpl extends BasePortletDataHandler {
 
 		Element pagesElement = rootElement.element("pages");
 
-		JournalPortletDataHandlerImpl.importReferencedData(
+		JournalPortletDataHandler.importReferencedData(
 			portletDataContext, pagesElement);
 
 		for (Element pageElement : pagesElement.elements("page")) {

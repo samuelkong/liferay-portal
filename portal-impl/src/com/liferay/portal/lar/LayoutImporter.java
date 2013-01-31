@@ -99,8 +99,8 @@ import com.liferay.portal.theme.ThemeLoaderFactory;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalContentSearchLocalServiceUtil;
 import com.liferay.portlet.journalcontent.util.JournalContentUtil;
@@ -917,27 +917,27 @@ public class LayoutImporter {
 			return;
 		}
 
-		JournalPortletDataHandlerImpl.importReferencedData(
+		JournalPortletDataHandler.importReferencedData(
 			portletDataContext, layoutElement);
 
 		Element structureElement = layoutElement.element("structure");
 
 		if (structureElement != null) {
-			DDMPortletDataHandlerImpl.importStructure(
+			DDMPortletDataHandler.importStructure(
 				portletDataContext, structureElement);
 		}
 
 		Element templateElement = layoutElement.element("template");
 
 		if (templateElement != null) {
-			DDMPortletDataHandlerImpl.importTemplate(
+			DDMPortletDataHandler.importTemplate(
 				portletDataContext, templateElement);
 		}
 
 		Element articleElement = layoutElement.element("article");
 
 		if (articleElement != null) {
-			JournalPortletDataHandlerImpl.importArticle(
+			JournalPortletDataHandler.importArticle(
 				portletDataContext, articleElement);
 		}
 

@@ -32,7 +32,7 @@ import javax.portlet.PortletPreferences;
  * @author Bruno Farache
  * @author Hugo Huijser
  */
-public class PageCommentsPortletDataHandlerImpl extends BasePortletDataHandler {
+public class PageCommentsPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {

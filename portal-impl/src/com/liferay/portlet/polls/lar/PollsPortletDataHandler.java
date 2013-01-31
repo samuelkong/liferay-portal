@@ -49,7 +49,7 @@ import javax.portlet.PortletPreferences;
  * @author Bruno Farache
  * @author Marcellus Tavares
  */
-public class PollsPortletDataHandlerImpl extends BasePortletDataHandler {
+public class PollsPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {
@@ -335,7 +335,7 @@ public class PollsPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				PollsPortletDataHandlerImpl.class, "deleteData")) {
+				PollsPortletDataHandler.class, "deleteData")) {
 
 			PollsQuestionLocalServiceUtil.deleteQuestions(
 				portletDataContext.getScopeGroupId());

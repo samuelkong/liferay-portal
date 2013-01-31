@@ -40,7 +40,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Marcellus Tavares
  */
-public class PollsDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
+public class PollsDisplayPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public String[] getDataPortletPreferences() {
@@ -128,7 +128,7 @@ public class PollsDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		Element choicesElement = rootElement.addElement("choices");
 		Element votesElement = rootElement.addElement("votes");
 
-		PollsPortletDataHandlerImpl.exportQuestion(
+		PollsPortletDataHandler.exportQuestion(
 			portletDataContext, questionsElement, choicesElement, votesElement,
 			question);
 
@@ -165,7 +165,7 @@ public class PollsDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 			PollsQuestion question =
 				(PollsQuestion)portletDataContext.getZipEntryAsObject(path);
 
-			PollsPortletDataHandlerImpl.importQuestion(
+			PollsPortletDataHandler.importQuestion(
 				portletDataContext, questionElement, question);
 		}
 
@@ -181,8 +181,7 @@ public class PollsDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 			PollsChoice choice =
 				(PollsChoice)portletDataContext.getZipEntryAsObject(path);
 
-			PollsPortletDataHandlerImpl.importChoice(
-				portletDataContext, choice);
+			PollsPortletDataHandler.importChoice(portletDataContext, choice);
 		}
 
 		if (portletDataContext.getBooleanParameter(_NAMESPACE, "votes")) {
@@ -198,8 +197,7 @@ public class PollsDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 				PollsVote vote =
 					(PollsVote)portletDataContext.getZipEntryAsObject(path);
 
-				PollsPortletDataHandlerImpl.importVote(
-					portletDataContext, vote);
+				PollsPortletDataHandler.importVote(portletDataContext, vote);
 			}
 		}
 
@@ -227,7 +225,7 @@ public class PollsDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
 
 	private static Log _log = LogFactoryUtil.getLog(
-		PollsDisplayPortletDataHandlerImpl.class);
+		PollsDisplayPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _questions =
 		new PortletDataHandlerBoolean(_NAMESPACE, "questions", true, true);

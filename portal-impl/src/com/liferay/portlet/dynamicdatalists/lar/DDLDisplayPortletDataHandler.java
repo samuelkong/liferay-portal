@@ -36,7 +36,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Michael C. Han
  */
-public class DDLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
+public class DDLDisplayPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public String[] getDataPortletPreferences() {
@@ -178,6 +178,6 @@ public class DDLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 	private static final boolean _DATA_LOCALIZED = true;
 
 	private static Log _log = LogFactoryUtil.getLog(
-		DDLDisplayPortletDataHandlerImpl.class);
+		DDLDisplayPortletDataHandler.class);
 
 }

@@ -69,7 +69,7 @@ import javax.portlet.PortletPreferences;
  * @author Bruno Farache
  * @author Raymond Augé
  */
-public class MBPortletDataHandlerImpl extends BasePortletDataHandler {
+public class MBPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {
@@ -118,7 +118,7 @@ public class MBPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				MBPortletDataHandlerImpl.class, "deleteData")) {
+				MBPortletDataHandler.class, "deleteData")) {
 
 			MBBanLocalServiceUtil.deleteBansByGroupId(
 				portletDataContext.getScopeGroupId());
@@ -889,8 +889,7 @@ public class MBPortletDataHandlerImpl extends BasePortletDataHandler {
 
 	private static final String _NAMESPACE = "message_board";
 
-	private static Log _log = LogFactoryUtil.getLog(
-		MBPortletDataHandlerImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(MBPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _categoriesAndMessages =
 		new PortletDataHandlerBoolean(

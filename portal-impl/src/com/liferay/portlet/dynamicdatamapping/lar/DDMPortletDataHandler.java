@@ -49,7 +49,7 @@ import com.liferay.portal.service.persistence.ImageUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandlerImpl;
+import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandler;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
@@ -60,7 +60,7 @@ import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUt
 import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.portlet.dynamicdatamapping.service.persistence.DDMStructureUtil;
 import com.liferay.portlet.dynamicdatamapping.service.persistence.DDMTemplateUtil;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 
 import java.io.File;
 
@@ -78,7 +78,7 @@ import javax.portlet.PortletPreferences;
  * @author Marcellus Tavares
  * @author Juan Fernández
  */
-public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
+public class DDMPortletDataHandler extends BasePortletDataHandler {
 
 	public static String exportReferencedContent(
 			PortletDataContext portletDataContext,
@@ -172,7 +172,7 @@ public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
 
 			if (Validator.isNotNull(template.getSmallImageURL())) {
 				String smallImageURL =
-					DDMPortletDataHandlerImpl.exportReferencedContent(
+					DDMPortletDataHandler.exportReferencedContent(
 						portletDataContext, dlFileEntryTypesElement,
 						dlFoldersElement, dlFileEntriesElement,
 						dlFileRanksElement, dlRepositoriesElement,
@@ -332,7 +332,7 @@ public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
 
 			if (Validator.isNotNull(template.getSmallImageURL())) {
 				String smallImageURL =
-					JournalPortletDataHandlerImpl.importReferencedContent(
+					JournalPortletDataHandler.importReferencedContent(
 						portletDataContext, templateElement,
 						template.getSmallImageURL());
 
@@ -669,7 +669,7 @@ public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
 
 				beginPos = currentLocation;
 
-				DLPortletDataHandlerImpl.exportFileEntry(
+				DLPortletDataHandler.exportFileEntry(
 					portletDataContext, dlFileEntryTypesElement,
 					dlFoldersElement, dlFileEntriesElement, dlFileRanksElement,
 					dlRepositoriesElement, dlRepositoryEntriesElement,
@@ -685,12 +685,12 @@ public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
 				String path = null;
 
 				if (fileEntry.isDefaultRepository()) {
-					path = DLPortletDataHandlerImpl.getFileEntryPath(
+					path = DLPortletDataHandler.getFileEntryPath(
 						portletDataContext, fileEntry);
 
 				}
 				else {
-					path = DLPortletDataHandlerImpl.getRepositoryEntryPath(
+					path = DLPortletDataHandler.getRepositoryEntryPath(
 						portletDataContext, fileEntry.getFileEntryId());
 				}
 
@@ -1023,7 +1023,7 @@ public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				DDMPortletDataHandlerImpl.class, "deleteData")) {
+				DDMPortletDataHandler.class, "deleteData")) {
 
 			DDMTemplateLocalServiceUtil.deleteTemplates(
 				portletDataContext.getScopeGroupId());
@@ -1131,7 +1131,7 @@ public class DDMPortletDataHandlerImpl extends BasePortletDataHandler {
 	private static final String _NAMESPACE = "ddm";
 
 	private static Log _log = LogFactoryUtil.getLog(
-		DDMPortletDataHandlerImpl.class);
+		DDMPortletDataHandler.class);
 
 	private static Pattern _exportLinksToLayoutPattern = Pattern.compile(
 		"\\[([0-9]+)@(public|private\\-[a-z]*)\\]");

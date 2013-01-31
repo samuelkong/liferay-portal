@@ -79,7 +79,7 @@ import com.liferay.portlet.asset.model.AssetVocabulary;
 import com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.portlet.asset.service.persistence.AssetCategoryUtil;
 import com.liferay.portlet.journal.NoSuchArticleException;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.util.ContentUtil;
@@ -635,7 +635,7 @@ public class LayoutExporter {
 			return;
 		}
 
-		String path = JournalPortletDataHandlerImpl.getArticlePath(
+		String path = JournalPortletDataHandler.getArticlePath(
 			portletDataContext, article);
 
 		Element articleElement = layoutElement.addElement("article");
@@ -652,7 +652,7 @@ public class LayoutExporter {
 		Element dlRepositoryEntriesElement = layoutElement.addElement(
 			"dl-repository-entries");
 
-		JournalPortletDataHandlerImpl.exportArticle(
+		JournalPortletDataHandler.exportArticle(
 			portletDataContext, layoutElement, layoutElement, layoutElement,
 			dlFileEntryTypesElement, dlFoldersElement, dlFilesElement,
 			dlFileRanksElement, dlRepositoriesElement,

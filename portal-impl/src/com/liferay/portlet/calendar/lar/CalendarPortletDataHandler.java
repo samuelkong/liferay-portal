@@ -47,7 +47,7 @@ import javax.portlet.PortletPreferences;
  * @author Bruno Farache
  * @author Raymond Augé
  */
-public class CalendarPortletDataHandlerImpl extends BasePortletDataHandler {
+public class CalendarPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {
@@ -96,7 +96,7 @@ public class CalendarPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				CalendarPortletDataHandlerImpl.class, "deleteData")) {
+				CalendarPortletDataHandler.class, "deleteData")) {
 
 			CalEventLocalServiceUtil.deleteEvents(
 				portletDataContext.getScopeGroupId());

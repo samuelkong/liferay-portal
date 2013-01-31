@@ -54,10 +54,10 @@ import com.liferay.portal.service.persistence.LayoutUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandlerImpl;
+import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandler;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.util.DLUtil;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUtil;
@@ -127,10 +127,10 @@ import javax.portlet.PortletPreferences;
  * @author Wesley Gong
  * @author Hugo Huijser
  * @see    com.liferay.portal.kernel.lar.PortletDataHandler
- * @see    com.liferay.portlet.journal.lar.JournalContentPortletDataHandlerImpl
+ * @see    com.liferay.portlet.journal.lar.JournalContentPortletDataHandler
  * @see    com.liferay.portlet.journal.lar.JournalCreationStrategy
  */
-public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
+public class JournalPortletDataHandler extends BasePortletDataHandler {
 
 	public static void exportArticle(
 			PortletDataContext portletDataContext, Element articlesElement,
@@ -185,7 +185,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 			String ddmStructurePath = getDDMStructurePath(
 				portletDataContext, ddmStructure.getUuid());
 
-			DDMPortletDataHandlerImpl.exportStructure(
+			DDMPortletDataHandler.exportStructure(
 				portletDataContext, ddmStructuresElement, ddmStructurePath,
 				ddmStructure);
 		}
@@ -201,7 +201,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 			String ddmTemplatePath = getDDMTemplatePath(
 				portletDataContext, ddmTemplate);
 
-			DDMPortletDataHandlerImpl.exportTemplate(
+			DDMPortletDataHandler.exportTemplate(
 				portletDataContext, ddmTemplatesElement,
 				dlFileEntryTypesElement, dlFoldersElement, dlFileEntriesElement,
 				dlFileRanksElement, dlRepositoriesElement,
@@ -214,7 +214,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 
 			if (Validator.isNotNull(article.getSmallImageURL())) {
 				String smallImageURL =
-					DDMPortletDataHandlerImpl.exportReferencedContent(
+					DDMPortletDataHandler.exportReferencedContent(
 						portletDataContext, dlFileEntryTypesElement,
 						dlFoldersElement, dlFileEntriesElement,
 						dlFileRanksElement, dlRepositoriesElement,
@@ -278,7 +278,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		if (portletDataContext.getBooleanParameter(
 				_NAMESPACE, "embedded-assets")) {
 
-			String content = DDMPortletDataHandlerImpl.exportReferencedContent(
+			String content = DDMPortletDataHandler.exportReferencedContent(
 				portletDataContext, dlFileEntryTypesElement, dlFoldersElement,
 				dlFileEntriesElement, dlFileRanksElement, dlRepositoriesElement,
 				dlRepositoryEntriesElement, articleElement,
@@ -606,7 +606,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 
 			if (Validator.isNotNull(article.getSmallImageURL())) {
 				String smallImageURL =
-					JournalPortletDataHandlerImpl.importReferencedContent(
+					JournalPortletDataHandler.importReferencedContent(
 						portletDataContext, articleElement,
 						article.getSmallImageURL());
 
@@ -981,7 +981,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		}
 
 		for (Element repositoryElement : dlRepositoryElements) {
-			DLPortletDataHandlerImpl.importRepository(
+			DLPortletDataHandler.importRepository(
 				portletDataContext, repositoryElement);
 		}
 
@@ -996,7 +996,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		}
 
 		for (Element repositoryEntryElement : dlRepositoryEntryElements) {
-			DLPortletDataHandlerImpl.importRepositoryEntry(
+			DLPortletDataHandler.importRepositoryEntry(
 				portletDataContext, repositoryEntryElement);
 		}
 
@@ -1009,7 +1009,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		}
 
 		for (Element folderElement : dlFolderElements) {
-			DLPortletDataHandlerImpl.importFolder(
+			DLPortletDataHandler.importFolder(
 				portletDataContext, folderElement);
 		}
 
@@ -1022,7 +1022,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		}
 
 		for (Element fileEntryElement : dlFileEntryElements) {
-			DLPortletDataHandlerImpl.importFileEntry(
+			DLPortletDataHandler.importFileEntry(
 				portletDataContext, fileEntryElement);
 		}
 
@@ -1035,7 +1035,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		}
 
 		for (Element fileRankElement : dlFileRankElements) {
-			DLPortletDataHandlerImpl.importFileRank(
+			DLPortletDataHandler.importFileRank(
 				portletDataContext, fileRankElement);
 		}
 	}
@@ -1628,7 +1628,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				JournalPortletDataHandlerImpl.class, "deleteData")) {
+				JournalPortletDataHandler.class, "deleteData")) {
 
 			JournalArticleLocalServiceUtil.deleteArticles(
 				portletDataContext.getScopeGroupId());
@@ -1676,7 +1676,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 				String ddmStructurePath = getDDMStructurePath(
 					portletDataContext, ddmStructure.getUuid());
 
-				DDMPortletDataHandlerImpl.exportStructure(
+				DDMPortletDataHandler.exportStructure(
 					portletDataContext, ddmStructuresElement, ddmStructurePath,
 					ddmStructure);
 			}
@@ -1702,7 +1702,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 				String ddmTemplatePath = getDDMTemplatePath(
 					portletDataContext, ddmTemplate);
 
-				DDMPortletDataHandlerImpl.exportTemplate(
+				DDMPortletDataHandler.exportTemplate(
 					portletDataContext, ddmTemplatesElement, ddmTemplatePath,
 					ddmTemplate);
 			}
@@ -1786,7 +1786,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 			"structure");
 
 		for (Element ddmStructureElement : ddmStructureElements) {
-			DDMPortletDataHandlerImpl.importStructure(
+			DDMPortletDataHandler.importStructure(
 				portletDataContext, ddmStructureElement);
 		}
 
@@ -1796,7 +1796,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 			"template");
 
 		for (Element ddmTemplateElement : ddmTemplateElements) {
-			DDMPortletDataHandlerImpl.importTemplate(
+			DDMPortletDataHandler.importTemplate(
 				portletDataContext, ddmTemplateElement);
 		}
 
@@ -1847,7 +1847,7 @@ public class JournalPortletDataHandlerImpl extends BasePortletDataHandler {
 	private static final String _NAMESPACE = "journal";
 
 	private static Log _log = LogFactoryUtil.getLog(
-		JournalPortletDataHandlerImpl.class);
+		JournalPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _articles =
 		new PortletDataHandlerBoolean(_NAMESPACE, "web-content");

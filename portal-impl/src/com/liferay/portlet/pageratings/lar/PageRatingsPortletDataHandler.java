@@ -27,7 +27,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Bruno Farache
  */
-public class PageRatingsPortletDataHandlerImpl extends BasePortletDataHandler {
+public class PageRatingsPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {

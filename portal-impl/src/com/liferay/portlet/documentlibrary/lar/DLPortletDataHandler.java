@@ -75,7 +75,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFileShortcutUti
 import com.liferay.portlet.documentlibrary.util.DLProcessorRegistryUtil;
 import com.liferay.portlet.documentlibrary.util.DLProcessorThreadLocal;
 import com.liferay.portlet.documentlibrary.util.DLUtil;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.portlet.dynamicdatamapping.storage.Fields;
@@ -97,7 +97,7 @@ import javax.portlet.PortletPreferences;
  * @author Raymond Augé
  * @author Sampsa Sohlman
  */
-public class DLPortletDataHandlerImpl extends BasePortletDataHandler {
+public class DLPortletDataHandler extends BasePortletDataHandler {
 
 	public static void exportFileEntry(
 			PortletDataContext portletDataContext,
@@ -805,7 +805,7 @@ public class DLPortletDataHandlerImpl extends BasePortletDataHandler {
 
 			ddmStructureUuids[i] = ddmStructure.getUuid();
 
-			DDMPortletDataHandlerImpl.exportStructure(
+			DDMPortletDataHandler.exportStructure(
 				portletDataContext, fileEntryTypeElement, ddmStructure);
 		}
 
@@ -1383,7 +1383,7 @@ public class DLPortletDataHandlerImpl extends BasePortletDataHandler {
 			"structure");
 
 		for (Element structureElement : structureElements) {
-			DDMPortletDataHandlerImpl.importStructure(
+			DDMPortletDataHandler.importStructure(
 				portletDataContext, structureElement);
 		}
 
@@ -1828,7 +1828,7 @@ public class DLPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				DLPortletDataHandlerImpl.class, "deleteData")) {
+				DLPortletDataHandler.class, "deleteData")) {
 
 			DLAppLocalServiceUtil.deleteAll(
 				portletDataContext.getScopeGroupId());
@@ -2034,8 +2034,7 @@ public class DLPortletDataHandlerImpl extends BasePortletDataHandler {
 
 	private static final String _NAMESPACE = "document_library";
 
-	private static Log _log = LogFactoryUtil.getLog(
-		DLPortletDataHandlerImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(DLPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _foldersAndDocuments =
 		new PortletDataHandlerBoolean(

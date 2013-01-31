@@ -30,8 +30,8 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.service.LayoutLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandlerImpl;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
+import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandler;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.portlet.journal.NoSuchArticleException;
@@ -68,10 +68,9 @@ import javax.portlet.PortletPreferences;
  * @author Bruno Farache
  * @see    com.liferay.portal.kernel.lar.PortletDataHandler
  * @see    com.liferay.portlet.journal.lar.JournalCreationStrategy
- * @see    com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl
+ * @see    com.liferay.portlet.journal.lar.JournalPortletDataHandler
  */
-public class JournalContentPortletDataHandlerImpl
-	extends BasePortletDataHandler {
+public class JournalContentPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public String[] getDataPortletPreferences() {
@@ -90,10 +89,10 @@ public class JournalContentPortletDataHandlerImpl
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandlerImpl.getMetadataControls()),
+				JournalPortletDataHandler.getMetadataControls()),
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandlerImpl.getMetadataControls()
+				DLPortletDataHandler.getMetadataControls()
 			)
 		};
 	}
@@ -110,10 +109,10 @@ public class JournalContentPortletDataHandlerImpl
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandlerImpl.getMetadataControls()),
+				JournalPortletDataHandler.getMetadataControls()),
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandlerImpl.getMetadataControls()
+				DLPortletDataHandler.getMetadataControls()
 			)
 		};
 	}
@@ -223,7 +222,7 @@ public class JournalContentPortletDataHandlerImpl
 			return document.formattedString();
 		}
 
-		String path = JournalPortletDataHandlerImpl.getArticlePath(
+		String path = JournalPortletDataHandler.getArticlePath(
 			portletDataContext, article);
 
 		Element articleElement = rootElement.addElement("article");
@@ -240,7 +239,7 @@ public class JournalContentPortletDataHandlerImpl
 		Element dlRepositoryEntriesElement = rootElement.addElement(
 			"dl-repository-entries");
 
-		JournalPortletDataHandlerImpl.exportArticle(
+		JournalPortletDataHandler.exportArticle(
 			portletDataContext, rootElement, rootElement, rootElement,
 			dlFileEntryTypesElement, dlFoldersElement, dlFilesElement,
 			dlFileRanksElement, dlRepositoriesElement,
@@ -259,10 +258,10 @@ public class JournalContentPortletDataHandlerImpl
 					article.getGroupId(), preferenceTemplateId, true);
 
 			String ddmTemplatePath =
-				JournalPortletDataHandlerImpl.getDDMTemplatePath(
+				JournalPortletDataHandler.getDDMTemplatePath(
 					portletDataContext, ddmTemplate);
 
-			DDMPortletDataHandlerImpl.exportTemplate(
+			DDMPortletDataHandler.exportTemplate(
 				portletDataContext, rootElement, dlFileEntryTypesElement,
 				dlFoldersElement, dlFilesElement, dlFileRanksElement,
 				dlRepositoriesElement, dlRepositoryEntriesElement,
@@ -302,13 +301,13 @@ public class JournalContentPortletDataHandlerImpl
 
 		Element rootElement = document.getRootElement();
 
-		JournalPortletDataHandlerImpl.importReferencedData(
+		JournalPortletDataHandler.importReferencedData(
 			portletDataContext, rootElement);
 
 		Element structureElement = rootElement.element("structure");
 
 		if (structureElement != null) {
-			DDMPortletDataHandlerImpl.importStructure(
+			DDMPortletDataHandler.importStructure(
 				portletDataContext, structureElement);
 		}
 
@@ -316,7 +315,7 @@ public class JournalContentPortletDataHandlerImpl
 
 		if (templateElements != null) {
 			for (Element templateElement : templateElements) {
-				DDMPortletDataHandlerImpl.importTemplate(
+				DDMPortletDataHandler.importTemplate(
 					portletDataContext, templateElement);
 			}
 		}
@@ -324,7 +323,7 @@ public class JournalContentPortletDataHandlerImpl
 		Element articleElement = rootElement.element("article");
 
 		if (articleElement != null) {
-			JournalPortletDataHandlerImpl.importArticle(
+			JournalPortletDataHandler.importArticle(
 				portletDataContext, articleElement);
 		}
 
@@ -389,7 +388,7 @@ public class JournalContentPortletDataHandlerImpl
 	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
 
 	private static Log _log = LogFactoryUtil.getLog(
-		JournalContentPortletDataHandlerImpl.class);
+		JournalContentPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _embeddedAssets =
 		new PortletDataHandlerBoolean(_NAMESPACE, "embedded-assets");

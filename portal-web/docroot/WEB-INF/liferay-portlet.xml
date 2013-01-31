@@ -51,7 +51,7 @@
 				</simple>
 			</trigger>
 		</scheduler-entry>
-		<portlet-data-handler-class>com.liferay.portlet.calendar.lar.CalendarPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.calendar.lar.CalendarPortletDataHandler</portlet-data-handler-class>
 		<social-activity-interpreter-class>com.liferay.portlet.calendar.social.CalendarActivityInterpreter</social-activity-interpreter-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>14.0</control-panel-entry-weight>
@@ -145,7 +145,7 @@
 		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>journal</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/journal/journal-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.journal.lar.JournalPortletDataHandler</portlet-data-handler-class>
 		<webdav-storage-token>journal</webdav-storage-token>
 		<webdav-storage-class>com.liferay.portlet.journal.webdav.JournalWebDAVStorageImpl</webdav-storage-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
@@ -198,7 +198,7 @@
 		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>message_boards</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/messageboards/message-boards-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.messageboards.lar.MBPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.messageboards.lar.MBPortletDataHandler</portlet-data-handler-class>
 		<pop-message-listener-class>com.liferay.portlet.messageboards.pop.MessageListenerImpl</pop-message-listener-class>
 		<social-activity-interpreter-class>com.liferay.portlet.messageboards.social.MBActivityInterpreter</social-activity-interpreter-class>
 		<asset-renderer-factory>com.liferay.portlet.messageboards.asset.MBCategoryAssetRendererFactory</asset-renderer-factory>
@@ -234,7 +234,7 @@
 		<indexer-class>com.liferay.portlet.documentlibrary.util.DLFolderIndexer</indexer-class>
 		<open-search-class>com.liferay.portlet.documentlibrary.util.DLOpenSearchImpl</open-search-class>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.documentlibrary.lar.DLPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.documentlibrary.lar.DLPortletDataHandler</portlet-data-handler-class>
 		<social-activity-interpreter-class>com.liferay.portlet.documentlibrary.social.DLActivityInterpreter</social-activity-interpreter-class>
 		<webdav-storage-token>document_library</webdav-storage-token>
 		<webdav-storage-class>com.liferay.portlet.documentlibrary.webdav.DLWebDAVStorageImpl</webdav-storage-class>
@@ -279,7 +279,7 @@
 		<portlet-name>25</portlet-name>
 		<icon>/html/icons/polls.png</icon>
 		<struts-path>polls</struts-path>
-		<portlet-data-handler-class>com.liferay.portlet.polls.lar.PollsPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.polls.lar.PollsPortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>18.0</control-panel-entry-weight>
 		<preferences-unique-per-layout>false</preferences-unique-per-layout>
@@ -379,7 +379,7 @@
 		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>image_gallery_display</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/imagegallerydisplay/image-gallery-display-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.documentlibrary.lar.DLDisplayPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.documentlibrary.lar.DLDisplayPortletDataHandler</portlet-data-handler-class>
 		<portlet-display-template-handler>com.liferay.portlet.documentlibrary.template.DocumentLibraryPortletDisplayTemplateHandler</portlet-display-template-handler>
 		<webdav-storage-token>document_library</webdav-storage-token>
 		<webdav-storage-class>com.liferay.portlet.documentlibrary.webdav.DLWebDAVStorageImpl</webdav-storage-class>
@@ -421,7 +421,7 @@
 		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>blogs</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/blogs/blogs-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.blogs.lar.BlogsPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.blogs.lar.BlogsPortletDataHandler</portlet-data-handler-class>
 		<portlet-display-template-handler>com.liferay.portlet.blogs.template.BlogsPortletDisplayTemplateHandler</portlet-display-template-handler>
 		<social-activity-interpreter-class>com.liferay.portlet.blogs.social.BlogsActivityInterpreter</social-activity-interpreter-class>
 		<xml-rpc-method-class>com.liferay.portlet.blogs.util.PingbackMethodImpl</xml-rpc-method-class>
@@ -466,7 +466,7 @@
 		<friendly-url-mapper-class>com.liferay.portlet.wiki.WikiFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>wiki</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/wiki/wiki-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.wiki.lar.WikiPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.wiki.lar.WikiPortletDataHandler</portlet-data-handler-class>
 		<portlet-display-template-handler>com.liferay.portlet.wiki.template.WikiPortletDisplayTemplateHandler</portlet-display-template-handler>
 		<social-activity-interpreter-class>com.liferay.portlet.wiki.social.WikiActivityInterpreter</social-activity-interpreter-class>
 		<asset-renderer-factory>com.liferay.portlet.wiki.asset.WikiPageAssetRendererFactory</asset-renderer-factory>
@@ -490,7 +490,7 @@
 		<icon>/html/icons/rss.png</icon>
 		<struts-path>rss</struts-path>
 		<configuration-action-class>com.liferay.portlet.rss.action.ConfigurationActionImpl</configuration-action-class>
-		<portlet-data-handler-class>com.liferay.portlet.rss.lar.RSSPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.rss.lar.RSSPortletDataHandler</portlet-data-handler-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
 		<instanceable>true</instanceable>
@@ -554,7 +554,7 @@
 		<struts-path>wiki_display</struts-path>
 		<configuration-action-class>com.liferay.portal.kernel.portlet.DefaultConfigurationAction</configuration-action-class>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.wiki.lar.WikiDisplayPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.wiki.lar.WikiDisplayPortletDataHandler</portlet-data-handler-class>
 		<permission-propagator>com.liferay.portlet.wiki.security.permission.WikiPermissionPropagatorImpl</permission-propagator>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
@@ -574,7 +574,7 @@
 		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>journal_content</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/journalcontent/journal-content-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.journal.lar.JournalContentPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.journal.lar.JournalContentPortletDataHandler</portlet-data-handler-class>
 		<portlet-layout-listener-class>com.liferay.portlet.journalcontent.JournalContentPortletLayoutListener</portlet-layout-listener-class>
 		<social-activity-interpreter-class>com.liferay.portlet.journal.social.JournalActivityInterpreter</social-activity-interpreter-class>
 		<custom-attributes-display>com.liferay.portlet.journal.JournalArticleCustomAttributesDisplay</custom-attributes-display>
@@ -609,7 +609,7 @@
 		<icon>/html/icons/polls_display.png</icon>
 		<struts-path>polls_display</struts-path>
 		<configuration-action-class>com.liferay.portal.kernel.portlet.DefaultConfigurationAction</configuration-action-class>
-		<portlet-data-handler-class>com.liferay.portlet.polls.lar.PollsDisplayPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.polls.lar.PollsDisplayPortletDataHandler</portlet-data-handler-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
 		<instanceable>true</instanceable>
@@ -992,7 +992,7 @@
 		<portlet-name>107</portlet-name>
 		<icon>/html/icons/page_comments.png</icon>
 		<struts-path>page_comments</struts-path>
-		<portlet-data-handler-class>com.liferay.portlet.pagecomments.lar.PageCommentsPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.pagecomments.lar.PageCommentsPortletDataHandler</portlet-data-handler-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
 		<private-request-attributes>false</private-request-attributes>
@@ -1004,7 +1004,7 @@
 		<portlet-name>108</portlet-name>
 		<icon>/html/icons/page_ratings.png</icon>
 		<struts-path>page_ratings</struts-path>
-		<portlet-data-handler-class>com.liferay.portlet.pageratings.lar.PageRatingsPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.pageratings.lar.PageRatingsPortletDataHandler</portlet-data-handler-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
 		<private-request-attributes>false</private-request-attributes>
@@ -1022,7 +1022,7 @@
 		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>document_library_display</friendly-url-mapping>
 		<friendly-url-routes>com/liferay/portlet/documentlibrary/document-library-display-friendly-url-routes.xml</friendly-url-routes>
-		<portlet-data-handler-class>com.liferay.portlet.documentlibrary.lar.DLDisplayPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.documentlibrary.lar.DLDisplayPortletDataHandler</portlet-data-handler-class>
 		<webdav-storage-token>document_library</webdav-storage-token>
 		<webdav-storage-class>com.liferay.portlet.documentlibrary.webdav.DLWebDAVStorageImpl</webdav-storage-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
@@ -1591,7 +1591,7 @@
 		<struts-path>wiki_admin</struts-path>
 		<configuration-action-class>com.liferay.portlet.wiki.action.ConfigurationActionImpl</configuration-action-class>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.wiki.lar.WikiPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.wiki.lar.WikiPortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>17.0</control-panel-entry-weight>
 		<permission-propagator>com.liferay.portlet.wiki.security.permission.WikiPermissionPropagatorImpl</permission-propagator>
@@ -1674,7 +1674,7 @@
 		<icon>/html/icons/blogs.png</icon>
 		<struts-path>blogs_admin</struts-path>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.blogs.lar.BlogsPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.blogs.lar.BlogsPortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>16.0</control-panel-entry-weight>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
@@ -1691,7 +1691,7 @@
 		<icon>/html/icons/message_boards.png</icon>
 		<struts-path>message_boards_admin</struts-path>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.messageboards.lar.MBPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.messageboards.lar.MBPortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>15.0</control-panel-entry-weight>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
@@ -1741,7 +1741,7 @@
 		<portlet-name>166</portlet-name>
 		<struts-path>dynamic_data_mapping</struts-path>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler</portlet-data-handler-class>
 		<webdav-storage-token>dynamic_data_mapping</webdav-storage-token>
 		<webdav-storage-class>com.liferay.portlet.dynamicdatamapping.webdav.DDMWebDAVStorageImpl</webdav-storage-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
@@ -1783,7 +1783,7 @@
 		<struts-path>dynamic_data_list_display</struts-path>
 		<configuration-action-class>com.liferay.portal.kernel.portlet.DefaultConfigurationAction</configuration-action-class>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.dynamicdatalists.lar.DDLDisplayPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.dynamicdatalists.lar.DDLDisplayPortletDataHandler</portlet-data-handler-class>
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
 		<instanceable>true</instanceable>
@@ -1908,7 +1908,7 @@
 		<icon>/html/icons/default.png</icon>
 		<parent-struts-path>mobile_device_rules</parent-struts-path>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.mobiledevicerules.lar.MDRPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.mobiledevicerules.lar.MDRPortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>22.0</control-panel-entry-weight>
 		<use-default-template>false</use-default-template>
@@ -1985,7 +1985,7 @@
 		<icon>/html/icons/portlet_display_template.png</icon>
 		<parent-struts-path>dynamic_data_mapping</parent-struts-path>
 		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<portlet-data-handler-class>com.liferay.portlet.portletdisplaytemplate.lar.PortletDisplayTemplatePortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.portlet.portletdisplaytemplate.lar.PortletDisplayTemplatePortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>25.0</control-panel-entry-weight>
 		<preferences-owned-by-group>true</preferences-owned-by-group>

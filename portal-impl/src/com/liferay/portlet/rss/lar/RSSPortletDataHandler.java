@@ -29,10 +29,10 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.service.LayoutLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandlerImpl;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
+import com.liferay.portlet.documentlibrary.lar.DLPortletDataHandler;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
 import com.liferay.portlet.journal.NoSuchArticleException;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.portlet.journal.service.JournalContentSearchLocalServiceUtil;
@@ -46,7 +46,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Raymond Augé
  */
-public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
+public class RSSPortletDataHandler extends JournalPortletDataHandler {
 
 	@Override
 	public String[] getDataPortletPreferences() {
@@ -65,11 +65,11 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandlerImpl.getMetadataControls()
+				JournalPortletDataHandler.getMetadataControls()
 			),
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandlerImpl.getMetadataControls()
+				DLPortletDataHandler.getMetadataControls()
 			)
 		};
 	}
@@ -86,11 +86,11 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandlerImpl.getMetadataControls()
+				JournalPortletDataHandler.getMetadataControls()
 			),
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandlerImpl.getMetadataControls()
+				DLPortletDataHandler.getMetadataControls()
 			)
 		};
 	}
@@ -230,7 +230,7 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 			"dl-repository-entries");
 
 		for (JournalArticle article : articles) {
-			String path = JournalPortletDataHandlerImpl.getArticlePath(
+			String path = JournalPortletDataHandler.getArticlePath(
 				portletDataContext, article);
 
 			Element articleElement = null;
@@ -244,7 +244,7 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 
 			articleElement.addAttribute("path", path);
 
-			JournalPortletDataHandlerImpl.exportArticle(
+			JournalPortletDataHandler.exportArticle(
 				portletDataContext, rootElement, rootElement, rootElement,
 				dlFileEntryTypesElement, dlFoldersElement, dlFilesElement,
 				dlFileRanksElement, dlRepositoriesElement,
@@ -268,20 +268,20 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 
 		Element rootElement = document.getRootElement();
 
-		JournalPortletDataHandlerImpl.importReferencedData(
+		JournalPortletDataHandler.importReferencedData(
 			portletDataContext, rootElement);
 
 		List<Element> structureElements = rootElement.elements("structure");
 
 		for (Element structureElement : structureElements) {
-			DDMPortletDataHandlerImpl.importStructure(
+			DDMPortletDataHandler.importStructure(
 				portletDataContext, structureElement);
 		}
 
 		List<Element> templateElements = rootElement.elements("template");
 
 		for (Element templateElement : templateElements) {
-			DDMPortletDataHandlerImpl.importTemplate(
+			DDMPortletDataHandler.importTemplate(
 				portletDataContext, templateElement);
 		}
 
@@ -295,7 +295,7 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 		Element footerArticleElement = rootElement.element("footer-article");
 
 		if (footerArticleElement != null) {
-			JournalPortletDataHandlerImpl.importArticle(
+			JournalPortletDataHandler.importArticle(
 				portletDataContext, footerArticleElement);
 		}
 
@@ -326,7 +326,7 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 		Element headerArticleElement = rootElement.element("header-article");
 
 		if (headerArticleElement != null) {
-			JournalPortletDataHandlerImpl.importArticle(
+			JournalPortletDataHandler.importArticle(
 				portletDataContext, headerArticleElement);
 		}
 
@@ -364,7 +364,7 @@ public class RSSPortletDataHandlerImpl extends JournalPortletDataHandlerImpl {
 	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
 
 	private static Log _log = LogFactoryUtil.getLog(
-		RSSPortletDataHandlerImpl.class);
+		RSSPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _embeddedAssets =
 		new PortletDataHandlerBoolean(_NAMESPACE, "embedded-assets");

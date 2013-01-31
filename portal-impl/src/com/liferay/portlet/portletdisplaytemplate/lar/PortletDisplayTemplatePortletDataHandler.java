@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandlerImpl;
+import com.liferay.portlet.dynamicdatamapping.lar.DDMPortletDataHandler;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUtil;
 
@@ -35,7 +35,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Juan Fernández
  */
-public class PortletDisplayTemplatePortletDataHandlerImpl
+public class PortletDisplayTemplatePortletDataHandler
 	extends BasePortletDataHandler {
 
 	@Override
@@ -81,7 +81,7 @@ public class PortletDisplayTemplatePortletDataHandlerImpl
 		List<Element> ddmTemplateElements = rootElement.elements("template");
 
 		for (Element ddmTemplateElement : ddmTemplateElements) {
-			DDMPortletDataHandlerImpl.importTemplate(
+			DDMPortletDataHandler.importTemplate(
 				portletDataContext, ddmTemplateElement);
 		}
 
@@ -102,7 +102,7 @@ public class PortletDisplayTemplatePortletDataHandlerImpl
 					portletDataContext.getScopeGroupId(), classNameId);
 
 			for (DDMTemplate ddmTemplate : ddmTemplates) {
-				DDMPortletDataHandlerImpl.exportTemplate(
+				DDMPortletDataHandler.exportTemplate(
 					portletDataContext, portletDisplayTemplatesElement,
 					getTemplatePath(portletDataContext, ddmTemplate),
 					ddmTemplate);

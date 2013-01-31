@@ -40,7 +40,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Raymond Augé
  */
-public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
+public class DLDisplayPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public String[] getDataPortletPreferences() {
@@ -59,7 +59,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandlerImpl.getMetadataControls())
+				DLPortletDataHandler.getMetadataControls())
 		};
 	}
 
@@ -75,7 +75,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandlerImpl.getMetadataControls())
+				DLPortletDataHandler.getMetadataControls())
 		};
 	}
 
@@ -147,7 +147,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 				portletDataContext.getScopeGroupId());
 
 			for (Folder folder : folders) {
-				DLPortletDataHandlerImpl.exportFolder(
+				DLPortletDataHandler.exportFolder(
 					portletDataContext, fileEntryTypesElement, foldersElement,
 					fileEntriesElement, fileShortcutsElement, fileRanksElement,
 					repositoriesElement, repositoryEntriesElement, folder,
@@ -159,7 +159,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 			for (FileEntry fileEntry : fileEntries) {
-				DLPortletDataHandlerImpl.exportFileEntry(
+				DLPortletDataHandler.exportFileEntry(
 					portletDataContext, fileEntryTypesElement, foldersElement,
 					fileEntriesElement, fileRanksElement, repositoriesElement,
 					repositoryEntriesElement, fileEntry, true);
@@ -174,7 +174,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 				"default-repository",
 				String.valueOf(folder.isDefaultRepository()));
 
-			DLPortletDataHandlerImpl.exportFolder(
+			DLPortletDataHandler.exportFolder(
 				portletDataContext, fileEntryTypesElement, foldersElement,
 				fileEntriesElement, fileShortcutsElement, fileRanksElement,
 				repositoriesElement, repositoryEntriesElement, folder, true);
@@ -204,7 +204,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 			"file-entry-type");
 
 		for (Element fileEntryTypeElement : fileEntryTypeElements) {
-			DLPortletDataHandlerImpl.importFileEntryType(
+			DLPortletDataHandler.importFileEntryType(
 				portletDataContext, fileEntryTypeElement);
 		}
 
@@ -213,7 +213,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		List<Element> folderElements = foldersElement.elements("folder");
 
 		for (Element folderElement : folderElements) {
-			DLPortletDataHandlerImpl.importFolder(
+			DLPortletDataHandler.importFolder(
 				portletDataContext, folderElement);
 		}
 
@@ -223,7 +223,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 			"file-entry");
 
 		for (Element fileEntryElement : fileEntryElements) {
-			DLPortletDataHandlerImpl.importFileEntry(
+			DLPortletDataHandler.importFileEntry(
 				portletDataContext, fileEntryElement);
 		}
 
@@ -232,7 +232,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 				"file-shortcuts").elements("file-shortcut");
 
 			for (Element fileShortcutElement : fileShortcutElements) {
-				DLPortletDataHandlerImpl.importFileShortcut(
+				DLPortletDataHandler.importFileShortcut(
 					portletDataContext, fileShortcutElement);
 			}
 		}
@@ -244,7 +244,7 @@ public class DLDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 				"file-rank");
 
 			for (Element fileRankElement : fileRankElements) {
-				DLPortletDataHandlerImpl.importFileRank(
+				DLPortletDataHandler.importFileRank(
 					portletDataContext, fileRankElement);
 			}
 		}

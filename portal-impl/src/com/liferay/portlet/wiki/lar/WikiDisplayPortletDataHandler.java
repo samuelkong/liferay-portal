@@ -28,7 +28,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portlet.journal.lar.JournalPortletDataHandlerImpl;
+import com.liferay.portlet.journal.lar.JournalPortletDataHandler;
 import com.liferay.portlet.wiki.NoSuchNodeException;
 import com.liferay.portlet.wiki.model.WikiNode;
 import com.liferay.portlet.wiki.model.WikiPage;
@@ -43,7 +43,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Marcellus Tavares
  */
-public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
+public class WikiDisplayPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public String[] getDataPortletPreferences() {
@@ -62,7 +62,7 @@ public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "wiki-pages", true,
-				WikiPortletDataHandlerImpl.getMetadataControls()
+				WikiPortletDataHandler.getMetadataControls()
 			)
 		};
 	}
@@ -79,7 +79,7 @@ public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		return new PortletDataHandlerControl[] {
 			new PortletDataHandlerBoolean(
 				_NAMESPACE, "wiki-pages", true,
-				WikiPortletDataHandlerImpl.getMetadataControls()
+				WikiPortletDataHandler.getMetadataControls()
 			)
 		};
 	}
@@ -172,7 +172,7 @@ public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 		Element nodesElement = rootElement.addElement("nodes");
 		Element pagesElement = rootElement.addElement("pages");
 
-		WikiPortletDataHandlerImpl.exportNode(
+		WikiPortletDataHandler.exportNode(
 			portletDataContext, nodesElement, pagesElement, node);
 
 		return document.formattedString();
@@ -208,12 +208,12 @@ public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 			WikiNode node = (WikiNode)portletDataContext.getZipEntryAsObject(
 				path);
 
-			WikiPortletDataHandlerImpl.importNode(portletDataContext, node);
+			WikiPortletDataHandler.importNode(portletDataContext, node);
 		}
 
 		Element pagesElement = rootElement.element("pages");
 
-		JournalPortletDataHandlerImpl.importReferencedData(
+		JournalPortletDataHandler.importReferencedData(
 			portletDataContext, pagesElement);
 
 		for (Element pageElement : pagesElement.elements("page")) {
@@ -226,7 +226,7 @@ public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 			WikiPage page = (WikiPage)portletDataContext.getZipEntryAsObject(
 				path);
 
-			WikiPortletDataHandlerImpl.importPage(
+			WikiPortletDataHandler.importPage(
 				portletDataContext, pageElement, page);
 		}
 
@@ -253,7 +253,7 @@ public class WikiDisplayPortletDataHandlerImpl extends BasePortletDataHandler {
 	private static final String _NAMESPACE = "wiki";
 
 	private static Log _log = LogFactoryUtil.getLog(
-		WikiDisplayPortletDataHandlerImpl.class);
+		WikiDisplayPortletDataHandler.class);
 
 	private static PortletDataHandlerBoolean _nodesAndPages =
 		new PortletDataHandlerBoolean(
