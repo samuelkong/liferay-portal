@@ -59,15 +59,15 @@ public class StagedModelDataHandlerUtil {
 	}
 
 	public static void importStagedModel(
-			String className, PortletDataContext portletDataContext,
-			Element element)
+			PortletDataContext portletDataContext, Element element)
 		throws PortletDataException {
 
-		StagedModelDataHandler<?> stagedModelDataHandler =
-			StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
-				className);
+		String path = element.attributeValue("path");
 
-		stagedModelDataHandler.importStagedModel(portletDataContext, element);
+		StagedModel stagedModel =
+			(StagedModel)portletDataContext.getZipEntryAsObject(element, path);
+
+		importStagedModel(portletDataContext, path, stagedModel);
 	}
 
 	private static <T extends StagedModel> StagedModelDataHandler<T>
