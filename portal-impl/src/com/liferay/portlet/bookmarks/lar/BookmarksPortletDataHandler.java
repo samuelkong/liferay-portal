@@ -20,23 +20,17 @@ import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
-import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.bookmarks.model.BookmarksEntry;
 import com.liferay.portlet.bookmarks.model.BookmarksFolder;
 import com.liferay.portlet.bookmarks.model.BookmarksFolderConstants;
 import com.liferay.portlet.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.portlet.bookmarks.service.BookmarksFolderLocalServiceUtil;
-import com.liferay.portlet.bookmarks.service.persistence.BookmarksEntryUtil;
 import com.liferay.portlet.bookmarks.service.persistence.BookmarksFolderUtil;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.portlet.PortletPreferences;
 
@@ -208,26 +202,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		return null;
 	}
 
-	protected void exportEntry(
-			PortletDataContext portletDataContext, Element foldersElement,
-			Element entriesElement, BookmarksEntry entry)
-		throws Exception {
-
-		if (foldersElement != null) {
-			StagedModelDataHandlerUtil.exportStagedModel(
-				portletDataContext, foldersElement, entry.getFolder());
-		}
-
-		String path = getEntryPath(portletDataContext, entry);
-
-		if (portletDataContext.isPathNotProcessed(path)) {
-			Element entryElement = entriesElement.addElement("entry");
-
-			portletDataContext.addClassedModel(
-				entryElement, path, entry, NAMESPACE);
-		}
-	}
-
 	protected String getEntryPath(
 		PortletDataContext portletDataContext, BookmarksEntry entry) {
 
@@ -253,70 +227,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		sb.append(".xml");
 
 		return sb.toString();
-	}
-
-	protected void importEntry(
-			PortletDataContext portletDataContext, Element entryElement,
-			BookmarksEntry entry)
-		throws Exception {
-
-		long userId = portletDataContext.getUserId(entry.getUserUuid());
-
-		Map<Long, Long> folderIds =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				BookmarksFolder.class);
-
-		long folderId = MapUtil.getLong(
-			folderIds, entry.getFolderId(), entry.getFolderId());
-
-		if ((folderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID) &&
-			(folderId == entry.getFolderId())) {
-
-			String path = getImportFolderPath(portletDataContext, folderId);
-
-			BookmarksFolder folder =
-				(BookmarksFolder)portletDataContext.getZipEntryAsObject(path);
-
-			StagedModelDataHandlerUtil.importStagedModel(
-				portletDataContext, path, folder);
-
-			folderId = MapUtil.getLong(
-				folderIds, entry.getFolderId(), entry.getFolderId());
-		}
-
-		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			entryElement, entry, NAMESPACE);
-
-		BookmarksEntry importedEntry = null;
-
-		if (portletDataContext.isDataStrategyMirror()) {
-			BookmarksEntry existingEntry = BookmarksEntryUtil.fetchByUUID_G(
-				entry.getUuid(), portletDataContext.getScopeGroupId());
-
-			if (existingEntry == null) {
-				serviceContext.setUuid(entry.getUuid());
-
-				importedEntry = BookmarksEntryLocalServiceUtil.addEntry(
-					userId, portletDataContext.getScopeGroupId(), folderId,
-					entry.getName(), entry.getUrl(), entry.getDescription(),
-					serviceContext);
-			}
-			else {
-				importedEntry = BookmarksEntryLocalServiceUtil.updateEntry(
-					userId, existingEntry.getEntryId(),
-					portletDataContext.getScopeGroupId(), folderId,
-					entry.getName(), entry.getUrl(), entry.getDescription(),
-					serviceContext);
-			}
-		}
-		else {
-			importedEntry = BookmarksEntryLocalServiceUtil.addEntry(
-				userId, portletDataContext.getScopeGroupId(), folderId,
-				entry.getName(), entry.getUrl(), entry.getDescription(),
-				serviceContext);
-		}
-
-		portletDataContext.importClassedModel(entry, importedEntry, NAMESPACE);
 	}
 
 	private static final boolean _ALWAYS_EXPORTABLE = true;
