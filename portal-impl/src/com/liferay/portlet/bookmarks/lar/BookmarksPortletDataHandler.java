@@ -223,8 +223,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolder folder)
 		throws Exception {
 
-		StagedModelDataHandlerUtil.exportModelData(
-			folder, portletDataContext, foldersElement);
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, foldersElement, folder);
 	}
 
 	protected String getEntryPath(
@@ -322,8 +322,8 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolder folder)
 		throws Exception {
 
-		StagedModelDataHandlerUtil.importModelData(
-			folder, folderPath, portletDataContext);
+		StagedModelDataHandlerUtil.importStagedModel(
+			portletDataContext, folderPath, folder);
 	}
 
 	private static final boolean _ALWAYS_EXPORTABLE = true;
