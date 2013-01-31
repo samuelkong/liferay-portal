@@ -47,6 +47,11 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 	public static final String NAMESPACE = "bookmarks";
 
+	public BookmarksPortletDataHandler() {
+		setAlwaysExportable(true);
+		setPublishToLiveByDefault(true);
+	}
+
 	@Override
 	public PortletDataHandlerControl[] getExportControls() {
 		return new PortletDataHandlerControl[] {
@@ -75,16 +80,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "bookmarks", true, _metadataControls)
 		};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
 	}
 
 	@Override
@@ -211,10 +206,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 		return null;
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
 
 	private static PortletDataHandlerBoolean _foldersAndEntries =
 		new PortletDataHandlerBoolean(

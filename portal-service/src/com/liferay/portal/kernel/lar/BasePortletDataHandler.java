@@ -155,19 +155,19 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 	}
 
 	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
+		return _alwaysExportable;
 	}
 
 	public boolean isAlwaysStaged() {
-		return _ALWAYS_STAGED;
+		return _alwaysStaged;
 	}
 
 	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
+		return _dataLocalized;
 	}
 
 	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
+		return _publishToLiveByDefault;
 	}
 
 	protected PortletPreferences doDeleteData(
@@ -194,15 +194,28 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 		return null;
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = false;
+	protected void setAlwaysExportable(boolean alwaysExportable) {
+		_alwaysExportable = alwaysExportable;
+	}
 
-	private static final boolean _ALWAYS_STAGED = false;
+	protected void setAlwaysStaged(boolean alwaysStaged) {
+		_alwaysStaged = alwaysStaged;
+	}
 
-	private static final boolean _DATA_LOCALIZED = false;
+	protected void setDataLocalized(boolean dataLocalized) {
+		_dataLocalized = dataLocalized;
+	}
 
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = false;
+	protected void setPublishToLiveByDefault(boolean publishToLiveByDefault) {
+		_publishToLiveByDefault = publishToLiveByDefault;
+	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		BasePortletDataHandler.class);
+
+	private boolean _alwaysExportable;
+	private boolean _alwaysStaged;
+	private boolean _dataLocalized;
+	private boolean _publishToLiveByDefault;
 
 }
