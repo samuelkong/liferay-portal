@@ -27,12 +27,8 @@ import java.util.List;
 public class SearchResult {
 
 	public SearchResult(String className, long classPK) {
-		_fileEntries = new ArrayList<FileEntry>();
-
 		_className = className;
 		_classPK = classPK;
-
-		_mbMessages = new ArrayList<MBMessage>();
 	}
 
 	public void addFileEntry(FileEntry fileEntry) {
@@ -94,7 +90,7 @@ public class SearchResult {
 
 	private String _className;
 	private long _classPK;
-	private List<FileEntry> _fileEntries;
-	private List<MBMessage> _mbMessages;
+	private List<FileEntry> _fileEntries = new ArrayList<FileEntry>();
+	private List<MBMessage> _mbMessages = new ArrayList<MBMessage>();
 
 }
