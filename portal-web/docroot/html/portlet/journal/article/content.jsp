@@ -17,6 +17,8 @@
 <%@ include file="/html/portlet/journal/init.jsp" %>
 
 <%
+String portletResource = ParamUtil.getString(request, "portletResource");
+
 String redirect = (String)request.getAttribute("edit_article.jsp-redirect");
 
 JournalArticle article = (JournalArticle)request.getAttribute(WebKeys.JOURNAL_ARTICLE);
@@ -160,6 +162,7 @@ if (Validator.isNotNull(content)) {
 
 <portlet:renderURL var="updateDefaultLanguageURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 	<portlet:param name="struts_action" value="/journal/edit_article" />
+	<portlet:param name="portletResource" value="<%= portletResource %>" />
 	<portlet:param name="redirect" value="<%= redirect %>" />
 	<portlet:param name="articleId" value="<%= articleId %>" />
 	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
