@@ -275,7 +275,7 @@ public class ImageProcessorImpl
 				return;
 			}
 
-			ColorModel colorModel = renderedImage.getColorModel(); 
+			ColorModel colorModel = renderedImage.getColorModel();
 
 			if (colorModel.getNumColorComponents() == 4) {
 				Future<RenderedImage> future = ImageToolUtil.convertCMYKtoRGB(
