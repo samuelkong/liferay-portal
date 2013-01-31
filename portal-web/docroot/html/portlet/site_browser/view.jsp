@@ -17,6 +17,7 @@
 <%@ include file="/html/portlet/site_browser/init.jsp" %>
 
 <%
+String selectedGroupIdsString = ParamUtil.getString(request, "selectedGroupIds");
 String type = ParamUtil.getString(request, "type", "manageable-sites");
 long groupId = ParamUtil.getLong(request, "groupId");
 String filter = ParamUtil.getString(request, "filter");
@@ -24,6 +25,8 @@ boolean includeCompany = ParamUtil.getBoolean(request, "includeCompany");
 boolean includeUserPersonalSite = ParamUtil.getBoolean(request, "includeUserPersonalSite");
 String callback = ParamUtil.getString(request, "callback");
 String target = ParamUtil.getString(request, "target");
+
+long[] selectedGroupIds = StringUtil.split(selectedGroupIdsString, 0L);
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -133,21 +136,25 @@ portletURL.setParameter("target", target);
 		>
 
 			<%
-			StringBundler sb = new StringBundler(11);
+			String rowHREF = null;
 
-			sb.append("javascript:Liferay.Util.getOpener().");
-			sb.append(Validator.isNotNull(callback) ? callback : "selectGroup");
-			sb.append("('");
-			sb.append(group.getGroupId());
-			sb.append("', '");
-			sb.append(UnicodeFormatter.toString(group.getDescriptiveName(locale)));
-			sb.append("', '");
-			sb.append(AssetPublisherUtil.getScopeId(group, scopeGroupId));
-			sb.append("', '");
-			sb.append(target);
-			sb.append("'); Liferay.Util.getWindow().close();");
+			if (!ArrayUtil.contains(selectedGroupIds, group.getGroupId())) {
+				StringBundler sb = new StringBundler(11);
 
-			String rowHREF = sb.toString();
+				sb.append("javascript:Liferay.Util.getOpener().");
+				sb.append(Validator.isNotNull(callback) ? callback : "selectGroup");
+				sb.append("('");
+				sb.append(group.getGroupId());
+				sb.append("', '");
+				sb.append(UnicodeFormatter.toString(group.getDescriptiveName(locale)));
+				sb.append("', '");
+				sb.append(AssetPublisherUtil.getScopeId(group, scopeGroupId));
+				sb.append("', '");
+				sb.append(target);
+				sb.append("'); Liferay.Util.getWindow().close();");
+
+				rowHREF = sb.toString();
+			}
 			%>
 
 			<liferay-ui:search-container-column-text

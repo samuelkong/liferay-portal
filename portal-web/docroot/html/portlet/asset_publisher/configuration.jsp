@@ -187,11 +187,12 @@ String editorParam = emailParam + "Body_" + currentLanguageId;
 					PortletURL parentSiteBrowserURL = PortletURLFactoryUtil.create(request, PortletKeys.SITE_BROWSER, PortalUtil.getControlPanelPlid(company.getCompanyId()), PortletRequest.RENDER_PHASE);
 
 					parentSiteBrowserURL.setParameter("struts_action", "/site_browser/view");
+					parentSiteBrowserURL.setParameter("selectedGroupIds", StringUtil.merge(groupIds));
 					parentSiteBrowserURL.setParameter("type", "parent-sites");
 					parentSiteBrowserURL.setParameter("groupId", String.valueOf(layout.getGroupId()));
 					parentSiteBrowserURL.setParameter("filter", "contentSharingWithChildrenEnabled");
 					parentSiteBrowserURL.setParameter("callback", liferayPortletResponse.getNamespace() + "selectGroup");
-						parentSiteBrowserURL.setPortletMode(PortletMode.VIEW);
+					parentSiteBrowserURL.setPortletMode(PortletMode.VIEW);
 					parentSiteBrowserURL.setWindowState(LiferayWindowState.POP_UP);
 
 					String parentSiteBrowserURLString = HttpUtil.addParameter(parentSiteBrowserURL.toString(), "doAsGroupId", scopeGroupId);
@@ -205,6 +206,7 @@ String editorParam = emailParam + "Body_" + currentLanguageId;
 					PortletURL siteBrowserURL = PortletURLFactoryUtil.create(request, PortletKeys.SITE_BROWSER, PortalUtil.getControlPanelPlid(company.getCompanyId()), PortletRequest.RENDER_PHASE);
 
 					siteBrowserURL.setParameter("struts_action", "/site_browser/view");
+					siteBrowserURL.setParameter("selectedGroupIds", StringUtil.merge(groupIds));
 					siteBrowserURL.setParameter("type", "manageable-sites");
 					siteBrowserURL.setParameter("callback", liferayPortletResponse.getNamespace() + "selectGroup");
 					siteBrowserURL.setPortletMode(PortletMode.VIEW);
