@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Mate Thurzo
  * @author Daniel Kocsis
  */
-public class BookmarksFolderDataHandlerImpl
+public class BookmarksFolderStagedModelDataHandler
 	extends BaseStagedModelDataHandler<BookmarksFolder> {
 
 	public static final String CLASS_NAME = BookmarksFolder.class.getName();
