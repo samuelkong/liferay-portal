@@ -140,7 +140,9 @@ public class WikiPageImpl extends WikiPageBaseImpl {
 	public long getNodeAttachmentsFolderId()
 		throws PortalException, SystemException {
 
-		return getNode().getAttachmentsFolderId();
+		WikiNode node = getNode();
+
+		return node.getAttachmentsFolderId();
 	}
 
 	public WikiPage getParentPage() {
