@@ -152,7 +152,8 @@ String editorParam = emailParam + "Body_" + currentLanguageId;
 							<portlet:param name="scopeId" value="<%= AssetPublisherUtil.getScopeId(group, scopeGroupId) %>" />
 						</liferay-portlet:actionURL>
 
-						<liferay-ui:icon-delete
+						<liferay-ui:icon
+							image="delete"
 							url="<%= deleteURL %>"
 						/>
 					</liferay-ui:search-container-column-text>
