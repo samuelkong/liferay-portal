@@ -16,7 +16,6 @@ package com.liferay.portlet.bookmarks.lar;
 
 import com.liferay.portal.kernel.lar.BaseStagedModelDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
-import com.liferay.portal.kernel.lar.StagedModelDataHandler;
 import com.liferay.portal.kernel.lar.StagedModelPathUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.xml.Element;
@@ -33,8 +32,7 @@ import java.util.Map;
  * @author Daniel Kocsis
  */
 public class BookmarksFolderDataHandlerImpl
-	extends BaseStagedModelDataHandler<BookmarksFolder>
-	implements StagedModelDataHandler<BookmarksFolder> {
+	extends BaseStagedModelDataHandler<BookmarksFolder> {
 
 	public static final String CLASS_NAME = BookmarksFolder.class.getName();
 
@@ -51,16 +49,12 @@ public class BookmarksFolderDataHandlerImpl
 
 		Element foldersElement = elements[0];
 
-		// Parent folder
-
 		if (folder.getParentFolderId() !=
 				BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 
 			exportModelData(
 				folder.getParentFolder(), portletDataContext, foldersElement);
 		}
-
-		// This folder
 
 		Element folderElement = foldersElement.addElement("folder");
 
