@@ -86,7 +86,7 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		long repositoryId = getPortletRepository(
+		long repositoryId = getPortletRepositoryId(
 			groupId, portletId, serviceContext);
 
 		String contentType = MimeTypesUtil.getContentType(file);
@@ -132,7 +132,7 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		long repositoryId = getPortletRepository(
+		long repositoryId = getPortletRepositoryId(
 			groupId, portletId, serviceContext);
 
 		String contentType = MimeTypesUtil.getContentType(
@@ -220,7 +220,7 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 		deletePortletFileEntry(fileEntry.getFileEntryId());
 	}
 
-	public void deleteRepository(long groupId, String portletId)
+	public void deletePortletRepository(long groupId, String portletId)
 		throws PortalException, SystemException {
 
 		Repository repository = RepositoryLocalServiceUtil.fetchRepository(
@@ -312,7 +312,7 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 		return folder;
 	}
 
-	public long getPortletRepository(
+	public long getPortletRepositoryId(
 			long groupId, String portletId, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 

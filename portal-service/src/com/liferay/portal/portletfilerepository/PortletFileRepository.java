@@ -66,7 +66,7 @@ public interface PortletFileRepository {
 			long groupId, long folderId, String fileName)
 		throws PortalException, SystemException;
 
-	public void deleteRepository(long groupId, String portletId)
+	public void deletePortletRepository(long groupId, String portletId)
 		throws PortalException, SystemException;
 
 	public List<FileEntry> getPortletFileEntries(long groupId, long folderId)
@@ -103,7 +103,7 @@ public interface PortletFileRepository {
 			String folderName, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
-	public long getPortletRepository(
+	public long getPortletRepositoryId(
 			long groupId, String portletId, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 

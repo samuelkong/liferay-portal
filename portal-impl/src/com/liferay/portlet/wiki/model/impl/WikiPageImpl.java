@@ -79,7 +79,7 @@ public class WikiPageImpl extends WikiPageBaseImpl {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		long repositoryId = PortletFileRepositoryUtil.getPortletRepository(
+		long repositoryId = PortletFileRepositoryUtil.getPortletRepositoryId(
 			getGroupId(), PortletKeys.WIKI, serviceContext);
 
 		Folder folder = PortletFileRepositoryUtil.getPortletFolder(

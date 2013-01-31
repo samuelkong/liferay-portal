@@ -83,7 +83,7 @@ public class MBMessageImpl extends MBMessageBaseImpl {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		long repositoryId = PortletFileRepositoryUtil.getPortletRepository(
+		long repositoryId = PortletFileRepositoryUtil.getPortletRepositoryId(
 			getGroupId(), PortletKeys.MESSAGE_BOARDS, serviceContext);
 
 		Folder folder = PortletFileRepositoryUtil.getPortletFolder(

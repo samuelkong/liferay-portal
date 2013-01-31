@@ -134,7 +134,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 				portletDataContext.getScopeGroupId(),
 				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
 
-			PortletFileRepositoryUtil.deleteRepository(
+			PortletFileRepositoryUtil.deletePortletRepository(
 				portletDataContext.getScopeGroupId(),
 				PortletKeys.MESSAGE_BOARDS);
 		}

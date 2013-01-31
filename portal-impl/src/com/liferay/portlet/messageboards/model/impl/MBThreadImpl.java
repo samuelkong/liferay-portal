@@ -46,7 +46,7 @@ public class MBThreadImpl extends MBThreadBaseImpl {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		long repositoryId = PortletFileRepositoryUtil.getPortletRepository(
+		long repositoryId = PortletFileRepositoryUtil.getPortletRepositoryId(
 			getGroupId(), PortletKeys.MESSAGE_BOARDS, serviceContext);
 
 		MBMessage message = MBMessageLocalServiceUtil.getMessage(

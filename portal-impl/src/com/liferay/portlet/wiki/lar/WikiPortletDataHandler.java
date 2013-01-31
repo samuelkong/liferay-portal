@@ -489,7 +489,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 			WikiNodeLocalServiceUtil.deleteNodes(
 				portletDataContext.getScopeGroupId());
 
-			PortletFileRepositoryUtil.deleteRepository(
+			PortletFileRepositoryUtil.deletePortletRepository(
 				portletDataContext.getScopeGroupId(), PortletKeys.WIKI);
 		}
 
