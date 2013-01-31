@@ -178,25 +178,15 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 		Element foldersElement = rootElement.element("folders");
 
 		for (Element folderElement : foldersElement.elements("folder")) {
-			String path = folderElement.attributeValue("path");
-
-			BookmarksFolder folder =
-				(BookmarksFolder)portletDataContext.getZipEntryAsObject(path);
-
 			StagedModelDataHandlerUtil.importStagedModel(
-				portletDataContext, path, folder);
+				portletDataContext, folderElement);
 		}
 
 		Element entriesElement = rootElement.element("entries");
 
 		for (Element entryElement : entriesElement.elements("entry")) {
-			String path = entryElement.attributeValue("path");
-
-			BookmarksEntry entry =
-				(BookmarksEntry)portletDataContext.getZipEntryAsObject(path);
-
 			StagedModelDataHandlerUtil.importStagedModel(
-				portletDataContext, path, entry);
+				portletDataContext, entryElement);
 		}
 
 		return null;
