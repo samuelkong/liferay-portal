@@ -18,8 +18,7 @@ import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
-import com.liferay.portal.kernel.lar.StagedModelDataHandler;
-import com.liferay.portal.kernel.lar.StagedModelDataHandlerRegistryUtil;
+import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.xml.Document;
@@ -224,12 +223,7 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolder folder)
 		throws Exception {
 
-		StagedModelDataHandler<BookmarksFolder> bookmarksFolderDataHandler =
-			(StagedModelDataHandler<BookmarksFolder>)
-				StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
-					BookmarksFolder.class.getName());
-
-		bookmarksFolderDataHandler.exportModelData(
+		StagedModelDataHandlerUtil.exportModelData(
 			folder, portletDataContext, foldersElement);
 	}
 
@@ -328,12 +322,7 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 			BookmarksFolder folder)
 		throws Exception {
 
-		StagedModelDataHandler<BookmarksFolder> bookmarksFolderDataHandler =
-			(StagedModelDataHandler<BookmarksFolder>)
-				StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
-					BookmarksFolder.class.getName());
-
-		bookmarksFolderDataHandler.importModelData(
+		StagedModelDataHandlerUtil.importModelData(
 			folder, folderPath, portletDataContext);
 	}
 
