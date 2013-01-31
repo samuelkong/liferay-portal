@@ -17,6 +17,9 @@
 <%@ include file="/html/portlet/site_browser/init.jsp" %>
 
 <%
+String type = ParamUtil.getString(request, "type", "manageable-sites");
+long groupId = ParamUtil.getLong(request, "groupId");
+String filter = ParamUtil.getString(request, "filter");
 boolean includeCompany = ParamUtil.getBoolean(request, "includeCompany");
 boolean includeUserPersonalSite = ParamUtil.getBoolean(request, "includeUserPersonalSite");
 String callback = ParamUtil.getString(request, "callback");
@@ -25,6 +28,9 @@ String target = ParamUtil.getString(request, "target");
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("struts_action", "/site_browser/view");
+portletURL.setParameter("type", type);
+portletURL.setParameter("groupId", String.valueOf(groupId));
+portletURL.setParameter("filter", filter);
 portletURL.setParameter("includeCompany", String.valueOf(includeCompany));
 portletURL.setParameter("includeUserPersonalSite", String.valueOf(includeUserPersonalSite));
 portletURL.setParameter("callback", callback);
@@ -39,9 +45,11 @@ portletURL.setParameter("target", target);
 	<liferay-ui:search-container
 		searchContainer="<%= new GroupSearch(renderRequest, portletURL) %>"
 	>
-		<liferay-ui:search-form
-			page="/html/portlet/users_admin/group_search.jsp"
-		/>
+		<c:if test='<%= !type.equals("parent-sites") %>'>
+			<liferay-ui:search-form
+				page="/html/portlet/users_admin/group_search.jsp"
+			/>
+		</c:if>
 
 		<%
 		GroupSearchTerms searchTerms = (GroupSearchTerms)searchContainer.getSearchTerms();
@@ -90,7 +98,18 @@ portletURL.setParameter("target", target);
 
 			List<Group> sites = null;
 
-			if (searchTerms.isAdvancedSearch()) {
+			if (type.equals("parent-sites")) {
+				Group site = GroupLocalServiceUtil.getGroup(groupId);
+
+				sites = site.getAncestors();
+
+				if (Validator.isNotNull(filter)) {
+					sites = _filterGroups(sites, filter);
+				}
+
+				total = sites.size();
+			}
+			else if (searchTerms.isAdvancedSearch()) {
 				sites = GroupLocalServiceUtil.search(company.getCompanyId(), null, searchTerms.getName(), searchTerms.getDescription(), groupParams, searchTerms.isAndOperator(), start, end, searchContainer.getOrderByComparator());
 				total = GroupLocalServiceUtil.searchCount(company.getCompanyId(), null, searchTerms.getName(), searchTerms.getDescription(), groupParams, searchTerms.isAndOperator());
 			}
@@ -155,3 +174,17 @@ portletURL.setParameter("target", target);
 <aui:script>
 	Liferay.Util.focusFormField(document.<portlet:namespace />fm.<portlet:namespace />name);
 </aui:script>
+
+<%!
+private List<Group> _filterGroups(List<Group> groups, String filter) throws Exception {
+	List<Group> filteredGroups = new ArrayList();
+
+	for (Group group : groups) {
+		if (filter.equals("contentSharingWithChildrenEnabled") && SitesUtil.isContentSharingWithChildrenEnabled(group)) {
+			filteredGroups.add(group);
+		}
+	}
+
+	return filteredGroups;
+}
+%>
