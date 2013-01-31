@@ -14,6 +14,7 @@
 
 package com.liferay.portlet.bookmarks.lar;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
@@ -145,9 +146,10 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 				portletDataContext, foldersElement, folder);
 		}
 
-		List<BookmarksEntry> entries = BookmarksEntryUtil.findByG_F(
-			portletDataContext.getScopeGroupId(),
-			BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+		List<BookmarksEntry> entries =
+			BookmarksEntryLocalServiceUtil.getGroupEntries(
+				portletDataContext.getScopeGroupId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
 		for (BookmarksEntry entry : entries) {
 			if (!portletDataContext.isWithinDateRange(
