@@ -234,6 +234,32 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 		</copy>
 
 		<if>
+			<and>
+				<equals arg1="${app.server.type}" arg2="geronimo" />
+				<equals arg1="${app.server.geronimo.version}" arg2="2.2.1" />
+				<not>
+					<available file="${app.server.geronimo.dir}/repository/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3/geronimo-el_2.2_spec-1.0.3.jar" />
+				</not>
+			</and>
+			<then>
+				<mkdir dir="${app.server.geronimo.dir}/repository/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3" />
+
+				<get
+					dest="${app.server.geronimo.dir}/repository/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3/geronimo-el_2.2_spec-1.0.3.jar"
+					src="http://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3/geronimo-el_2.2_spec-1.0.3.jar"
+					verbose="true"
+				/>
+
+				<concat
+					append="true"
+					destfile="${app.server.geronimo.dir}/var/config/artifact_aliases.properties"
+				>
+					org.apache.geronimo.specs/geronimo-el_1.0_spec/1.0.2/jar=org.apache.geronimo.specs/geronimo-el_2.2_spec/1.0.3/jar
+				</concat>
+			</then>
+		</if>
+
+		<if>
 			<equals arg1="${app.server.type}" arg2="jboss" />
 			<then>
 				<if>
