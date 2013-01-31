@@ -17,8 +17,6 @@
 <%@ include file="/html/portlet/journal/init.jsp" %>
 
 <%
-String portletResource = ParamUtil.getString(request, "portletResource");
-
 String redirect = (String)request.getAttribute("edit_article.jsp-redirect");
 
 JournalArticle article = (JournalArticle)request.getAttribute(WebKeys.JOURNAL_ARTICLE);
