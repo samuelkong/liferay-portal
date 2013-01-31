@@ -60,7 +60,7 @@ public class BookmarksFolderStagedModelDataHandler
 
 		portletDataContext.addClassedModel(
 			folderElement, StagedModelPathUtil.getPath(folder), folder,
-			BookmarksPortletDataHandlerImpl.NAMESPACE);
+			BookmarksPortletDataHandler.NAMESPACE);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class BookmarksFolderStagedModelDataHandler
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			path, folder, BookmarksPortletDataHandlerImpl.NAMESPACE);
+			path, folder, BookmarksPortletDataHandler.NAMESPACE);
 
 		BookmarksFolder importedFolder = null;
 
@@ -127,7 +127,7 @@ public class BookmarksFolderStagedModelDataHandler
 		}
 
 		portletDataContext.importClassedModel(
-			folder, importedFolder, BookmarksPortletDataHandlerImpl.NAMESPACE);
+			folder, importedFolder, BookmarksPortletDataHandler.NAMESPACE);
 	}
 
 }

@@ -46,7 +46,7 @@ import javax.portlet.PortletPreferences;
  * @author Raymond Augé
  * @author Juan Fernández
  */
-public class BookmarksPortletDataHandlerImpl extends BasePortletDataHandler {
+public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 	public static final String NAMESPACE = "bookmarks";
 
@@ -97,7 +97,7 @@ public class BookmarksPortletDataHandlerImpl extends BasePortletDataHandler {
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				BookmarksPortletDataHandlerImpl.class, "deleteData")) {
+				BookmarksPortletDataHandler.class, "deleteData")) {
 
 			BookmarksFolderLocalServiceUtil.deleteFolders(
 				portletDataContext.getScopeGroupId());
