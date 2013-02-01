@@ -38,8 +38,7 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Michael C. Han
  */
-public class DDLPortletDataHandlerImpl
-	extends BasePortletDataHandler implements DDLPortletDataHandler {
+public class DDLPortletDataHandler extends BasePortletDataHandler {
 
 	public void exportRecordSet(
 			PortletDataContext portletDataContext, Element recordSetsElement,
@@ -168,7 +167,7 @@ public class DDLPortletDataHandlerImpl
 		throws Exception {
 
 		if (!portletDataContext.addPrimaryKey(
-				DDLPortletDataHandlerImpl.class, "deleteData")) {
+				DDLPortletDataHandler.class, "deleteData")) {
 
 			DDLRecordSetLocalServiceUtil.deleteRecordSets(
 				portletDataContext.getScopeGroupId());

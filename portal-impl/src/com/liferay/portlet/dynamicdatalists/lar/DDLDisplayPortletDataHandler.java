@@ -101,10 +101,7 @@ public class DDLDisplayPortletDataHandler extends BasePortletDataHandler {
 		DDLRecordSet recordSet = DDLRecordSetLocalServiceUtil.getRecordSet(
 			recordSetId);
 
-		DDLPortletDataHandler ddlPortletDataHandler =
-			DDLPortletDataHandlerUtil.getDDLPortletDataHandler();
-
-		ddlPortletDataHandler.exportRecordSet(
+		_ddlPortletDataHandler.exportRecordSet(
 			portletDataContext, rootElement, recordSet);
 
 		return document.formattedString();
@@ -132,10 +129,7 @@ public class DDLDisplayPortletDataHandler extends BasePortletDataHandler {
 		Element recordSetElement = rootElement.element("record-set");
 
 		if (recordSetElement != null) {
-			DDLPortletDataHandler ddlPortletDataHandler =
-				DDLPortletDataHandlerUtil.getDDLPortletDataHandler();
-
-			ddlPortletDataHandler.importRecordSet(
+			_ddlPortletDataHandler.importRecordSet(
 				portletDataContext, recordSetElement);
 		}
 
@@ -179,5 +173,8 @@ public class DDLDisplayPortletDataHandler extends BasePortletDataHandler {
 
 	private static Log _log = LogFactoryUtil.getLog(
 		DDLDisplayPortletDataHandler.class);
+
+	private DDLPortletDataHandler _ddlPortletDataHandler =
+		new DDLPortletDataHandler();
 
 }
