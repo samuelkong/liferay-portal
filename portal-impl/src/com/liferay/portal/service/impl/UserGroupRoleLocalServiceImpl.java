@@ -23,6 +23,7 @@ import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroupRole;
+import com.liferay.portal.security.auth.DefaultMembershipPolicy;
 import com.liferay.portal.security.auth.MembershipPolicy;
 import com.liferay.portal.security.auth.MembershipPolicyFactory;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
@@ -83,6 +84,10 @@ public class UserGroupRoleLocalServiceImpl
 	public void checkMembershipPolicy(User user) throws SystemException {
 		MembershipPolicy membershipPolicy =
 			MembershipPolicyFactory.getInstance();
+
+		if (membershipPolicy.getClass() == DefaultMembershipPolicy.class) {
+			return;
+		}
 
 		LinkedHashMap<String, Object> groupParams =
 			new LinkedHashMap<String, Object>();
