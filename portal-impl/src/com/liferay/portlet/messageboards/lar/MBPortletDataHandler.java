@@ -71,44 +71,25 @@ import javax.portlet.PortletPreferences;
  */
 public class MBPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_categoriesAndMessages, _threadFlags, _userBans
-		};
-	}
+	public static final String NAMESPACE = "message_board";
 
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public MBPortletDataHandler() {
+		setAlwaysExportable(true);
+		setExportControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "message-board-messages", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_categoriesAndMessages, _threadFlags, _userBans
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+				NAMESPACE, "categories-and-messages", true, true),
+			new PortletDataHandlerBoolean(NAMESPACE, "thread-flags"),
+			new PortletDataHandlerBoolean(NAMESPACE, "user-bans"));
+		setExportMetadataControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "message-board-messages", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return PropsValues.MESSAGE_BOARDS_PUBLISH_TO_LIVE_BY_DEFAULT;
+				NAMESPACE, "message-board-messages", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "attachments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
+		setPublishToLiveByDefault(
+			PropsValues.MESSAGE_BOARDS_PUBLISH_TO_LIVE_BY_DEFAULT);
 	}
 
 	@Override
@@ -178,7 +159,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 				threadFlagsElement, message);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "user-bans")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "user-bans")) {
 			List<MBBan> bans = MBBanUtil.findByGroupId(
 				portletDataContext.getScopeGroupId());
 
@@ -235,9 +216,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			importMessage(portletDataContext, messageElement, message);
 		}
 
-		if (portletDataContext.getBooleanParameter(
-				_NAMESPACE, "thread-flags")) {
-
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "thread-flags")) {
 			Element threadFlagsElement = rootElement.element("thread-flags");
 
 			for (Element threadFlagElement :
@@ -257,7 +236,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "user-bans")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "user-bans")) {
 			Element userBansElement = rootElement.element("user-bans");
 
 			for (Element userBanElement :
@@ -298,7 +277,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		ban.setBanUserUuid(ban.getBanUserUuid());
 
 		portletDataContext.addClassedModel(
-			userBanElement, path, ban, _NAMESPACE);
+			userBanElement, path, ban, NAMESPACE);
 	}
 
 	protected void exportCategory(
@@ -319,7 +298,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 					"category");
 
 				portletDataContext.addClassedModel(
-					categoryElement, path, category, _NAMESPACE);
+					categoryElement, path, category, NAMESPACE);
 			}
 		}
 
@@ -372,7 +351,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			"hasAttachmentsFileEntries",
 			String.valueOf(hasAttachmentsFileEntries));
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "attachments") &&
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "attachments") &&
 			hasAttachmentsFileEntries) {
 
 			for (FileEntry fileEntry : message.getAttachmentsFileEntries()) {
@@ -393,9 +372,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			message.setAttachmentsFolderId(message.getAttachmentsFolderId());
 		}
 
-		if (portletDataContext.getBooleanParameter(
-				_NAMESPACE, "thread-flags")) {
-
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "thread-flags")) {
 			List<MBThreadFlag> threadFlags = MBThreadFlagUtil.findByThreadId(
 				message.getThreadId());
 
@@ -406,7 +383,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			messageElement, path, message, _NAMESPACE);
+			messageElement, path, message, NAMESPACE);
 	}
 
 	protected void exportParentCategory(
@@ -433,7 +410,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			Element categoryElement = categoriesElement.addElement("category");
 
 			portletDataContext.addClassedModel(
-				categoryElement, path, category, _NAMESPACE);
+				categoryElement, path, category, NAMESPACE);
 		}
 	}
 
@@ -461,7 +438,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			"root-message-uuid", rootMessage.getUuid());
 
 		portletDataContext.addClassedModel(
-			threadFlagElement, path, threadFlag, _NAMESPACE);
+			threadFlagElement, path, threadFlag, NAMESPACE);
 	}
 
 	protected List<ObjectValuePair<String, InputStream>> getAttachments(
@@ -472,7 +449,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			messageElement.attributeValue("hasAttachmentsFileEntries"));
 
 		if (!hasAttachmentsFileEntries &&
-			portletDataContext.getBooleanParameter(_NAMESPACE, "attachments")) {
+			portletDataContext.getBooleanParameter(NAMESPACE, "attachments")) {
 
 			return Collections.emptyList();
 		}
@@ -627,7 +604,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		long userId = portletDataContext.getUserId(ban.getUserUuid());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			userBanElement, ban, _NAMESPACE);
+			userBanElement, ban, NAMESPACE);
 
 		List<User> users = UserUtil.findByUuid_C(
 			ban.getBanUserUuid(), portletDataContext.getCompanyId());
@@ -680,7 +657,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		boolean mailingListActive = false;
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			categoryPath, category, _NAMESPACE);
+			categoryPath, category, NAMESPACE);
 
 		if ((parentCategoryId !=
 				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) &&
@@ -741,7 +718,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			category, importedCategory, _NAMESPACE);
+			category, importedCategory, NAMESPACE);
 	}
 
 	protected void importMessage(
@@ -781,7 +758,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		try {
 			ServiceContext serviceContext =
 				portletDataContext.createServiceContext(
-					messageElement, message, _NAMESPACE);
+					messageElement, message, NAMESPACE);
 
 			if (message.getStatus() != WorkflowConstants.STATUS_APPROVED) {
 				serviceContext.setWorkflowAction(
@@ -837,7 +814,7 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 			threadIds.put(message.getThreadId(), importedMessage.getThreadId());
 
 			portletDataContext.importClassedModel(
-				message, importedMessage, _NAMESPACE);
+				message, importedMessage, NAMESPACE);
 		}
 		finally {
 			for (ObjectValuePair<String, InputStream> inputStreamOVP :
@@ -885,27 +862,6 @@ public class MBPortletDataHandler extends BasePortletDataHandler {
 		MBThreadFlagLocalServiceUtil.addThreadFlag(userId, thread);
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final String _NAMESPACE = "message_board";
-
 	private static Log _log = LogFactoryUtil.getLog(MBPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _categoriesAndMessages =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "categories-and-messages", true, true);
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(_NAMESPACE, "attachments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "tags")
-		};
-
-	private static PortletDataHandlerBoolean _threadFlags =
-		new PortletDataHandlerBoolean(_NAMESPACE, "thread-flags");
-
-	private static PortletDataHandlerBoolean _userBans =
-		new PortletDataHandlerBoolean(_NAMESPACE, "user-bans");
 
 }

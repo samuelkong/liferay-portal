@@ -17,7 +17,6 @@ package com.liferay.portlet.pagecomments.lar;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
@@ -34,14 +33,11 @@ import javax.portlet.PortletPreferences;
  */
 public class PageCommentsPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {_comments};
-	}
+	public static final String NAMESPACE = "page_comments";
 
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {_comments};
+	public PageCommentsPortletDataHandler() {
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "comments", true, true));
 	}
 
 	@Override
@@ -75,7 +71,7 @@ public class PageCommentsPortletDataHandler extends BasePortletDataHandler {
 		rootElement.addAttribute(
 			"plid", String.valueOf(portletDataContext.getPlid()));
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "comments")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "comments")) {
 			portletDataContext.addComments(
 				Layout.class, portletDataContext.getPlid());
 		}
@@ -110,10 +106,5 @@ public class PageCommentsPortletDataHandler extends BasePortletDataHandler {
 
 		return null;
 	}
-
-	private static final String _NAMESPACE = "page_comments";
-
-	private static PortletDataHandlerBoolean _comments =
-		new PortletDataHandlerBoolean(_NAMESPACE, "comments", true, true);
 
 }

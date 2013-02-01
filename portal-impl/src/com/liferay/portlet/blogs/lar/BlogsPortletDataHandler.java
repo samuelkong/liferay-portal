@@ -54,44 +54,25 @@ import javax.portlet.PortletPreferences;
  */
 public class BlogsPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_entries
-		};
-	}
+	public static final String NAMESPACE = "blogs";
 
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public BlogsPortletDataHandler() {
+		setAlwaysExportable(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "entries", true, true));
+		setExportMetadataControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "blog-entries", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_entries, _wordpress
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "blog-entries", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return PropsValues.BLOGS_PUBLISH_TO_LIVE_BY_DEFAULT;
+				NAMESPACE, "blog-entries", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "categories"),
+					new PortletDataHandlerBoolean(NAMESPACE, "comments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
+		setImportMetadataControls(
+			getExportControls()[0],
+			new PortletDataHandlerBoolean(NAMESPACE, "wordpress"));
+		setPublishToLiveByDefault(PropsValues.BLOGS_PUBLISH_TO_LIVE_BY_DEFAULT);
 	}
 
 	@Override
@@ -192,7 +173,7 @@ public class BlogsPortletDataHandler extends BasePortletDataHandler {
 			importEntry(portletDataContext, entryElement, entry);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "wordpress")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "wordpress")) {
 			WordPressImporter.importData(portletDataContext);
 		}
 
@@ -273,7 +254,7 @@ public class BlogsPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			entryElement, path, entry, _NAMESPACE);
+			entryElement, path, entry, NAMESPACE);
 	}
 
 	protected String getEntryImagePath(
@@ -379,7 +360,7 @@ public class BlogsPortletDataHandler extends BasePortletDataHandler {
 
 			ServiceContext serviceContext =
 				portletDataContext.createServiceContext(
-					entryElement, entry, _NAMESPACE);
+					entryElement, entry, NAMESPACE);
 
 			if ((status != WorkflowConstants.STATUS_APPROVED) &&
 				(status != WorkflowConstants.STATUS_IN_TRASH)) {
@@ -436,30 +417,12 @@ public class BlogsPortletDataHandler extends BasePortletDataHandler {
 			}
 
 			portletDataContext.importClassedModel(
-				entry, importedEntry, _NAMESPACE);
+				entry, importedEntry, NAMESPACE);
 		}
 		finally {
 			StreamUtil.cleanUp(smallImageInputStream);
 		}
 
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final String _NAMESPACE = "blogs";
-
-	private static PortletDataHandlerBoolean _entries =
-		new PortletDataHandlerBoolean(_NAMESPACE, "entries", true, true);
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(_NAMESPACE, "categories"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "comments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "tags")
-		};
-
-	private static PortletDataHandlerBoolean _wordpress =
-		new PortletDataHandlerBoolean(_NAMESPACE, "wordpress");
 
 }

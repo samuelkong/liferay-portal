@@ -17,7 +17,6 @@ package com.liferay.portlet.portletdisplaytemplate.lar;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.portletdisplaytemplate.PortletDisplayTemplateHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.xml.Document;
@@ -38,19 +37,13 @@ import javax.portlet.PortletPreferences;
 public class PortletDisplayTemplatePortletDataHandler
 	extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {_portletDisplayTemplates};
-	}
+	public static final String NAMESPACE = "portlet_display_templates";
 
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {_portletDisplayTemplates};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
+	public PortletDisplayTemplatePortletDataHandler() {
+		setAlwaysExportable(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(
+				NAMESPACE, "application-display-templates"));
 	}
 
 	@Override
@@ -124,13 +117,5 @@ public class PortletDisplayTemplatePortletDataHandler
 
 		return sb.toString();
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final String _NAMESPACE = "portlet_display_templates";
-
-	private static PortletDataHandlerBoolean _portletDisplayTemplates =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "application-display-templates");
 
 }

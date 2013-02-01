@@ -49,44 +49,22 @@ import javax.portlet.PortletPreferences;
  */
 public class CalendarPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_events
-		};
-	}
+	public static final String NAMESPACE = "calendar";
 
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public CalendarPortletDataHandler() {
+		setAlwaysExportable(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "events", true, true));
+		setExportMetadataControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "events", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_events
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "events", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
+				NAMESPACE, "events", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "categories"),
+					new PortletDataHandlerBoolean(NAMESPACE, "comments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
+		setPublishToLiveByDefault(true);
 	}
 
 	@Override
@@ -181,7 +159,7 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 		Element eventElement = rootElement.addElement("event");
 
 		portletDataContext.addClassedModel(
-			eventElement, path, event, _NAMESPACE);
+			eventElement, path, event, NAMESPACE);
 	}
 
 	protected String getEventPath(
@@ -244,7 +222,7 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			eventElement, event, _NAMESPACE);
+			eventElement, event, NAMESPACE);
 
 		CalEvent importedEvent = null;
 
@@ -291,24 +269,7 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 				event.getSecondReminder(), serviceContext);
 		}
 
-		portletDataContext.importClassedModel(event, importedEvent, _NAMESPACE);
+		portletDataContext.importClassedModel(event, importedEvent, NAMESPACE);
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final String _NAMESPACE = "calendar";
-
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
-
-	private static PortletDataHandlerBoolean _events =
-		new PortletDataHandlerBoolean(_NAMESPACE, "events", true, true);
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(_NAMESPACE, "categories"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "comments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "tags")
-		};
 
 }

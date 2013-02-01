@@ -17,7 +17,6 @@ package com.liferay.portlet.pageratings.lar;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.model.Layout;
 import com.liferay.portlet.ratings.service.RatingsStatsLocalServiceUtil;
@@ -29,14 +28,11 @@ import javax.portlet.PortletPreferences;
  */
 public class PageRatingsPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {_ratings};
-	}
+	public static final String NAMESPACE = "page_ratings";
 
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {_ratings};
+	public PageRatingsPortletDataHandler() {
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "ratings", true, true));
 	}
 
 	@Override
@@ -75,10 +71,5 @@ public class PageRatingsPortletDataHandler extends BasePortletDataHandler {
 
 		return null;
 	}
-
-	private static final String _NAMESPACE = "page_ratings";
-
-	private static PortletDataHandlerBoolean _ratings =
-		new PortletDataHandlerBoolean(_NAMESPACE, "ratings", true, true);
 
 }

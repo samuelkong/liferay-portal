@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -80,6 +79,8 @@ import javax.portlet.PortletPreferences;
  */
 public class DDMPortletDataHandler extends BasePortletDataHandler {
 
+	public static final String NAMESPACE = "ddm";
+
 	public static String exportReferencedContent(
 			PortletDataContext portletDataContext,
 			Element dlFileEntryTypesElement, Element dlFoldersElement,
@@ -134,7 +135,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			structureElement, path, structure, _NAMESPACE);
+			structureElement, path, structure, NAMESPACE);
 	}
 
 	public static void exportTemplate(
@@ -196,7 +197,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		if (portletDataContext.getBooleanParameter(
-				_NAMESPACE, "embedded-assets")) {
+				NAMESPACE, "embedded-assets")) {
 
 			String content = exportReferencedContent(
 				portletDataContext, dlFileEntryTypesElement, dlFoldersElement,
@@ -208,7 +209,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			templateElement, path, template, _NAMESPACE);
+			templateElement, path, template, NAMESPACE);
 	}
 
 	public static void exportTemplate(
@@ -244,7 +245,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 				DDMStructure.class);
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			structureElement, structure, _NAMESPACE);
+			structureElement, structure, NAMESPACE);
 
 		DDMStructure importedStructure = null;
 
@@ -295,7 +296,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			structure, importedStructure, _NAMESPACE);
+			structure, importedStructure, NAMESPACE);
 
 		structureIds.put(
 			structure.getStructureId(), importedStructure.getStructureId());
@@ -352,7 +353,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			templateElement, template, _NAMESPACE);
+			templateElement, template, NAMESPACE);
 
 		DDMTemplate importedTemplate = null;
 
@@ -384,27 +385,15 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			template, importedTemplate, _NAMESPACE);
+			template, importedTemplate, NAMESPACE);
 	}
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {_structures, _templates};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {_structures, _templates};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
+	public DDMPortletDataHandler() {
+		setAlwaysExportable(true);
+		setDataLocalized(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "structures", true, true),
+			new PortletDataHandlerBoolean(NAMESPACE, "templates"));
 	}
 
 	protected static DDMTemplate addTemplate(
@@ -1068,7 +1057,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 
 		Element templatesElement = rootElement.addElement("templates");
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "templates")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "templates")) {
 			List<DDMTemplate> templates = DDMTemplateUtil.findByG_C(
 				portletDataContext.getScopeGroupId(),
 				PortalUtil.getClassNameId(DDMStructure.class));
@@ -1110,7 +1099,7 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 			importStructure(portletDataContext, structureElement);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "templates")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "templates")) {
 			Element templatesElement = rootElement.element("templates");
 
 			List<Element> templateElements = templatesElement.elements(
@@ -1124,22 +1113,10 @@ public class DDMPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "ddm";
-
 	private static Log _log = LogFactoryUtil.getLog(
 		DDMPortletDataHandler.class);
 
 	private static Pattern _exportLinksToLayoutPattern = Pattern.compile(
 		"\\[([0-9]+)@(public|private\\-[a-z]*)\\]");
-
-	private static PortletDataHandlerBoolean _structures =
-		new PortletDataHandlerBoolean(_NAMESPACE, "structures", true, true);
-
-	private static PortletDataHandlerBoolean _templates =
-		new PortletDataHandlerBoolean(_NAMESPACE, "templates");
 
 }
