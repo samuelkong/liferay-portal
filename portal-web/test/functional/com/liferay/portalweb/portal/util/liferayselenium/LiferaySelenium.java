@@ -131,7 +131,7 @@ public interface LiferaySelenium extends Selenium {
 
 	public void setTimeoutImplicit(String timeout);
 
-	public void typeIframe(String locator, String value);
+	public void typeFrame(String locator, String value);
 
 	public void uploadCommonFile(String locator, String value);
 

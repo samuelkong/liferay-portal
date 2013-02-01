@@ -589,7 +589,7 @@ public class SeleneseToJavaBuilder {
 				param1.equals("keyPress") || param1.equals("keyUp") ||
 				param1.equals("mouseMoveAt") || param1.equals("openWindow") ||
 				param1.equals("select") || param1.equals("sendKeys") ||
-				param1.equals("type") || param1.equals("typeIframe") ||
+				param1.equals("type") || param1.equals("typeFrame") ||
 				param1.equals("typeKeys") ||
 				param1.equals("uploadCommonFile") ||
 				param1.equals("uploadFile") ||

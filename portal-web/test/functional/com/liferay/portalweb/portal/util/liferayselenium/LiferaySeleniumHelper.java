@@ -313,12 +313,12 @@ public class LiferaySeleniumHelper {
 		}
 	}
 
-	public static void typeIframe(
+	public static void typeFrame(
 		LiferaySelenium liferaySelenium, String locator, String value) {
 
 		liferaySelenium.selectFrame(locator);
 
-		liferaySelenium.runScript("document.body.innerHTML='" + value + "'");
+		liferaySelenium.runScript("document.body.innerHTML = '" + value + "'");
 
 		liferaySelenium.selectFrame("relative=top");
 	}
