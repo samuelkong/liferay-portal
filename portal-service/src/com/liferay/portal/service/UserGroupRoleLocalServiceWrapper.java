@@ -256,10 +256,9 @@ public class UserGroupRoleLocalServiceWrapper
 		_userGroupRoleLocalService.addUserGroupRoles(userIds, groupId, roleId);
 	}
 
-	public void checkMembershipPolicy(com.liferay.portal.model.User user,
-		com.liferay.portal.security.auth.MembershipPolicy membershipPolicy)
+	public void checkMembershipPolicy(com.liferay.portal.model.User user)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		_userGroupRoleLocalService.checkMembershipPolicy(user, membershipPolicy);
+		_userGroupRoleLocalService.checkMembershipPolicy(user);
 	}
 
 	public void deleteUserGroupRoles(long userId, long groupId, long[] roleIds)

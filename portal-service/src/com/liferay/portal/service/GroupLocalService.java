@@ -329,8 +329,7 @@ public interface GroupLocalService extends BaseLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
-	public void checkMembershipPolicy(com.liferay.portal.model.User user,
-		com.liferay.portal.security.auth.MembershipPolicy membershipPolicy)
+	public void checkMembershipPolicy(com.liferay.portal.model.User user)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	/**

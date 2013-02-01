@@ -359,10 +359,9 @@ public class GroupLocalServiceWrapper implements GroupLocalService,
 		_groupLocalService.checkCompanyGroup(companyId);
 	}
 
-	public void checkMembershipPolicy(com.liferay.portal.model.User user,
-		com.liferay.portal.security.auth.MembershipPolicy membershipPolicy)
+	public void checkMembershipPolicy(com.liferay.portal.model.User user)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		_groupLocalService.checkMembershipPolicy(user, membershipPolicy);
+		_groupLocalService.checkMembershipPolicy(user);
 	}
 
 	/**
