@@ -70,6 +70,7 @@ import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.model.UserPersonalSite;
 import com.liferay.portal.model.impl.LayoutImpl;
 import com.liferay.portal.security.auth.MembershipPolicy;
+import com.liferay.portal.security.auth.MembershipPolicyFactory;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.security.permission.ResourceActionsUtil;
@@ -468,13 +469,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 	}
 
-	public void checkMembershipPolicy(
-			User user, MembershipPolicy membershipPolicy)
-		throws SystemException {
-
-		if (membershipPolicy == null) {
-			throw new NullPointerException("Missing MembershipPolicy");
-		}
+	public void checkMembershipPolicy(User user) throws SystemException {
+		MembershipPolicy membershipPolicy =
+			MembershipPolicyFactory.getInstance();
 
 		LinkedHashMap<String, Object> groupParams =
 			new LinkedHashMap<String, Object>();
