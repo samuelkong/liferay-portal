@@ -61,6 +61,8 @@ import javax.portlet.PortletPreferences;
  */
 public class WikiPortletDataHandler extends BasePortletDataHandler {
 
+	public static final String NAMESPACE = "wiki";
+
 	public static void exportNode(
 			PortletDataContext portletDataContext, Element nodesElement,
 			Element pagesElement, WikiNode node)
@@ -73,7 +75,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 				Element nodeElement = nodesElement.addElement("node");
 
 				portletDataContext.addClassedModel(
-					nodeElement, path, node, _NAMESPACE);
+					nodeElement, path, node, NAMESPACE);
 			}
 		}
 
@@ -100,10 +102,6 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 				dlFileRanksElement, dlRepositoriesElement,
 				dlRepositoryEntriesElement, page, true);
 		}
-	}
-
-	public static PortletDataHandlerControl[] getMetadataControls() {
-		return _metadataControls;
 	}
 
 	public static void importNode(
@@ -171,7 +169,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 				userId, nodeName, node.getDescription(), serviceContext);
 		}
 
-		portletDataContext.importClassedModel(node, importedNode, _NAMESPACE);
+		portletDataContext.importClassedModel(node, importedNode, NAMESPACE);
 	}
 
 	public static void importPage(
@@ -194,7 +192,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 		page.setContent(content);
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			pageElement, page, _NAMESPACE);
+			pageElement, page, NAMESPACE);
 
 		if (page.getStatus() != WorkflowConstants.STATUS_APPROVED) {
 			serviceContext.setWorkflowAction(
@@ -231,7 +229,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 				page.getParentTitle(), page.getRedirectTitle(), serviceContext);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "attachments") &&
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "attachments") &&
 			page.isHead()) {
 
 			for (Element attachmentElement :
@@ -256,37 +254,23 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 
-		portletDataContext.importClassedModel(page, importedPage, _NAMESPACE);
+		portletDataContext.importClassedModel(page, importedPage, NAMESPACE);
 	}
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_nodesAndPages
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public WikiPortletDataHandler() {
+		setExportControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "wiki-pages", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_nodesAndPages
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+				NAMESPACE, "wikis-and-pages", true, true));
+		setExportMetadataControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "wiki-pages", true, _metadataControls)
-		};
+				NAMESPACE, "wiki-pages", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "attachments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "categories"),
+					new PortletDataHandlerBoolean(NAMESPACE, "comments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
 	}
 
 	@Override
@@ -325,7 +309,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 
 		Element nodeElement = nodesElement.addElement("node");
 
-		portletDataContext.addClassedModel(nodeElement, path, node, _NAMESPACE);
+		portletDataContext.addClassedModel(nodeElement, path, node, NAMESPACE);
 	}
 
 	protected static void exportPage(
@@ -368,7 +352,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 			pageElement.addAttribute("image-path", imagePath);
 
 			if (portletDataContext.getBooleanParameter(
-					_NAMESPACE, "attachments") &&
+					NAMESPACE, "attachments") &&
 				page.isHead()) {
 
 				int i = 0;
@@ -393,7 +377,7 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 			}
 
 			portletDataContext.addClassedModel(
-				pageElement, path, page, _NAMESPACE);
+				pageElement, path, page, NAMESPACE);
 		}
 
 		exportNode(portletDataContext, nodesElement, page.getNodeId());
@@ -578,20 +562,5 @@ public class WikiPortletDataHandler extends BasePortletDataHandler {
 
 		return null;
 	}
-
-	private static final String _NAMESPACE = "wiki";
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(_NAMESPACE, "attachments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "categories"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "comments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "tags")
-		};
-
-	private static PortletDataHandlerBoolean _nodesAndPages =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "wikis-and-pages", true, true);
 
 }

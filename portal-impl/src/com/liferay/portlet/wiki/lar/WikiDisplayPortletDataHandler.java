@@ -14,11 +14,7 @@
 
 package com.liferay.portlet.wiki.lar;
 
-import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
-import com.liferay.portal.kernel.lar.PortletDataException;
-import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -33,7 +29,6 @@ import com.liferay.portlet.wiki.NoSuchNodeException;
 import com.liferay.portlet.wiki.model.WikiNode;
 import com.liferay.portlet.wiki.model.WikiPage;
 import com.liferay.portlet.wiki.service.persistence.WikiNodeUtil;
-import com.liferay.portlet.wiki.util.WikiCacheThreadLocal;
 import com.liferay.portlet.wiki.util.WikiCacheUtil;
 
 import java.util.Map;
@@ -43,62 +38,10 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Marcellus Tavares
  */
-public class WikiDisplayPortletDataHandler extends BasePortletDataHandler {
+public class WikiDisplayPortletDataHandler extends WikiPortletDataHandler {
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {"title", "nodeId"};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_nodesAndPages
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "wiki-pages", true,
-				WikiPortletDataHandler.getMetadataControls()
-			)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_nodesAndPages
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "wiki-pages", true,
-				WikiPortletDataHandler.getMetadataControls()
-			)
-		};
-	}
-
-	@Override
-	public PortletPreferences importData(
-			PortletDataContext portletDataContext, String portletId,
-			PortletPreferences portletPreferences, String data)
-		throws PortletDataException {
-
-		WikiCacheThreadLocal.setClearCache(false);
-
-		try {
-			return super.importData(
-				portletDataContext, portletId, portletPreferences, data);
-		}
-		finally {
-			WikiCacheThreadLocal.setClearCache(true);
-		}
+	public WikiDisplayPortletDataHandler() {
+		setDataPortletPreferences("title", "nodeId");
 	}
 
 	@Override
@@ -250,13 +193,7 @@ public class WikiDisplayPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final String _NAMESPACE = "wiki";
-
 	private static Log _log = LogFactoryUtil.getLog(
 		WikiDisplayPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _nodesAndPages =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "wikis-and-pages", true, true);
 
 }
