@@ -63,6 +63,10 @@ public class PortletDataHandlerControl {
 		return _disabled;
 	}
 
+	public void setNamespace(String namespace) {
+		_namespace = namespace;
+	}
+
 	private String _controlName;
 	private boolean _disabled;
 	private String _namespace;

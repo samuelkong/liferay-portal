@@ -14,11 +14,13 @@
 
 package com.liferay.portlet.rss.lar;
 
+import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -46,63 +48,36 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Raymond Augé
  */
-public class RSSPortletDataHandler extends JournalPortletDataHandler {
+public class RSSPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {"footerArticleValues", "headerArticleValues"};
-	}
+	public static final String NAMESPACE = "rss";
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_selectedArticles, _embeddedAssets
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public RSSPortletDataHandler() {
+		setAlwaysExportable(true);
+		setDataPortletPreferences("footerArticleValues", "headerArticleValues");
+			setExportControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandler.getMetadataControls()
-			),
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandler.getMetadataControls()
-			)
-		};
-	}
+				NAMESPACE, "selected-web-content", true, true),
+			new PortletDataHandlerBoolean(NAMESPACE, "embedded-assets"));
 
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_selectedArticles
-		};
-	}
+		JournalPortletDataHandler journalPortletDataHandler =
+			new JournalPortletDataHandler();
+		DLPortletDataHandler dlPortletDataHandler = new DLPortletDataHandler();
 
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandler.getMetadataControls()
-			),
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandler.getMetadataControls()
-			)
-		};
-	}
+		PortletDataHandlerControl[] exportMetadataControls = ArrayUtil.append(
+			journalPortletDataHandler.getExportMetadataControls(),
+			dlPortletDataHandler.getExportMetadataControls());
 
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
+		for (PortletDataHandlerControl portletDataHandlerControl :
+				exportMetadataControls) {
 
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
+			portletDataHandlerControl.setNamespace(NAMESPACE);
+		}
+
+		setExportMetadataControls(exportMetadataControls);
+
+		setImportControls(getExportControls()[0]);
+		setPublishToLiveByDefault(true);
 	}
 
 	@Override
@@ -357,20 +332,7 @@ public class RSSPortletDataHandler extends JournalPortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = false;
-
-	private static final String _NAMESPACE = "rss";
-
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
-
 	private static Log _log = LogFactoryUtil.getLog(
 		RSSPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _embeddedAssets =
-		new PortletDataHandlerBoolean(_NAMESPACE, "embedded-assets");
-
-	private static PortletDataHandlerBoolean _selectedArticles =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "selected-web-content", true, true);
 
 }
