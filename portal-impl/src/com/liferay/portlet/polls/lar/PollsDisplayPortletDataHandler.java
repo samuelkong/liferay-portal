@@ -14,10 +14,7 @@
 
 package com.liferay.portlet.polls.lar;
 
-import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
-import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -40,31 +37,11 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Marcellus Tavares
  */
-public class PollsDisplayPortletDataHandler extends BasePortletDataHandler {
+public class PollsDisplayPortletDataHandler extends PollsPortletDataHandler {
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {"questionId"};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {_questions, _votes};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {_questions, _votes};
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
+	public PollsDisplayPortletDataHandler() {
+		setDataPortletPreferences("questionId");
+		setPublishToLiveByDefault(true);
 	}
 
 	@Override
@@ -184,7 +161,9 @@ public class PollsDisplayPortletDataHandler extends BasePortletDataHandler {
 			PollsPortletDataHandler.importChoice(portletDataContext, choice);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "votes")) {
+		if (portletDataContext.getBooleanParameter(
+				PollsPortletDataHandler.NAMESPACE, "votes")) {
+
 			Element votesElement = rootElement.element("votes");
 
 			for (Element voteElement : votesElement.elements("vote")) {
@@ -218,19 +197,7 @@ public class PollsDisplayPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "polls";
-
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
-
 	private static Log _log = LogFactoryUtil.getLog(
 		PollsDisplayPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _questions =
-		new PortletDataHandlerBoolean(_NAMESPACE, "questions", true, true);
-
-	private static PortletDataHandlerBoolean _votes =
-		new PortletDataHandlerBoolean(_NAMESPACE, "votes");
 
 }

@@ -17,7 +17,6 @@ package com.liferay.portlet.polls.lar;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -51,24 +50,14 @@ import javax.portlet.PortletPreferences;
  */
 public class PollsPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {_questions, _votes};
-	}
+	public static final String NAMESPACE = "polls";
 
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {_questions, _votes};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
+	public PollsPortletDataHandler() {
+		setAlwaysExportable(true);
+		setDataLocalized(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "questions", true, true),
+			new PortletDataHandlerBoolean(NAMESPACE, "votes"));
 	}
 
 	protected static void exportChoice(
@@ -85,7 +74,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 		Element choiceElement = questionsElement.addElement("choice");
 
 		portletDataContext.addClassedModel(
-			choiceElement, path, choice, _NAMESPACE);
+			choiceElement, path, choice, NAMESPACE);
 	}
 
 	protected static void exportQuestion(
@@ -113,7 +102,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 			exportChoice(portletDataContext, choicesElement, choice);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "votes")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "votes")) {
 			List<PollsVote> votes = PollsVoteUtil.findByQuestionId(
 				question.getQuestionId());
 
@@ -123,7 +112,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			questionElement, path, question, _NAMESPACE);
+			questionElement, path, question, NAMESPACE);
 	}
 
 	protected static void exportVote(
@@ -139,7 +128,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 
 		Element voteElement = questionsElement.addElement("vote");
 
-		portletDataContext.addClassedModel(voteElement, path, vote, _NAMESPACE);
+		portletDataContext.addClassedModel(voteElement, path, vote, NAMESPACE);
 	}
 
 	protected static String getChoicePath(
@@ -224,7 +213,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			choice, importedChoice, _NAMESPACE);
+			choice, importedChoice, NAMESPACE);
 	}
 
 	protected static void importQuestion(
@@ -261,7 +250,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			questionElement, question, _NAMESPACE);
+			questionElement, question, NAMESPACE);
 
 		PollsQuestion importedQuestion = null;
 
@@ -295,7 +284,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			question, importedQuestion, _NAMESPACE);
+			question, importedQuestion, NAMESPACE);
 	}
 
 	protected static void importVote(
@@ -420,7 +409,7 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 			importChoice(portletDataContext, choice);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "votes")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "votes")) {
 			Element votesElement = rootElement.element("votes");
 
 			for (Element voteElement : votesElement.elements("vote")) {
@@ -439,17 +428,5 @@ public class PollsPortletDataHandler extends BasePortletDataHandler {
 
 		return null;
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "polls";
-
-	private static PortletDataHandlerBoolean _questions =
-		new PortletDataHandlerBoolean(_NAMESPACE, "questions", true, true);
-
-	private static PortletDataHandlerBoolean _votes =
-		new PortletDataHandlerBoolean(_NAMESPACE, "votes");
 
 }
