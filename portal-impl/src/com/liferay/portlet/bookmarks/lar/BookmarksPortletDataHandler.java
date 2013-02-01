@@ -49,10 +49,10 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 
 	public BookmarksPortletDataHandler() {
 		setAlwaysExportable(true);
-		setExportControl(
+		setExportControls(
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "folders-and-entries", true, true));
-		setExportMetadataControl(
+		setExportMetadataControls(
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "bookmarks", true,
 				new PortletDataHandlerControl[] {
@@ -60,8 +60,6 @@ public class BookmarksPortletDataHandler extends BasePortletDataHandler {
 					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
 					new PortletDataHandlerBoolean(NAMESPACE, "tags")
 				}));
-		setImportControls(getExportControls());
-		setImportMetadataControls(getExportMetadataControls());
 		setPublishToLiveByDefault(true);
 	}
 

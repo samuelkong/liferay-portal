@@ -170,52 +170,6 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 		return _publishToLiveByDefault;
 	}
 
-	public void setDataPortletPreferences(String[] dataPortletPreferences) {
-		_dataPortletPreferences = dataPortletPreferences;
-	}
-
-	public void setExportControl(PortletDataHandlerControl exportControl) {
-		setExportControls(new PortletDataHandlerControl[] {exportControl});
-	}
-
-	public void setExportControls(PortletDataHandlerControl[] exportControls) {
-		_exportControls = exportControls;
-	}
-
-	public void setExportMetadataControl(
-		PortletDataHandlerControl exportMetadataControl) {
-
-		setExportMetadataControls(
-			new PortletDataHandlerControl[] {exportMetadataControl});
-	}
-
-	public void setExportMetadataControls(
-		PortletDataHandlerControl[] exportMetadataControls) {
-
-		_exportMetadataControls = exportMetadataControls;
-	}
-
-	public void setImportControl(PortletDataHandlerControl importControl) {
-		setImportControls(new PortletDataHandlerControl[] {importControl});
-	}
-
-	public void setImportControls(PortletDataHandlerControl[] importControls) {
-		_importControls = importControls;
-	}
-
-	public void setImportMetadataControl(
-		PortletDataHandlerControl importMetadataControl) {
-
-		setImportMetadataControls(
-			new PortletDataHandlerControl[] {importMetadataControl});
-	}
-
-	public void setImportMetadataControls(
-		PortletDataHandlerControl[] importMetadataControls) {
-
-		_importMetadataControls = importMetadataControls;
-	}
-
 	protected PortletPreferences doDeleteData(
 			PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences)
@@ -250,6 +204,38 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 
 	protected void setDataLocalized(boolean dataLocalized) {
 		_dataLocalized = dataLocalized;
+	}
+
+	protected void setDataPortletPreferences(String... dataPortletPreferences) {
+		_dataPortletPreferences = dataPortletPreferences;
+	}
+
+	protected void setExportControls(
+		PortletDataHandlerControl... exportControls) {
+
+		_exportControls = exportControls;
+
+		setImportControls(exportControls);
+	}
+
+	protected void setExportMetadataControls(
+		PortletDataHandlerControl... exportMetadataControls) {
+
+		_exportMetadataControls = exportMetadataControls;
+
+		setImportMetadataControls(exportMetadataControls);
+	}
+
+	protected void setImportControls(
+		PortletDataHandlerControl... importControls) {
+
+		_importControls = importControls;
+	}
+
+	protected void setImportMetadataControls(
+		PortletDataHandlerControl... importMetadataControls) {
+
+		_importMetadataControls = importMetadataControls;
 	}
 
 	protected void setPublishToLiveByDefault(boolean publishToLiveByDefault) {
