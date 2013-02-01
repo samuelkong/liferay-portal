@@ -99,6 +99,8 @@ import javax.portlet.PortletPreferences;
  */
 public class DLPortletDataHandler extends BasePortletDataHandler {
 
+	public static final String NAMESPACE = "document_library";
+
 	public static void exportFileEntry(
 			PortletDataContext portletDataContext,
 			Element fileEntryTypesElement, Element foldersElement,
@@ -185,7 +187,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "ranks")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "ranks")) {
 			List<DLFileRank> fileRanks = DLFileRankUtil.findByFileEntryId(
 				fileEntry.getFileEntryId());
 
@@ -195,7 +197,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		if (portletDataContext.getBooleanParameter(
-				_NAMESPACE, "previews-and-thumbnails")) {
+				NAMESPACE, "previews-and-thumbnails")) {
 
 			DLProcessorRegistryUtil.exportGeneratedFiles(
 				portletDataContext, fileEntry, fileEntryElement);
@@ -206,7 +208,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			fileEntry);
 
 		portletDataContext.addClassedModel(
-			fileEntryElement, path, fileEntry, _NAMESPACE);
+			fileEntryElement, path, fileEntry, NAMESPACE);
 	}
 
 	public static String getFileEntryPath(
@@ -223,10 +225,6 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		sb.append(".xml");
 
 		return sb.toString();
-	}
-
-	public static PortletDataHandlerControl[] getMetadataControls() {
-		return _metadataControls;
 	}
 
 	public static String getRepositoryEntryPath(
@@ -285,18 +283,18 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		long[] assetCategoryIds = null;
 		String[] assetTagNames = null;
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "categories")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "categories")) {
 			assetCategoryIds = portletDataContext.getAssetCategoryIds(
 				DLFileEntry.class, fileEntry.getFileEntryId());
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "tags")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "tags")) {
 			assetTagNames = portletDataContext.getAssetTagNames(
 				DLFileEntry.class, fileEntry.getFileEntryId());
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			fileEntryElement, fileEntry, _NAMESPACE);
+			fileEntryElement, fileEntry, NAMESPACE);
 
 		serviceContext.setAttribute(
 			"sourceFileName", "A." + fileEntry.getExtension());
@@ -523,7 +521,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		if (portletDataContext.getBooleanParameter(
-				_NAMESPACE, "previews-and-thumbnails")) {
+				NAMESPACE, "previews-and-thumbnails")) {
 
 			DLProcessorRegistryUtil.importGeneratedFiles(
 				portletDataContext, fileEntry, importedFileEntry,
@@ -537,7 +535,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		fileEntryTitles.put(fileEntry.getTitle(), importedFileEntry.getTitle());
 
 		portletDataContext.importClassedModel(
-			fileEntry, importedFileEntry, _NAMESPACE);
+			fileEntry, importedFileEntry, NAMESPACE);
 	}
 
 	public static void importFileRank(
@@ -591,7 +589,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		long userId = portletDataContext.getUserId(repository.getUserUuid());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			repositoryElement, repository, _NAMESPACE);
+			repositoryElement, repository, NAMESPACE);
 
 		long importedRepositoryId = 0;
 
@@ -662,7 +660,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			RepositoryLocalServiceUtil.getRepository(importedRepositoryId);
 
 		portletDataContext.importClassedModel(
-			repository, importedRepository, _NAMESPACE);
+			repository, importedRepository, NAMESPACE);
 	}
 
 	public static void importRepositoryEntry(
@@ -688,7 +686,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			repositoryEntry.getRepositoryId());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			repositoryEntryElement, repositoryEntry, _NAMESPACE);
+			repositoryEntryElement, repositoryEntry, NAMESPACE);
 
 		RepositoryEntry importedRepositoryEntry = null;
 
@@ -729,57 +727,29 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			importedRepositoryEntry.getRepositoryEntryId());
 
 		portletDataContext.importClassedModel(
-			repositoryEntry, importedRepositoryEntry, _NAMESPACE);
+			repositoryEntry, importedRepositoryEntry, NAMESPACE);
 	}
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {"rootFolderId"};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_foldersAndDocuments, _shortcuts, _previewsAndThumbnails, _ranks
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public DLPortletDataHandler() {
+		setAlwaysExportable(true);
+		setDataLocalized(true);
+		setDataPortletPreferences("rootFolderId");
+		setExportControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_foldersAndDocuments, _shortcuts, _previewsAndThumbnails, _ranks
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+				NAMESPACE, "folders-and-documents", true, true),
+			new PortletDataHandlerBoolean(NAMESPACE, "shortcuts"),
+			new PortletDataHandlerBoolean(NAMESPACE, "previews-and-thumbnails"),
+			new PortletDataHandlerBoolean(NAMESPACE, "ranks"));
+		setExportMetadataControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return PropsValues.DL_PUBLISH_TO_LIVE_BY_DEFAULT;
+				NAMESPACE, "folders-and-documents", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "categories"),
+					new PortletDataHandlerBoolean(NAMESPACE, "comments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
+		setPublishToLiveByDefault(PropsValues.DL_PUBLISH_TO_LIVE_BY_DEFAULT);
 	}
 
 	protected static void exportFileEntryType(
@@ -813,7 +783,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			"structureUuids", StringUtil.merge(ddmStructureUuids));
 
 		portletDataContext.addClassedModel(
-			fileEntryTypeElement, path, dlFileEntryType, _NAMESPACE);
+			fileEntryTypeElement, path, dlFileEntryType, NAMESPACE);
 	}
 
 	protected static void exportFileRank(
@@ -837,7 +807,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		fileRankElement.addAttribute("file-entry-uuid", fileEntryUuid);
 
 		portletDataContext.addClassedModel(
-			fileRankElement, path, fileRank, _NAMESPACE);
+			fileRankElement, path, fileRank, NAMESPACE);
 	}
 
 	protected static void exportFileShortcut(
@@ -872,7 +842,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			fileShortcutElement.addAttribute("file-entry-uuid", fileEntryUuid);
 
 			portletDataContext.addClassedModel(
-				fileShortcutElement, path, fileShortcut, _NAMESPACE);
+				fileShortcutElement, path, fileShortcut, NAMESPACE);
 		}
 	}
 
@@ -923,7 +893,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext, folder, fileEntryTypesElement, folderElement);
 
 		portletDataContext.addClassedModel(
-			folderElement, path, folder, _NAMESPACE);
+			folderElement, path, folder, NAMESPACE);
 
 		if (recurse) {
 			List<Folder> folders = FolderUtil.findByR_P(
@@ -948,7 +918,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 				repositoryEntriesElement, fileEntry, true);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "shortcuts")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "shortcuts")) {
 			List<DLFileShortcut> fileShortcuts = DLFileShortcutUtil.findByG_F_A(
 				folder.getRepositoryId(), folder.getFolderId(), true);
 
@@ -1115,7 +1085,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 				folderElement);
 
 			portletDataContext.addClassedModel(
-				folderElement, path, folder, _NAMESPACE);
+				folderElement, path, folder, NAMESPACE);
 		}
 	}
 
@@ -1140,7 +1110,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			"repository");
 
 		portletDataContext.addClassedModel(
-			repositoryElement, path, repository, _NAMESPACE);
+			repositoryElement, path, repository, NAMESPACE);
 
 		List<RepositoryEntry> repositoryEntries =
 			RepositoryEntryUtil.findByRepositoryId(
@@ -1168,7 +1138,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			"repository-entry");
 
 		portletDataContext.addClassedModel(
-			repositoryEntryElement, path, repositoryEntry, _NAMESPACE);
+			repositoryEntryElement, path, repositoryEntry, NAMESPACE);
 	}
 
 	protected static String getFileEntryBinPath(
@@ -1399,7 +1369,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 				new Long[ddmStructureIdsMap.size()]));
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			path, dlFileEntryType, _NAMESPACE);
+			path, dlFileEntryType, NAMESPACE);
 
 		DLFileEntryType importedDLFileEntryType = null;
 
@@ -1452,7 +1422,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 				portletDataContext.getCompanyId(), importedDLFileEntryType)) {
 
 			portletDataContext.importClassedModel(
-				dlFileEntryType, importedDLFileEntryType, _NAMESPACE);
+				dlFileEntryType, importedDLFileEntryType, NAMESPACE);
 
 			String importedDLFileEntryDDMStructureKey =
 				DLUtil.getDDMStructureKey(importedDLFileEntryType);
@@ -1574,7 +1544,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		long fileEntryId = fileEntry.getFileEntryId();
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			fileShortcutElement, fileShortcut, _NAMESPACE);
+			fileShortcutElement, fileShortcut, NAMESPACE);
 
 		DLFileShortcut importedFileShortcut = null;
 
@@ -1602,7 +1572,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			fileShortcut, importedFileShortcut, _NAMESPACE);
+			fileShortcut, importedFileShortcut, NAMESPACE);
 	}
 
 	protected static void importFolder(
@@ -1620,7 +1590,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			folderIds, folder.getParentFolderId(), folder.getParentFolderId());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			folderPath, folder, _NAMESPACE);
+			folderPath, folder, NAMESPACE);
 
 		if ((parentFolderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) &&
 			(parentFolderId == folder.getParentFolderId())) {
@@ -1682,7 +1652,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext, folderElement, importedFolder, serviceContext);
 
 		portletDataContext.importClassedModel(
-			folder, importedFolder, _NAMESPACE);
+			folder, importedFolder, NAMESPACE);
 	}
 
 	protected static void importFolderFileEntryTypes(
@@ -1912,7 +1882,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 				repositoryEntriesElement, fileEntry, true);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "shortcuts")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "shortcuts")) {
 			List<DLFileShortcut> fileShortcuts = DLFileShortcutUtil.findByG_F_A(
 				portletDataContext.getScopeGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, true);
@@ -1990,7 +1960,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			importFileEntry(portletDataContext, fileEntryElement);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "shortcuts")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "shortcuts")) {
 			List<Element> fileShortcutElements = rootElement.element(
 				"file-shortcuts").elements("file-shortcut");
 
@@ -1999,7 +1969,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "ranks")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "ranks")) {
 			Element fileRanksElement = rootElement.element("file-ranks");
 
 			List<Element> fileRankElements = fileRanksElement.elements(
@@ -2028,33 +1998,6 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "document_library";
-
 	private static Log _log = LogFactoryUtil.getLog(DLPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _foldersAndDocuments =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "folders-and-documents", true, true);
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(_NAMESPACE, "categories"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "comments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "tags")
-		};
-
-	private static PortletDataHandlerBoolean _previewsAndThumbnails =
-		new PortletDataHandlerBoolean(_NAMESPACE, "previews-and-thumbnails");
-
-	private static PortletDataHandlerBoolean _ranks =
-		new PortletDataHandlerBoolean(_NAMESPACE, "ranks");
-
-	private static PortletDataHandlerBoolean _shortcuts=
-		new PortletDataHandlerBoolean(_NAMESPACE, "shortcuts");
 
 }

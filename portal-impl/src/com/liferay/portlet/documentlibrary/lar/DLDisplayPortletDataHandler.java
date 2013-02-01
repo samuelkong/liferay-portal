@@ -14,10 +14,7 @@
 
 package com.liferay.portlet.documentlibrary.lar;
 
-import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
-import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -27,7 +24,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.model.RepositoryEntry;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.documentlibrary.model.DLFolder;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
@@ -40,53 +36,10 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Raymond Augé
  */
-public class DLDisplayPortletDataHandler extends BasePortletDataHandler {
+public class DLDisplayPortletDataHandler extends DLPortletDataHandler {
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {"rootFolderId"};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_foldersAndDocuments, _shortcuts, _previewsAndThumbnails, _ranks
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandler.getMetadataControls())
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_foldersAndDocuments, _shortcuts, _previewsAndThumbnails, _ranks
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandler.getMetadataControls())
-		};
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return PropsValues.DL_PUBLISH_TO_LIVE_BY_DEFAULT;
+	public DLDisplayPortletDataHandler() {
+		setAlwaysExportable(false);
 	}
 
 	@Override
@@ -227,7 +180,9 @@ public class DLDisplayPortletDataHandler extends BasePortletDataHandler {
 				portletDataContext, fileEntryElement);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "shortcuts")) {
+		if (portletDataContext.getBooleanParameter(
+				DLPortletDataHandler.NAMESPACE, "shortcuts")) {
+
 			List<Element> fileShortcutElements = rootElement.element(
 				"file-shortcuts").elements("file-shortcut");
 
@@ -237,7 +192,9 @@ public class DLDisplayPortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "ranks")) {
+		if (portletDataContext.getBooleanParameter(
+				DLPortletDataHandler.NAMESPACE, "ranks")) {
+
 			Element fileRanksElement = rootElement.element("file-ranks");
 
 			List<Element> fileRankElements = fileRanksElement.elements(
@@ -277,22 +234,5 @@ public class DLDisplayPortletDataHandler extends BasePortletDataHandler {
 
 		return portletPreferences;
 	}
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "document_library";
-
-	private static PortletDataHandlerBoolean _foldersAndDocuments =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "folders-and-documents", true, true);
-
-	private static PortletDataHandlerBoolean _previewsAndThumbnails =
-		new PortletDataHandlerBoolean(_NAMESPACE, "previews-and-thumbnails");
-
-	private static PortletDataHandlerBoolean _ranks =
-		new PortletDataHandlerBoolean(_NAMESPACE, "ranks");
-
-	private static PortletDataHandlerBoolean _shortcuts=
-		new PortletDataHandlerBoolean(_NAMESPACE, "shortcuts");
 
 }
