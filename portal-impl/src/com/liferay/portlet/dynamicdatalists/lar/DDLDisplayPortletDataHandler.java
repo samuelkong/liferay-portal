@@ -14,7 +14,6 @@
 
 package com.liferay.portlet.dynamicdatalists.lar;
 
-import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -36,22 +35,11 @@ import javax.portlet.PortletPreferences;
 /**
  * @author Michael C. Han
  */
-public class DDLDisplayPortletDataHandler extends BasePortletDataHandler {
+public class DDLDisplayPortletDataHandler extends DDLPortletDataHandler {
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {
-			"recordSetId", "displayDDMTemplateId", "formDDMTemplateId"};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
+	public DDLDisplayPortletDataHandler() {
+		setDataPortletPreferences(
+			"recordSetId", "displayDDMTemplateId", "formDDMTemplateId");
 	}
 
 	@Override
@@ -166,10 +154,6 @@ public class DDLDisplayPortletDataHandler extends BasePortletDataHandler {
 
 		return portletPreferences;
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
 
 	private static Log _log = LogFactoryUtil.getLog(
 		DDLDisplayPortletDataHandler.class);

@@ -40,6 +40,13 @@ import javax.portlet.PortletPreferences;
  */
 public class DDLPortletDataHandler extends BasePortletDataHandler {
 
+	public static final String NAMESPACE = "ddl";
+
+	public DDLPortletDataHandler() {
+		setAlwaysExportable(true);
+		setDataLocalized(true);
+	}
+
 	public void exportRecordSet(
 			PortletDataContext portletDataContext, Element recordSetsElement,
 			DDLRecordSet recordSet)
@@ -54,7 +61,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 		Element recordSetElement = recordSetsElement.addElement("record-set");
 
 		portletDataContext.addClassedModel(
-			recordSetElement, path, recordSet, _NAMESPACE);
+			recordSetElement, path, recordSet, NAMESPACE);
 
 		Element ddmStructuresElement = recordSetElement.addElement(
 			"ddm-structures");
@@ -112,7 +119,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 			recordSet.getDDMStructureId());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			recordSetElement, recordSet, _NAMESPACE);
+			recordSetElement, recordSet, NAMESPACE);
 
 		DDLRecordSet importedRecordSet = null;
 
@@ -147,17 +154,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			recordSet, importedRecordSet, _NAMESPACE);
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
+			recordSet, importedRecordSet, NAMESPACE);
 	}
 
 	@Override
@@ -276,11 +273,5 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 				portletDataContext, ddmTemplateElement);
 		}
 	}
-
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "ddl";
 
 }
