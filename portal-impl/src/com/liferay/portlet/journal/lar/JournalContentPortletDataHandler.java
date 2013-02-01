@@ -14,12 +14,11 @@
 
 package com.liferay.portlet.journal.lar;
 
-import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
-import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -70,71 +69,26 @@ import javax.portlet.PortletPreferences;
  * @see    com.liferay.portlet.journal.lar.JournalCreationStrategy
  * @see    com.liferay.portlet.journal.lar.JournalPortletDataHandler
  */
-public class JournalContentPortletDataHandler extends BasePortletDataHandler {
+public class JournalContentPortletDataHandler
+	extends JournalPortletDataHandler {
 
-	@Override
-	public String[] getDataPortletPreferences() {
-		return new String[] {"groupId", "articleId", "templateId"};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_selectedArticles, _embeddedAssets
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public JournalContentPortletDataHandler() {
+		setAlwaysStaged(true);
+		setDataPortletPreferences("groupId", "articleId", "templateId");
+		setExportControls(
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandler.getMetadataControls()),
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandler.getMetadataControls()
-			)
-		};
-	}
+				NAMESPACE, "selected-web-content", true, true),
+				new PortletDataHandlerBoolean(NAMESPACE, "embedded-assets"));
 
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_selectedArticles
-		};
-	}
+		DLPortletDataHandler dlPortletDataHandler = new DLPortletDataHandler();
 
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "web-content", true,
-				JournalPortletDataHandler.getMetadataControls()),
-			new PortletDataHandlerBoolean(
-				_NAMESPACE, "folders-and-documents", true,
-				DLPortletDataHandler.getMetadataControls()
-			)
-		};
-	}
+		setExportMetadataControls(
+			ArrayUtil.append(
+				getExportMetadataControls(),
+				dlPortletDataHandler.getExportMetadataControls()));
 
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isAlwaysStaged() {
-		return _ALWAYS_STAGED;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
+		setImportControls(getExportControls()[0]);
+		setPublishToLiveByDefault(true);
 	}
 
 	@Override
@@ -377,24 +331,7 @@ public class JournalContentPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _ALWAYS_STAGED = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "journal";
-
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
-
 	private static Log _log = LogFactoryUtil.getLog(
 		JournalContentPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _embeddedAssets =
-		new PortletDataHandlerBoolean(_NAMESPACE, "embedded-assets");
-
-	private static PortletDataHandlerBoolean _selectedArticles =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "selected-web-content", true, true);
 
 }

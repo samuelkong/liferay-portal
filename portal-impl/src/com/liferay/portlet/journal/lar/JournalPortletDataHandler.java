@@ -132,6 +132,8 @@ import javax.portlet.PortletPreferences;
  */
 public class JournalPortletDataHandler extends BasePortletDataHandler {
 
+	public static final String NAMESPACE = "journal";
+
 	public static void exportArticle(
 			PortletDataContext portletDataContext, Element articlesElement,
 			Element ddmStructuresElement, Element ddmTemplatesElement,
@@ -236,7 +238,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "images")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "images")) {
 			String imagePath = getArticleImagePath(portletDataContext, article);
 
 			articleElement.addAttribute("image-path", imagePath);
@@ -276,7 +278,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		article.setStatusByUserUuid(article.getStatusByUserUuid());
 
 		if (portletDataContext.getBooleanParameter(
-				_NAMESPACE, "embedded-assets")) {
+				NAMESPACE, "embedded-assets")) {
 
 			String content = DDMPortletDataHandler.exportReferencedContent(
 				portletDataContext, dlFileEntryTypesElement, dlFoldersElement,
@@ -288,7 +290,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			articleElement, path, article, _NAMESPACE);
+			articleElement, path, article, NAMESPACE);
 	}
 
 	public static String getArticlePath(
@@ -306,10 +308,6 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		sb.append("article.xml");
 
 		return sb.toString();
-	}
-
-	public static PortletDataHandlerControl[] getMetadataControls() {
-		return _metadataControls;
 	}
 
 	public static void importArticle(
@@ -629,7 +627,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 
 		String imagePath = articleElement.attributeValue("image-path");
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "images") &&
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "images") &&
 			Validator.isNotNull(imagePath)) {
 
 			List<String> imageFiles = portletDataContext.getZipFolderEntries(
@@ -667,7 +665,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext, article);
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			articleElement, article, _NAMESPACE);
+			articleElement, article, NAMESPACE);
 
 		serviceContext.setAddGroupPermissions(addGroupPermissions);
 		serviceContext.setAddGuestPermissions(addGuestPermissions);
@@ -776,7 +774,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			article, importedArticle, _NAMESPACE);
+			article, importedArticle, NAMESPACE);
 
 		if (Validator.isNull(newArticleId)) {
 			articleIds.put(
@@ -868,7 +866,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext, feed);
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			feedElement, feed, _NAMESPACE);
+			feedElement, feed, NAMESPACE);
 
 		serviceContext.setAddGroupPermissions(addGroupPermissions);
 		serviceContext.setAddGuestPermissions(addGuestPermissions);
@@ -922,7 +920,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			}
 
 			portletDataContext.importClassedModel(
-				feed, importedFeed, _NAMESPACE);
+				feed, importedFeed, NAMESPACE);
 
 			if (!feedId.equals(importedFeed.getFeedId())) {
 				if (_log.isWarnEnabled()) {
@@ -1040,50 +1038,30 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		}
 	}
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_articles, _ddmStructuresDDMTemplatesAndFeeds, _embeddedAssets,
-			_versionHistory
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getExportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+	public JournalPortletDataHandler() {
+		setAlwaysExportable(true);
+		setDataLocalized(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "web-content"),
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "web-content", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportControls() {
-		return new PortletDataHandlerControl[] {
-			_articles, _ddmStructuresDDMTemplatesAndFeeds
-		};
-	}
-
-	@Override
-	public PortletDataHandlerControl[] getImportMetadataControls() {
-		return new PortletDataHandlerControl[] {
+				NAMESPACE, "structures-templates-and-feeds", true, true),
+			new PortletDataHandlerBoolean(NAMESPACE, "embedded-assets"),
 			new PortletDataHandlerBoolean(
-				_NAMESPACE, "web-content", true, _metadataControls)
-		};
-	}
-
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isDataLocalized() {
-		return _DATA_LOCALIZED;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return PropsValues.JOURNAL_PUBLISH_TO_LIVE_BY_DEFAULT;
+				NAMESPACE, "version-history",
+				PropsValues.JOURNAL_PUBLISH_VERSION_HISTORY_BY_DEFAULT));
+		setExportMetadataControls(
+			new PortletDataHandlerBoolean(
+				NAMESPACE, "web-content", true,
+				new PortletDataHandlerControl[] {
+					new PortletDataHandlerBoolean(NAMESPACE, "images"),
+					new PortletDataHandlerBoolean(NAMESPACE, "categories"),
+					new PortletDataHandlerBoolean(NAMESPACE, "comments"),
+					new PortletDataHandlerBoolean(NAMESPACE, "ratings"),
+					new PortletDataHandlerBoolean(NAMESPACE, "tags")
+				}));
+		setImportControls(getExportControls()[0], getExportControls()[1]);
+		setPublishToLiveByDefault(
+			PropsValues.JOURNAL_PUBLISH_TO_LIVE_BY_DEFAULT);
 	}
 
 	protected static void exportFeed(
@@ -1124,7 +1102,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			feed.setTargetLayoutFriendlyUrl(targetLayoutFriendlyUrl);
 		}
 
-		portletDataContext.addClassedModel(feedElement, path, feed, _NAMESPACE);
+		portletDataContext.addClassedModel(feedElement, path, feed, NAMESPACE);
 	}
 
 	protected static void exportFolder(
@@ -1152,7 +1130,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			Element folderElement = foldersElement.addElement("folder");
 
 			portletDataContext.addClassedModel(
-				folderElement, path, folder, _NAMESPACE);
+				folderElement, path, folder, NAMESPACE);
 		}
 
 		List<JournalArticle> articles = JournalArticleUtil.findByG_F(
@@ -1187,7 +1165,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			Element folderElement = foldersElement.addElement("folder");
 
 			portletDataContext.addClassedModel(
-				folderElement, path, folder, _NAMESPACE);
+				folderElement, path, folder, NAMESPACE);
 		}
 	}
 
@@ -1436,7 +1414,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			folderPath, folder, _NAMESPACE);
+			folderPath, folder, NAMESPACE);
 
 		JournalFolder importedFolder = null;
 
@@ -1467,7 +1445,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			folder, importedFolder, _NAMESPACE);
+			folder, importedFolder, NAMESPACE);
 	}
 
 	protected static String importLayoutFriendlyURLs(
@@ -1722,7 +1700,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		Element foldersElement = rootElement.addElement("folders");
 		Element articlesElement = rootElement.addElement("articles");
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "web-content")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "web-content")) {
 			List<JournalFolder> folders = JournalFolderUtil.findByGroupId(
 				portletDataContext.getScopeGroupId());
 
@@ -1743,7 +1721,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 
 			for (JournalArticle article : articles) {
 				if (portletDataContext.getBooleanParameter(
-						_NAMESPACE, "version-history") ||
+						NAMESPACE, "version-history") ||
 					JournalArticleLocalServiceUtil.isLatestVersion(
 						article.getGroupId(), article.getArticleId(),
 						article.getVersion(),
@@ -1808,7 +1786,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			importFeed(portletDataContext, feedElement);
 		}
 
-		if (portletDataContext.getBooleanParameter(_NAMESPACE, "web-content")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "web-content")) {
 			Element foldersElement = rootElement.element("folders");
 
 			List<Element> folderElements = foldersElement.elements("folder");
@@ -1840,41 +1818,11 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _DATA_LOCALIZED = true;
-
-	private static final String _NAMESPACE = "journal";
-
 	private static Log _log = LogFactoryUtil.getLog(
 		JournalPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _articles =
-		new PortletDataHandlerBoolean(_NAMESPACE, "web-content");
-
-	private static PortletDataHandlerBoolean
-		_ddmStructuresDDMTemplatesAndFeeds = new PortletDataHandlerBoolean(
-			_NAMESPACE, "structures-templates-and-feeds", true, true);
-
-	private static PortletDataHandlerBoolean _embeddedAssets =
-		new PortletDataHandlerBoolean(_NAMESPACE, "embedded-assets");
 
 	private static Pattern _importLinksToLayoutPattern = Pattern.compile(
 		"\\[([0-9]+)@(public|private\\-[a-z]*)@(\\p{XDigit}{8}\\-" +
 		"(?:\\p{XDigit}{4}\\-){3}\\p{XDigit}{12})@([^\\]]*)\\]");
-
-	private static PortletDataHandlerControl[] _metadataControls =
-		new PortletDataHandlerControl[] {
-			new PortletDataHandlerBoolean(_NAMESPACE, "images"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "categories"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "comments"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "ratings"),
-			new PortletDataHandlerBoolean(_NAMESPACE, "tags")
-		};
-
-	private static PortletDataHandlerBoolean _versionHistory =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "version-history",
-			PropsValues.JOURNAL_PUBLISH_VERSION_HISTORY_BY_DEFAULT);
 
 }
