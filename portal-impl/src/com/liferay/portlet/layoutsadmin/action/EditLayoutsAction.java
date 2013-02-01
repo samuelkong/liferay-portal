@@ -431,6 +431,41 @@ public class EditLayoutsAction extends PortletAction {
 				return;
 			}
 		}
+		else if (cmd.equals(Constants.UPDATE)) {
+			if (group.isCompany()) {
+				if (!permissionChecker.isCompanyAdmin()) {
+					throw new PrincipalException();
+				}
+				else {
+					return;
+				}
+			}
+			else if (group.isLayoutPrototype()) {
+				LayoutPrototypePermissionUtil.check(
+					permissionChecker, group.getClassPK(), ActionKeys.UPDATE);
+
+				return;
+			}
+			else if (group.isLayoutSetPrototype()) {
+				LayoutSetPrototypePermissionUtil.check(
+					permissionChecker, group.getClassPK(), ActionKeys.UPDATE);
+
+				return;
+			}
+			else if (group.isUser()) {
+				long groupUserId = group.getClassPK();
+
+				User groupUser = UserLocalServiceUtil.getUserById(groupUserId);
+
+				long[] organizationIds = groupUser.getOrganizationIds();
+
+				UserPermissionUtil.check(
+					permissionChecker, groupUserId, organizationIds,
+					ActionKeys.UPDATE);
+
+				return;
+			}
+		}
 		else if (cmd.equals("reset_customized_view")) {
 			if (!LayoutPermissionUtil.contains(
 					permissionChecker, layout, ActionKeys.CUSTOMIZE)) {
@@ -482,41 +517,6 @@ public class EditLayoutsAction extends PortletAction {
 				else {
 					return;
 				}
-			}
-		}
-		else if (cmd.equals(Constants.UPDATE)) {
-			if (group.isCompany()) {
-				if (!permissionChecker.isCompanyAdmin()) {
-					throw new PrincipalException();
-				}
-				else {
-					return;
-				}
-			}
-			else if (group.isLayoutPrototype()) {
-				LayoutPrototypePermissionUtil.check(
-					permissionChecker, group.getClassPK(), ActionKeys.UPDATE);
-
-				return;
-			}
-			else if (group.isLayoutSetPrototype()) {
-				LayoutSetPrototypePermissionUtil.check(
-					permissionChecker, group.getClassPK(), ActionKeys.UPDATE);
-
-				return;
-			}
-			else if (group.isUser()) {
-				long groupUserId = group.getClassPK();
-
-				User groupUser = UserLocalServiceUtil.getUserById(groupUserId);
-
-				long[] organizationIds = groupUser.getOrganizationIds();
-
-				UserPermissionUtil.check(
-					permissionChecker, groupUserId, organizationIds,
-					ActionKeys.UPDATE);
-
-				return;
 			}
 		}
 
