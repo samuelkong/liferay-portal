@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.templateparser.BaseTransformerListener;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
@@ -126,7 +125,5 @@ public class LocaleTransformerListener extends BaseTransformerListener {
 
 	private static Log _log = LogFactoryUtil.getLog(
 		LocaleTransformerListener.class);
-
-	private String _requestedLocale = StringPool.BLANK;
 
 }

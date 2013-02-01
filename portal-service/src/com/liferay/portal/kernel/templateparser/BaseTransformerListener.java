@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author Brian Wing Shun Chan
  */
-public class BaseTransformerListener implements TransformerListener {
+public abstract class BaseTransformerListener implements TransformerListener {
 
 	public String onOutput(
 		String output, String languageId, Map<String, String> tokens) {

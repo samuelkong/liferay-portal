@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.templateparser.TransformerListener;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -48,9 +49,10 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 	public static String getContentByLocale(
 		String content, boolean templateDriven, String languageId) {
 
-		LocaleTransformerListener listener = new LocaleTransformerListener();
+		TransformerListener transformerListener =
+			new LocaleTransformerListener();
 
-		return listener.onXml(content, languageId, null);
+		return transformerListener.onXml(content, languageId, null);
 	}
 
 	public JournalArticleImpl() {

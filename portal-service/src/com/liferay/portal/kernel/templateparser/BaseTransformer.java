@@ -102,28 +102,31 @@ public abstract class BaseTransformer implements Transformer {
 			_logTransformBefore.debug(xml);
 		}
 
-		List<TransformerListener> listenersList =
+		List<TransformerListener> transformerListeners =
 			new ArrayList<TransformerListener>();
 
-		String[] listeners = getTransformerListenersClassNames();
+		String[] transformerListenersClassNames =
+			getTransformerListenersClassNames();
 
-		for (int i = 0; i < listeners.length; i++) {
-			TransformerListener listener = null;
+		for (String transformerListenersClassName :
+				transformerListenersClassNames) {
+			TransformerListener transformerListener = null;
 
 			try {
 				if (_log.isDebugEnabled()) {
-					_log.debug("Instantiate listener " + listeners[i]);
+					_log.debug(
+						"Instantiate listener " +
+							transformerListenersClassName);
 				}
-
-				boolean templateDriven = Validator.isNotNull(langType);
 
 				ClassLoader classLoader =
 					PortalClassLoaderUtil.getClassLoader();
 
-				listener = (TransformerListener)InstanceFactory.newInstance(
-					classLoader, listeners[i]);
+				transformerListener =
+					(TransformerListener)InstanceFactory.newInstance(
+						classLoader, transformerListenersClassName);
 
-				listenersList.add(listener);
+				transformerListeners.add(transformerListener);
 			}
 			catch (Exception e) {
 				_log.error(e, e);
@@ -135,8 +138,8 @@ public abstract class BaseTransformer implements Transformer {
 				_logXmlBeforeListener.debug(xml);
 			}
 
-			if (listener != null) {
-				xml = listener.onXml(xml, languageId, tokens);
+			if (transformerListener != null) {
+				xml = transformerListener.onXml(xml, languageId, tokens);
 
 				if (_logXmlAfterListener.isDebugEnabled()) {
 					_logXmlAfterListener.debug(xml);
@@ -149,8 +152,9 @@ public abstract class BaseTransformer implements Transformer {
 				_logScriptBeforeListener.debug(script);
 			}
 
-			if (listener != null) {
-				script = listener.onScript(script, xml, languageId, tokens);
+			if (transformerListener != null) {
+				script = transformerListener.onScript(
+					script, xml, languageId, tokens);
 
 				if (_logScriptAfterListener.isDebugEnabled()) {
 					_logScriptAfterListener.debug(script);
@@ -200,8 +204,7 @@ public abstract class BaseTransformer implements Transformer {
 
 		// Postprocess output
 
-		for (int i = 0; i < listenersList.size(); i++) {
-			TransformerListener listener = listenersList.get(i);
+		for (TransformerListener transformerListener : transformerListeners) {
 
 			// Modify output
 
@@ -209,7 +212,7 @@ public abstract class BaseTransformer implements Transformer {
 				_logOutputBeforeListener.debug(output);
 			}
 
-			output = listener.onOutput(output, languageId, tokens);
+			output = transformerListener.onOutput(output, languageId, tokens);
 
 			if (_logOutputAfterListener.isDebugEnabled()) {
 				_logOutputAfterListener.debug(output);
