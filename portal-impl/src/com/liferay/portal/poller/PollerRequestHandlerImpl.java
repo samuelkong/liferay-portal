@@ -81,10 +81,10 @@ public class PollerRequestHandlerImpl
 		PollerHeader pollerHeader = parsePollerRequestHeader(
 			pollerRequestChunks);
 
-		if (!validatePollerHeader(pollerHeader)) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Invalid poller header for request: " +
+		if (!isValidPollerHeader(pollerHeader)) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Invalid poller header for request " +
 						pollerRequestString);
 			}
 
@@ -363,6 +363,20 @@ public class PollerRequestHandlerImpl
 		}
 	}
 
+	protected boolean isValidPollerHeader(PollerHeader pollerHeader) {
+		if (pollerHeader == null) {
+			return false;
+		}
+
+		Map<String, Boolean> portletIdsMap = pollerHeader.getPortletIdsMap();
+
+		if ((portletIdsMap == null) || portletIdsMap.isEmpty()) {
+			return false;
+		}
+
+		return true;
+	}
+
 	protected Map<String, String> parseData(
 			Map<String, Object> pollerRequestChunk)
 		throws Exception {
@@ -422,20 +436,6 @@ public class PollerRequestHandlerImpl
 
 		return (Map<String, Object>[])JSONFactoryUtil.deserialize(
 			fixedPollerRequestString);
-	}
-
-	protected boolean validatePollerHeader(PollerHeader pollerHeader) {
-		if (pollerHeader == null) {
-			return false;
-		}
-
-		Map<String, Boolean> portletIdsMap = pollerHeader.getPortletIdsMap();
-
-		if ((portletIdsMap == null) || portletIdsMap.isEmpty()) {
-			return false;
-		}
-
-		return true;
 	}
 
 	private static final String _ESCAPED_CLOSE_CURLY_BRACE =
