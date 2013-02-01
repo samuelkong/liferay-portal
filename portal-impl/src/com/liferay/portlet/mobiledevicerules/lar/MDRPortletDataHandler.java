@@ -58,26 +58,17 @@ import javax.portlet.PortletPreferences;
  */
 public class MDRPortletDataHandler extends BasePortletDataHandler {
 
-	@Override
-	public PortletDataHandlerControl[] getExportControls() {
-		return new PortletDataHandlerControl[] {
-			_ruleGroups, _ruleGroupInstances
-		};
-	}
+	public static final String NAMESPACE = "mobile_device_rules";
 
-	@Override
-	public boolean isAlwaysExportable() {
-		return _ALWAYS_EXPORTABLE;
-	}
-
-	@Override
-	public boolean isAlwaysStaged() {
-		return _ALWAYS_STAGED;
-	}
-
-	@Override
-	public boolean isPublishToLiveByDefault() {
-		return _PUBLISH_TO_LIVE_BY_DEFAULT;
+	public MDRPortletDataHandler() {
+		setAlwaysExportable(true);
+		setAlwaysStaged(true);
+		setExportControls(
+			new PortletDataHandlerBoolean(NAMESPACE, "rule-groups", true, true),
+			new PortletDataHandlerBoolean(
+				NAMESPACE, "rule-group-instances", true, true));
+		setImportControls(new PortletDataHandlerControl[0]);
+		setPublishToLiveByDefault(true);
 	}
 
 	@Override
@@ -237,7 +228,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.addClassedModel(
-			actionElement, path, action, _NAMESPACE);
+			actionElement, path, action, NAMESPACE);
 	}
 
 	protected void exportRule(
@@ -253,7 +244,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 
 		Element ruleElement = rulesElement.addElement("rule");
 
-		portletDataContext.addClassedModel(ruleElement, path, rule, _NAMESPACE);
+		portletDataContext.addClassedModel(ruleElement, path, rule, NAMESPACE);
 	}
 
 	protected void exportRuleGroup(
@@ -276,7 +267,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		Element ruleGroupElement = ruleGroupsElement.addElement("rule-group");
 
 		portletDataContext.addClassedModel(
-			ruleGroupElement, path, ruleGroup, _NAMESPACE);
+			ruleGroupElement, path, ruleGroup, NAMESPACE);
 
 		Element mdrRulesElement = ruleGroupElement.addElement("rules");
 
@@ -326,7 +317,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		ruleGroupInstanceElement.addAttribute("rule-group-uuid", ruleGroupUuid);
 
 		portletDataContext.addClassedModel(
-			ruleGroupInstanceElement, path, ruleGroupInstance, _NAMESPACE);
+			ruleGroupInstanceElement, path, ruleGroupInstance, NAMESPACE);
 
 		Element actionsElement = ruleGroupInstanceElement.addElement("actions");
 
@@ -406,7 +397,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		long userId = portletDataContext.getUserId(action.getUserUuid());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			actionElement, action, _NAMESPACE);
+			actionElement, action, NAMESPACE);
 
 		serviceContext.setUserId(userId);
 
@@ -442,7 +433,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			action, importedAction, _NAMESPACE);
+			action, importedAction, NAMESPACE);
 	}
 
 	protected void importRule(
@@ -453,7 +444,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		long userId = portletDataContext.getUserId(rule.getUserUuid());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			ruleElement, rule, _NAMESPACE);
+			ruleElement, rule, NAMESPACE);
 
 		serviceContext.setUserId(userId);
 
@@ -485,7 +476,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 				rule.getTypeSettingsProperties(), serviceContext);
 		}
 
-		portletDataContext.importClassedModel(rule, importedRule, _NAMESPACE);
+		portletDataContext.importClassedModel(rule, importedRule, NAMESPACE);
 	}
 
 	protected void importRuleGroup(
@@ -496,7 +487,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		long userId = portletDataContext.getUserId(ruleGroup.getUserUuid());
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			ruleGroupElement, ruleGroup, _NAMESPACE);
+			ruleGroupElement, ruleGroup, NAMESPACE);
 
 		serviceContext.setUserId(userId);
 
@@ -529,7 +520,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			ruleGroup, importedRuleGroup, _NAMESPACE);
+			ruleGroup, importedRuleGroup, NAMESPACE);
 
 		Element rulesElement = ruleGroupElement.element("rules");
 
@@ -626,7 +617,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
-			ruleGroupInstanceElement, ruleGroupInstance, _NAMESPACE);
+			ruleGroupInstanceElement, ruleGroupInstance, NAMESPACE);
 
 		serviceContext.setUserId(userId);
 
@@ -665,7 +656,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		}
 
 		portletDataContext.importClassedModel(
-			ruleGroupInstance, importedRuleGroupInstance, _NAMESPACE);
+			ruleGroupInstance, importedRuleGroupInstance, NAMESPACE);
 
 		Element actionsElement = ruleGroupInstanceElement.element("actions");
 
@@ -729,21 +720,7 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 		}
 	}
 
-	private static final boolean _ALWAYS_EXPORTABLE = true;
-
-	private static final boolean _ALWAYS_STAGED = true;
-
-	private static final String _NAMESPACE = "mobile_device_rules";
-
-	private static final boolean _PUBLISH_TO_LIVE_BY_DEFAULT = true;
-
 	private static Log _log = LogFactoryUtil.getLog(
 		MDRPortletDataHandler.class);
-
-	private static PortletDataHandlerBoolean _ruleGroupInstances =
-		new PortletDataHandlerBoolean(
-			_NAMESPACE, "rule-group-instances", true, true);
-	private static PortletDataHandlerBoolean _ruleGroups =
-		new PortletDataHandlerBoolean(_NAMESPACE, "rule-groups", true, true);
 
 }
