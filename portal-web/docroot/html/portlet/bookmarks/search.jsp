@@ -144,7 +144,6 @@ String keywords = ParamUtil.getString(request, "keywords");
 						path="/html/portlet/bookmarks/entry_action.jsp"
 					/>
 				</c:when>
-
 				<c:when test="<%= obj instanceof BookmarksFolder %>">
 
 					<%

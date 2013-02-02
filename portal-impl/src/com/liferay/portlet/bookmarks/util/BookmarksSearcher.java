@@ -34,7 +34,7 @@ import javax.portlet.PortletURL;
 public class BookmarksSearcher extends BaseIndexer {
 
 	public static final String[] CLASS_NAMES = {
-		BookmarksFolder.class.getName(), BookmarksEntry.class.getName()
+		BookmarksEntry.class.getName(), BookmarksFolder.class.getName()
 	};
 
 	public static Indexer getInstance() {

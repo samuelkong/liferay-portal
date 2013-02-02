@@ -34,7 +34,7 @@ import javax.portlet.PortletURL;
 public class DLSearcher extends BaseIndexer {
 
 	public static final String[] CLASS_NAMES = {
-		DLFolder.class.getName(), DLFileEntry.class.getName()
+		DLFileEntry.class.getName(), DLFolder.class.getName()
 	};
 
 	public static Indexer getInstance() {

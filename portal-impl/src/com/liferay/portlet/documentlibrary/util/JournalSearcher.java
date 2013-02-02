@@ -34,7 +34,7 @@ import javax.portlet.PortletURL;
 public class JournalSearcher extends BaseIndexer {
 
 	public static final String[] CLASS_NAMES = {
-		JournalFolder.class.getName(), JournalArticle.class.getName()
+		JournalArticle.class.getName(), JournalFolder.class.getName()
 	};
 
 	public static Indexer getInstance() {
