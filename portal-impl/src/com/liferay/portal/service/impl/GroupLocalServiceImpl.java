@@ -69,7 +69,6 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.model.UserPersonalSite;
 import com.liferay.portal.model.impl.LayoutImpl;
-import com.liferay.portal.security.auth.DefaultMembershipPolicy;
 import com.liferay.portal.security.auth.MembershipPolicy;
 import com.liferay.portal.security.auth.MembershipPolicyFactory;
 import com.liferay.portal.security.permission.ActionKeys;
@@ -474,7 +473,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		MembershipPolicy membershipPolicy =
 			MembershipPolicyFactory.getInstance();
 
-		if (membershipPolicy.getClass() == DefaultMembershipPolicy.class) {
+		if (!membershipPolicy.isApplicableUser(user)) {
 			return;
 		}
 
@@ -485,20 +484,20 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		groupParams.put("site", Boolean.TRUE);
 		groupParams.put("usersGroups", user.getUserId());
 
-		List<Group> userGroups = search(
+		List<Group> groups = search(
 			user.getCompanyId(), groupParams, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS);
 
-		for (Group userGroup : userGroups) {
-			if (!membershipPolicy.isMembershipAllowed(userGroup, user)) {
+		for (Group group : groups) {
+			if (!membershipPolicy.isMembershipAllowed(group, user)) {
 				unsetUserGroups(
-					user.getUserId(), new long[] {userGroup.getGroupId()});
+					user.getUserId(), new long[] {group.getGroupId()});
 			}
 		}
 
-		List<Group> groups = membershipPolicy.getMandatoryGroups(user);
+		List<Group> mandatoryGroups = membershipPolicy.getMandatoryGroups(user);
 
-		for (Group group : groups) {
+		for (Group group : mandatoryGroups) {
 			if (!hasUserGroup(user.getUserId(), group.getGroupId(), false)) {
 				addUserGroups(
 					user.getUserId(), new long[] {group.getGroupId()});

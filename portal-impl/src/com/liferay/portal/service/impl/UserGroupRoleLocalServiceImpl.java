@@ -23,7 +23,6 @@ import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroupRole;
-import com.liferay.portal.security.auth.DefaultMembershipPolicy;
 import com.liferay.portal.security.auth.MembershipPolicy;
 import com.liferay.portal.security.auth.MembershipPolicyFactory;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
@@ -85,7 +84,7 @@ public class UserGroupRoleLocalServiceImpl
 		MembershipPolicy membershipPolicy =
 			MembershipPolicyFactory.getInstance();
 
-		if (membershipPolicy.getClass() == DefaultMembershipPolicy.class) {
+		if (!membershipPolicy.isApplicableUser(user)) {
 			return;
 		}
 
@@ -96,35 +95,35 @@ public class UserGroupRoleLocalServiceImpl
 		groupParams.put("site", Boolean.TRUE);
 		groupParams.put("usersGroups", user.getUserId());
 
-		List<Group> userGroups = groupLocalService.search(
+		List<Group> groups = groupLocalService.search(
 			user.getCompanyId(), groupParams, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS);
 
-		for (Group userGroup : userGroups) {
+		for (Group group : groups) {
 			List<Role> mandatoryRoles = membershipPolicy.getMandatoryRoles(
-				userGroup, user);
+				group, user);
 
 			for (Role role : mandatoryRoles) {
 				if (!hasUserGroupRole(
-						user.getUserId(), userGroup.getGroupId(),
-						role.getRoleId(), false)) {
+						user.getUserId(), group.getGroupId(), role.getRoleId(),
+						false)) {
 
 					addUserGroupRoles(
-						user.getUserId(), userGroup.getGroupId(),
+						user.getUserId(), group.getGroupId(),
 						new long[] {role.getRoleId()});
 				}
 			}
 
 			List<Role> forbiddenRoles = membershipPolicy.getForbiddenRoles(
-				userGroup, user);
+				group, user);
 
 			for (Role role : forbiddenRoles) {
 				if (hasUserGroupRole(
-						user.getUserId(), userGroup.getGroupId(),
-						role.getRoleId(), false)) {
+						user.getUserId(), group.getGroupId(), role.getRoleId(),
+						false)) {
 
 					deleteUserGroupRoles(
-						user.getUserId(), userGroup.getGroupId(),
+						user.getUserId(), group.getGroupId(),
 						new long[] {role.getRoleId()});
 				}
 			}

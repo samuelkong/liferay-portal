@@ -31,6 +31,8 @@ public interface MembershipPolicy {
 
 	public List<Role> getMandatoryRoles(Group group, User user);
 
+	public boolean isApplicableUser(User user);
+
 	public boolean isMembershipAllowed(Group group, User user);
 
 }

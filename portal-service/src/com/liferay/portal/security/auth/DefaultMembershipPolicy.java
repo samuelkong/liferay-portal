@@ -38,6 +38,10 @@ public class DefaultMembershipPolicy implements MembershipPolicy {
 		return Collections.emptyList();
 	}
 
+	public boolean isApplicableUser(User user) {
+		return false;
+	}
+
 	public boolean isMembershipAllowed(Group group, User user) {
 		return true;
 	}
