@@ -41,7 +41,7 @@ import javax.portlet.PortletURL;
 public class SearchResultUtil {
 
 	public static List<SearchResult> getSearchResults(
-			Hits hits, Locale locale, PortletURL portletURL) {
+		Hits hits, Locale locale, PortletURL portletURL) {
 
 		List<SearchResult> searchResults = new ArrayList<SearchResult>();
 
@@ -115,7 +115,7 @@ public class SearchResultUtil {
 				}
 				else {
 					if (searchResult.getSummary() == null) {
-						Summary summary = getAssetSummary(
+						Summary summary = getSummary(
 							className, classPK, locale, portletURL);
 
 						searchResult.setSummary(summary);
@@ -134,7 +134,23 @@ public class SearchResultUtil {
 		return searchResults;
 	}
 
-	protected static Summary getAssetSummary(
+	protected static Summary getSummary(
+			Document document, String className, long classPK, Locale locale,
+			PortletURL portletURL)
+		throws PortalException, SystemException {
+
+		Indexer indexer = IndexerRegistryUtil.getIndexer(className);
+
+		if (indexer != null) {
+			String snippet = document.get(Field.SNIPPET);
+
+			return indexer.getSummary(document, locale, snippet, portletURL);
+		}
+
+		return getSummary(className, classPK, locale, portletURL);
+	}
+
+	protected static Summary getSummary(
 			String className, long classPK, Locale locale,
 			PortletURL portletURL)
 		throws PortalException, SystemException {
@@ -162,22 +178,6 @@ public class SearchResultUtil {
 		summary.setPortletURL(portletURL);
 
 		return summary;
-	}
-
-	protected static Summary getSummary(
-			Document document, String className, long classPK, Locale locale,
-			PortletURL portletURL)
-		throws PortalException, SystemException {
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(className);
-
-		if (indexer != null) {
-			String snippet = document.get(Field.SNIPPET);
-
-			return indexer.getSummary(document, locale, snippet, portletURL);
-		}
-
-		return getAssetSummary(className, classPK, locale, portletURL);
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(SearchResultUtil.class);

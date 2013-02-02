@@ -191,6 +191,7 @@ else if ((searchType == DLSearchConstants.SINGLE) && !ajaxRequest) {
 				queryConfig.setHighlightEnabled(true);
 
 				searchContext.setQueryConfig(queryConfig);
+
 				searchContext.setStart(entryStart);
 
 				Hits hits = DLAppServiceUtil.search(searchRepositoryId, searchContext);

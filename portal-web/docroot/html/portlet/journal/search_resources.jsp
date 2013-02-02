@@ -242,6 +242,7 @@ boolean advancedSearch = ParamUtil.getBoolean(liferayPortletRequest, ArticleDisp
 						queryConfig.setHighlightEnabled(true);
 
 						searchContext.setQueryConfig(queryConfig);
+
 						searchContext.setStart(searchContainer.getStart());
 
 						Hits hits = indexer.search(searchContext);

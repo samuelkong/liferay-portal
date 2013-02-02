@@ -94,6 +94,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 		queryConfig.setHighlightEnabled(true);
 
 		searchContext.setQueryConfig(queryConfig);
+
 		searchContext.setStart(searchContainer.getStart());
 
 		Hits hits = indexer.search(searchContext);
