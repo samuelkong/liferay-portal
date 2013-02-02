@@ -111,6 +111,16 @@ public class ClassUtil {
 		return classes;
 	}
 
+	public static String getClassName(Object object) {
+		if (object == null) {
+			return null;
+		}
+
+		Class<?> clazz = object.getClass();
+
+		return clazz.getName();
+	}
+
 	public static String getParentPath(
 		ClassLoader classLoader, String className) {
 

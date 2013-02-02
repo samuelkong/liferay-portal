@@ -16,6 +16,7 @@ package com.liferay.portal.security.auth;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
@@ -46,7 +47,8 @@ public class EmailAddressValidatorFactory {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Return " + _emailAddressValidator.getClass().getName());
+			_log.debug(
+				"Return " + ClassUtil.getClassName(_emailAddressValidator));
 		}
 
 		return _emailAddressValidator;
@@ -56,7 +58,7 @@ public class EmailAddressValidatorFactory {
 		EmailAddressValidator emailAddressValidator) {
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set " + emailAddressValidator.getClass().getName());
+			_log.debug("Set " + ClassUtil.getClassName(emailAddressValidator));
 		}
 
 		_emailAddressValidator = emailAddressValidator;

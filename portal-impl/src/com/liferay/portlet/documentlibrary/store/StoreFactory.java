@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -110,7 +111,7 @@ public class StoreFactory {
 
 	public static void setInstance(Store store) {
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set " + store.getClass().getName());
+			_log.debug("Set " + ClassUtil.getClassName(store));
 		}
 
 		_store = store;

@@ -16,6 +16,7 @@ package com.liferay.portal.security.auth;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -45,7 +46,8 @@ public class ScreenNameGeneratorFactory {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Return " + _screenNameGenerator.getClass().getName());
+			_log.debug(
+				"Return " + ClassUtil.getClassName(_screenNameGenerator));
 		}
 
 		return _screenNameGenerator;
@@ -53,7 +55,7 @@ public class ScreenNameGeneratorFactory {
 
 	public static void setInstance(ScreenNameGenerator screenNameGenerator) {
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set " + screenNameGenerator.getClass().getName());
+			_log.debug("Set " + ClassUtil.getClassName(screenNameGenerator));
 		}
 
 		_screenNameGenerator = screenNameGenerator;

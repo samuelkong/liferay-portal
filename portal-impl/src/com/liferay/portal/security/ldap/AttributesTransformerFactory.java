@@ -16,6 +16,7 @@ package com.liferay.portal.security.ldap;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -55,7 +56,7 @@ public class AttributesTransformerFactory {
 		AttributesTransformer attributesTransformer) {
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set " + attributesTransformer.getClass().getName());
+			_log.debug("Set " + ClassUtil.getClassName(attributesTransformer));
 		}
 
 		_attributesTransformer = attributesTransformer;

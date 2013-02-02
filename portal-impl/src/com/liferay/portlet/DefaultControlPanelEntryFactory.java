@@ -16,6 +16,7 @@ package com.liferay.portlet;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -46,7 +47,7 @@ public class DefaultControlPanelEntryFactory {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Return " + _controlPanelEntry.getClass().getName());
+			_log.debug("Return " + ClassUtil.getClassName(_controlPanelEntry));
 		}
 
 		return _controlPanelEntry;
@@ -54,7 +55,8 @@ public class DefaultControlPanelEntryFactory {
 
 	public static void setInstance(ControlPanelEntry controlPanelEntryFactory) {
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set " + controlPanelEntryFactory.getClass().getName());
+			_log.debug(
+				"Set " + ClassUtil.getClassName(controlPanelEntryFactory));
 		}
 
 		_controlPanelEntry = controlPanelEntryFactory;

@@ -16,6 +16,7 @@ package com.liferay.portal.security.auth;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
@@ -46,7 +47,7 @@ public class FullNameGeneratorFactory {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Return " + _fullNameGenerator.getClass().getName());
+			_log.debug("Return " + ClassUtil.getClassName(_fullNameGenerator));
 		}
 
 		return _fullNameGenerator;
@@ -54,7 +55,7 @@ public class FullNameGeneratorFactory {
 
 	public static void setInstance(FullNameGenerator fullNameValidator) {
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set " + fullNameValidator.getClass().getName());
+			_log.debug("Set " + ClassUtil.getClassName(fullNameValidator));
 		}
 
 		_fullNameGenerator = fullNameValidator;

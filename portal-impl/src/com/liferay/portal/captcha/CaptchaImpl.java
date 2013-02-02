@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.captcha.Captcha;
 import com.liferay.portal.kernel.captcha.CaptchaException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
@@ -95,14 +96,15 @@ public class CaptchaImpl implements Captcha {
 
 		if (captcha == null) {
 			if (_log.isInfoEnabled()) {
-				_log.info("Restoring " + _originalCaptcha.getClass().getName());
+				_log.info(
+					"Restoring " + ClassUtil.getClassName(_originalCaptcha));
 			}
 
 			_captcha = _originalCaptcha;
 		}
 		else {
 			if (_log.isInfoEnabled()) {
-				_log.info("Setting " + captcha.getClass().getName());
+				_log.info("Setting " + ClassUtil.getClassName(captcha));
 			}
 
 			_captcha = captcha;
