@@ -39,13 +39,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 /**
  * @author Julio Camarero
  */
-@PrepareForTest({PortletLocalServiceUtil.class})
-
 @ExecutionTestListeners(
 	listeners = {
 		EnvironmentExecutionTestListener.class,
 		TransactionalCallbackAwareExecutionTestListener.class
 	})
+@PrepareForTest({PortletLocalServiceUtil.class})
 @RunWith(LiferayIntegrationJUnitTestRunner.class)
 @Transactional
 public class LayoutExportImportTest extends BaseExportImportTestCase {
