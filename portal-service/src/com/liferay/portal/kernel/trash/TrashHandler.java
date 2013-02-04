@@ -597,11 +597,16 @@ public interface TrashHandler {
 		throws PortalException, SystemException;
 
 	/**
-	 * Restores the model entity thas is related to a model entity (i.e., an
-	 * attachment)
-	 * 
-	 * @param className the class name of the model entity related
-	 * @param classPK the primary key of the model entity related
+	 * Restores the model entity that is related to the model entity with the
+	 * class name and class PK. For example, {@link
+	 * com.liferay.portlet.wiki.trash.WikiPageTrashHandler#restoreRelatedTrashEntry(
+	 * String, long)} restores the attachment related to the wiki page with the
+	 * class name and class PK.
+	 *
+	 * @param  className the class name of the model entity with a related model
+	 *         entity to restore
+	 * @param  classPK the primary key of the model entity with a related model
+	 *         entity to restore
 	 * @throws PortalException if a model entity with the primary key could not
 	 *         be found
 	 * @throws SystemException if a system exception occurred
