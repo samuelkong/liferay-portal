@@ -76,7 +76,7 @@ public class BookmarksFolderServiceTest {
 	}
 
 	@Test
-	public void testCountRangeSearch() throws Exception {
+	public void testSearchRange() throws Exception {
 		BookmarksEntry entry = BookmarksTestUtil.addEntry(
 			_group.getGroupId(), true);
 
@@ -84,24 +84,23 @@ public class BookmarksFolderServiceTest {
 		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
 		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
 
-		long companyId = _group.getCompanyId();
-		long groupId = _group.getGroupId();
-		long folderId = entry.getFolderId();
-		String keywords = "test";
-
 		SearchContext searchContext = BookmarksTestUtil.getSearchContext(
-			companyId, groupId, folderId, keywords);
+			_group.getCompanyId(), _group.getGroupId(), entry.getFolderId(),
+			"test");
 
 		Indexer indexer = IndexerRegistryUtil.getIndexer(BookmarksEntry.class);
 
 		searchContext.setEnd(3);
-		searchContext.setFolderIds((long[]) null);
+		searchContext.setFolderIds((long[])null);
 		searchContext.setStart(1);
 
 		Hits hits = indexer.search(searchContext);
 
 		Assert.assertEquals(4, hits.getLength());
-		Assert.assertEquals(2, hits.getDocs().length);
+		
+		Document[] documents = hits.getDocs();
+
+		Assert.assertEquals(2, documents.length);
 	}
 
 	@Test
@@ -178,13 +177,9 @@ public class BookmarksFolderServiceTest {
 		BookmarksEntry entry = BookmarksTestUtil.addEntry(
 			_group.getGroupId(), folder.getFolderId(), true);
 
-		long companyId = entry.getCompanyId();
-		long groupId = entry.getFolder().getGroupId();
-		long folderId = entry.getFolderId();
-		String keywords = "test";
-
 		SearchContext searchContext = BookmarksTestUtil.getSearchContext(
-			companyId, groupId, folderId, keywords);
+			entry.getCompanyId(), entry.getGroupId(), entry.getFolderId(),
+			"test");
 
 		Indexer indexer = IndexerRegistryUtil.getIndexer(BookmarksEntry.class);
 
@@ -196,22 +191,21 @@ public class BookmarksFolderServiceTest {
 
 		for (Document doc : results) {
 			Assert.assertEquals(
-				companyId, GetterUtil.getLong(doc.get(Field.COMPANY_ID)));
-
-			Assert.assertEquals(
-				groupId, GetterUtil.getLong(doc.get(Field.GROUP_ID)));
-
-			AssertUtils.assertEqualsIgnoreCase(
-				entry.getName(), doc.get(Field.TITLE));
-			Assert.assertEquals(entry.getUrl(), doc.get(Field.URL));
+				entry.getCompanyId(),
+				GetterUtil.getLong(doc.get(Field.COMPANY_ID)));
 			AssertUtils.assertEqualsIgnoreCase(
 				entry.getDescription(), doc.get(Field.DESCRIPTION));
-
-			Assert.assertEquals(
-				folderId, GetterUtil.getLong(doc.get("folderId")));
 			Assert.assertEquals(
 				entry.getEntryId(),
 				GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+			Assert.assertEquals(
+				entry.getGroupId(),
+				GetterUtil.getLong(doc.get(Field.GROUP_ID)));
+			AssertUtils.assertEqualsIgnoreCase(
+				entry.getName(), doc.get(Field.TITLE));
+			Assert.assertEquals(entry.getUrl(), doc.get(Field.URL));
+			Assert.assertEquals(
+				entry.getFolderId(), GetterUtil.getLong(doc.get("folderId")));
 		}
 	}
 
