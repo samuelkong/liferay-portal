@@ -27,7 +27,7 @@ import com.liferay.portal.util.PropsValues;
 public class MembershipPolicyFactory {
 
 	public static MembershipPolicy getInstance() {
-		if (_membershipPolicy == null) {
+		if (_originalMembershipPolicy == null) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Instantiate " + PropsValues.USERS_MEMBERSHIP_POLICY);
@@ -37,13 +37,17 @@ public class MembershipPolicyFactory {
 				PACLClassLoaderUtil.getPortalClassLoader();
 
 			try {
-				_membershipPolicy =
+				_originalMembershipPolicy =
 					(MembershipPolicy)InstanceFactory.newInstance(
 						classLoader, PropsValues.USERS_MEMBERSHIP_POLICY);
 			}
 			catch (Exception e) {
 				_log.error(e, e);
 			}
+		}
+
+		if (_membershipPolicy == null) {
+			_membershipPolicy = _originalMembershipPolicy;
 		}
 
 		if (_log.isDebugEnabled()) {
@@ -58,12 +62,18 @@ public class MembershipPolicyFactory {
 			_log.debug("Set " + ClassUtil.getClassName(membershipPolicy));
 		}
 
-		_membershipPolicy = membershipPolicy;
+		if (membershipPolicy == null) {
+			_membershipPolicy = _originalMembershipPolicy;
+		}
+		else {
+			_membershipPolicy = membershipPolicy;
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		MembershipPolicyFactory.class);
 
 	private static MembershipPolicy _membershipPolicy;
+	private static MembershipPolicy _originalMembershipPolicy;
 
 }

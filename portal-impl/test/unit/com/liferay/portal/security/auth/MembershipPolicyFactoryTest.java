@@ -23,16 +23,13 @@ import org.junit.Test;
 public class MembershipPolicyFactoryTest {
 
 	@Test
-	public void testRaceCondition() throws InterruptedException {
-		Thread hookThread = new Thread() {
+	public void testSetInstance() throws InterruptedException {
+		Thread thread = new Thread() {
 
 			@Override
 			public void run() {
 				MembershipPolicy membershipPolicy =
 					new DefaultMembershipPolicy();
-
-				// Consider this as a hook, that repeatly being deployed and
-				// undeployed.
 
 				while (!isInterrupted()) {
 					MembershipPolicyFactory.setInstance(membershipPolicy);
@@ -42,24 +39,20 @@ public class MembershipPolicyFactoryTest {
 			}
 		};
 
-		hookThread.start();
+		thread.start();
 
-		int loopTimes = 10000;
-
-		// Consider this as all possible MembershipPolicy users, that repeatly
-		// getting the instance.
-
-		for (int i = 0; i < loopTimes; i++) {
+		for (int i = 0; i < 10000; i++) {
 			MembershipPolicy membershipPolicy =
 				MembershipPolicyFactory.getInstance();
 
 			if (membershipPolicy == null) {
-				Assert.fail("Got a null MembershipPolicy at " + i);
+				Assert.fail("Membership policy is null");
 			}
 		}
 
-		hookThread.interrupt();
-		hookThread.join();
+		thread.interrupt();
+
+		thread.join();
 	}
 
 }

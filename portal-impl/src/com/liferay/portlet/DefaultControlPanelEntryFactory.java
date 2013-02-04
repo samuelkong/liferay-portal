@@ -17,6 +17,7 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
+import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -26,7 +27,7 @@ import com.liferay.portal.util.PropsValues;
 public class DefaultControlPanelEntryFactory {
 
 	public static ControlPanelEntry getInstance() {
-		if (_controlPanelEntry == null) {
+		if (_originalControlPanelEntry == null) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Instantiate " +
@@ -37,13 +38,18 @@ public class DefaultControlPanelEntryFactory {
 				PACLClassLoaderUtil.getPortalClassLoader();
 
 			try {
-				_controlPanelEntry = (ControlPanelEntry)classLoader.loadClass(
-					PropsValues.CONTROL_PANEL_DEFAULT_ENTRY_CLASS).
-						newInstance();
+				_originalControlPanelEntry =
+					(ControlPanelEntry)InstanceFactory.newInstance(
+						classLoader,
+						PropsValues.CONTROL_PANEL_DEFAULT_ENTRY_CLASS);
 			}
 			catch (Exception e) {
 				_log.error(e, e);
 			}
+		}
+
+		if (_controlPanelEntry == null) {
+			_controlPanelEntry = _originalControlPanelEntry;
 		}
 
 		if (_log.isDebugEnabled()) {
@@ -59,12 +65,18 @@ public class DefaultControlPanelEntryFactory {
 				"Set " + ClassUtil.getClassName(controlPanelEntryFactory));
 		}
 
-		_controlPanelEntry = controlPanelEntryFactory;
+		if (controlPanelEntryFactory == null) {
+			_controlPanelEntry = _originalControlPanelEntry;
+		}
+		else {
+			_controlPanelEntry = controlPanelEntryFactory;
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		DefaultControlPanelEntryFactory.class);
 
-	private static ControlPanelEntry _controlPanelEntry = null;
+	private static ControlPanelEntry _controlPanelEntry;
+	private static ControlPanelEntry _originalControlPanelEntry;
 
 }

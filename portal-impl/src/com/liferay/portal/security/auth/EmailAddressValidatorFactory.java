@@ -27,7 +27,7 @@ import com.liferay.portal.util.PropsValues;
 public class EmailAddressValidatorFactory {
 
 	public static EmailAddressValidator getInstance() {
-		if (_emailAddressValidator == null) {
+		if (_originalEmailAddressValidator == null) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Instantiate " + PropsValues.USERS_EMAIL_ADDRESS_VALIDATOR);
@@ -37,13 +37,17 @@ public class EmailAddressValidatorFactory {
 				PACLClassLoaderUtil.getPortalClassLoader();
 
 			try {
-				_emailAddressValidator =
+				_originalEmailAddressValidator =
 					(EmailAddressValidator)InstanceFactory.newInstance(
 						classLoader, PropsValues.USERS_EMAIL_ADDRESS_VALIDATOR);
 			}
 			catch (Exception e) {
 				_log.error(e, e);
 			}
+		}
+
+		if (_emailAddressValidator == null) {
+			_emailAddressValidator = _originalEmailAddressValidator;
 		}
 
 		if (_log.isDebugEnabled()) {
@@ -61,12 +65,18 @@ public class EmailAddressValidatorFactory {
 			_log.debug("Set " + ClassUtil.getClassName(emailAddressValidator));
 		}
 
-		_emailAddressValidator = emailAddressValidator;
+		if (emailAddressValidator == null) {
+			_emailAddressValidator = _originalEmailAddressValidator;
+		}
+		else {
+			_emailAddressValidator = emailAddressValidator;
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		EmailAddressValidatorFactory.class);
 
 	private static EmailAddressValidator _emailAddressValidator;
+	private static EmailAddressValidator _originalEmailAddressValidator;
 
 }

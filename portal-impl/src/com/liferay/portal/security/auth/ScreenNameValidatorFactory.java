@@ -17,6 +17,7 @@ package com.liferay.portal.security.auth;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
+import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.security.pacl.PACLClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -26,7 +27,7 @@ import com.liferay.portal.util.PropsValues;
 public class ScreenNameValidatorFactory {
 
 	public static ScreenNameValidator getInstance() {
-		if (_screenNameValidator == null) {
+		if (_originalScreenNameValidator == null) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Instantiate " + PropsValues.USERS_SCREEN_NAME_VALIDATOR);
@@ -36,13 +37,17 @@ public class ScreenNameValidatorFactory {
 				PACLClassLoaderUtil.getPortalClassLoader();
 
 			try {
-				_screenNameValidator =
-					(ScreenNameValidator)classLoader.loadClass(
-						PropsValues.USERS_SCREEN_NAME_VALIDATOR).newInstance();
+				_originalScreenNameValidator =
+					(ScreenNameValidator)InstanceFactory.newInstance(
+						classLoader, PropsValues.USERS_SCREEN_NAME_VALIDATOR);
 			}
 			catch (Exception e) {
 				_log.error(e, e);
 			}
+		}
+
+		if (_screenNameValidator == null) {
+			_screenNameValidator = _originalScreenNameValidator;
 		}
 
 		if (_log.isDebugEnabled()) {
@@ -58,12 +63,18 @@ public class ScreenNameValidatorFactory {
 			_log.debug("Set " + ClassUtil.getClassName(screenNameValidator));
 		}
 
-		_screenNameValidator = screenNameValidator;
+		if (screenNameValidator == null) {
+			_screenNameValidator = _originalScreenNameValidator;
+		}
+		else {
+			_screenNameValidator = screenNameValidator;
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		ScreenNameValidatorFactory.class);
 
+	private static ScreenNameValidator _originalScreenNameValidator;
 	private static ScreenNameValidator _screenNameValidator;
 
 }
