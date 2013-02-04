@@ -19,23 +19,23 @@ import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergio González
  */
 public class DefaultMembershipPolicy implements MembershipPolicy {
 
-	public List<Role> getForbiddenRoles(Group group, User user) {
-		return Collections.emptyList();
+	public Set<Role> getForbiddenRoles(Group group, User user) {
+		return Collections.emptySet();
 	}
 
-	public List<Group> getMandatoryGroups(User user) {
-		return Collections.emptyList();
+	public Set<Group> getMandatoryGroups(User user) {
+		return Collections.emptySet();
 	}
 
-	public List<Role> getMandatoryRoles(Group group, User user) {
-		return Collections.emptyList();
+	public Set<Role> getMandatoryRoles(Group group, User user) {
+		return Collections.emptySet();
 	}
 
 	public boolean isApplicableUser(User user) {

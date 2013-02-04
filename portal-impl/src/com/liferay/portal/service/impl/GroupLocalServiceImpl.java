@@ -97,6 +97,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The group local service is responsible for accessing, creating, modifying and
@@ -495,7 +496,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			}
 		}
 
-		List<Group> mandatoryGroups = membershipPolicy.getMandatoryGroups(user);
+		Set<Group> mandatoryGroups = membershipPolicy.getMandatoryGroups(user);
 
 		for (Group group : mandatoryGroups) {
 			if (!hasUserGroup(user.getUserId(), group.getGroupId(), false)) {

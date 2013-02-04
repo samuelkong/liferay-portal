@@ -31,6 +31,7 @@ import com.liferay.portal.service.persistence.UserGroupRolePK;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jorge Ferrer
@@ -100,7 +101,7 @@ public class UserGroupRoleLocalServiceImpl
 			QueryUtil.ALL_POS);
 
 		for (Group group : groups) {
-			List<Role> mandatoryRoles = membershipPolicy.getMandatoryRoles(
+			Set<Role> mandatoryRoles = membershipPolicy.getMandatoryRoles(
 				group, user);
 
 			for (Role role : mandatoryRoles) {
@@ -114,7 +115,7 @@ public class UserGroupRoleLocalServiceImpl
 				}
 			}
 
-			List<Role> forbiddenRoles = membershipPolicy.getForbiddenRoles(
+			Set<Role> forbiddenRoles = membershipPolicy.getForbiddenRoles(
 				group, user);
 
 			for (Role role : forbiddenRoles) {

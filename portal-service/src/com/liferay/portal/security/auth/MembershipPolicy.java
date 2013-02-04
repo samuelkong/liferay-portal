@@ -18,18 +18,18 @@ import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergio González
  */
 public interface MembershipPolicy {
 
-	public List<Role> getForbiddenRoles(Group group, User user);
+	public Set<Role> getForbiddenRoles(Group group, User user);
 
-	public List<Group> getMandatoryGroups(User user);
+	public Set<Group> getMandatoryGroups(User user);
 
-	public List<Role> getMandatoryRoles(Group group, User user);
+	public Set<Role> getMandatoryRoles(Group group, User user);
 
 	public boolean isApplicableUser(User user);
 
