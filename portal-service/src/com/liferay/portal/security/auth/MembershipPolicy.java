@@ -15,6 +15,7 @@
 package com.liferay.portal.security.auth;
 
 import com.liferay.portal.model.Group;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 
@@ -27,9 +28,17 @@ public interface MembershipPolicy {
 
 	public Set<Role> getForbiddenRoles(Group group, User user);
 
+	public Set<Role> getForbiddenRoles(Organization organization, User user);
+
+	public Set<Role> getForbiddenRoles(User user);
+
 	public Set<Group> getMandatoryGroups(User user);
 
 	public Set<Role> getMandatoryRoles(Group group, User user);
+
+	public Set<Role> getMandatoryRoles(Organization organization, User user);
+
+	public Set<Role> getMandatoryRoles(User user);
 
 	public boolean isApplicableUser(User user);
 

@@ -15,6 +15,7 @@
 package com.liferay.portal.security.auth;
 
 import com.liferay.portal.model.Group;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 
@@ -30,11 +31,27 @@ public class DefaultMembershipPolicy implements MembershipPolicy {
 		return Collections.emptySet();
 	}
 
+	public Set<Role> getForbiddenRoles(Organization organization, User user) {
+		return Collections.emptySet();
+	}
+
+	public Set<Role> getForbiddenRoles(User user) {
+		return Collections.emptySet();
+	}
+
 	public Set<Group> getMandatoryGroups(User user) {
 		return Collections.emptySet();
 	}
 
 	public Set<Role> getMandatoryRoles(Group group, User user) {
+		return Collections.emptySet();
+	}
+
+	public Set<Role> getMandatoryRoles(Organization organization, User user) {
+		return Collections.emptySet();
+	}
+
+	public Set<Role> getMandatoryRoles(User user) {
 		return Collections.emptySet();
 	}
 
