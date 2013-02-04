@@ -1989,9 +1989,9 @@ public class JournalArticleLocalServiceImpl
 			attributes.put(Field.TITLE, title);
 			attributes.put(Field.TYPE, type);
 			attributes.put("articleId", articleId);
-			attributes.put("params", params);
 			attributes.put("ddmStructureKey", structureId);
 			attributes.put("ddmTemplateKey", templateId);
+			attributes.put("params", params);
 
 			searchContext.setAttributes(attributes);
 

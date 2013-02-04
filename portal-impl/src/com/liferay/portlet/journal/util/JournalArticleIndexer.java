@@ -270,11 +270,10 @@ public class JournalArticleIndexer extends BaseIndexer {
 		}
 
 		document.addKeyword("articleId", articleId);
-
-		document.addDate("displayDate", article.getDisplayDate());
-		document.addKeyword("layoutUuid", article.getLayoutUuid());
 		document.addKeyword("ddmStructureKey", article.getStructureId());
 		document.addKeyword("ddmTemplateKey", article.getTemplateId());
+		document.addDate("displayDate", article.getDisplayDate());
+		document.addKeyword("layoutUuid", article.getLayoutUuid());
 
 		DDMStructure ddmStructure = null;
 
