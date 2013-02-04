@@ -70,8 +70,8 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		_layout = ServiceTestUtil.addLayout(
 			_group.getGroupId(), ServiceTestUtil.randomString());
 
-		// Deletion of the layout to ensure scenario where layoutIds do not
-		// match after export/import
+		// Delete and readd to ensure a different layout ID (not ID or UUID).
+		// See LPS-32132.
 
 		LayoutLocalServiceUtil.deleteLayout(
 			_layout, true, new ServiceContext());
