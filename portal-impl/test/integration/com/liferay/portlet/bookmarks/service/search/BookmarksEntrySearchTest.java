@@ -56,6 +56,7 @@ public class BookmarksEntrySearchTest extends BaseSearchTestCase {
 		Assert.assertTrue("This test does not apply", true);
 	}
 
+	@Override
 	protected BaseModel<?> addBaseModelWithWorkflow(
 		BaseModel<?> parentBaseModel, boolean approved, String keywords,
 		ServiceContext serviceContext)
@@ -67,6 +68,7 @@ public class BookmarksEntrySearchTest extends BaseSearchTestCase {
 			group.getGroupId(), folder.getFolderId(), true);
 	}
 
+	@Override
 	protected Class<?> getBaseModelClass() {
 		return BookmarksEntry.class;
 	}
@@ -79,6 +81,7 @@ public class BookmarksEntrySearchTest extends BaseSearchTestCase {
 		return BookmarksTestUtil.addFolder(group.getGroupId());
 	}
 
+	@Override
 	protected String getSearchKeywords() {
 		return "Test";
 	}
