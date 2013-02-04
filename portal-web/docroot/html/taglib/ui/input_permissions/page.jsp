@@ -99,9 +99,12 @@ String modelName = (String)request.getAttribute("liferay-ui:input-permissions:mo
 							<c:when test="<%= defaultGroupRole.getName().equals(RoleConstants.SITE_MEMBER) %>">
 								<liferay-ui:message key="site-members" />
 							</c:when>
-							<c:otherwise>
+							<c:when test="<%= defaultGroupRole.getName().equals(RoleConstants.POWER_USER) %>">
 								<liferay-ui:message key="power-users" />
-							</c:otherwise>
+							</c:when>
+							<c:when test="<%= defaultGroupRole.getName().equals(RoleConstants.USER) %>">
+								<liferay-ui:message key="user" />
+							</c:when>
 						</c:choose>
 					</option>
 					<option <%= (inputPermissionsViewRole.equals(RoleConstants.OWNER)) ? "selected=\"selected\"" : "" %> value="<%= RoleConstants.OWNER %>"><liferay-ui:message key="owner" /></option>
