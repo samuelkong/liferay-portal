@@ -37,11 +37,11 @@ public class XSLTemplateParser extends VelocityTemplateParser {
 
 	@Override
 	protected TemplateContext getTemplateContext() throws Exception {
-		XSLURIResolver uriResolver = new JournalXSLURIResolver(
+		XSLURIResolver xslURIResolver = new JournalXSLURIResolver(
 			getTokens(), getLanguageId());
 
 		TemplateResource templateResource = new XSLTemplateResource(
-			getTemplateId(), getScript(), getXML(), uriResolver);
+			getTemplateId(), getScript(), xslURIResolver, getXML());
 
 		return TemplateManagerUtil.getTemplate(
 			TemplateConstants.LANG_TYPE_XSL, templateResource,

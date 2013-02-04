@@ -60,10 +60,11 @@ public class JournalXSLURIResolver implements Externalizable, XSLURIResolver {
 			return false;
 		}
 
-		JournalXSLURIResolver uriResolver = (JournalXSLURIResolver)obj;
+		JournalXSLURIResolver journalXSLURIResolver =
+			(JournalXSLURIResolver)obj;
 
-		if (Validator.equals(_languageId, uriResolver._languageId) &&
-			_tokens.equals(uriResolver._tokens)) {
+		if (Validator.equals(_languageId, journalXSLURIResolver._languageId) &&
+			_tokens.equals(journalXSLURIResolver._tokens)) {
 
 			return true;
 		}
@@ -98,11 +99,11 @@ public class JournalXSLURIResolver implements Externalizable, XSLURIResolver {
 		try {
 			String content = null;
 
-			int templatePathIndex = href.indexOf(_GET_TEMPLATE_PATH);
+			int templatePathIndex = href.indexOf(_PATH_GET_TEMPLATE);
 
 			if (templatePathIndex >= 0) {
 				int templateIdIndex =
-					templatePathIndex + _GET_TEMPLATE_PATH.length();
+					templatePathIndex + _PATH_GET_TEMPLATE.length();
 
 				long groupId = GetterUtil.getLong(_tokens.get("group_id"));
 				String templateId = href.substring(templateIdIndex);
@@ -134,7 +135,7 @@ public class JournalXSLURIResolver implements Externalizable, XSLURIResolver {
 		objectOutput.writeObject(_tokens);
 	}
 
-	private static final String _GET_TEMPLATE_PATH =
+	private static final String _PATH_GET_TEMPLATE =
 		"/c/journal/get_template?template_id=";
 
 	private static Log _log = LogFactoryUtil.getLog(

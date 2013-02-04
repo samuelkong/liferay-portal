@@ -37,7 +37,9 @@ public class XSLTemplateResource implements TemplateResource {
 	}
 
 	public XSLTemplateResource(
-		String templateId, String xsl, String xml, XSLURIResolver uriResolver) {
+		String templateId, String xsl, XSLURIResolver xslURIResolver,
+		String xml) {
+
 		if (Validator.isNull(templateId)) {
 			throw new IllegalArgumentException("Template ID is null");
 		}
@@ -52,8 +54,8 @@ public class XSLTemplateResource implements TemplateResource {
 
 		_templateId = templateId;
 		_xsl = xsl;
+		_xslURIResolver = xslURIResolver;
 		_xml = xml;
-		_uriResolver = uriResolver;
 	}
 
 	@Override
@@ -70,8 +72,9 @@ public class XSLTemplateResource implements TemplateResource {
 
 		if (_templateId.equals(xslTemplateResource._templateId) &&
 			_xsl.equals(xslTemplateResource._xsl) &&
-			_xml.equals(xslTemplateResource._xml) &&
-			Validator.equals(_uriResolver, xslTemplateResource._uriResolver)) {
+			Validator.equals(
+				_xslURIResolver, xslTemplateResource._xslURIResolver) &&
+			_xml.equals(xslTemplateResource._xml)) {
 
 			return true;
 		}
@@ -91,12 +94,12 @@ public class XSLTemplateResource implements TemplateResource {
 		return _templateId;
 	}
 
-	public XSLURIResolver getURIResolver() {
-		return _uriResolver;
-	}
-
 	public Reader getXMLReader() {
 		return new UnsyncStringReader(_xml);
+	}
+
+	public XSLURIResolver getXSLURIResolver() {
+		return _xslURIResolver;
 	}
 
 	@Override
@@ -104,8 +107,8 @@ public class XSLTemplateResource implements TemplateResource {
 		int hashCode = HashUtil.hash(0, _templateId);
 
 		hashCode = HashUtil.hash(hashCode, _xsl);
+		hashCode = HashUtil.hash(hashCode, _xslURIResolver);
 		hashCode = HashUtil.hash(hashCode, _xml);
-		hashCode = HashUtil.hash(hashCode, _uriResolver);
 
 		return hashCode;
 	}
@@ -116,25 +119,22 @@ public class XSLTemplateResource implements TemplateResource {
 		_templateId = objectInput.readUTF();
 		_lastModified = objectInput.readLong();
 		_xsl = objectInput.readUTF();
+		_xslURIResolver = (XSLURIResolver)objectInput.readObject();
 		_xml = objectInput.readUTF();
-		_uriResolver = (XSLURIResolver)objectInput.readObject();
 	}
 
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeUTF(_templateId);
 		objectOutput.writeLong(_lastModified);
 		objectOutput.writeUTF(_xsl);
+		objectOutput.writeObject(_xslURIResolver);
 		objectOutput.writeUTF(_xml);
-		objectOutput.writeObject(_uriResolver);
 	}
 
 	private long _lastModified = System.currentTimeMillis();
-
 	private String _templateId;
-
-	private XSLURIResolver _uriResolver;
-
 	private String _xml;
 	private String _xsl;
+	private XSLURIResolver _xslURIResolver;
 
 }

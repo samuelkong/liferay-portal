@@ -77,23 +77,25 @@ public class XSLTemplate implements Template {
 	}
 
 	public boolean processTemplate(Writer writer) throws TemplateException {
-		XSLURIResolver uriResolver = _xslTemplateResource.getURIResolver();
+		TransformerFactory transformerFactory =
+			TransformerFactory.newInstance();
 
 		String languageId = null;
 
-		if (uriResolver != null) {
-			languageId = uriResolver.getLanguageId();
+		XSLURIResolver xslURIResolver =
+			_xslTemplateResource.getXSLURIResolver();
+
+		if (xslURIResolver != null) {
+			languageId = xslURIResolver.getLanguageId();
 		}
 
 		Locale locale = LocaleUtil.fromLanguageId(languageId);
 
 		XSLErrorListener xslErrorListener = new XSLErrorListener(locale);
 
-		TransformerFactory transformerFactory =
-			TransformerFactory.newInstance();
-
 		transformerFactory.setErrorListener(xslErrorListener);
-		transformerFactory.setURIResolver(uriResolver);
+
+		transformerFactory.setURIResolver(xslURIResolver);
 
 		StreamSource xmlSource = new StreamSource(
 			_xslTemplateResource.getXMLReader());
