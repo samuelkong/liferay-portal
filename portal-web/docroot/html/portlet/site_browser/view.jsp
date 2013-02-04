@@ -17,16 +17,14 @@
 <%@ include file="/html/portlet/site_browser/init.jsp" %>
 
 <%
-String callback = ParamUtil.getString(request, "callback");
-String filter = ParamUtil.getString(request, "filter");
 long groupId = ParamUtil.getLong(request, "groupId");
+long[] selectedGroupIds = StringUtil.split(ParamUtil.getString(request, "selectedGroupIds"), 0L);
+String type = ParamUtil.getString(request, "type", "manageableSites");
+String filter = ParamUtil.getString(request, "filter");
 boolean includeCompany = ParamUtil.getBoolean(request, "includeCompany");
 boolean includeUserPersonalSite = ParamUtil.getBoolean(request, "includeUserPersonalSite");
-String selectedGroupIdsString = ParamUtil.getString(request, "selectedGroupIds");
+String callback = ParamUtil.getString(request, "callback");
 String target = ParamUtil.getString(request, "target");
-String type = ParamUtil.getString(request, "type", "manageable-sites");
-
-long[] selectedGroupIds = StringUtil.split(selectedGroupIdsString, 0L);
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -44,7 +42,7 @@ portletURL.setParameter("target", target);
 	<liferay-ui:search-container
 		searchContainer="<%= new GroupSearch(renderRequest, portletURL) %>"
 	>
-		<c:if test='<%= !type.equals("parent-sites") %>'>
+		<c:if test='<%= !type.equals("parentSites") %>'>
 			<liferay-ui:search-form
 				page="/html/portlet/users_admin/group_search.jsp"
 			/>
@@ -95,31 +93,31 @@ portletURL.setParameter("target", target);
 
 			int end = searchContainer.getEnd() - additionalSites;
 
-			List<Group> sites = null;
+			List<Group> groups = null;
 
-			if (type.equals("parent-sites")) {
-				Group site = GroupLocalServiceUtil.getGroup(groupId);
+			if (type.equals("parentSites")) {
+				Group group = GroupLocalServiceUtil.getGroup(groupId);
 
-				sites = site.getAncestors();
+				groups = group.getAncestors();
 
 				if (Validator.isNotNull(filter)) {
-					sites = _filterGroups(sites, filter);
+					groups = _filterGroups(groups, filter);
 				}
 
-				total = sites.size();
+				total = groups.size();
 			}
 			else if (searchTerms.isAdvancedSearch()) {
-				sites = GroupLocalServiceUtil.search(company.getCompanyId(), null, searchTerms.getName(), searchTerms.getDescription(), groupParams, searchTerms.isAndOperator(), start, end, searchContainer.getOrderByComparator());
+				groups = GroupLocalServiceUtil.search(company.getCompanyId(), null, searchTerms.getName(), searchTerms.getDescription(), groupParams, searchTerms.isAndOperator(), start, end, searchContainer.getOrderByComparator());
 				total = GroupLocalServiceUtil.searchCount(company.getCompanyId(), null, searchTerms.getName(), searchTerms.getDescription(), groupParams, searchTerms.isAndOperator());
 			}
 			else {
-				sites = GroupLocalServiceUtil.search(company.getCompanyId(), null, searchTerms.getKeywords(), groupParams, start, end, searchContainer.getOrderByComparator());
+				groups = GroupLocalServiceUtil.search(company.getCompanyId(), null, searchTerms.getKeywords(), groupParams, start, end, searchContainer.getOrderByComparator());
 				total = GroupLocalServiceUtil.searchCount(company.getCompanyId(), null, searchTerms.getKeywords(), groupParams, searchTerms.isAndOperator());
 			}
 
 			total += additionalSites;
 
-			results.addAll(sites);
+			results.addAll(groups);
 
 			pageContext.setAttribute("results", results);
 			pageContext.setAttribute("total", total);

@@ -92,7 +92,7 @@ public class AssetPublisherUtil {
 
 	public static final String SCOPE_ID_LAYOUT_UUID_PREFIX = "LayoutUuid_";
 
-	public static final String SCOPE_ID_PARENT_GROUP_PREFIX = "Parent_Group_";
+	public static final String SCOPE_ID_PARENT_GROUP_PREFIX = "ParentGroup_";
 
 	public static void addAndStoreSelection(
 			PortletRequest portletRequest, String className, long classPK,
@@ -680,7 +680,7 @@ public class AssetPublisherUtil {
 			else {
 				key =
 					AssetPublisherUtil.SCOPE_ID_GROUP_PREFIX +
-					group.getGroupId();
+						group.getGroupId();
 			}
 		}
 

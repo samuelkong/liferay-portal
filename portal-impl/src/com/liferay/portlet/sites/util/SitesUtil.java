@@ -662,7 +662,7 @@ public class SitesUtil {
 	}
 
 	public static boolean isContentSharingWithChildrenEnabled(Group group)
-		throws PortalException, SystemException {
+		throws SystemException {
 
 		UnicodeProperties typeSettingsProperties =
 			group.getParentLiveGroupTypeSettingsProperties();

@@ -188,9 +188,9 @@ String editorParam = emailParam + "Body_" + currentLanguageId;
 					PortletURL parentSiteBrowserURL = PortletURLFactoryUtil.create(request, PortletKeys.SITE_BROWSER, PortalUtil.getControlPanelPlid(company.getCompanyId()), PortletRequest.RENDER_PHASE);
 
 					parentSiteBrowserURL.setParameter("struts_action", "/site_browser/view");
-					parentSiteBrowserURL.setParameter("selectedGroupIds", StringUtil.merge(groupIds));
-					parentSiteBrowserURL.setParameter("type", "parent-sites");
 					parentSiteBrowserURL.setParameter("groupId", String.valueOf(layout.getGroupId()));
+					parentSiteBrowserURL.setParameter("selectedGroupIds", StringUtil.merge(groupIds));
+					parentSiteBrowserURL.setParameter("type", "parentSites");
 					parentSiteBrowserURL.setParameter("filter", "contentSharingWithChildrenEnabled");
 					parentSiteBrowserURL.setParameter("callback", liferayPortletResponse.getNamespace() + "selectGroup");
 					parentSiteBrowserURL.setPortletMode(PortletMode.VIEW);
