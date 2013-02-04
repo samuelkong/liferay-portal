@@ -47,7 +47,7 @@ public class BookmarksTestUtil {
 	}
 
 	public static BookmarksEntry addEntry(
-		long groupId, long folderId, boolean approved)
+			long groupId, long folderId, boolean approved)
 		throws Exception {
 
 		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
@@ -127,8 +127,8 @@ public class BookmarksTestUtil {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setCompanyId(companyId);
-		searchContext.setFolderIds(new long[]{folderId});
-		searchContext.setGroupIds(new long[]{groupId});
+		searchContext.setFolderIds(new long[] {folderId});
+		searchContext.setGroupIds(new long[] {groupId});
 		searchContext.setKeywords(keywords);
 
 		QueryConfig queryConfig = new QueryConfig();
