@@ -76,34 +76,6 @@ public class BookmarksFolderServiceTest {
 	}
 
 	@Test
-	public void testSearchRange() throws Exception {
-		BookmarksEntry entry = BookmarksTestUtil.addEntry(
-			_group.getGroupId(), true);
-
-		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
-		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
-		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
-
-		SearchContext searchContext = BookmarksTestUtil.getSearchContext(
-			_group.getCompanyId(), _group.getGroupId(), entry.getFolderId(),
-			"test");
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(BookmarksEntry.class);
-
-		searchContext.setEnd(3);
-		searchContext.setFolderIds((long[])null);
-		searchContext.setStart(1);
-
-		Hits hits = indexer.search(searchContext);
-
-		Assert.assertEquals(4, hits.getLength());
-		
-		Document[] documents = hits.getDocs();
-
-		Assert.assertEquals(2, documents.length);
-	}
-
-	@Test
 	public void testDeleteFolder() throws Exception {
 		BookmarksFolder folder = BookmarksTestUtil.addFolder(
 			_group.getGroupId());
@@ -207,6 +179,34 @@ public class BookmarksFolderServiceTest {
 			Assert.assertEquals(
 				entry.getFolderId(), GetterUtil.getLong(doc.get("folderId")));
 		}
+	}
+
+	@Test
+	public void testSearchRange() throws Exception {
+		BookmarksEntry entry = BookmarksTestUtil.addEntry(
+			_group.getGroupId(), true);
+
+		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
+		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
+		BookmarksTestUtil.addEntry(_group.getGroupId(), true);
+
+		SearchContext searchContext = BookmarksTestUtil.getSearchContext(
+			_group.getCompanyId(), _group.getGroupId(), entry.getFolderId(),
+			"test");
+
+		Indexer indexer = IndexerRegistryUtil.getIndexer(BookmarksEntry.class);
+
+		searchContext.setEnd(3);
+		searchContext.setFolderIds((long[])null);
+		searchContext.setStart(1);
+
+		Hits hits = indexer.search(searchContext);
+
+		Assert.assertEquals(4, hits.getLength());
+
+		Document[] documents = hits.getDocs();
+
+		Assert.assertEquals(2, documents.length);
 	}
 
 	private Group _group;

@@ -58,11 +58,11 @@ public class BookmarksEntrySearchTest extends BaseSearchTestCase {
 
 	@Override
 	protected BaseModel<?> addBaseModelWithWorkflow(
-		BaseModel<?> parentBaseModel, boolean approved, String keywords,
-		ServiceContext serviceContext)
+			BaseModel<?> parentBaseModel, boolean approved, String keywords,
+			ServiceContext serviceContext)
 		throws Exception {
 
-		BookmarksFolder folder = (BookmarksFolder) parentBaseModel;
+		BookmarksFolder folder = (BookmarksFolder)parentBaseModel;
 
 		return BookmarksTestUtil.addEntry(
 			group.getGroupId(), folder.getFolderId(), true);
@@ -75,7 +75,7 @@ public class BookmarksEntrySearchTest extends BaseSearchTestCase {
 
 	@Override
 	protected BaseModel<?> getParentBaseModel(
-		Group group, ServiceContext serviceContext)
+			Group group, ServiceContext serviceContext)
 		throws Exception {
 
 		return BookmarksTestUtil.addFolder(group.getGroupId());
