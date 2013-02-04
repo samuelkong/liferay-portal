@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -44,7 +45,7 @@ public class AutoDeployDir {
 		_interval = interval;
 		_autoDeployListeners = new CopyOnWriteArrayList<AutoDeployListener>(
 			autoDeployListeners);
-		_blacklistFiles = new HashMap<String, Long>();
+		_blacklistFileTimestamps = new HashMap<String, Long>();
 	}
 
 	public File getDeployDir() {
@@ -147,15 +148,13 @@ public class AutoDeployDir {
 			return;
 		}
 
-		long lastModified = file.lastModified();
-
-		if (_blacklistFiles.containsKey(fileName) &&
-			(_blacklistFiles.get(fileName) == lastModified)) {
+		if (_blacklistFileTimestamps.containsKey(fileName) &&
+			(_blacklistFileTimestamps.get(fileName) == file.lastModified())) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Skip processing of " + fileName + " because it is " +
-						"blacklisted.");
+						"blacklisted");
 			}
 
 			return;
@@ -187,16 +186,18 @@ public class AutoDeployDir {
 			_log.info("Add " + fileName + " to the blacklist");
 		}
 
-		_blacklistFiles.put(fileName, lastModified);
+		_blacklistFileTimestamps.put(fileName, file.lastModified());
 	}
 
 	protected void scanDirectory() {
 		File[] files = _deployDir.listFiles();
 
-		Iterator<String> itr = _blacklistFiles.keySet().iterator();
+		Set<String> blacklistedFileNames = _blacklistFileTimestamps.keySet();
 
-		while (itr.hasNext()) {
-			String blacklistedFileName = itr.next();
+		Iterator<String> iterator = blacklistedFileNames.iterator();
+
+		while (iterator.hasNext()) {
+			String blacklistedFileName = iterator.next();
 
 			boolean blacklistedFileExists = false;
 
@@ -210,15 +211,17 @@ public class AutoDeployDir {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"Remove blacklisted file " + blacklistedFileName +
-							" because it was deleted.");
+							" because it was deleted");
 				}
 
-				itr.remove();
+				iterator.remove();
 			}
 		}
 
 		for (File file : files) {
-			String fileName = file.getName().toLowerCase();
+			String fileName = file.getName();
+
+			fileName = fileName.toLowerCase();
 
 			if (file.isFile() &&
 				(fileName.endsWith(".jar") || fileName.endsWith(".lpkg") ||
@@ -234,7 +237,7 @@ public class AutoDeployDir {
 
 	private List<AutoDeployListener> _autoDeployListeners;
 	private AutoDeployScanner _autoDeployScanner;
-	private Map<String, Long> _blacklistFiles;
+	private Map<String, Long> _blacklistFileTimestamps;
 	private File _deployDir;
 	private File _destDir;
 	private long _interval;
