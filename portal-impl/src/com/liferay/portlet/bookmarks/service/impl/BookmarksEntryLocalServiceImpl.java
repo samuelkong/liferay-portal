@@ -644,11 +644,9 @@ public class BookmarksEntryLocalServiceImpl
 		}
 	}
 
-	private String editURL(String url){
-		String subURL = StringUtil.extractFirst(url,":");
-
-		if(StringUtil.contains(subURL, "http")){
-			url = StringUtil.replaceFirst(url,subURL,"https");
+	protected String editURL(String url){
+		if(StringUtil.contains(url, "http", ":")){
+			url = StringUtil.replaceFirst(url, "http", "https");
 		}
 
 		return url;
