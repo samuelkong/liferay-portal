@@ -672,7 +672,7 @@ public class SitesUtil {
 			PropsKeys.SITES_CONTENT_SHARING_WITH_CHILDREN_ENABLED);
 
 		if (companyContentSharingEnabled ==
-		SitesUtil.CONTENT_SHARING_WITH_CHILDREN_DISABLED) {
+				SitesUtil.CONTENT_SHARING_WITH_CHILDREN_DISABLED) {
 
 			return false;
 		}
@@ -683,7 +683,7 @@ public class SitesUtil {
 				SitesUtil.CONTENT_SHARING_WITH_CHILDREN_DEFAULT_VALUE);
 
 		if ((groupContentSharingEnabled ==
-		SitesUtil.CONTENT_SHARING_WITH_CHILDREN_ENABLED) ||
+				SitesUtil.CONTENT_SHARING_WITH_CHILDREN_ENABLED) ||
 			((companyContentSharingEnabled ==
 				SitesUtil.CONTENT_SHARING_WITH_CHILDREN_ENABLED_BY_DEFAULT) &&
 			 (groupContentSharingEnabled ==

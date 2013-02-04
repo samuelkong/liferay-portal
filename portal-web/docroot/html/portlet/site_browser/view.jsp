@@ -17,14 +17,14 @@
 <%@ include file="/html/portlet/site_browser/init.jsp" %>
 
 <%
-String selectedGroupIdsString = ParamUtil.getString(request, "selectedGroupIds");
-String type = ParamUtil.getString(request, "type", "manageable-sites");
-long groupId = ParamUtil.getLong(request, "groupId");
+String callback = ParamUtil.getString(request, "callback");
 String filter = ParamUtil.getString(request, "filter");
+long groupId = ParamUtil.getLong(request, "groupId");
 boolean includeCompany = ParamUtil.getBoolean(request, "includeCompany");
 boolean includeUserPersonalSite = ParamUtil.getBoolean(request, "includeUserPersonalSite");
-String callback = ParamUtil.getString(request, "callback");
+String selectedGroupIdsString = ParamUtil.getString(request, "selectedGroupIds");
 String target = ParamUtil.getString(request, "target");
+String type = ParamUtil.getString(request, "type", "manageable-sites");
 
 long[] selectedGroupIds = StringUtil.split(selectedGroupIdsString, 0L);
 
