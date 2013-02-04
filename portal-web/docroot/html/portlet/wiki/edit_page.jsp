@@ -364,15 +364,17 @@ if (Validator.isNull(redirect)) {
 					</aui:fieldset>
 				</liferay-ui:panel>
 
-				<liferay-ui:panel defaultState="closed" extended="<%= false %>" id="wikiPageAssetLinksPanel" persistState="<%= true %>" title="related-assets">
-					<aui:fieldset>
-						<liferay-ui:input-asset-links
-							assetEntryId="<%= assetEntryId %>"
-							className="<%= WikiPage.class.getName() %>"
-							classPK="<%= classPK %>"
-						/>
-					</aui:fieldset>
-				</liferay-ui:panel>
+				<c:if test="<%= enableRelatedAssets %>">
+					<liferay-ui:panel defaultState="closed" extended="<%= false %>" id="wikiPageAssetLinksPanel" persistState="<%= true %>" title="related-assets">
+						<aui:fieldset>
+							<liferay-ui:input-asset-links
+								assetEntryId="<%= assetEntryId %>"
+								className="<%= WikiPage.class.getName() %>"
+								classPK="<%= classPK %>"
+							/>
+						</aui:fieldset>
+					</liferay-ui:panel>
+				</c:if>
 
 				<%
 				boolean approved = false;
