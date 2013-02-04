@@ -42,6 +42,7 @@ import javax.portlet.PortletRequest;
  */
 public abstract class BaseTrashHandler implements TrashHandler {
 
+	@SuppressWarnings("unused")
 	public void checkDuplicateTrashEntry(
 			TrashEntry trashEntry, long containerModelId, String newName)
 		throws PortalException, SystemException {
@@ -65,6 +66,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		deleteTrashEntries(new long[] {classPK}, checkPermission);
 	}
 
+	@SuppressWarnings("unused")
 	public ContainerModel getContainerModel(long containerModelId)
 		throws PortalException, SystemException {
 
@@ -79,6 +81,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return StringPool.BLANK;
 	}
 
+	@SuppressWarnings("unused")
 	public List<ContainerModel> getContainerModels(
 			long classPK, long containerModelId, int start, int end)
 		throws PortalException, SystemException {
@@ -86,6 +89,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return Collections.emptyList();
 	}
 
+	@SuppressWarnings("unused")
 	public int getContainerModelsCount(long classPK, long containerModelId)
 		throws PortalException, SystemException {
 
@@ -96,24 +100,28 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return "deleted-in-x";
 	}
 
+	@SuppressWarnings("unused")
 	public ContainerModel getParentContainerModel(long classPK)
 		throws PortalException, SystemException {
 
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public List<ContainerModel> getParentContainerModels(long classPK)
 		throws PortalException, SystemException {
 
 		return Collections.emptyList();
 	}
 
+	@SuppressWarnings("unused")
 	public String getRestoreLink(PortletRequest portletRequest, long classPK)
 		throws PortalException, SystemException {
 
 		return StringPool.BLANK;
 	}
 
+	@SuppressWarnings("unused")
 	public String getRestoreMessage(PortletRequest portletRequest, long classPK)
 		throws PortalException, SystemException {
 
@@ -132,12 +140,14 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return StringPool.BLANK;
 	}
 
+	@SuppressWarnings("unused")
 	public int getTrashContainedModelsCount(long classPK)
 		throws PortalException, SystemException {
 
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public List<TrashRenderer> getTrashContainedModelTrashRenderers(
 			long classPK, int start, int end)
 		throws PortalException, SystemException {
@@ -149,12 +159,14 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return StringPool.BLANK;
 	}
 
+	@SuppressWarnings("unused")
 	public int getTrashContainerModelsCount(long classPK)
 		throws PortalException, SystemException {
 
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public List<TrashRenderer> getTrashContainerModelTrashRenderers(
 			long classPK, int start, int end)
 		throws PortalException, SystemException {
@@ -213,6 +225,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean isInTrashContainer(long classPK)
 		throws PortalException, SystemException {
 
@@ -223,12 +236,14 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean isRestorable(long classPK)
 		throws PortalException, SystemException {
 
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	public void moveEntry(
 			long classPK, long containerModelId, ServiceContext serviceContext)
 		throws PortalException, SystemException {
@@ -248,6 +263,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		throw new SystemException();
 	}
 
+	@SuppressWarnings("unused")
 	public void restoreRelatedTrashEntry(String className, long classPK)
 		throws PortalException, SystemException {
 	}
@@ -258,6 +274,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		restoreTrashEntries(new long[] {classPK});
 	}
 
+	@SuppressWarnings("unused")
 	public void updateTitle(long classPK, String title)
 		throws PortalException, SystemException {
 	}
