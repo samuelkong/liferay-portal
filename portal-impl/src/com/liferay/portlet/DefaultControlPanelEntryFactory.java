@@ -37,42 +37,33 @@ public class DefaultControlPanelEntryFactory {
 		}
 
 		if (controlPanelEntry == null) {
-			controlPanelEntry = _createControlPanelEntry();
+			_controlPanelEntry = _originalControlPanelEntry;
 		}
-
-		_controlPanelEntry = controlPanelEntry;
+		else {
+			_controlPanelEntry = controlPanelEntry;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_controlPanelEntry = _createControlPanelEntry();
-	}
-
-	private static ControlPanelEntry _createControlPanelEntry() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				"Instantiate " +
 					PropsValues.CONTROL_PANEL_DEFAULT_ENTRY_CLASS);
 		}
 
-		ControlPanelEntry controlPanelEntry = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			controlPanelEntry =
-				(ControlPanelEntry)InstanceFactory.newInstance(
-					classLoader, PropsValues.CONTROL_PANEL_DEFAULT_ENTRY_CLASS);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalControlPanelEntry =
+			(ControlPanelEntry)InstanceFactory.newInstance(
+				classLoader, PropsValues.CONTROL_PANEL_DEFAULT_ENTRY_CLASS);
 
-		return controlPanelEntry;
+		_controlPanelEntry = _originalControlPanelEntry;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		DefaultControlPanelEntryFactory.class);
 
 	private static volatile ControlPanelEntry _controlPanelEntry;
+	private static ControlPanelEntry _originalControlPanelEntry;
 
 }

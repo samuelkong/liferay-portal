@@ -37,41 +37,32 @@ public class ScreenNameValidatorFactory {
 		}
 
 		if (screenNameValidator == null) {
-			screenNameValidator = _createScreenNameValidator();
+			_screenNameValidator = _originalScreenNameValidator;
 		}
-
-		_screenNameValidator = screenNameValidator;
+		else {
+			_screenNameValidator = screenNameValidator;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_screenNameValidator = _createScreenNameValidator();
-	}
-
-	private static ScreenNameValidator _createScreenNameValidator() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				"Instantiate " + PropsValues.USERS_SCREEN_NAME_VALIDATOR);
 		}
 
-		ScreenNameValidator screenNameValidator = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			screenNameValidator =
-				(ScreenNameValidator)InstanceFactory.newInstance(
-					classLoader, PropsValues.USERS_SCREEN_NAME_VALIDATOR);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalScreenNameValidator =
+			(ScreenNameValidator)InstanceFactory.newInstance(
+				classLoader, PropsValues.USERS_SCREEN_NAME_VALIDATOR);
 
-		return screenNameValidator;
+		_screenNameValidator = _originalScreenNameValidator;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		ScreenNameValidatorFactory.class);
 
+	private static ScreenNameValidator _originalScreenNameValidator;
 	private static volatile ScreenNameValidator _screenNameValidator;
 
 }

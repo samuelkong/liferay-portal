@@ -39,41 +39,32 @@ public class AttributesTransformerFactory {
 		}
 
 		if (attributesTransformer == null) {
-			attributesTransformer = _createAttributesTransformer();
+			_attributesTransformer = _originalAttributesTransformer;
 		}
-
-		_attributesTransformer = attributesTransformer;
+		else {
+			_attributesTransformer = attributesTransformer;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_attributesTransformer = _createAttributesTransformer();
-	}
-
-	private static AttributesTransformer _createAttributesTransformer() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				"Instantiate " + PropsValues.LDAP_ATTRS_TRANSFORMER_IMPL);
 		}
 
-		AttributesTransformer attributesTransformer = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			attributesTransformer =
-				(AttributesTransformer)InstanceFactory.newInstance(
-					classLoader, PropsValues.LDAP_ATTRS_TRANSFORMER_IMPL);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalAttributesTransformer =
+			(AttributesTransformer)InstanceFactory.newInstance(
+				classLoader, PropsValues.LDAP_ATTRS_TRANSFORMER_IMPL);
 
-		return attributesTransformer;
+		_attributesTransformer = _originalAttributesTransformer;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		AttributesTransformerFactory.class);
 
 	private static volatile AttributesTransformer _attributesTransformer;
+	private static AttributesTransformer _originalAttributesTransformer;
 
 }

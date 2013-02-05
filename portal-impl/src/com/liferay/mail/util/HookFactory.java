@@ -37,38 +37,29 @@ public class HookFactory {
 		}
 
 		if (hook == null) {
-			hook = _createHook();
+			_hook = _originalHook;
 		}
-
-		_hook = hook;
+		else {
+			_hook = hook;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_hook = _createHook();
-	}
-
-	private static Hook _createHook() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Instantiate " + PropsValues.MAIL_HOOK_IMPL);
 		}
 
-		Hook hook = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			hook = (Hook)InstanceFactory.newInstance(
-				classLoader, PropsValues.MAIL_HOOK_IMPL);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalHook = (Hook)InstanceFactory.newInstance(
+			classLoader, PropsValues.MAIL_HOOK_IMPL);
 
-		return hook;
+		_hook = _originalHook;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(HookFactory.class);
 
 	private static volatile Hook _hook;
+	private static Hook _originalHook;
 
 }

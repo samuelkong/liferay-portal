@@ -39,41 +39,32 @@ public class EmailAddressValidatorFactory {
 		}
 
 		if (emailAddressValidator == null) {
-			emailAddressValidator = _createEmailAddressValidator();
+			_emailAddressValidator = _originalEmailAddressValidator;
 		}
-
-		_emailAddressValidator = emailAddressValidator;
+		else {
+			_emailAddressValidator = emailAddressValidator;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_emailAddressValidator = _createEmailAddressValidator();
-	}
-
-	private static EmailAddressValidator _createEmailAddressValidator() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				"Instantiate " + PropsValues.USERS_EMAIL_ADDRESS_VALIDATOR);
 		}
 
-		EmailAddressValidator emailAddressValidator = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			emailAddressValidator =
-				(EmailAddressValidator)InstanceFactory.newInstance(
-					classLoader, PropsValues.USERS_EMAIL_ADDRESS_VALIDATOR);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalEmailAddressValidator =
+			(EmailAddressValidator)InstanceFactory.newInstance(
+				classLoader, PropsValues.USERS_EMAIL_ADDRESS_VALIDATOR);
 
-		return emailAddressValidator;
+		_emailAddressValidator = _originalEmailAddressValidator;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		EmailAddressValidatorFactory.class);
 
 	private static volatile EmailAddressValidator _emailAddressValidator;
+	private static EmailAddressValidator _originalEmailAddressValidator;
 
 }

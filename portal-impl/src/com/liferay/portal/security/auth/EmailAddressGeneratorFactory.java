@@ -39,41 +39,32 @@ public class EmailAddressGeneratorFactory {
 		}
 
 		if (emailAddressGenerator == null) {
-			emailAddressGenerator = _createEmailAddressGenerator();
+			_emailAddressGenerator = _originalEmailAddressGenerator;
 		}
-
-		_emailAddressGenerator = emailAddressGenerator;
+		else {
+			_emailAddressGenerator = emailAddressGenerator;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_emailAddressGenerator = _createEmailAddressGenerator();
-	}
-
-	private static EmailAddressGenerator _createEmailAddressGenerator() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				"Instantiate " + PropsValues.USERS_EMAIL_ADDRESS_GENERATOR);
 		}
 
-		EmailAddressGenerator emailAddressGenerator = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			emailAddressGenerator =
-				(EmailAddressGenerator)InstanceFactory.newInstance(
-					classLoader, PropsValues.USERS_EMAIL_ADDRESS_GENERATOR);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalEmailAddressGenerator =
+			(EmailAddressGenerator)InstanceFactory.newInstance(
+				classLoader, PropsValues.USERS_EMAIL_ADDRESS_GENERATOR);
 
-		return emailAddressGenerator;
+		_emailAddressGenerator = _originalEmailAddressGenerator;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		EmailAddressGeneratorFactory.class);
 
 	private static volatile EmailAddressGenerator _emailAddressGenerator;
+	private static EmailAddressGenerator _originalEmailAddressGenerator;
 
 }

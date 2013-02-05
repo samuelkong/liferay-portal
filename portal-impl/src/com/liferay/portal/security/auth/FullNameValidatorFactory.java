@@ -37,40 +37,31 @@ public class FullNameValidatorFactory {
 		}
 
 		if (fullNameValidator == null) {
-			fullNameValidator = _createFullNameValidator();
+			_fullNameValidator = _originalFullNameValidator;
 		}
-
-		_fullNameValidator = fullNameValidator;
+		else {
+			_fullNameValidator = fullNameValidator;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_fullNameValidator = _createFullNameValidator();
-	}
-
-	private static FullNameValidator _createFullNameValidator() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Instantiate " + PropsValues.USERS_FULL_NAME_VALIDATOR);
 		}
 
-		FullNameValidator fullNameValidator = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			fullNameValidator =
-				(FullNameValidator)InstanceFactory.newInstance(
-					classLoader, PropsValues.USERS_FULL_NAME_VALIDATOR);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalFullNameValidator =
+			(FullNameValidator)InstanceFactory.newInstance(
+				classLoader, PropsValues.USERS_FULL_NAME_VALIDATOR);
 
-		return fullNameValidator;
+		_fullNameValidator = _originalFullNameValidator;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		FullNameValidatorFactory.class);
 
 	private static volatile FullNameValidator _fullNameValidator;
+	private static FullNameValidator _originalFullNameValidator;
 
 }

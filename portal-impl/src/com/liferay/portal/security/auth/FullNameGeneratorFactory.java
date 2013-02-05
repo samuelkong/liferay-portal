@@ -37,40 +37,31 @@ public class FullNameGeneratorFactory {
 		}
 
 		if (fullNameGenerator == null) {
-			fullNameGenerator = _createFullNameGenerator();
+			_fullNameGenerator = _originalFullNameGenerator;
 		}
-
-		_fullNameGenerator = fullNameGenerator;
+		else {
+			_fullNameGenerator = fullNameGenerator;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_fullNameGenerator = _createFullNameGenerator();
-	}
-
-	private static FullNameGenerator _createFullNameGenerator() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Instantiate " + PropsValues.USERS_FULL_NAME_GENERATOR);
 		}
 
-		FullNameGenerator fullNameGenerator = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			fullNameGenerator =
-				(FullNameGenerator)InstanceFactory.newInstance(
-					classLoader, PropsValues.USERS_FULL_NAME_GENERATOR);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalFullNameGenerator =
+			(FullNameGenerator)InstanceFactory.newInstance(
+				classLoader, PropsValues.USERS_FULL_NAME_GENERATOR);
 
-		return fullNameGenerator;
+		_fullNameGenerator = _originalFullNameGenerator;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		FullNameValidatorFactory.class);
 
 	private static volatile FullNameGenerator _fullNameGenerator;
+	private static FullNameGenerator _originalFullNameGenerator;
 
 }

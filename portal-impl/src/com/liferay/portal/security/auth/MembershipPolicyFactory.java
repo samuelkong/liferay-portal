@@ -37,40 +37,31 @@ public class MembershipPolicyFactory {
 		}
 
 		if (membershipPolicy == null) {
-			membershipPolicy = _createMembershipPolicy();
+			_membershipPolicy = _originalMembershipPolicy;
 		}
-
-		_membershipPolicy = membershipPolicy;
+		else {
+			_membershipPolicy = membershipPolicy;
+		}
 	}
 
-	public void afterPropertiesSet() {
-		_membershipPolicy = _createMembershipPolicy();
-	}
-
-	private static MembershipPolicy _createMembershipPolicy() {
+	public void afterPropertiesSet() throws Exception {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Instantiate " + PropsValues.USERS_MEMBERSHIP_POLICY);
 		}
 
-		MembershipPolicy membershipPolicy = null;
-
 		ClassLoader classLoader = PACLClassLoaderUtil.getPortalClassLoader();
 
-		try {
-			membershipPolicy =
-				(MembershipPolicy)InstanceFactory.newInstance(
-					classLoader, PropsValues.USERS_MEMBERSHIP_POLICY);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+		_originalMembershipPolicy =
+			(MembershipPolicy)InstanceFactory.newInstance(
+				classLoader, PropsValues.USERS_MEMBERSHIP_POLICY);
 
-		return membershipPolicy;
+		_membershipPolicy = _originalMembershipPolicy;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(
 		MembershipPolicyFactory.class);
 
 	private static volatile MembershipPolicy _membershipPolicy;
+	private static MembershipPolicy _originalMembershipPolicy;
 
 }
