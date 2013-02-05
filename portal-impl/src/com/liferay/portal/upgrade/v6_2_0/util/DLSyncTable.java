@@ -46,7 +46,6 @@ public class DLSyncTable {
 
 	public static final String[] TABLE_SQL_ADD_INDEXES = {
 		"create index IX_B53EC783 on DLSync (companyId, modifiedDate, repositoryId)",
-		"create index IX_3116DE70 on DLSync (companyId, repositoryId, updateId)",
 		"create unique index IX_F9821AB4 on DLSync (fileId)"
 	};
 
