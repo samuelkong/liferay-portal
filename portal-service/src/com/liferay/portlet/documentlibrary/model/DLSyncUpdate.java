@@ -16,7 +16,6 @@ package com.liferay.portlet.documentlibrary.model;
 
 import com.liferay.portal.kernel.json.JSON;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,12 +24,9 @@ import java.util.List;
 @JSON
 public class DLSyncUpdate {
 
-	public DLSyncUpdate(List<DLSync> dlSyncs, long updateId) {
+	public DLSyncUpdate(List<DLSync> dlSyncs, long lastAccessDate) {
 		_dlSyncs = dlSyncs;
-
-		Date now = new Date();
-
-		_lastAccessDate = now.getTime();
+		_lastAccessDate = lastAccessDate;
 	}
 
 	@JSON
