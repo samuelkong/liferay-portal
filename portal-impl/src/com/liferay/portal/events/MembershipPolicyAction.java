@@ -50,8 +50,6 @@ public class MembershipPolicyAction extends Action {
 		MembershipPolicy membershipPolicy =
 			MembershipPolicyFactory.getInstance();
 
-		// Pre-filtering to prevent unnecessary service layer entering.
-
 		if (membershipPolicy.isApplicableUser(user)) {
 			GroupLocalServiceUtil.checkMembershipPolicy(user);
 			UserGroupRoleLocalServiceUtil.checkMembershipPolicy(user);

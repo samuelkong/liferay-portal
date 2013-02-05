@@ -474,10 +474,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		MembershipPolicy membershipPolicy =
 			MembershipPolicyFactory.getInstance();
 
-		if (!membershipPolicy.isApplicableUser(user)) {
-			return;
-		}
-
 		LinkedHashMap<String, Object> groupParams =
 			new LinkedHashMap<String, Object>();
 
