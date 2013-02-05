@@ -725,7 +725,7 @@ serverURL.setParameter("tabs3", tabs3);
 
 				<aui:button-row>
 					<c:choose>
-						<c:when test='<%= ShutdownUtil.isInProcess() %>'>
+						<c:when test="<%= ShutdownUtil.isInProcess() %>">
 
 							<%
 							String taglibCancelShutdown = "document." + renderResponse.getNamespace() + "fm." + renderResponse.getNamespace() + "minutes.value = 0;" + renderResponse.getNamespace() + "saveServer('shutdown');";
