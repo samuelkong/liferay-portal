@@ -101,8 +101,8 @@ public class InputTag extends BaseInputTag {
 			return;
 		}
 
-		ValidatorTag validatorTag =
-			new ValidatorTagImpl("required", null, null, false);
+		ValidatorTag validatorTag = new ValidatorTagImpl(
+			"required", null, null, false);
 
 		addValidatorTag("required", validatorTag);
 	}
