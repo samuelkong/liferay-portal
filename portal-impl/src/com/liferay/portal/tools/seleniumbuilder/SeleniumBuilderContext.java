@@ -52,7 +52,7 @@ public class SeleniumBuilderContext {
 			if (fileName.endsWith(".action")) {
 				_actionFileNames.add(fileName);
 
-				_actionRootElementMap.put(fileName, _getRootElement(fileName));
+				_actionRootElements.put(fileName, _getRootElement(fileName));
 			}
 			else if (fileName.endsWith(".function")) {
 				_functionFileNames.add(fileName);
@@ -79,8 +79,8 @@ public class SeleniumBuilderContext {
 		return _actionFileNames;
 	}
 
-	public Map<String, Element> getActionRootElementMap() {
-		return _actionRootElementMap;
+	public Map<String, Element> getActionRootElements() {
+		return _actionRootElements;
 	}
 
 	public String getBaseDir() {
@@ -116,7 +116,7 @@ public class SeleniumBuilderContext {
 	}
 
 	private Set<String> _actionFileNames = new HashSet<String>();
-	private Map<String, Element> _actionRootElementMap =
+	private Map<String, Element> _actionRootElements =
 		new HashMap<String, Element>();
 	private String _baseDir;
 	private Set<String> _functionFileNames = new HashSet<String>();
