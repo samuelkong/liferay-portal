@@ -116,9 +116,7 @@ public class DLSyncLocalServiceImpl extends DLSyncLocalServiceBaseImpl {
 			dlSync = dlSyncPersistence.findByFileId(fileId);
 		}
 
-		Date now = new Date();
-
-		dlSync.setModifiedDate(now.getTime());
+		dlSync.setModifiedDate(System.currentTimeMillis());
 		dlSync.setParentFolderId(parentFolderId);
 		dlSync.setName(name);
 		dlSync.setDescription(description);

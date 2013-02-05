@@ -60,9 +60,7 @@ public class DLSyncServiceImpl extends DLSyncServiceBaseImpl {
 			}
 		}
 
-		DLSyncUpdate dlSyncUpdate = new DLSyncUpdate(dlSyncs, lastAccessDate);
-
-		return dlSyncUpdate;
+		return new DLSyncUpdate(dlSyncs, lastAccessDate);
 	}
 
 	public InputStream getFileDeltaAsStream(
