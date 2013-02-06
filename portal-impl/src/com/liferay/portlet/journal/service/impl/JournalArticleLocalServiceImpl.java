@@ -630,6 +630,16 @@ public class JournalArticleLocalServiceImpl
 
 		journalArticlePersistence.update(newArticle);
 
+		ExpandoBridge oldExpandoBridge = oldArticle.getExpandoBridge();
+
+		ServiceContext newServiceContext=new ServiceContext();
+
+		newServiceContext.setExpandoBridgeAttributes(oldExpandoBridge.getAttributes());
+
+		ExpandoBridge newExpandoBridge=newArticle.getExpandoBridge();
+
+		newExpandoBridge.setAttributes(newServiceContext);
+
 		// Resources
 
 		addArticleResources(newArticle, true, true);
