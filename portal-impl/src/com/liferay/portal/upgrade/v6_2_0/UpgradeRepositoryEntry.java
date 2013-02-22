@@ -15,6 +15,8 @@
 package com.liferay.portal.upgrade.v6_2_0;
 
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.security.auth.FullNameGenerator;
@@ -24,8 +26,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-
-import java.util.Date;
 
 /**
  * @author Mate Thurzo
@@ -43,10 +43,10 @@ public class UpgradeRepositoryEntry extends UpgradeProcess {
 
 			StringBundler sb = new StringBundler();
 
-			sb.append("select Repository.companyId, repositoryEntryId from");
-			sb.append(" RepositoryEntry inner join Repository on");
-			sb.append(" Repositoryentry.repositoryId =");
-			sb.append(" Repository.repositoryId");
+			sb.append("select Repository.companyId, repositoryEntryId from ");
+			sb.append("RepositoryEntry inner join Repository on ");
+			sb.append("RepositoryEntry.repositoryId = ");
+			sb.append("Repository.repositoryId");
 
 			ps = con.prepareStatement(sb.toString());
 
@@ -64,12 +64,10 @@ public class UpgradeRepositoryEntry extends UpgradeProcess {
 		}
 	}
 
-	protected Object[] getDefaultUserIdName(long companyId) throws Exception {
+	protected Object[] getDefaultUserArray(long companyId) throws Exception {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
-		Object[] defaultUserIdName = new Object[2];
 
 		try {
 			con = DataAccess.getUpgradeOptimizedConnection();
@@ -89,15 +87,20 @@ public class UpgradeRepositoryEntry extends UpgradeProcess {
 				String middleName = rs.getString("middleName");
 				String lastName = rs.getString("lastName");
 
+				Object[] defaultUserArray = new Object[2];
+
+				defaultUserArray[0] = userId;
+
 				FullNameGenerator fullNameGenerator =
 					FullNameGeneratorFactory.getInstance();
 
-				defaultUserIdName[0] = userId;
-				defaultUserIdName[1] = fullNameGenerator.getFullName(
+				defaultUserArray[1] = fullNameGenerator.getFullName(
 					firstName, middleName, lastName);
+
+				return defaultUserArray;
 			}
 
-			return defaultUserIdName;
+			return null;
 		}
 		finally {
 			DataAccess.cleanUp(con, ps, rs);
@@ -107,6 +110,18 @@ public class UpgradeRepositoryEntry extends UpgradeProcess {
 	protected void updateRepositoryEntry(long companyId, long repositoryEntryId)
 		throws Exception {
 
+		Object[] defaultUserArray = getDefaultUserArray(companyId);
+
+		if (defaultUserArray == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("No default user exists for company " + companyId);
+			}
+
+			return;
+		}
+
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+
 		Connection con = null;
 		PreparedStatement ps = null;
 
@@ -114,18 +129,16 @@ public class UpgradeRepositoryEntry extends UpgradeProcess {
 			con = DataAccess.getUpgradeOptimizedConnection();
 
 			ps = con.prepareStatement(
-				"update RepositoryEntry set companyId = ?, userId = ?," +
-					" userName = ?, createDate = ?, modifiedDate = ? where" +
-						" repositoryEntryId = ?");
-
-			Object[] defaultUserIdName = getDefaultUserIdName(companyId);
-			Timestamp now = new Timestamp((new Date()).getTime());
+				"update RepositoryEntry set companyId = ?, userId = ?, " +
+					"userName = ?, createDate = ?, modifiedDate = ? where " +
+						"repositoryEntryId = ?");
 
 			ps.setLong(1, companyId);
-			ps.setLong(2, (Long)defaultUserIdName[0]);
-			ps.setString(3, (String)defaultUserIdName[1]);
+			ps.setLong(2, (Long)defaultUserArray[0]);
+			ps.setString(3, (String)defaultUserArray[1]);
 			ps.setTimestamp(4, now);
 			ps.setTimestamp(5, now);
+
 			ps.setLong(6, repositoryEntryId);
 
 			ps.executeUpdate();
@@ -134,5 +147,8 @@ public class UpgradeRepositoryEntry extends UpgradeProcess {
 			DataAccess.cleanUp(con, ps);
 		}
 	}
+
+	private static Log _log = LogFactoryUtil.getLog(
+		UpgradeRepositoryEntry.class);
 
 }

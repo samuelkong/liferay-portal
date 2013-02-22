@@ -21,9 +21,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Shuyang Zhou
+ * @author Eduardo Lundgren
  */
 public class AUIUtil {
 
@@ -172,10 +170,7 @@ public class AUIUtil {
 		return sb.toString();
 	}
 
-	public static void outputScriptData(
-			HttpServletRequest request, Writer writer)
-		throws IOException {
-
+	public static String getScriptDataString(HttpServletRequest request) {
 		ScriptData scriptData = (ScriptData)request.getAttribute(
 			ScriptTag.class.getName());
 
@@ -189,14 +184,13 @@ public class AUIUtil {
 		}
 
 		if (scriptData == null) {
-			return;
+			return StringPool.BLANK;
 		}
 
-		writer.write("<script type=\"text/javascript\">\n// <![CDATA[\n");
+		StringBundler sb = new StringBundler();
 
-		StringBundler rawSB = scriptData.getRawSB();
-
-		rawSB.writeTo(writer);
+		sb.append("<script type=\"text/javascript\">\n// <![CDATA[\n");
+		sb.append(scriptData.getRawSB());
 
 		StringBundler callbackSB = scriptData.getCallbackSB();
 
@@ -209,27 +203,27 @@ public class AUIUtil {
 				loadMethod = "ready";
 			}
 
-			writer.write("AUI().");
-			writer.write( loadMethod );
-			writer.write("(");
+			sb.append("AUI().");
+			sb.append(loadMethod);
+			sb.append("(");
 
 			Set<String> useSet = scriptData.getUseSet();
 
 			for (String use : useSet) {
-				writer.write(StringPool.APOSTROPHE);
-				writer.write(use);
-				writer.write(StringPool.APOSTROPHE);
-				writer.write(StringPool.COMMA_AND_SPACE);
+				sb.append(StringPool.APOSTROPHE);
+				sb.append(use);
+				sb.append(StringPool.APOSTROPHE);
+				sb.append(StringPool.COMMA_AND_SPACE);
 			}
 
-			writer.write("function(A) {");
-
-			callbackSB.writeTo(writer);
-
-			writer.write("});");
+			sb.append("function(A) {");
+			sb.append(callbackSB);
+			sb.append("});");
 		}
 
-		writer.write("\n// ]]>\n</script>");
+		sb.append("\n// ]]>\n</script>");
+
+		return sb.toString();
 	}
 
 }

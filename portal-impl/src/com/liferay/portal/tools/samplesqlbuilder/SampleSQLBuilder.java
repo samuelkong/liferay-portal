@@ -284,6 +284,24 @@ public class SampleSQLBuilder {
 		processTemplate(_tplMBCategory, context);
 	}
 
+	public void insertMBDiscussion(
+			long groupId, long userId, long classNameId, long classPK,
+			long mbThreadId, long mbRootMessageId, int maxCommentCount)
+		throws Exception {
+
+		Map<String, Object> context = getContext();
+
+		put(context, "groupId", groupId);
+		put(context, "userId", userId);
+		put(context, "classNameId", classNameId);
+		put(context, "classPK", classPK);
+		put(context, "mbThreadId", mbThreadId);
+		put(context, "mbRootMessageId", mbRootMessageId);
+		put(context, "maxCommentCount", maxCommentCount);
+
+		processTemplate(_tplMBDiscussion, context);
+	}
+
 	public void insertMBMessage(MBMessage mbMessage) throws Exception {
 		Map<String, Object> context = getContext();
 
@@ -663,6 +681,7 @@ public class SampleSQLBuilder {
 	private String _tplDLFolders = _TPL_ROOT + "dl_folders.ftl";
 	private String _tplGroup = _TPL_ROOT + "group.ftl";
 	private String _tplMBCategory = _TPL_ROOT + "mb_category.ftl";
+	private String _tplMBDiscussion = _TPL_ROOT + "mb_discussion.ftl";
 	private String _tplMBMessage = _TPL_ROOT + "mb_message.ftl";;
 	private String _tplResourcePermission =
 		_TPL_ROOT + "resource_permission.ftl";
