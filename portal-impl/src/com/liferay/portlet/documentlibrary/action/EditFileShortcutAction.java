@@ -15,6 +15,7 @@
 package com.liferay.portlet.documentlibrary.action;
 
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
+import com.liferay.portal.kernel.repository.RepositoryException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Constants;
@@ -87,7 +88,8 @@ public class EditFileShortcutAction extends PortletAction {
 				setForward(actionRequest, "portlet.document_library.error");
 			}
 			else if (e instanceof FileShortcutPermissionException ||
-					 e instanceof NoSuchFileEntryException) {
+					 e instanceof NoSuchFileEntryException ||
+					 e instanceof RepositoryException) {
 
 				SessionErrors.add(actionRequest, e.getClass());
 			}

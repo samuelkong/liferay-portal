@@ -89,6 +89,7 @@ portletURL.setParameter("fileShortcutId", String.valueOf(fileShortcutId));
 
 	<liferay-ui:error exception="<%= FileShortcutPermissionException.class %>" message="you-do-not-have-permission-to-create-a-shortcut-to-the-selected-document" />
 	<liferay-ui:error exception="<%= NoSuchFileEntryException.class %>" message="the-document-could-not-be-found" />
+	<liferay-ui:error exception="<%= RepositoryException.class %>" message="there-is-no-selected-document" />
 
 	<aui:fieldset>
 		<div class="portlet-msg-info">
