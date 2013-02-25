@@ -29,9 +29,19 @@ if (DDLUtil.isEditable(request, portletDisplay.getId(), themeDisplay.getScopeGro
 	showAddRecordButton = DDLRecordSetPermission.contains(permissionChecker, recordSet.getRecordSetId(), ActionKeys.ADD_RECORD);
 }
 
+Portlet portlet = (Portlet)request.getAttribute(WebKeys.RENDER_PORTLET);
+
+String portletId = portlet.getPortletId();
+
 PortletURL portletURL = renderResponse.createRenderURL();
 
-portletURL.setParameter("struts_action", "/dynamic_data_lists/view_record_set");
+if (portletId.equals(PortletKeys.DYNAMIC_DATA_LIST_DISPLAY)) {
+	portletURL.setParameter("struts_action", "/dynamic_data_list_display/view_record_set");
+}
+else {
+	portletURL.setParameter("struts_action", "/dynamic_data_lists/view_record_set");
+}
+
 portletURL.setParameter("recordSetId", String.valueOf(recordSet.getRecordSetId()));
 %>
 
