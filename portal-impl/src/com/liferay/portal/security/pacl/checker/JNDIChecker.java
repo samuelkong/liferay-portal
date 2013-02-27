@@ -35,10 +35,6 @@ public class JNDIChecker extends BaseChecker {
 		initNames();
 	}
 
-	public void checkPermission(Permission permission) {
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public AuthorizationProperty generateAuthorizationProperty(
 		Object... arguments) {
@@ -68,6 +64,10 @@ public class JNDIChecker extends BaseChecker {
 		}
 
 		return false;
+	}
+
+	public boolean implies(Permission permission) {
+		throw new UnsupportedOperationException();
 	}
 
 	protected void initNames() {

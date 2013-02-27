@@ -16,28 +16,17 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.model.Portlet;
 
-import javax.portlet.PortletConfig;
 import javax.portlet.PortletContext;
 
+import javax.servlet.ServletContext;
+
 /**
- * @author Brian Wing Shun Chan
+ * @author Raymond Augé
  */
-public interface LiferayPortletConfig extends PortletConfig {
-
-	public static final String RUNTIME_OPTION_ESCAPE_XML =
-		"javax.portlet.escapeXml";
-
-	public static final String RUNTIME_OPTION_PORTAL_CONTEXT =
-		"com.liferay.portal.portalContext";
+public interface LiferayPortletContext extends PortletContext {
 
 	public Portlet getPortlet();
 
-	public PortletContext getPortletContext();
-
-	public String getPortletId();
-
-	public boolean isCopyRequestParameters();
-
-	public boolean isWARFile();
+	public ServletContext getServletContext();
 
 }

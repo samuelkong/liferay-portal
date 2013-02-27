@@ -41,10 +41,14 @@ import java.io.File;
 import java.io.FilePermission;
 import java.io.IOException;
 
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLConnection;
 
 import java.security.Permission;
 
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -149,36 +153,6 @@ public class FileChecker extends BaseChecker {
 		initPermissions();
 	}
 
-	public void checkPermission(Permission permission) {
-		String name = permission.getName();
-		String actions = permission.getActions();
-
-		if (actions.equals(FILE_PERMISSION_ACTION_DELETE)) {
-			if (!hasDelete(permission)) {
-				throwSecurityException(
-					_log, "Attempted to delete file " + name);
-			}
-		}
-		else if (actions.equals(FILE_PERMISSION_ACTION_EXECUTE)) {
-			if (!hasExecute(permission)) {
-				throwSecurityException(
-					_log, "Attempted to execute file " + name);
-			}
-		}
-		else if (actions.equals(FILE_PERMISSION_ACTION_READ)) {
-			if (PortalSecurityManagerThreadLocal.isCheckReadFile() &&
-				!hasRead(permission)) {
-
-				throwSecurityException(_log, "Attempted to read file " + name);
-			}
-		}
-		else if (actions.equals(FILE_PERMISSION_ACTION_WRITE)) {
-			if (!hasWrite(permission)) {
-				throwSecurityException(_log, "Attempted to write file " + name);
-			}
-		}
-	}
-
 	@Override
 	public AuthorizationProperty generateAuthorizationProperty(
 		Object... arguments) {
@@ -218,6 +192,44 @@ public class FileChecker extends BaseChecker {
 		authorizationProperty.setValue(permission.getName());
 
 		return authorizationProperty;
+	}
+
+	public boolean implies(Permission permission) {
+		String name = permission.getName();
+		String actions = permission.getActions();
+
+		if (actions.equals(FILE_PERMISSION_ACTION_DELETE)) {
+			if (!hasDelete(permission)) {
+				logSecurityException(_log, "Attempted to delete file " + name);
+
+				return false;
+			}
+		}
+		else if (actions.equals(FILE_PERMISSION_ACTION_EXECUTE)) {
+			if (!hasExecute(permission)) {
+				logSecurityException(_log, "Attempted to execute file " + name);
+
+				return false;
+			}
+		}
+		else if (actions.equals(FILE_PERMISSION_ACTION_READ)) {
+			if (PortalSecurityManagerThreadLocal.isCheckReadFile() &&
+				!hasRead(permission)) {
+
+				logSecurityException(_log, "Attempted to read file " + name);
+
+				return false;
+			}
+		}
+		else if (actions.equals(FILE_PERMISSION_ACTION_WRITE)) {
+			if (!hasWrite(permission)) {
+				logSecurityException(_log, "Attempted to write file " + name);
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	protected void addCanonicalPath(List<String> paths, String path) {
@@ -369,6 +381,34 @@ public class FileChecker extends BaseChecker {
 			File file = new File(System.getProperty("java.home") + "/lib");
 
 			addCanonicalPaths(paths, file);
+
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+			Enumeration<URL> enumeration = classLoader.getResources(
+				"META-INF/MANIFEST.MF");
+
+			while (enumeration.hasMoreElements()) {
+				URL url = enumeration.nextElement();
+
+				URLConnection urlConnection = url.openConnection();
+				
+				if (urlConnection instanceof JarURLConnection) {
+					JarURLConnection jarURLConnection =
+						(JarURLConnection)url.openConnection();
+	
+					URL jarFileURL = jarURLConnection.getJarFileURL();
+	
+					String fileName = jarFileURL.getFile();
+	
+					int pos = fileName.lastIndexOf(File.separatorChar);
+	
+					if (pos != -1) {
+						fileName = fileName.substring(0, pos + 1);
+					}
+	
+					addCanonicalPath(paths, fileName);
+				}
+			}
 		}
 		catch (IOException ioe) {
 			_log.error(ioe, ioe);

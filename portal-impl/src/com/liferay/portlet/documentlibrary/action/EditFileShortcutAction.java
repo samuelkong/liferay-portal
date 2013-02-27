@@ -195,6 +195,10 @@ public class EditFileShortcutAction extends PortletAction {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DLFileShortcut.class.getName(), actionRequest);
 
+		if (toFileEntryId == 0) {
+			throw new NoSuchFileEntryException();
+		}
+
 		if (fileShortcutId <= 0) {
 
 			// Add file shortcut

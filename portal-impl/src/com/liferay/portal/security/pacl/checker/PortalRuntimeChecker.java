@@ -41,75 +41,6 @@ public class PortalRuntimeChecker extends BaseChecker {
 		initThreadPoolExecutorNames();
 	}
 
-	public void checkPermission(Permission permission) {
-		PortalRuntimePermission portalRuntimePermission =
-			(PortalRuntimePermission)permission;
-
-		String name = portalRuntimePermission.getName();
-		Object subject = portalRuntimePermission.getSubject();
-		String property = GetterUtil.getString(
-			portalRuntimePermission.getProperty());
-
-		if (name.equals(PORTAL_RUNTIME_PERMISSION_EXPANDO_BRIDGE)) {
-			String className = (String)subject;
-
-			if (!_expandoBridgeClassNames.contains(className)) {
-				throwSecurityException(
-					_log, "Attempted to get Expando bridge on " + className);
-			}
-		}
-		else if (name.equals(PORTAL_RUNTIME_PERMISSION_GET_BEAN_PROPERTY)) {
-			Class<?> clazz = (Class<?>)subject;
-
-			if (!hasGetBeanProperty(clazz, property)) {
-				if (Validator.isNotNull(property)) {
-					throwSecurityException(
-						_log,
-						"Attempted to get bean property " + property + " on " +
-							clazz);
-				}
-				else {
-					throwSecurityException(
-						_log, "Attempted to get bean property on " + clazz);
-				}
-			}
-		}
-		else if (name.equals(PORTAL_RUNTIME_PERMISSION_SEARCH_ENGINE)) {
-			String searchEngineId = (String)subject;
-
-			if (!_searchEngineIds.contains(searchEngineId)) {
-				throwSecurityException(
-					_log, "Attempted to get search engine " + searchEngineId);
-			}
-		}
-		else if (name.equals(PORTAL_RUNTIME_PERMISSION_SET_BEAN_PROPERTY)) {
-			Class<?> clazz = (Class<?>)subject;
-
-			if (!hasSetBeanProperty(clazz, property)) {
-				if (Validator.isNotNull(property)) {
-					throwSecurityException(
-						_log,
-						"Attempted to set bean property " + property + " on " +
-							clazz);
-				}
-				else {
-					throwSecurityException(
-						_log, "Attempted to set bean property on " + clazz);
-				}
-			}
-		}
-		else if (name.equals(PORTAL_RUNTIME_PERMISSION_THREAD_POOL_EXECUTOR)) {
-			String threadPoolExecutorName = (String)subject;
-
-			if (!_threadPoolExecutorNames.contains(threadPoolExecutorName)) {
-				throwSecurityException(
-					_log,
-					"Attempted to modify thread pool executor " +
-						threadPoolExecutorName);
-			}
-		}
-	}
-
 	@Override
 	public AuthorizationProperty generateAuthorizationProperty(
 		Object... arguments) {
@@ -175,6 +106,87 @@ public class PortalRuntimeChecker extends BaseChecker {
 		authorizationProperty.setValue(value);
 
 		return authorizationProperty;
+	}
+
+	public boolean implies(Permission permission) {
+		PortalRuntimePermission portalRuntimePermission =
+			(PortalRuntimePermission)permission;
+
+		String name = portalRuntimePermission.getName();
+		Object subject = portalRuntimePermission.getSubject();
+		String property = GetterUtil.getString(
+			portalRuntimePermission.getProperty());
+
+		if (name.equals(PORTAL_RUNTIME_PERMISSION_EXPANDO_BRIDGE)) {
+			String className = (String)subject;
+
+			if (!_expandoBridgeClassNames.contains(className)) {
+				logSecurityException(
+					_log, "Attempted to get Expando bridge on " + className);
+
+				return false;
+			}
+		}
+		else if (name.equals(PORTAL_RUNTIME_PERMISSION_GET_BEAN_PROPERTY)) {
+			Class<?> clazz = (Class<?>)subject;
+
+			if (!hasGetBeanProperty(clazz, property)) {
+				if (Validator.isNotNull(property)) {
+					logSecurityException(
+						_log,
+						"Attempted to get bean property " + property + " on " +
+							clazz);
+				}
+				else {
+					logSecurityException(
+						_log, "Attempted to get bean property on " + clazz);
+				}
+
+				return false;
+			}
+		}
+		else if (name.equals(PORTAL_RUNTIME_PERMISSION_SEARCH_ENGINE)) {
+			String searchEngineId = (String)subject;
+
+			if (!_searchEngineIds.contains(searchEngineId)) {
+				logSecurityException(
+					_log, "Attempted to get search engine " + searchEngineId);
+
+				return false;
+			}
+		}
+		else if (name.equals(PORTAL_RUNTIME_PERMISSION_SET_BEAN_PROPERTY)) {
+			Class<?> clazz = (Class<?>)subject;
+
+			if (!hasSetBeanProperty(clazz, property)) {
+				if (Validator.isNotNull(property)) {
+					logSecurityException(
+						_log,
+						"Attempted to set bean property " + property + " on " +
+							clazz);
+				}
+				else {
+					logSecurityException(
+						_log, "Attempted to set bean property on " + clazz);
+				}
+
+				return false;
+			}
+		}
+		else if (name.equals(PORTAL_RUNTIME_PERMISSION_THREAD_POOL_EXECUTOR)) {
+			String threadPoolExecutorName = (String)subject;
+
+			if (!_threadPoolExecutorNames.contains(threadPoolExecutorName)) {
+				logSecurityException(
+					_log,
+					"Attempted to modify thread pool executor " +
+						threadPoolExecutorName);
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	protected boolean hasGetBeanProperty(Class<?> clazz, String property) {

@@ -14,30 +14,22 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import com.liferay.portal.model.Portlet;
+import java.io.IOException;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.PortletResponse;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author Raymond Augé
  */
-public interface LiferayPortletConfig extends PortletConfig {
+public interface LiferayPortletRequestDispatcher
+	extends PortletRequestDispatcher {
 
-	public static final String RUNTIME_OPTION_ESCAPE_XML =
-		"javax.portlet.escapeXml";
-
-	public static final String RUNTIME_OPTION_PORTAL_CONTEXT =
-		"com.liferay.portal.portalContext";
-
-	public Portlet getPortlet();
-
-	public PortletContext getPortletContext();
-
-	public String getPortletId();
-
-	public boolean isCopyRequestParameters();
-
-	public boolean isWARFile();
+	public void include(
+			PortletRequest portletRequest, PortletResponse portletResponse,
+			boolean strutsURLEncoder)
+		throws IOException, PortletException;
 
 }

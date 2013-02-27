@@ -101,6 +101,17 @@ import java.util.Stack;
 }
 
 @members{
+	public void displayRecognitionError(String[] tokenNames,RecognitionException e) {
+		String header = getErrorHeader(e);
+		String message = getErrorMessage(e, tokenNames);
+
+		_errors.add(header + " " + message);
+	}
+
+	public List<String> getErrors() {
+		return _errors;
+	}
+
 	public WikiPageNode getWikiPageNode() {
 		if (_wikipage == null)
 			throw new IllegalStateException("No succesful parsing process");
@@ -128,7 +139,8 @@ import java.util.Stack;
 		return listNode;
 	}
 
-	private WikiPageNode _wikipage = null;
+	private List<String> _errors = new ArrayList<String>();
+	private WikiPageNode _wikipage;
 
 }
 

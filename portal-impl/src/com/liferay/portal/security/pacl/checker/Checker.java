@@ -26,8 +26,6 @@ public interface Checker {
 
 	public void afterPropertiesSet();
 
-	public void checkPermission(Permission permission);
-
 	public AuthorizationProperty generateAuthorizationProperty(
 		Object... arguments);
 
@@ -36,6 +34,8 @@ public interface Checker {
 	public PACLPolicy getPACLPolicy();
 
 	public String getServletContextName();
+
+	public boolean implies(Permission permission);
 
 	public void setPACLPolicy(PACLPolicy paclPolicy);
 

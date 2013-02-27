@@ -191,12 +191,12 @@ public class PortletConfigImpl implements LiferayPortletConfig {
 		return Collections.enumeration(supportedLocales);
 	}
 
-	public boolean isWARFile() {
-		return _portletApp.isWARFile();
+	public boolean isCopyRequestParameters() {
+		return _copyRequestParameters;
 	}
 
-	protected boolean isCopyRequestParameters() {
-		return _copyRequestParameters;
+	public boolean isWARFile() {
+		return _portletApp.isWARFile();
 	}
 
 	protected Set<javax.xml.namespace.QName> toJavaxQNames(

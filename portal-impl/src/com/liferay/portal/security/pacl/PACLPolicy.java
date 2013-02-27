@@ -26,8 +26,6 @@ import java.util.Set;
  */
 public interface PACLPolicy {
 
-	public void checkPermission(Permission permission);
-
 	public ClassLoader getClassLoader();
 
 	public Properties getProperties();
@@ -48,6 +46,8 @@ public interface PACLPolicy {
 		Object object, Method method, Object[] arguments);
 
 	public boolean hasSQL(String sql);
+
+	public boolean implies(Permission permission);
 
 	public boolean isActive();
 

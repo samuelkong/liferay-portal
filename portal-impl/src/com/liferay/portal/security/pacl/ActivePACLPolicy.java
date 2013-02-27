@@ -50,12 +50,6 @@ public class ActivePACLPolicy extends BasePACLPolicy {
 		}
 	}
 
-	public void checkPermission(Permission permission) {
-		Checker checker = getChecker(permission.getClass());
-
-		checker.checkPermission(permission);
-	}
-
 	public JNDIChecker getJndiChecker() {
 		return _jndiChecker;
 	}
@@ -80,6 +74,12 @@ public class ActivePACLPolicy extends BasePACLPolicy {
 
 	public boolean hasSQL(String sql) {
 		return _sqlChecker.hasSQL(sql);
+	}
+
+	public boolean implies(Permission permission) {
+		Checker checker = getChecker(permission.getClass());
+
+		return checker.implies(permission);
 	}
 
 	public boolean isActive() {

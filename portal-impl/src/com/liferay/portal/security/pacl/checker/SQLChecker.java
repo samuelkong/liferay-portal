@@ -53,10 +53,6 @@ public class SQLChecker extends BaseChecker {
 		initTableNames();
 	}
 
-	public void checkPermission(Permission permission) {
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public AuthorizationProperty generateAuthorizationProperty(
 		Object... arguments) {
@@ -227,6 +223,10 @@ public class SQLChecker extends BaseChecker {
 		}
 
 		return false;
+	}
+
+	public boolean implies(Permission permission) {
+		throw new UnsupportedOperationException();
 	}
 
 	protected boolean hasSQL(CreateTable createTable) {
