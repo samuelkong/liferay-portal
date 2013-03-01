@@ -76,7 +76,7 @@ boolean useRichEditor = editorType.equals("rich");
 	</liferay-ui:panel>
 </liferay-ui:panel-container>
 
-<aui:script use="aui-ace-editor">
+<aui:script use="aui-ace-autocomplete-freemarker,aui-ace-autocomplete-plugin">
 	var editorType = '<%= HtmlUtil.escapeJS(editorType) %>';
 
 	var plainEditorField = A.one('#<portlet:namespace />plainEditorField');
@@ -84,6 +84,8 @@ boolean useRichEditor = editorType.equals("rich");
 	var richEditor;
 
 	var prevEditorContent;
+
+	var selectLanguageNode = A.one('#<portlet:namespace />language');
 
 	function getEditorContent(type) {
 		var content = '';
@@ -109,6 +111,31 @@ boolean useRichEditor = editorType.equals("rich");
 		prevEditorContent = content;
 	}
 
+	function updateEditorPlugins(event) {
+		var selectedOptionValue = selectLanguageNode.one('option:selected').val();
+
+		if (selectedOptionValue === 'ftl') {
+			richEditor.plug(
+				A.Plugin.AceAutoComplete,
+				{
+					fillMode: 1,
+					processor: new A.AceEditor.AutoCompleteFreemarker(
+						{
+							variables: <%= DDMTemplateHelperUtil.getAutocompleteJSON(request) %>
+						}
+					),
+					render: true,
+					visible: false,
+					width: 250,
+					zIndex: 10000
+				}
+			);
+		}
+		else {
+			richEditor.unplug(A.Plugin.AceAutoComplete);
+		}
+	}
+
 	function updateEditorType(event) {
 		var oldEditorType = editorType;
 
@@ -127,9 +154,7 @@ boolean useRichEditor = editorType.equals("rich");
 			richEditor.editor.resize();
 		}
 
-		var uri = '<portlet:renderURL><portlet:param name="struts_action" value="/dynamic_data_mapping/edit_template_display" /></portlet:renderURL>&editorType=' + newEditorType;
-
-		A.io.request(uri);
+		A.io.request('<portlet:renderURL><portlet:param name="struts_action" value="/dynamic_data_mapping/edit_template_display" /></portlet:renderURL>&editorType=' + newEditorType);
 
 		editorType = newEditorType;
 	}
@@ -164,6 +189,10 @@ boolean useRichEditor = editorType.equals("rich");
 					editorContentElement.val(getEditorContent());
 				}
 			);
+
+			selectLanguageNode.on('change', updateEditorPlugins);
+
+			updateEditorPlugins();
 		},
 		'#<portlet:namespace />richEditor'
 	);
