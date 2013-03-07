@@ -65,8 +65,6 @@ import org.apache.commons.lang.time.StopWatch;
  *
  * <pre>
  * <code>
- * ResourceLocalService resourceLocalService = ResourceLocalServiceUtil.getService();
- *
  * resourceLocalService.addModelResources(
  * 		SomeWidget.getCompanyId(), SomeWidget.getGroupId(), userId,
  * 		SomeWidget.class.getName(), SomeWidget.getPrimaryKey(),

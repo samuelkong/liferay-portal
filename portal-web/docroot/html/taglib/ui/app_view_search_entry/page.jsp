@@ -68,7 +68,7 @@ String url = (String)request.getAttribute("liferay-ui:app-view-search-entry:url"
 				<liferay-ui:icon
 					image='<%= (Validator.isNotNull(containerIcon)) ? containerIcon : "folder" %>'
 					label="<%= true %>"
-					message='<%= LanguageUtil.format(locale, "found-in-x-x", new String[]{containerType, containerName}) %>'
+					message='<%= LanguageUtil.format(locale, "found-in-x-x", new String[] {containerType, containerName}) %>'
 				/>
 			</span>
 		</c:if>

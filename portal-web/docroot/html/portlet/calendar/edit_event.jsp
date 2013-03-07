@@ -320,6 +320,8 @@ int secondReminder = BeanParamUtil.getInteger(event, request, "secondReminder", 
 
 	var durationHour = A.one('#<portlet:namespace />durationHour');
 
+	var durationMinute = A.one('#<portlet:namespace />durationMinute');
+
 	var timeZoneSensitiveCheckbox = A.one('#<portlet:namespace />timeZoneSensitiveCheckbox');
 
 	allDayCheckbox.on(
@@ -332,10 +334,16 @@ int secondReminder = BeanParamUtil.getInteger(event, request, "secondReminder", 
 			}
 
 			if (allDayChecked) {
+				durationHour.val('24');
+				durationMinute.val('0');
+				durationHour.attr('disabled', true);
+				durationMinute.attr('disabled', true);
 				timeZoneSensitiveCheckbox.attr('checked', false);
 				timeZoneSensitiveCheckbox.attr('disabled', true);
 			}
 			else {
+				durationHour.attr('disabled', false);
+				durationMinute.attr('disabled', false);
 				timeZoneSensitiveCheckbox.attr('disabled', false);
 
 				if (timeZoneSensitiveCheckbox.previous().val() === 'true') {

@@ -149,7 +149,7 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 			long groupId, String name, long[] vocabularyIds, int start, int end)
 		throws PortalException, SystemException {
 
-		return search(new long[]{groupId}, name, vocabularyIds, start, end);
+		return search(new long[] {groupId}, name, vocabularyIds, start, end);
 	}
 
 	/**

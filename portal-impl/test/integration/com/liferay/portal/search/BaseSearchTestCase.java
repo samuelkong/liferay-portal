@@ -234,7 +234,7 @@ public abstract class BaseSearchTestCase {
 
 		Indexer indexer = IndexerRegistryUtil.getIndexer(clazz);
 
-		searchContext.setGroupIds(new long[]{groupId});
+		searchContext.setGroupIds(new long[] {groupId});
 
 		Hits results = indexer.search(searchContext);
 
