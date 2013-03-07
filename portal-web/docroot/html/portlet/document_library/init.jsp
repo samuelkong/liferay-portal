@@ -166,7 +166,7 @@ String allFileEntryColumns = defaultFileEntryColumns;
 String[] fileEntryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "fileEntryColumns", defaultFileEntryColumns));
 
 if (showActions || ArrayUtil.contains(fileEntryColumns, "action")) {
-showActions = true;
+	showActions = true;
 }
 
 boolean showAssetMetadata = ParamUtil.getBoolean(request, "showAssetMetadata");
