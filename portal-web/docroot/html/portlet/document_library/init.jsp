@@ -147,7 +147,28 @@ if (portletId.equals(PortletKeys.PORTLET_CONFIGURATION)) {
 	portletId = portletResource;
 }
 
-boolean showActions = PrefsParamUtil.getBoolean(preferences, request, "showActions");
+String defaultFolderColumns = "name,num-of-folders,num-of-documents,action";
+
+String[] folderColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "folderColumns", defaultFolderColumns));
+
+boolean showActions = ArrayUtil.contains(folderColumns, "action");
+
+String defaultFileEntryColumns = "name,size,action";
+
+if (PropsValues.DL_FILE_ENTRY_BUFFERED_INCREMENT_ENABLED) {
+	defaultFileEntryColumns += ",downloads";
+}
+
+defaultFileEntryColumns += ",locked";
+
+String allFileEntryColumns = defaultFileEntryColumns;
+
+String[] fileEntryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "fileEntryColumns", defaultFileEntryColumns));
+
+if (showActions || ArrayUtil.contains(fileEntryColumns, "action")) {
+	showActions = true;
+}
+
 boolean showAssetMetadata = ParamUtil.getBoolean(request, "showAssetMetadata");
 boolean showAddFolderButton = false;
 boolean showFolderMenu = PrefsParamUtil.getBoolean(preferences, request, "showFolderMenu");
