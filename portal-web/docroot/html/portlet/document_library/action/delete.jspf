@@ -16,7 +16,7 @@
 
 <c:choose>
 	<c:when test="<%= (fileShortcut == null) %>">
-		<c:if test="<%= (!checkedOut || hasLock) && showActions && DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.DELETE) %>">
+		<c:if test="<%= (!checkedOut || hasLock) && showFileActions && DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.DELETE) %>">
 			<c:choose>
 				<c:when test="<%= (fileEntry.getModel() instanceof DLFileEntry) && TrashUtil.isTrashEnabled(scopeGroupId) %>">
 					<portlet:actionURL var="deleteURL">
@@ -47,7 +47,7 @@
 		</c:if>
 	</c:when>
 	<c:otherwise>
-		<c:if test="<%= showActions && DLFileShortcutPermission.contains(permissionChecker, fileShortcut, ActionKeys.DELETE) %>">
+		<c:if test="<%= showFileActions && DLFileShortcutPermission.contains(permissionChecker, fileShortcut, ActionKeys.DELETE) %>">
 			<portlet:actionURL var="deleteShortcutURL">
 				<portlet:param name="struts_action" value="/document_library/edit_file_shortcut" />
 				<portlet:param name="<%= Constants.CMD %>" value="<%= TrashUtil.isTrashEnabled(scopeGroupId) ? Constants.MOVE_TO_TRASH : Constants.DELETE %>" />

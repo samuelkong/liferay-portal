@@ -81,7 +81,7 @@ boolean showFoldersSearch = PrefsParamUtil.getBoolean(preferences, request, "sho
 boolean showSubfolders = PrefsParamUtil.getBoolean(preferences, request, "showSubfolders", true);
 int foldersPerPage = PrefsParamUtil.getInteger(preferences, request, "foldersPerPage", SearchContainer.DEFAULT_DELTA);
 
-String defaultFolderColumns = "name,num-of-folders,num-of-documents";
+String defaultFolderColumns = "name,num-of-folders,num-of-documents,action";
 
 String portletId = portletDisplay.getId();
 
@@ -89,36 +89,19 @@ if (portletId.equals(PortletKeys.PORTLET_CONFIGURATION)) {
 	portletId = portletResource;
 }
 
-boolean showActions = PrefsParamUtil.getBoolean(preferences, request, "showActions");
 boolean showAddFolderButton = false;
 boolean showFolderMenu = PrefsParamUtil.getBoolean(preferences, request, "showFolderMenu");
 boolean showTabs = PrefsParamUtil.getBoolean(preferences, request, "showTabs");
-
-if (portletId.equals(PortletKeys.DOCUMENT_LIBRARY)) {
-	showActions = true;
-	showAddFolderButton = true;
-	showFolderMenu = true;
-	showTabs = true;
-}
-
-if (showActions) {
-	defaultFolderColumns += ",action";
-}
 
 String allFolderColumns = defaultFolderColumns;
 
 String[] folderColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "folderColumns", defaultFolderColumns));
 
-if (!showActions) {
-	folderColumns = ArrayUtil.remove(folderColumns, "action");
-}
-else if (!portletId.equals(PortletKeys.DOCUMENT_LIBRARY) && !ArrayUtil.contains(folderColumns, "action")) {
-	folderColumns = ArrayUtil.append(folderColumns, "action");
-}
+boolean showFolderActions = ArrayUtil.contains(folderColumns, "action");
 
 int fileEntriesPerPage = PrefsParamUtil.getInteger(preferences, request, "fileEntriesPerPage", SearchContainer.DEFAULT_DELTA);
 
-String defaultFileEntryColumns = "name,size";
+String defaultFileEntryColumns = "name,size,action";
 
 if (PropsValues.DL_FILE_ENTRY_BUFFERED_INCREMENT_ENABLED) {
 	defaultFileEntryColumns += ",downloads";
@@ -126,19 +109,18 @@ if (PropsValues.DL_FILE_ENTRY_BUFFERED_INCREMENT_ENABLED) {
 
 defaultFileEntryColumns += ",locked";
 
-if (showActions) {
-	defaultFileEntryColumns += ",action";
-}
-
 String allFileEntryColumns = defaultFileEntryColumns;
 
 String[] fileEntryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "fileEntryColumns", defaultFileEntryColumns));
 
-if (!showActions) {
-	fileEntryColumns = ArrayUtil.remove(fileEntryColumns, "action");
-}
-else if (!portletId.equals(PortletKeys.DOCUMENT_LIBRARY) && !ArrayUtil.contains(fileEntryColumns, "action")) {
-	fileEntryColumns = ArrayUtil.append(fileEntryColumns, "action");
+boolean showFileActions = ArrayUtil.contains(fileEntryColumns, "action");
+
+if (portletId.equals(PortletKeys.DOCUMENT_LIBRARY)) {
+	showFolderActions = true;
+	showFileActions = true;
+	showAddFolderButton = true;
+	showFolderMenu = true;
+	showTabs = true;
 }
 
 boolean enableRatings = GetterUtil.getBoolean(preferences.getValue("enableRatings", null), true);

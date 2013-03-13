@@ -33,7 +33,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 	<liferay-ui:panel-container extended="<%= true %>" id="imageGalleryDisplaySettingsPanelContainer" persistState="<%= true %>">
 		<liferay-ui:panel collapsible="<%= true %>" extended="<%= true %>" id="imageGalleryDisplayDisplay" persistState="<%= true %>" title="display-settings">
 			<aui:fieldset>
-				<aui:input label="show-actions" name="preferences--showActions--" type="checkbox" value="<%= showActions %>" />
+				<aui:input label="show-actions" name="preferences--showActions--" type="checkbox" value="<%= showFileActions %>" />
 
 				<aui:input label="show-folder-menu" name="preferences--showFolderMenu--" type="checkbox" value="<%= showFolderMenu %>" />
 

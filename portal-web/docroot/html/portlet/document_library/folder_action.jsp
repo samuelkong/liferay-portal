@@ -113,7 +113,7 @@ String iconMenuId = null;
 
 <liferay-util:buffer var="iconMenu">
 	<liferay-ui:icon-menu align='<%= showMinimalActionButtons ? "auto" : "right" %>' direction='<%= showMinimalActionButtons ? "down" : null %>' extended="<%= showMinimalActionButtons ? false : true %>" icon="<%= showMinimalActionButtons ? StringPool.BLANK : null %>" message='<%= showMinimalActionButtons ? StringPool.BLANK : "actions" %>' showExpanded="<%= view %>" showWhenSingleIcon="<%= showWhenSingleIcon %>">
-		<c:if test="<%= showActions %>">
+		<c:if test="<%= showFolderActions %>">
 			<c:choose>
 				<c:when test="<%= folder != null %>">
 
@@ -301,7 +301,7 @@ String iconMenuId = null;
 
 		<c:choose>
 			<c:when test="<%= portletName.equals(PortletKeys.DOCUMENT_LIBRARY_DISPLAY) || portletName.equals(PortletKeys.MEDIA_GALLERY_DISPLAY) %>">
-				<c:if test="<%= showActions && DLFolderPermission.contains(permissionChecker, scopeGroupId, folderId, ActionKeys.ADD_DOCUMENT) %>">
+				<c:if test="<%= showFolderActions && DLFolderPermission.contains(permissionChecker, scopeGroupId, folderId, ActionKeys.ADD_DOCUMENT) %>">
 					<portlet:renderURL var="editFileEntryURL">
 						<portlet:param name="struts_action" value="/document_library/upload_multiple_file_entries" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
@@ -353,7 +353,7 @@ String iconMenuId = null;
 					/>
 				</c:if>
 
-				<c:if test="<%= showActions && ((folder == null) || folder.isSupportsShortcuts()) && DLFolderPermission.contains(permissionChecker, scopeGroupId, folderId, ActionKeys.ADD_SHORTCUT) %>">
+				<c:if test="<%= showFolderActions && ((folder == null) || folder.isSupportsShortcuts()) && DLFolderPermission.contains(permissionChecker, scopeGroupId, folderId, ActionKeys.ADD_SHORTCUT) %>">
 					<portlet:renderURL var="editFileShortcutURL">
 						<portlet:param name="struts_action" value="/document_library_display/edit_file_shortcut" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />

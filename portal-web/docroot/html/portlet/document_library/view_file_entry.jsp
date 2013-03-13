@@ -138,7 +138,7 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 <div class="view">
 	<aui:layout>
 		<aui:column columnWidth="<%= 65 %>" cssClass="lfr-asset-column-details" first="<%= true %>">
-			<c:if test="<%= showActions %>">
+			<c:if test="<%= showFileActions %>">
 				<liferay-ui:app-view-toolbar>
 					<aui:button-row cssClass="edit-toolbar" id='<%= renderResponse.getNamespace() + "fileEntryToolbar" %>' />
 				</liferay-ui:app-view-toolbar>
@@ -440,7 +440,7 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 		</aui:column>
 
 		<aui:column columnWidth="<%= 35 %>" cssClass="lfr-asset-column-details context-pane" last="<%= true %>">
-			<c:if test="<%= showActions %>">
+			<c:if test="<%= showFileActions %>">
 				<liferay-ui:app-view-toolbar>
 					<aui:button-row cssClass="edit-toolbar" id='<%= renderResponse.getNamespace() + "fileEntryToolbar" %>' />
 				</liferay-ui:app-view-toolbar>
@@ -886,7 +886,7 @@ request.setAttribute("view_file_entry.jsp-fileEntry", fileEntry);
 		);
 	}
 
-	<c:if test="<%= showActions %>">
+	<c:if test="<%= showFileActions %>">
 		var buttonRow = A.one('#<portlet:namespace />fileEntryToolbar');
 
 		var fileEntryToolbarChildren = [];

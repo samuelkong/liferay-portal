@@ -154,9 +154,40 @@ boolean showFolderMenu = PrefsParamUtil.getBoolean(preferences, request, "showFo
 boolean showHeader = ParamUtil.getBoolean(request, "showHeader", true);
 boolean showMinimalActionButtons = ParamUtil.getBoolean(request, "showMinimalActionButtons");
 boolean showTabs = PrefsParamUtil.getBoolean(preferences, request, "showTabs");
+boolean showFolderActions = false;
+boolean showFileActions = false;
+
+if (portletName.equals(PortletKeys.DOCUMENT_LIBRARY_DISPLAY)) {
+	String defaultFolderColumns = "name,num-of-folders,num-of-documents,action";
+
+	String[] folderColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "folderColumns", defaultFolderColumns));
+
+	showFolderActions = ArrayUtil.contains(folderColumns, "action");
+
+	String defaultFileEntryColumns = "name,size,action";
+
+	if (PropsValues.DL_FILE_ENTRY_BUFFERED_INCREMENT_ENABLED) {
+		defaultFileEntryColumns += ",downloads";
+	}
+
+	defaultFileEntryColumns += ",locked";
+
+	String allFileEntryColumns = defaultFileEntryColumns;
+
+	String[] fileEntryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "fileEntryColumns", defaultFileEntryColumns));
+
+	showFileActions = ArrayUtil.contains(fileEntryColumns, "action");
+}
+else {
+	if (showActions) {
+		showFolderActions = true;
+		showFileActions = true;
+	}
+}
 
 if (portletName.equals(PortletKeys.DOCUMENT_LIBRARY)) {
-	showActions = true;
+	showFolderActions = true;
+	showFileActions = true;
 	showAssetMetadata = true;
 	showAddFolderButton = true;
 	showFolderMenu = true;
@@ -175,7 +206,7 @@ if (PropsValues.DL_FILE_ENTRY_BUFFERED_INCREMENT_ENABLED) {
 	defaultEntryColumns += ",downloads";
 }
 
-if (showActions) {
+if (showFolderActions && showFileActions) {
 	defaultEntryColumns += ",action";
 }
 
@@ -183,7 +214,7 @@ String allEntryColumns = defaultEntryColumns + ",modified-date,create-date";
 
 String[] entryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "entryColumns", defaultEntryColumns));
 
-if (!showActions) {
+if (!(showFolderActions && showFileActions)) {
 	entryColumns = ArrayUtil.remove(entryColumns, "action");
 }
 else if (!portletId.equals(PortletKeys.DOCUMENT_LIBRARY) && !ArrayUtil.contains(entryColumns, "action")) {

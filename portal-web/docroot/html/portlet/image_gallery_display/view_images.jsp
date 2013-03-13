@@ -120,7 +120,7 @@ SearchContainer searchContainer = (SearchContainer)request.getAttribute("view.js
 						</a>
 					</div>
 
-					<c:if test="<%= showActions %>">
+					<c:if test="<%= showFileActions %>">
 						<div class="aui-helper-hidden" id="<portlet:namespace />buttonsContainer_<%= thumbnailId %>">
 							<div class="buttons-container float-container" id="<portlet:namespace />buttons_<%= thumbnailId %>">
 								<%@ include file="/html/portlet/image_gallery_display/image_action.jspf" %>
@@ -275,7 +275,7 @@ embeddedPlayerURL.setParameter("struts_action", "/image_gallery_display/embedded
 					}
 				}
 
-				<c:if test="<%= showActions %>">
+				<c:if test="<%= showFileActions %>">
 					, load: function(event) {
 						var instance = this;
 

@@ -86,6 +86,13 @@ boolean showActions = PrefsParamUtil.getBoolean(preferences, request, "showActio
 boolean showAddFolderButton = false;
 boolean showFolderMenu = PrefsParamUtil.getBoolean(preferences, request, "showFolderMenu");
 boolean showTabs = PrefsParamUtil.getBoolean(preferences, request, "showTabs");
+boolean showFolderActions = false;
+boolean showFileActions = false;
+
+if(showActions) {
+	showFolderActions = true;
+	showFileActions = true;
+}
 
 boolean enableRatings = GetterUtil.getBoolean(preferences.getValue("enableRatings", null), true);
 boolean enableCommentRatings = GetterUtil.getBoolean(preferences.getValue("enableCommentRatings", null), true);
