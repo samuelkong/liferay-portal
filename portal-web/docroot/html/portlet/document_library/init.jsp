@@ -155,6 +155,32 @@ boolean showHeader = ParamUtil.getBoolean(request, "showHeader", true);
 boolean showMinimalActionButtons = ParamUtil.getBoolean(request, "showMinimalActionButtons");
 boolean showTabs = PrefsParamUtil.getBoolean(preferences, request, "showTabs");
 
+if (portletName.equals(PortletKeys.DOCUMENT_LIBRARY_DISPLAY)) {
+	String defaultFolderColumns = "name,num-of-folders,num-of-documents,action";
+
+	String[] folderColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "folderColumns", defaultFolderColumns));
+
+	boolean showFolderActions = ArrayUtil.contains(folderColumns, "action");
+
+	String defaultFileEntryColumns = "name,size,action";
+
+	if (PropsValues.DL_FILE_ENTRY_BUFFERED_INCREMENT_ENABLED) {
+		defaultFileEntryColumns += ",downloads";
+	}
+
+	defaultFileEntryColumns += ",locked";
+
+	String allFileEntryColumns = defaultFileEntryColumns;
+
+	String[] fileEntryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "fileEntryColumns", defaultFileEntryColumns));
+
+	boolean showFileActions = ArrayUtil.contains(fileEntryColumns, "action");
+
+	if (showFolderActions || showFileActions) {
+		showActions = true;
+	}
+}
+
 if (portletName.equals(PortletKeys.DOCUMENT_LIBRARY)) {
 	showActions = true;
 	showAssetMetadata = true;
