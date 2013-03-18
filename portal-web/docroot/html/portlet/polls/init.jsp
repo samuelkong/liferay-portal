@@ -16,7 +16,8 @@
 
 <%@ include file="/html/portlet/init.jsp" %>
 
-<%@ page import="com.liferay.portlet.polls.DuplicateVoteException" %><%@
+<%@ page import="com.liferay.portlet.polls.DuplicateChoiceException" %><%@
+page import="com.liferay.portlet.polls.DuplicateVoteException" %><%@
 page import="com.liferay.portlet.polls.NoSuchChoiceException" %><%@
 page import="com.liferay.portlet.polls.NoSuchQuestionException" %><%@
 page import="com.liferay.portlet.polls.QuestionChoiceException" %><%@

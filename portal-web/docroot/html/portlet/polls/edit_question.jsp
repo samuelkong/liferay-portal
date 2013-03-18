@@ -76,6 +76,7 @@ if (choiceName > 0) {
 		title='<%= (question == null) ? "new-question" : question.getTitle(locale) %>'
 	/>
 
+	<liferay-ui:error exception="<%= DuplicateChoiceException.class %>" message="you-have-entered-duplicate-choices" />
 	<liferay-ui:error exception="<%= QuestionChoiceException.class %>" message="please-enter-valid-choices" />
 	<liferay-ui:error exception="<%= QuestionDescriptionException.class %>" message="please-enter-a-valid-description" />
 	<liferay-ui:error exception="<%= QuestionExpirationDateException.class %>" message="please-enter-a-valid-expiration-date" />
