@@ -569,6 +569,10 @@ public class PollsChoiceWrapper implements PollsChoice,
 		_pollsChoice.persist();
 	}
 
+	public java.lang.String[] getAvailableLocales() {
+		return _pollsChoice.getAvailableLocales();
+	}
+
 	public int getVotesCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _pollsChoice.getVotesCount();
