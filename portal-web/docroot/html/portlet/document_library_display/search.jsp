@@ -191,7 +191,7 @@ int mountFoldersCount = DLAppServiceUtil.getMountFoldersCount(scopeGroupId, DLFo
 					</portlet:renderURL>
 
 					<liferay-ui:app-view-search-entry
-						actionJsp='<%= (showActions) ? "/html/portlet/document_library/file_entry_action.jsp" : StringPool.BLANK %>'
+						actionJsp='<%= (showFileActions) ? "/html/portlet/document_library/file_entry_action.jsp" : StringPool.BLANK %>'
 						containerName="<%= DLUtil.getAbsolutePath(renderRequest, fileEntry.getFolderId()) %>"
 						cssClass='<%= MathUtil.isEven(index) ? "search" : "search alt" %>'
 						description="<%= (summary != null) ? HtmlUtil.escape(summary.getContent()) : fileEntry.getDescription() %>"
@@ -223,7 +223,7 @@ int mountFoldersCount = DLAppServiceUtil.getMountFoldersCount(scopeGroupId, DLFo
 					</portlet:renderURL>
 
 					<liferay-ui:app-view-search-entry
-						actionJsp='<%= (showActions) ? "/html/portlet/document_library/folder_action.jsp" : StringPool.BLANK %>'
+						actionJsp='<%= (showFolderActions) ? "/html/portlet/document_library/folder_action.jsp" : StringPool.BLANK %>'
 						containerName="<%= DLUtil.getAbsolutePath(renderRequest, folder.getParentFolderId()) %>"
 						cssClass='<%= MathUtil.isEven(index) ? "search" : "search alt" %>'
 						description="<%= (summary != null) ? HtmlUtil.escape(summary.getContent()) : folder.getDescription() %>"
