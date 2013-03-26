@@ -33,6 +33,7 @@ import com.liferay.portlet.asset.service.permission.AssetPermission;
 import com.liferay.portlet.asset.service.permission.AssetVocabularyPermission;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -86,17 +87,38 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			getUserId(), title, serviceContext);
 	}
 
-	public void deleteVocabularies(long[] vocabularyIds)
+	public List<AssetVocabulary> deleteVocabularies(
+			long[] vocabularyIds, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
-		PermissionChecker permissionChecker = getPermissionChecker();
+		List<AssetVocabulary> failedVocabularies =
+			new ArrayList<AssetVocabulary>();
 
 		for (long vocabularyId : vocabularyIds) {
-			AssetVocabularyPermission.check(
-				permissionChecker, vocabularyId, ActionKeys.DELETE);
+			try {
+				AssetVocabularyPermission.check(
+					getPermissionChecker(), vocabularyId, ActionKeys.DELETE);
 
-			assetVocabularyLocalService.deleteVocabulary(vocabularyId);
+				assetVocabularyLocalService.deleteVocabulary(vocabularyId);
+			}
+			catch (PortalException pe) {
+				if (serviceContext.isFailOnPortalException()) {
+					throw pe;
+				}
+
+				AssetVocabulary vocabulary =
+					assetVocabularyPersistence.fetchByPrimaryKey(vocabularyId);
+
+				if (vocabulary == null) {
+					vocabulary = assetVocabularyPersistence.create(
+						vocabularyId);
+				}
+
+				failedVocabularies.add(vocabulary);
+			}
 		}
+
+		return failedVocabularies;
 	}
 
 	public void deleteVocabulary(long vocabularyId)
