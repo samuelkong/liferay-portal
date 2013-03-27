@@ -16,7 +16,7 @@
 
 <c:choose>
 	<c:when test="<%= (fileShortcut == null) %>">
-		<c:if test="<%= showActions && DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.PERMISSIONS) %>">
+		<c:if test="<%= showFileActions && DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.PERMISSIONS) %>">
 			<liferay-security:permissionsURL
 				modelResource="<%= DLFileEntryConstants.getClassName() %>"
 				modelResourceDescription="<%= HtmlUtil.unescape(fileEntry.getTitle()) %>"
@@ -32,7 +32,7 @@
 		</c:if>
 	</c:when>
 	<c:otherwise>
-		<c:if test="<%= showActions && DLFileShortcutPermission.contains(permissionChecker, fileShortcut, ActionKeys.PERMISSIONS) %>">
+		<c:if test="<%= showFileActions && DLFileShortcutPermission.contains(permissionChecker, fileShortcut, ActionKeys.PERMISSIONS) %>">
 			<liferay-security:permissionsURL
 				modelResource="<%= DLFileShortcut.class.getName() %>"
 				modelResourceDescription="<%= fileEntry.getTitle() %>"
