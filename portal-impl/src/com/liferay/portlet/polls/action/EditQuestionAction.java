@@ -35,6 +35,7 @@ import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portlet.bookmarks.model.BookmarksEntry;
+import com.liferay.portlet.polls.DuplicateChoiceException;
 import com.liferay.portlet.polls.DuplicateVoteException;
 import com.liferay.portlet.polls.NoSuchChoiceException;
 import com.liferay.portlet.polls.NoSuchQuestionException;
@@ -123,7 +124,8 @@ public class EditQuestionAction extends PortletAction {
 
 				setForward(actionRequest, "portlet.polls.error");
 			}
-			else if (e instanceof DuplicateVoteException ||
+			else if (e instanceof DuplicateChoiceException ||
+					 e instanceof DuplicateVoteException ||
 					 e instanceof NoSuchChoiceException ||
 					 e instanceof QuestionChoiceException ||
 					 e instanceof QuestionDescriptionException ||

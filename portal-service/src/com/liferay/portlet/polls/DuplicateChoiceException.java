@@ -12,26 +12,29 @@
  * details.
  */
 
-package com.liferay.portlet.polls.model.impl;
+package com.liferay.portlet.polls;
 
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.LocalizationUtil;
-import com.liferay.portlet.polls.service.PollsVoteLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author Sharon Li
  */
-public class PollsChoiceImpl extends PollsChoiceBaseImpl {
+public class DuplicateChoiceException extends PortalException {
 
-	public PollsChoiceImpl() {
+	public DuplicateChoiceException() {
+		super();
 	}
 
-	public String[] getAvailableLocales() {
-		return LocalizationUtil.getAvailableLocales(getDescription());
+	public DuplicateChoiceException(String msg) {
+		super(msg);
 	}
 
-	public int getVotesCount() throws SystemException {
-		return PollsVoteLocalServiceUtil.getChoiceVotesCount(getChoiceId());
+	public DuplicateChoiceException(String msg, Throwable cause) {
+		super(msg, cause);
+	}
+
+	public DuplicateChoiceException(Throwable cause) {
+		super(cause);
 	}
 
 }

@@ -22,6 +22,7 @@ import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.polls.DuplicateChoiceException;
 import com.liferay.portlet.polls.QuestionChoiceException;
 import com.liferay.portlet.polls.QuestionDescriptionException;
 import com.liferay.portlet.polls.QuestionExpirationDateException;
@@ -30,7 +31,9 @@ import com.liferay.portlet.polls.model.PollsChoice;
 import com.liferay.portlet.polls.model.PollsQuestion;
 import com.liferay.portlet.polls.service.base.PollsQuestionLocalServiceBaseImpl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -295,15 +298,15 @@ public class PollsQuestionLocalServiceImpl
 			List<PollsChoice> choices)
 		throws PortalException {
 
-		Locale locale = LocaleUtil.getDefault();
+		Locale defaultLocale = LocaleUtil.getDefault();
 
-		String title = titleMap.get(locale);
+		String title = titleMap.get(defaultLocale);
 
 		if (Validator.isNull(title)) {
 			throw new QuestionTitleException();
 		}
 
-		String description = descriptionMap.get(locale);
+		String description = descriptionMap.get(defaultLocale);
 
 		if (Validator.isNull(description)) {
 			throw new QuestionDescriptionException();
@@ -314,11 +317,37 @@ public class PollsQuestionLocalServiceImpl
 		}
 
 		if (choices != null) {
+			Map<String, List<String>> choiceDescriptionsMap =
+				new HashMap<String, List<String>>();
+
 			for (PollsChoice choice : choices) {
-				String choiceDescription = choice.getDescription(locale);
+				String choiceDescription = choice.getDescription(defaultLocale);
 
 				if (Validator.isNull(choiceDescription)) {
 					throw new QuestionChoiceException();
+				}
+
+				String[] availableLocales = choice.getAvailableLocales();
+
+				List<String> choiceDescriptions;
+
+				for (String locale : availableLocales) {
+					choiceDescriptions = choiceDescriptionsMap.get(locale);
+
+					if (choiceDescriptions == null) {
+						choiceDescriptions = new ArrayList<String>();
+					}
+
+					String curChoiceDescription = choice.getDescription(locale);
+
+					if (!choiceDescriptions.contains(curChoiceDescription)) {
+						choiceDescriptions.add(curChoiceDescription);
+					}
+					else {
+						throw new DuplicateChoiceException();
+					}
+
+					choiceDescriptionsMap.put(locale, choiceDescriptions);
 				}
 			}
 		}
