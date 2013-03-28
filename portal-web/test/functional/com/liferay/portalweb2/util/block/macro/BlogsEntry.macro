@@ -1,23 +1,4 @@
 <definition>
-	<command name="pgAdd">
-		<execute action="Home#open" locator-key1="HOME_URL" />
-
-		<execute action="Home#click" locator1="link=${pageName}" />
-
-		<execute action="PGBlogs#click" locator-key1="ADD_ENTRY" />
-
-		<execute action="PGBlogsAdd#type" locator-key1="TITLE" value1="${entryTitle}" />
-
-		<execute action="PGBlogsAdd#type" locator-key1="CONTENT" value1="${entryContent}" />
-
-		<execute action="PGBlogsAdd#click" locator-key1="PUBLISH" />
-
-		<execute action="PGBlogs#assertTextEquals" locator-key1="SUCCESS_MESSAGE" value1="Your request completed successfully." />
-
-		<execute action="PGBlogs#assertTextEquals" locator-key1="ENTRY_TITLE_1" value1="${entryTitle}" />
-
-		<execute action="PGBlogs#assertTextEquals" locator-key1="ENTRY_CONTENT_1" value1="${entryContent}" />
-	</command>
 	<command name="cpTearDown">
 		<execute action="Home#open" locator-key1="HOME_URL" />
 
@@ -37,5 +18,43 @@
 		</if>
 
 		<execute macro="RecycleBin#cpEmptyRecycleBin" />
+	</command>
+
+	<command name="pgAdd">
+		<execute action="Home#open" locator-key1="HOME_URL" />
+
+		<execute action="Home#click" locator1="link=${pageName}" />
+
+		<execute action="PGBlogs#click" locator-key1="ADD_ENTRY" />
+
+		<execute action="PGBlogsAdd#type" locator-key1="TITLE" value1="${entryTitle}" />
+
+		<execute action="PGBlogsAdd#type" locator-key1="CONTENT" value1="${entryContent}" />
+
+		<execute action="PGBlogsAdd#click" locator-key1="PUBLISH" />
+
+		<execute action="PGBlogs#assertTextEquals" locator-key1="SUCCESS_MESSAGE" value1="Your request completed successfully." />
+
+		<execute action="PGBlogs#assertTextEquals" locator-key1="ENTRY_TITLE_1" value1="${entryTitle}" />
+
+		<execute action="PGBlogs#assertTextEquals" locator-key1="ENTRY_CONTENT_1" value1="${entryContent}" />
+	</command>
+
+	<command name="pgMoveToRecycleBin">
+		<execute action="Home#open" locator-key1="HOME_URL" />
+
+		<execute action="Home#click" locator1="link=${pageName}" />
+
+		<execute action="PGBlogs#assertTextEquals" locator-key1="ENTRY_TITLE_1" value1="${entryTitle}" />
+
+		<execute action="PGBlogs#assertTextEquals" locator-key1="ENTRY_CONTENT_1" value1="${entryContent}" />
+
+		<execute action="PGBlogs#click" locator-key1="ENTRY_MOVE_RECYCLE_BIN_1" />
+
+		<execute action="PGBlogs#assertTextEquals" locator-key1="SUCCESS_MESSAGE_UNDO" value1="The selected item was moved to the Recycle Bin. Undo" />
+
+		<execute action="PGBlogs#assertTextNotPresent" value1="${entryTitle}" />
+
+		<execute action="PGBlogs#assertTextNotPresent" value1="${entryContent}" />
 	</command>
 </definition>

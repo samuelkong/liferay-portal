@@ -52,6 +52,7 @@ public abstract class BaseSiteMembershipPolicyTestCase
 	}
 
 	@After
+	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
 

@@ -101,6 +101,30 @@ public class SeleniumBuilderTest {
 				"/FunctionDefinitionElement1002.function:2");
 	}
 
+	@Test
+	public void testFunctionExecuteElement1003() throws Exception {
+		test(
+			"FunctionExecuteElement1003.function",
+			"Error 1005: Invalid function attribute in " + _DIR_NAME +
+				"/FunctionExecuteElement1003.function:3");
+	}
+
+	@Test
+	public void testFunctionExecuteElement1004_1() throws Exception {
+		test(
+			"FunctionExecuteElement1004_1.function",
+			"Error 1004: Missing (function|selenium) attribute in " +
+				_DIR_NAME + "/FunctionExecuteElement1004_1.function:3");
+	}
+
+	@Test
+	public void testFunctionExecuteElement1004_2() throws Exception {
+		test(
+			"FunctionExecuteElement1004_2.function",
+			"Error 1004: Missing (function|selenium) attribute in " +
+				_DIR_NAME + "/FunctionExecuteElement1004_2.function:3");
+	}
+
 	protected void test(String fileName) throws Exception {
 		test(fileName, null);
 	}

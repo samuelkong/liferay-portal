@@ -52,6 +52,7 @@ public abstract class BaseOrganizationMembershipPolicyTestCase
 	}
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -59,6 +60,7 @@ public abstract class BaseOrganizationMembershipPolicyTestCase
 	}
 
 	@After
+	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
 

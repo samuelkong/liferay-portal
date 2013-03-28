@@ -262,14 +262,37 @@ public class SeleniumBuilderFileUtil {
 	}
 
 	protected void throwValidationException(int errorCode, String fileName) {
-		throwValidationException(errorCode, fileName, null);
+		throwValidationException(errorCode, fileName, null, null, null);
 	}
 
 	protected void throwValidationException(
 		int errorCode, String fileName, Element element) {
 
+		throwValidationException(errorCode, fileName, element, null, null);
+	}
+
+	protected void throwValidationException(
+		int errorCode, String fileName, Element element, String string) {
+
+		throwValidationException(errorCode, fileName, element, null, string);
+	}
+
+	protected void throwValidationException(
+		int errorCode, String fileName, Element element, String[] array) {
+
+		throwValidationException(errorCode, fileName, element, array, null);
+	}
+
+	protected void throwValidationException(
+		int errorCode, String fileName, Element element, String[] array,
+		String string) {
+
 		String prefix = "Error " + errorCode + ": ";
-		String suffix = fileName + ":" + element.attributeValue("line-number");
+		String suffix = fileName;
+
+		if (element != null) {
+			suffix += ":" + element.attributeValue("line-number");
+		}
 
 		if (errorCode == 1000) {
 			throw new IllegalArgumentException(
@@ -285,7 +308,16 @@ public class SeleniumBuilderFileUtil {
 		}
 		else if (errorCode == 1003) {
 			throw new IllegalArgumentException(
-				prefix + "Missing name attribute in " + suffix);
+				prefix + "Missing " + string + " attribute in " + suffix);
+		}
+		else if (errorCode == 1004) {
+			throw new IllegalArgumentException(
+				prefix + "Missing (" + StringUtil.merge(array, "|") +
+					") attribute in " + suffix);
+		}
+		else if (errorCode == 1005) {
+			throw new IllegalArgumentException(
+				prefix + "Invalid " + string + " attribute in " + suffix);
 		}
 		else {
 			throw new IllegalArgumentException(prefix + suffix);
@@ -341,6 +373,12 @@ public class SeleniumBuilderFileUtil {
 			else if (elementName.equals("var")) {
 				validateVarElement(fileName, element);
 			}
+			else if (elementName.equals("while")) {
+				validateWhileElement(
+					fileName, element, allowedCommandChildElementNames,
+					allowedExecuteAttributeNames,
+					allowedExecuteChildElementNames);
+			}
 			else {
 				throwValidationException(1002, fileName, element);
 			}
@@ -370,7 +408,8 @@ public class SeleniumBuilderFileUtil {
 		}
 
 		if (!hasAllowedAttributeName) {
-			throwValidationException(0, fileName);
+			throwValidationException(
+				1004, fileName, executeElement, allowedExecuteAttributeNames);
 		}
 
 		String action = executeElement.attributeValue("action");
@@ -403,8 +442,13 @@ public class SeleniumBuilderFileUtil {
 				}
 			}
 		}
-		else if (Validator.isNotNull(function) &&
-				function.matches(allowedExecuteAttributeValuesRegex)) {
+		else if (function != null) {
+			if (Validator.isNull(function) ||
+				!function.matches(allowedExecuteAttributeValuesRegex)) {
+
+				throwValidationException(
+					1005, fileName, executeElement, "function");
+			}
 
 			for (Attribute attribute : attributes) {
 				String attributeName = attribute.getName();
@@ -503,7 +547,7 @@ public class SeleniumBuilderFileUtil {
 
 			if (elementName.equals("command")) {
 				if (Validator.isNull(element.attributeValue("name"))) {
-					throwValidationException(1003, fileName, element);
+					throwValidationException(1003, fileName, element, "name");
 				}
 
 				validateCommandElement(
@@ -564,11 +608,12 @@ public class SeleniumBuilderFileUtil {
 
 			if (elementName.equals("command")) {
 				if (Validator.isNull(element.attributeValue("name"))) {
-					throwValidationException(1003, fileName, element);
+					throwValidationException(1003, fileName, element, "name");
 				}
 
 				validateCommandElement(
-					fileName, element, new String[] {"execute", "if", "var"},
+					fileName, element,
+					new String[] {"execute", "if", "var", "while"},
 					new String[] {"action", "macro"}, new String[] {"var"});
 			}
 			else if (elementName.equals("var")) {
@@ -635,6 +680,38 @@ public class SeleniumBuilderFileUtil {
 
 		if (!elements.isEmpty()) {
 			throwValidationException(0, fileName);
+		}
+	}
+
+	protected void validateWhileElement(
+		String fileName, Element whileElement,
+		String[] allowedCommandChildElementNames,
+		String[] allowedExecuteAttributeNames,
+		String[] allowedExecuteChildElementNames) {
+
+		List<Element> elements = whileElement.elements();
+
+		if (elements.isEmpty()) {
+			throwValidationException(1001, fileName, whileElement);
+		}
+
+		for (Element element : elements) {
+			String elementName = element.getName();
+
+			if (elementName.equals("condition")) {
+				validateExecuteElement(
+					fileName, element, allowedExecuteAttributeNames,
+					".*(is|Is).+", allowedExecuteChildElementNames);
+			}
+			else if (elementName.equals("then")) {
+				validateCommandElement(
+					fileName, element, allowedCommandChildElementNames,
+					allowedExecuteAttributeNames,
+					allowedExecuteChildElementNames);
+			}
+			else {
+				throwValidationException(0, fileName);
+			}
 		}
 	}
 
