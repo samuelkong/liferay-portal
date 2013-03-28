@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.expando.NoSuchRowException;
+import com.liferay.portlet.expando.NoSuchTableException;
 import com.liferay.portlet.expando.model.ExpandoRow;
 import com.liferay.portlet.expando.model.ExpandoTable;
 import com.liferay.portlet.expando.model.ExpandoTableConstants;
@@ -70,19 +72,27 @@ public class ExpandoRowLocalServiceImpl extends ExpandoRowLocalServiceBaseImpl {
 	public void deleteRow(long tableId, long classPK)
 		throws PortalException, SystemException {
 
-		ExpandoRow row = expandoRowPersistence.findByT_C(tableId, classPK);
+		try {
+			ExpandoRow row = expandoRowPersistence.findByT_C(tableId, classPK);
 
-		deleteRow(row);
+			deleteRow(row);
+		}
+		catch (NoSuchRowException nsre) {
+		}
 	}
 
 	public void deleteRow(
 			long companyId, long classNameId, String tableName, long classPK)
 		throws PortalException, SystemException {
 
-		ExpandoTable table = expandoTableLocalService.getTable(
-			companyId, classNameId, tableName);
+		try {
+			ExpandoTable table = expandoTableLocalService.getTable(
+				companyId, classNameId, tableName);
 
-		expandoRowLocalService.deleteRow(table.getTableId(), classPK);
+			expandoRowLocalService.deleteRow(table.getTableId(), classPK);
+		}
+		catch (NoSuchTableException nste) {
+		}
 	}
 
 	public void deleteRow(

@@ -31,6 +31,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.DuplicateFeedIdException;
 import com.liferay.portlet.journal.FeedContentFieldException;
 import com.liferay.portlet.journal.FeedIdException;
@@ -177,8 +178,9 @@ public class JournalFeedLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			JournalFeed.class.getName(), feed.getId());
+		expandoRowLocalService.deleteRow(
+			feed.getCompanyId(), JournalFeed.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, feed.getId());
 
 		// Resources
 

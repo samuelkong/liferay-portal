@@ -71,6 +71,7 @@ import com.liferay.portlet.calendar.model.CalEventConstants;
 import com.liferay.portlet.calendar.service.base.CalEventLocalServiceBaseImpl;
 import com.liferay.portlet.calendar.social.CalendarActivityKeys;
 import com.liferay.portlet.calendar.util.CalUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.util.TimeZoneSensitive;
 
 import java.io.File;
@@ -421,8 +422,9 @@ public class CalEventLocalServiceImpl extends CalEventLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			CalEvent.class.getName(), event.getEventId());
+		expandoRowLocalService.deleteRow(
+			event.getCompanyId(), CalEvent.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, event.getEventId());
 
 		// Pool
 

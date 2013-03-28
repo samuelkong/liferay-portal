@@ -62,6 +62,7 @@ import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetLinkConstants;
 import com.liferay.portlet.blogs.model.BlogsEntry;
 import com.liferay.portlet.blogs.util.LinkbackProducerUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.messageboards.MessageBodyException;
 import com.liferay.portlet.messageboards.MessageSubjectException;
 import com.liferay.portlet.messageboards.NoSuchDiscussionException;
@@ -650,8 +651,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			message.getWorkflowClassName(), message.getMessageId());
+		expandoRowLocalService.deleteRow(
+			message.getCompanyId(), message.getWorkflowClassName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, message.getMessageId());
 
 		// Ratings
 

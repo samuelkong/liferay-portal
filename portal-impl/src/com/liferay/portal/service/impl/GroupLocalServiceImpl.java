@@ -83,6 +83,7 @@ import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.comparator.GroupNameComparator;
 import com.liferay.portlet.blogs.model.BlogsEntry;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.model.JournalArticle;
 
 import java.io.File;
@@ -688,6 +689,12 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 
 		assetVocabularyLocalService.deleteVocabularies(group.getGroupId());
+
+		// Expando
+
+		expandoRowLocalService.deleteRow(
+			group.getCompanyId(), Group.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, group.getGroupId());
 
 		// Shopping
 

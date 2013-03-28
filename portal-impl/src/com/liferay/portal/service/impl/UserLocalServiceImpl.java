@@ -129,6 +129,7 @@ import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.SubscriptionSender;
 import com.liferay.portlet.documentlibrary.ImageSizeException;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.util.Encryptor;
@@ -1828,8 +1829,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			User.class.getName(), user.getUserId());
+		expandoRowLocalService.deleteRow(
+			user.getCompanyId(), User.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, user.getUserId());
 
 		// Message boards
 

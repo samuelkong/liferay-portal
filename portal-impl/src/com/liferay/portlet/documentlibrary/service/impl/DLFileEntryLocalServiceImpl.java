@@ -97,6 +97,7 @@ import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.model.ExpandoColumnConstants;
 import com.liferay.portlet.expando.model.ExpandoRow;
 import com.liferay.portlet.expando.model.ExpandoTable;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
 import com.liferay.portlet.trash.model.TrashVersion;
 
@@ -738,8 +739,9 @@ public class DLFileEntryLocalServiceImpl
 		for (DLFileVersion dlFileVersion : dlFileVersions) {
 			dlFileVersionPersistence.remove(dlFileVersion);
 
-			expandoValueLocalService.deleteValues(
-				DLFileVersion.class.getName(),
+			expandoRowLocalService.deleteRow(
+				dlFileVersion.getCompanyId(), DLFileEntry.class.getName(),
+				ExpandoTableConstants.DEFAULT_TABLE_NAME,
 				dlFileVersion.getFileVersionId());
 
 			workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
@@ -749,8 +751,10 @@ public class DLFileEntryLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			DLFileEntry.class.getName(), dlFileEntry.getFileEntryId());
+		expandoRowLocalService.deleteRow(
+			dlFileEntry.getCompanyId(), DLFileEntry.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME,
+			dlFileEntry.getFileEntryId());
 
 		// Lock
 
@@ -836,8 +840,9 @@ public class DLFileEntryLocalServiceImpl
 
 			dlFileVersionPersistence.remove(dlFileVersion);
 
-			expandoValueLocalService.deleteValues(
-				DLFileVersion.class.getName(),
+			expandoRowLocalService.deleteRow(
+				dlFileVersion.getCompanyId(), DLFileEntry.class.getName(),
+				ExpandoTableConstants.DEFAULT_TABLE_NAME,
 				dlFileVersion.getFileVersionId());
 
 			dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(fileEntryId);
@@ -2155,8 +2160,10 @@ public class DLFileEntryLocalServiceImpl
 
 		dlFileVersionPersistence.remove(dlFileVersion);
 
-		expandoValueLocalService.deleteValues(
-			DLFileVersion.class.getName(), dlFileVersion.getFileVersionId());
+		expandoRowLocalService.deleteRow(
+			dlFileVersion.getCompanyId(), DLFileEntry.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME,
+			dlFileVersion.getFileVersionId());
 
 		dlFileEntryMetadataLocalService.deleteFileVersionFileEntryMetadata(
 			dlFileVersion.getFileVersionId());

@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.messageboards.CategoryNameException;
 import com.liferay.portlet.messageboards.NoSuchMailingListException;
 import com.liferay.portlet.messageboards.model.MBCategory;
@@ -253,8 +254,9 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			MBCategory.class.getName(), category.getCategoryId());
+		expandoRowLocalService.deleteRow(
+			category.getCompanyId(), MBCategory.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, category.getCategoryId());
 
 		// Resources
 
