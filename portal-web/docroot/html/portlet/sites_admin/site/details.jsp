@@ -497,7 +497,7 @@ if (parentGroup != null) {
 			rowColumns.push(<portlet:namespace />createURL(href, name));
 			rowColumns.push('<a class="modify-link" data-rowId="' + groupId + '" href="javascript:;"><%= UnicodeFormatter.toString(removeGroupIcon) %></a>');
 
-			searchContainer.deleteRow(1, searchContainer.getData());
+			searchContainer.deleteRow(2, searchContainer.getData());
 			searchContainer.addRow(rowColumns, groupId);
 			searchContainer.updateDataStore(groupId);
 		},
