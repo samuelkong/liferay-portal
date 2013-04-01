@@ -26,6 +26,7 @@ page import="com.liferay.portal.LayoutImportException" %><%@
 page import="com.liferay.portal.LayoutNameException" %><%@
 page import="com.liferay.portal.LayoutPrototypeException" %><%@
 page import="com.liferay.portal.LayoutTypeException" %><%@
+page import="com.liferay.portal.LayoutTypeSettingsPropertiesException" %><%@
 page import="com.liferay.portal.LocaleException" %><%@
 page import="com.liferay.portal.NoSuchGroupException" %><%@
 page import="com.liferay.portal.NoSuchLayoutException" %><%@
