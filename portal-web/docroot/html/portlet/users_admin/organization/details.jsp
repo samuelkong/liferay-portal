@@ -307,7 +307,7 @@ if (parentOrganization != null) {
 						rowColumns.push(<portlet:namespace />createURL(href, event.type));
 						rowColumns.push('<a class="modify-link" data-rowId="' + event.organizationid + '" href="javascript:;"><%= UnicodeFormatter.toString(removeOrganizationIcon) %></a>');
 
-						searchContainer.deleteRow(1, searchContainer.getData());
+						searchContainer.deleteRow(2, searchContainer.getData());
 						searchContainer.addRow(rowColumns, event.organizationid);
 						searchContainer.updateDataStore(event.organizationid);
 					}
