@@ -22,6 +22,7 @@ import com.liferay.portal.LayoutParentLayoutIdException;
 import com.liferay.portal.LayoutPrototypeException;
 import com.liferay.portal.LayoutSetVirtualHostException;
 import com.liferay.portal.LayoutTypeException;
+import com.liferay.portal.LayoutTypeSettingsPropertiesException;
 import com.liferay.portal.NoSuchGroupException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RemoteExportException;
@@ -285,6 +286,7 @@ public class EditLayoutsAction extends PortletAction {
 					 e instanceof LayoutParentLayoutIdException ||
 					 e instanceof LayoutSetVirtualHostException ||
 					 e instanceof LayoutTypeException ||
+					 e instanceof LayoutTypeSettingsPropertiesException ||
 					 e instanceof RequiredLayoutException ||
 					 e instanceof UploadException) {
 

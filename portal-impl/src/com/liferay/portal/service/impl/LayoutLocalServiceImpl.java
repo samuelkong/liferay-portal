@@ -14,6 +14,7 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.LayoutTypeSettingsPropertiesException;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RequiredLayoutException;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lar.PortletDataException;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -1892,6 +1894,11 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		typeSettingsProperties.fastLoad(typeSettings);
 
+		String priority = typeSettingsProperties.getProperty(
+			"sitemap-priority");
+
+		Validate(priority);
+
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
@@ -2397,6 +2404,30 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		updateScopedPortletNames(
 			groupId, privateLayout, layoutId, map, locales);
+	}
+
+	protected void Validate(String priority)
+		throws LayoutTypeSettingsPropertiesException {
+
+		if (priority == null) {
+			return;
+		}
+		else if (priority.indexOf(CharPool.PERIOD) == -1) {
+			throw new LayoutTypeSettingsPropertiesException();
+		}
+		else if (!Validator.isDigit(priority.split("\\.")[0]) ||
+				 !Validator.isDigit(priority.split("\\.")[1])) {
+
+			throw new LayoutTypeSettingsPropertiesException();
+		}
+		else if (GetterUtil.getInteger(priority.split("\\.")[1]) > 10) {
+			throw new LayoutTypeSettingsPropertiesException();
+		}
+		else if ((GetterUtil.getFloat(priority) < 0) ||
+				 (GetterUtil.getFloat(priority) > 1) ) {
+
+			throw new LayoutTypeSettingsPropertiesException();
+		}
 	}
 
 	@BeanReference(type = LayoutLocalServiceHelper.class)
