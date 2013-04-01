@@ -247,6 +247,8 @@ import com.liferay.portlet.documentlibrary.service.DLFileEntryTypeLocalService;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryTypeService;
 import com.liferay.portlet.documentlibrary.service.persistence.DLFileEntryTypeFinder;
 import com.liferay.portlet.documentlibrary.service.persistence.DLFileEntryTypePersistence;
+import com.liferay.portlet.expando.service.ExpandoRowLocalService;
+import com.liferay.portlet.expando.service.persistence.ExpandoRowPersistence;
 import com.liferay.portlet.journal.service.JournalArticleLocalService;
 import com.liferay.portlet.journal.service.JournalArticleService;
 import com.liferay.portlet.journal.service.JournalStructureLocalService;
@@ -5031,6 +5033,44 @@ public abstract class GroupLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the expando row local service.
+	 *
+	 * @return the expando row local service
+	 */
+	public ExpandoRowLocalService getExpandoRowLocalService() {
+		return expandoRowLocalService;
+	}
+
+	/**
+	 * Sets the expando row local service.
+	 *
+	 * @param expandoRowLocalService the expando row local service
+	 */
+	public void setExpandoRowLocalService(
+		ExpandoRowLocalService expandoRowLocalService) {
+		this.expandoRowLocalService = expandoRowLocalService;
+	}
+
+	/**
+	 * Returns the expando row persistence.
+	 *
+	 * @return the expando row persistence
+	 */
+	public ExpandoRowPersistence getExpandoRowPersistence() {
+		return expandoRowPersistence;
+	}
+
+	/**
+	 * Sets the expando row persistence.
+	 *
+	 * @param expandoRowPersistence the expando row persistence
+	 */
+	public void setExpandoRowPersistence(
+		ExpandoRowPersistence expandoRowPersistence) {
+		this.expandoRowPersistence = expandoRowPersistence;
+	}
+
+	/**
 	 * Returns the journal article local service.
 	 *
 	 * @return the journal article local service
@@ -6513,6 +6553,10 @@ public abstract class GroupLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected DLFileEntryTypePersistence dlFileEntryTypePersistence;
 	@BeanReference(type = DLFileEntryTypeFinder.class)
 	protected DLFileEntryTypeFinder dlFileEntryTypeFinder;
+	@BeanReference(type = ExpandoRowLocalService.class)
+	protected ExpandoRowLocalService expandoRowLocalService;
+	@BeanReference(type = ExpandoRowPersistence.class)
+	protected ExpandoRowPersistence expandoRowPersistence;
 	@BeanReference(type = JournalArticleLocalService.class)
 	protected JournalArticleLocalService journalArticleLocalService;
 	@BeanReference(type = JournalArticleService.class)

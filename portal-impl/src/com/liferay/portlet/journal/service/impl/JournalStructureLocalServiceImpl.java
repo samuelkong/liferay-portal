@@ -34,6 +34,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.DuplicateStructureElementException;
 import com.liferay.portlet.journal.DuplicateStructureIdException;
 import com.liferay.portlet.journal.NoSuchArticleException;
@@ -310,8 +311,9 @@ public class JournalStructureLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			JournalStructure.class.getName(), structure.getId());
+		expandoRowLocalService.deleteRow(
+			structure.getCompanyId(), JournalStructure.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, structure.getId());
 
 		// Resources
 

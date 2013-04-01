@@ -33,6 +33,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetLinkConstants;
 import com.liferay.portlet.asset.util.AssetUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.DuplicateFolderNameException;
 import com.liferay.portlet.journal.FolderNameException;
 import com.liferay.portlet.journal.model.JournalArticle;
@@ -142,8 +143,9 @@ public class JournalFolderLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			JournalFolder.class.getName(), folder.getFolderId());
+		expandoRowLocalService.deleteRow(
+			folder.getCompanyId(), JournalFolder.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, folder.getFolderId());
 
 		// Trash
 

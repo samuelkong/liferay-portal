@@ -51,6 +51,7 @@ import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.model.impl.DLFolderImpl;
 import com.liferay.portlet.documentlibrary.service.base.DLFolderLocalServiceBaseImpl;
 import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 
 import java.io.Serializable;
 
@@ -239,8 +240,9 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			DLFolder.class.getName(), dlFolder.getFolderId());
+		expandoRowLocalService.deleteRow(
+			dlFolder.getCompanyId(), DLFolder.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, dlFolder.getFolderId());
 
 		// App helper
 

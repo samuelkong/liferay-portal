@@ -44,6 +44,7 @@ import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.base.UserGroupLocalServiceBaseImpl;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 
 import java.io.File;
 import java.io.Serializable;
@@ -335,8 +336,10 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			UserGroup.class.getName(), userGroup.getUserGroupId());
+		expandoRowLocalService.deleteRow(
+			userGroup.getCompanyId(), UserGroup.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME,
+			userGroup.getUserGroupId());
 
 		// Users
 

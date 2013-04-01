@@ -57,6 +57,7 @@ import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
 import java.util.ArrayList;
@@ -423,8 +424,9 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			Role.class.getName(), role.getRoleId());
+		expandoRowLocalService.deleteRow(
+			role.getCompanyId(), Role.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, role.getRoleId());
 
 		// Permission cache
 

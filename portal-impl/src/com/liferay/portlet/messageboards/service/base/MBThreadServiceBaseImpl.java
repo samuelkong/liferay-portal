@@ -39,6 +39,8 @@ import com.liferay.portlet.asset.service.AssetEntryLocalService;
 import com.liferay.portlet.asset.service.AssetEntryService;
 import com.liferay.portlet.asset.service.persistence.AssetEntryFinder;
 import com.liferay.portlet.asset.service.persistence.AssetEntryPersistence;
+import com.liferay.portlet.expando.service.ExpandoRowLocalService;
+import com.liferay.portlet.expando.service.persistence.ExpandoRowPersistence;
 import com.liferay.portlet.messageboards.model.MBThread;
 import com.liferay.portlet.messageboards.service.MBBanLocalService;
 import com.liferay.portlet.messageboards.service.MBBanService;
@@ -839,6 +841,44 @@ public abstract class MBThreadServiceBaseImpl extends BaseServiceImpl
 	}
 
 	/**
+	 * Returns the expando row local service.
+	 *
+	 * @return the expando row local service
+	 */
+	public ExpandoRowLocalService getExpandoRowLocalService() {
+		return expandoRowLocalService;
+	}
+
+	/**
+	 * Sets the expando row local service.
+	 *
+	 * @param expandoRowLocalService the expando row local service
+	 */
+	public void setExpandoRowLocalService(
+		ExpandoRowLocalService expandoRowLocalService) {
+		this.expandoRowLocalService = expandoRowLocalService;
+	}
+
+	/**
+	 * Returns the expando row persistence.
+	 *
+	 * @return the expando row persistence
+	 */
+	public ExpandoRowPersistence getExpandoRowPersistence() {
+		return expandoRowPersistence;
+	}
+
+	/**
+	 * Sets the expando row persistence.
+	 *
+	 * @param expandoRowPersistence the expando row persistence
+	 */
+	public void setExpandoRowPersistence(
+		ExpandoRowPersistence expandoRowPersistence) {
+		this.expandoRowPersistence = expandoRowPersistence;
+	}
+
+	/**
 	 * Returns the ratings stats local service.
 	 *
 	 * @return the ratings stats local service
@@ -1195,6 +1235,10 @@ public abstract class MBThreadServiceBaseImpl extends BaseServiceImpl
 	protected AssetEntryPersistence assetEntryPersistence;
 	@BeanReference(type = AssetEntryFinder.class)
 	protected AssetEntryFinder assetEntryFinder;
+	@BeanReference(type = ExpandoRowLocalService.class)
+	protected ExpandoRowLocalService expandoRowLocalService;
+	@BeanReference(type = ExpandoRowPersistence.class)
+	protected ExpandoRowPersistence expandoRowPersistence;
 	@BeanReference(type = RatingsStatsLocalService.class)
 	protected RatingsStatsLocalService ratingsStatsLocalService;
 	@BeanReference(type = RatingsStatsPersistence.class)

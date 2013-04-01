@@ -49,9 +49,8 @@ import com.liferay.portlet.asset.service.persistence.AssetEntryFinder;
 import com.liferay.portlet.asset.service.persistence.AssetEntryPersistence;
 import com.liferay.portlet.asset.service.persistence.AssetLinkFinder;
 import com.liferay.portlet.asset.service.persistence.AssetLinkPersistence;
-import com.liferay.portlet.expando.service.ExpandoValueLocalService;
-import com.liferay.portlet.expando.service.ExpandoValueService;
-import com.liferay.portlet.expando.service.persistence.ExpandoValuePersistence;
+import com.liferay.portlet.expando.service.ExpandoRowLocalService;
+import com.liferay.portlet.expando.service.persistence.ExpandoRowPersistence;
 import com.liferay.portlet.journal.model.JournalFolder;
 import com.liferay.portlet.journal.service.JournalArticleImageLocalService;
 import com.liferay.portlet.journal.service.JournalArticleLocalService;
@@ -1159,59 +1158,41 @@ public abstract class JournalFolderLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the expando value local service.
+	 * Returns the expando row local service.
 	 *
-	 * @return the expando value local service
+	 * @return the expando row local service
 	 */
-	public ExpandoValueLocalService getExpandoValueLocalService() {
-		return expandoValueLocalService;
+	public ExpandoRowLocalService getExpandoRowLocalService() {
+		return expandoRowLocalService;
 	}
 
 	/**
-	 * Sets the expando value local service.
+	 * Sets the expando row local service.
 	 *
-	 * @param expandoValueLocalService the expando value local service
+	 * @param expandoRowLocalService the expando row local service
 	 */
-	public void setExpandoValueLocalService(
-		ExpandoValueLocalService expandoValueLocalService) {
-		this.expandoValueLocalService = expandoValueLocalService;
+	public void setExpandoRowLocalService(
+		ExpandoRowLocalService expandoRowLocalService) {
+		this.expandoRowLocalService = expandoRowLocalService;
 	}
 
 	/**
-	 * Returns the expando value remote service.
+	 * Returns the expando row persistence.
 	 *
-	 * @return the expando value remote service
+	 * @return the expando row persistence
 	 */
-	public ExpandoValueService getExpandoValueService() {
-		return expandoValueService;
+	public ExpandoRowPersistence getExpandoRowPersistence() {
+		return expandoRowPersistence;
 	}
 
 	/**
-	 * Sets the expando value remote service.
+	 * Sets the expando row persistence.
 	 *
-	 * @param expandoValueService the expando value remote service
+	 * @param expandoRowPersistence the expando row persistence
 	 */
-	public void setExpandoValueService(ExpandoValueService expandoValueService) {
-		this.expandoValueService = expandoValueService;
-	}
-
-	/**
-	 * Returns the expando value persistence.
-	 *
-	 * @return the expando value persistence
-	 */
-	public ExpandoValuePersistence getExpandoValuePersistence() {
-		return expandoValuePersistence;
-	}
-
-	/**
-	 * Sets the expando value persistence.
-	 *
-	 * @param expandoValuePersistence the expando value persistence
-	 */
-	public void setExpandoValuePersistence(
-		ExpandoValuePersistence expandoValuePersistence) {
-		this.expandoValuePersistence = expandoValuePersistence;
+	public void setExpandoRowPersistence(
+		ExpandoRowPersistence expandoRowPersistence) {
+		this.expandoRowPersistence = expandoRowPersistence;
 	}
 
 	/**
@@ -1529,12 +1510,10 @@ public abstract class JournalFolderLocalServiceBaseImpl
 	protected AssetLinkPersistence assetLinkPersistence;
 	@BeanReference(type = AssetLinkFinder.class)
 	protected AssetLinkFinder assetLinkFinder;
-	@BeanReference(type = ExpandoValueLocalService.class)
-	protected ExpandoValueLocalService expandoValueLocalService;
-	@BeanReference(type = ExpandoValueService.class)
-	protected ExpandoValueService expandoValueService;
-	@BeanReference(type = ExpandoValuePersistence.class)
-	protected ExpandoValuePersistence expandoValuePersistence;
+	@BeanReference(type = ExpandoRowLocalService.class)
+	protected ExpandoRowLocalService expandoRowLocalService;
+	@BeanReference(type = ExpandoRowPersistence.class)
+	protected ExpandoRowPersistence expandoRowPersistence;
 	@BeanReference(type = SocialActivityLocalService.class)
 	protected SocialActivityLocalService socialActivityLocalService;
 	@BeanReference(type = SocialActivityPersistence.class)
