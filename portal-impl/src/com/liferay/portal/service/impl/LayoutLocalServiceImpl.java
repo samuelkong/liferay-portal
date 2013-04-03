@@ -14,7 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.LayoutTypeSettingsPropertiesException;
+import com.liferay.portal.InvalidChangeFrequencyException;
+import com.liferay.portal.InvalidIncludeException;
+import com.liferay.portal.InvalidPriorityException;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RequiredLayoutException;
@@ -33,7 +35,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lar.PortletDataException;
-import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -1893,10 +1894,13 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		typeSettingsProperties.fastLoad(typeSettings);
 
-		String priority = typeSettingsProperties.getProperty(
+		String sitemapPriority = typeSettingsProperties.getProperty(
 			"sitemap-priority");
+		String include = typeSettingsProperties.getProperty("sitemap-include");
+		String changeFrequency = typeSettingsProperties.getProperty(
+			"sitemap-changefreq");
 
-		Validate(priority);
+		validate(sitemapPriority, include, changeFrequency);
 
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
@@ -2405,27 +2409,38 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			groupId, privateLayout, layoutId, map, locales);
 	}
 
-	protected void Validate(String priority)
-		throws LayoutTypeSettingsPropertiesException {
+	protected void validate(
+			String sitemapPriority, String include, String changeFrequency)
+		throws PortalException {
 
-		if (priority == null) {
-			return;
+		if (Validator.isNull(include)) {
+			throw new InvalidIncludeException();
 		}
-		else if (priority.indexOf(CharPool.PERIOD) == -1) {
-			throw new LayoutTypeSettingsPropertiesException();
+		else if (!(include.equals("0") || include.equals("1"))) {
+			throw new InvalidIncludeException();
 		}
-		else if (!Validator.isDigit(priority.split("\\.")[0]) ||
-				 !Validator.isDigit(priority.split("\\.")[1])) {
 
-			throw new LayoutTypeSettingsPropertiesException();
+		if (Validator.isNull(sitemapPriority)) {
 		}
-		else if (GetterUtil.getInteger(priority.split("\\.")[1]) > 10) {
-			throw new LayoutTypeSettingsPropertiesException();
-		}
-		else if ((GetterUtil.getFloat(priority) < 0) ||
-				 (GetterUtil.getFloat(priority) > 1) ) {
+		else if (!sitemapPriority.matches("^\\d+\\.\\d+$") ||
+				 (GetterUtil.getFloat(sitemapPriority) < 0) ||
+				 (GetterUtil.getFloat(sitemapPriority) > 1)) {
 
-			throw new LayoutTypeSettingsPropertiesException();
+			throw new InvalidPriorityException();
+		}
+
+		if (Validator.isNull(changeFrequency)) {
+			throw new InvalidChangeFrequencyException();
+		}
+		else if (!(changeFrequency.equals("always") ||
+				 changeFrequency.equals("hourly") ||
+				 changeFrequency.equals("daily") ||
+				 changeFrequency.equals("weekly") ||
+				 changeFrequency.equals("monthly") ||
+				 changeFrequency.equals("yearly") ||
+				 changeFrequency.equals("never"))) {
+
+			throw new InvalidChangeFrequencyException();
 		}
 	}
 
