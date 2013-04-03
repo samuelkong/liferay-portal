@@ -210,7 +210,7 @@ AUI.add(
 						if (Lang.isNumber(obj) || Lang.isString(obj)) {
 							var row = null;
 
-							if(Lang.isNumber(obj)) {
+							if (Lang.isNumber(obj)) {
 								obj = obj + 1;
 							}
 
