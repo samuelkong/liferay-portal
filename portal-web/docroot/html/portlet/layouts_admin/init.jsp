@@ -18,6 +18,9 @@
 
 <%@ page import="com.liferay.portal.DuplicateLockException" %><%@
 page import="com.liferay.portal.ImageTypeException" %><%@
+page import="com.liferay.portal.InvalidChangeFrequencyException" %><%@
+page import="com.liferay.portal.InvalidIncludeException" %><%@
+page import="com.liferay.portal.InvalidPriorityException" %><%@
 page import="com.liferay.portal.LARFileException" %><%@
 page import="com.liferay.portal.LARFileSizeException" %><%@
 page import="com.liferay.portal.LARTypeException" %><%@
@@ -26,7 +29,6 @@ page import="com.liferay.portal.LayoutImportException" %><%@
 page import="com.liferay.portal.LayoutNameException" %><%@
 page import="com.liferay.portal.LayoutPrototypeException" %><%@
 page import="com.liferay.portal.LayoutTypeException" %><%@
-page import="com.liferay.portal.LayoutTypeSettingsPropertiesException" %><%@
 page import="com.liferay.portal.LocaleException" %><%@
 page import="com.liferay.portal.NoSuchGroupException" %><%@
 page import="com.liferay.portal.NoSuchLayoutException" %><%@
