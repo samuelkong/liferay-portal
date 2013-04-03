@@ -139,6 +139,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 						title="<%= entry.getDescription() %>"
 						value="<%= folder.getName() %>"
 					/>
+
 					<c:if test="<%= showEntryAction %>">
 						<liferay-ui:search-container-column-jsp
 							path="/html/portlet/bookmarks/entry_action.jsp"
