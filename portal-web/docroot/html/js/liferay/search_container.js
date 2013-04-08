@@ -210,6 +210,10 @@ AUI.add(
 						if (Lang.isNumber(obj) || Lang.isString(obj)) {
 							var row = null;
 
+							if (Lang.isNumber(obj)) {
+								obj = obj + 1;
+							}
+
 							instance._table.all('tr').some(
 								function(item, index, collection) {
 									if (!item.hasClass(CSS_TEMPLATE) && index == obj) {
