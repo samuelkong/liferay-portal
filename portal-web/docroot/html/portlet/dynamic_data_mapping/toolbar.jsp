@@ -37,6 +37,7 @@ long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
 			<portlet:param name="struts_action" value="/dynamic_data_mapping/edit_structure" />
 			<portlet:param name="redirect" value="<%= viewStructuresURL %>" />
 			<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+			<portlet:param name="refererPortletName" value="<%= refererPortletName %>" />
 		</portlet:renderURL>
 
 		<span class="lfr-toolbar-button add-button <%= toolbarItem.equals("add") ? "current" : StringPool.BLANK %>">

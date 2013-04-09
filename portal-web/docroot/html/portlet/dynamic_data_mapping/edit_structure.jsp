@@ -70,6 +70,7 @@ if (Validator.isNotNull(script)) {
 	<aui:input name="classNameId" type="hidden" value="<%= String.valueOf(classNameId) %>" />
 	<aui:input name="classPK" type="hidden" value="<%= String.valueOf(classPK) %>" />
 	<aui:input name="xsd" type="hidden" />
+	<aui:input name="refererPortletName" type="hidden" value="<%= refererPortletName %>" />
 	<aui:input name="saveCallback" type="hidden" value="<%= saveCallback %>" />
 	<aui:input name="saveAndContinue" type="hidden" value="<%= false %>" />
 

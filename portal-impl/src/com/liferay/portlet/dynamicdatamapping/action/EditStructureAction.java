@@ -95,14 +95,19 @@ public class EditStructureAction extends PortletAction {
 				}
 
 				if (SessionErrors.isEmpty(actionRequest)) {
-					LiferayPortletConfig liferayPortletConfig =
-						(LiferayPortletConfig)portletConfig;
+					String refererPortletName = ParamUtil.getString(
+						actionRequest, "refererPortletName");
 
-					SessionMessages.add(
-						actionRequest,
-						liferayPortletConfig.getPortletId() +
-							SessionMessages.KEY_SUFFIX_REFRESH_PORTLET,
-						PortletKeys.JOURNAL);
+					if (refererPortletName.equals(PortletKeys.JOURNAL)) {
+						LiferayPortletConfig liferayPortletConfig =
+							(LiferayPortletConfig)portletConfig;
+
+						SessionMessages.add(
+							actionRequest,
+							liferayPortletConfig.getPortletId() +
+								SessionMessages.KEY_SUFFIX_REFRESH_PORTLET,
+								PortletKeys.JOURNAL);
+					}
 				}
 
 				sendRedirect(actionRequest, actionResponse, redirect);
