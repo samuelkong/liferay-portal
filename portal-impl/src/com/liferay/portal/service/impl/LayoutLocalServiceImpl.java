@@ -14,6 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.InvalidChangeFrequencyException;
+import com.liferay.portal.InvalidIncludeException;
+import com.liferay.portal.InvalidPriorityException;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RequiredLayoutException;
@@ -1891,6 +1894,14 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		typeSettingsProperties.fastLoad(typeSettings);
 
+		String sitemapPriority = typeSettingsProperties.getProperty(
+			"sitemap-priority");
+		String include = typeSettingsProperties.getProperty("sitemap-include");
+		String changeFrequency = typeSettingsProperties.getProperty(
+			"sitemap-changefreq");
+
+		validate(sitemapPriority, include, changeFrequency);
+
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
@@ -2396,6 +2407,41 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		updateScopedPortletNames(
 			groupId, privateLayout, layoutId, map, locales);
+	}
+
+	protected void validate(
+			String sitemapPriority, String include, String changeFrequency)
+		throws PortalException {
+
+		if (Validator.isNull(include)) {
+			throw new InvalidIncludeException();
+		}
+		else if (!(include.equals("0") || include.equals("1"))) {
+			throw new InvalidIncludeException();
+		}
+
+		if (Validator.isNull(sitemapPriority)) {
+		}
+		else if (!sitemapPriority.matches("^\\d+\\.\\d+$") ||
+				 (GetterUtil.getFloat(sitemapPriority) < 0) ||
+				 (GetterUtil.getFloat(sitemapPriority) > 1)) {
+
+			throw new InvalidPriorityException();
+		}
+
+		if (Validator.isNull(changeFrequency)) {
+			throw new InvalidChangeFrequencyException();
+		}
+		else if (!(changeFrequency.equals("always") ||
+				 changeFrequency.equals("hourly") ||
+				 changeFrequency.equals("daily") ||
+				 changeFrequency.equals("weekly") ||
+				 changeFrequency.equals("monthly") ||
+				 changeFrequency.equals("yearly") ||
+				 changeFrequency.equals("never"))) {
+
+			throw new InvalidChangeFrequencyException();
+		}
 	}
 
 	@BeanReference(type = LayoutLocalServiceHelper.class)
