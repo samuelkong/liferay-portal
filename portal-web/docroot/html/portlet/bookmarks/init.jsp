@@ -87,6 +87,8 @@ String allFolderColumns = defaultFolderColumns;
 
 String[] folderColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "folderColumns", defaultFolderColumns));
 
+boolean showFolderAction = ArrayUtil.contains(folderColumns, "action");
+
 if (!portletId.equals(PortletKeys.BOOKMARKS)) {
 	folderColumns = ArrayUtil.remove(folderColumns, "action");
 }
@@ -103,6 +105,8 @@ if (portletId.equals(PortletKeys.BOOKMARKS)) {
 String allEntryColumns = defaultEntryColumns;
 
 String[] entryColumns = StringUtil.split(PrefsParamUtil.getString(preferences, request, "entryColumns", defaultEntryColumns));
+
+boolean showEntryAction = ArrayUtil.contains(entryColumns, "action");
 
 if (!portletId.equals(PortletKeys.BOOKMARKS)) {
 	entryColumns = ArrayUtil.remove(entryColumns, "action");
