@@ -492,7 +492,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		// Expando
 
 		expandoValueLocalService.deleteValues(
-			WikiPage.class.getName(), page.getResourcePrimKey());
+			WikiPage.class.getName(), page.getPrimaryKey());
 
 		// Message boards
 
