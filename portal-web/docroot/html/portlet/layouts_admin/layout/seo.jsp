@@ -58,7 +58,7 @@ if (selLayout != null) {
 			<aui:option label="no" selected="<%= !include %>" value="0" />
 		</aui:select>
 
-		<liferay-ui:error exception="<%= InvalidPriorityException.class %>" message="please-enter-a-valid-priority" />
+		<liferay-ui:error exception="<%= InvalidPagePriorityException.class %>" message="please-enter-a-valid-page-priority" />
 
 		<aui:input helpMessage="(0.0 - 1.0)" label="page-priority" name="TypeSettingsProperties--sitemap-priority--" size="3" type="text" value="<%= sitemapPriority %>" />
 

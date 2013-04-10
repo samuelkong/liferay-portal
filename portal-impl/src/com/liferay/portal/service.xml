@@ -2564,7 +2564,7 @@
 		<exception>InvalidChangeFrequency</exception>
 		<exception>InvalidInclude</exception>
 		<exception>InvalidLock</exception>
-		<exception>InvalidPriority</exception>
+		<exception>InvalidPagePriority</exception>
 		<exception>InvalidRepository</exception>
 		<exception>LARFile</exception>
 		<exception>LARFileSize</exception>
