@@ -91,6 +91,7 @@ import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.storage.FieldConstants;
 import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.ArticleContentException;
 import com.liferay.portlet.journal.ArticleDisplayDateException;
 import com.liferay.portlet.journal.ArticleExpirationDateException;
@@ -767,8 +768,9 @@ public class JournalArticleLocalServiceImpl
 
 			// Expando
 
-			expandoValueLocalService.deleteValues(
-				JournalArticle.class.getName(), article.getId());
+			expandoRowLocalService.deleteRow(
+				article.getCompanyId(), JournalArticle.class.getName(),
+				ExpandoTableConstants.DEFAULT_TABLE_NAME, article.getId());
 
 			// Trash
 

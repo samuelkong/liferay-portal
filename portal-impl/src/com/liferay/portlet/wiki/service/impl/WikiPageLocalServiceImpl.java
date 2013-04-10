@@ -54,6 +54,7 @@ import com.liferay.portlet.asset.NoSuchEntryException;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetLink;
 import com.liferay.portlet.asset.model.AssetLinkConstants;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.social.model.SocialActivity;
 import com.liferay.portlet.social.model.SocialActivityConstants;
 import com.liferay.portlet.trash.model.TrashEntry;
@@ -491,8 +492,9 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			WikiPage.class.getName(), page.getPrimaryKey());
+		expandoRowLocalService.deleteRow(
+			page.getCompanyId(), WikiPage.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, page.getPrimaryKey());
 
 		// Message boards
 

@@ -56,6 +56,7 @@ import com.liferay.portal.service.base.OrganizationLocalServiceBaseImpl;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.comparator.OrganizationNameComparator;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 
 import java.io.Serializable;
 
@@ -464,8 +465,10 @@ public class OrganizationLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			Organization.class.getName(), organization.getOrganizationId());
+		expandoRowLocalService.deleteRow(
+			organization.getCompanyId(), Organization.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME,
+			organization.getOrganizationId());
 
 		// Password policy relation
 

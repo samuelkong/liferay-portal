@@ -35,6 +35,7 @@ import com.liferay.portlet.bookmarks.model.BookmarksEntry;
 import com.liferay.portlet.bookmarks.model.BookmarksFolder;
 import com.liferay.portlet.bookmarks.model.BookmarksFolderConstants;
 import com.liferay.portlet.bookmarks.service.base.BookmarksFolderLocalServiceBaseImpl;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.social.model.SocialActivityConstants;
 import com.liferay.portlet.trash.model.TrashEntry;
 
@@ -140,8 +141,9 @@ public class BookmarksFolderLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			BookmarksFolder.class.getName(), folder.getFolderId());
+		expandoRowLocalService.deleteRow(
+			folder.getCompanyId(), BookmarksFolder.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, folder.getFolderId());
 
 		// Subscriptions
 
