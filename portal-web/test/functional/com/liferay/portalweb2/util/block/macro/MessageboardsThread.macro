@@ -12,21 +12,21 @@
 
 		<execute action="PGMessageboardsPostthread#click" locator-key1="PUBLISH" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="SUCCESS_MESSAGE" value1="Your request completed successfully." />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="SUCCESS_MESSAGE" />
 
 		<execute action="Home#open" locator-key1="HOME_URL" />
 
 		<execute action="Home#click" locator1="link=${pageName}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_THREAD" value1="${threadSubject}" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_STARTED_BY" value1="Test Test" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_STARTED_BY" value1="Test Test" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_POSTS" value1="1" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_POSTS" value1="1" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_LAST_POST" value1="By: Test Test" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_LAST_POST" value1="By: Test Test" />
 
-		<execute action="PGMessageboards#click" locator-key1="THREADS_THREAD" value1="${threadSubject}" />
+		<execute action="PGMessageboards#click" locator-key1="THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
 		<execute action="PGMessageboardsThread#assertTextEquals" locator-key1="TITLE" value1="${threadSubject}" />
 
@@ -42,11 +42,11 @@
 
 		<execute action="Home#click" locator1="link=${pageName}" />
 
-		<execute action="PGMessageboards#click" locator-key1="THREADS_ACTIONS" value1="Actions" />
+		<execute action="PGMessageboards#click" locator-key1="THREAD_TABLE_ACTIONS" />
 
-		<execute action="PGMessageboards#click" locator-key1="ACTIONS_MOVE_TO_THE_RECYCLE_BIN" value1="Move to the Recycle Bin" />
+		<execute action="PGMessageboards#click" locator-key1="THREAD_ACTIONS_RECYCLE_BIN" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="RECYCLE_BIN_SUCCESS_MESSAGE" value1="The selected item was moved to the Recycle Bin. Undo" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="RECYCLE_BIN_SUCCESS_MESSAGE" />
 
 		<execute action="PGMessageboards#assertTextNotPresent" value1="${threadSubject}" />
 
@@ -58,9 +58,9 @@
 
 		<execute action="Home#click" locator1="link=${pageName}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_THREAD" value1="${threadSubject}" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
-		<execute action="PGMessageboards#click" locator-key1="THREADS_THREAD" value1="${threadSubject}" />
+		<execute action="PGMessageboards#click" locator-key1="THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
 		<execute action="PGMessageboardsThread#click" locator-key1="REPLY_1" value1="Reply" />
 
@@ -68,21 +68,21 @@
 
 		<execute action="PGMessageboardsPostthread#click" locator-key1="PUBLISH" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="SUCCESS_MESSAGE" value1="Your request completed successfully." />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="SUCCESS_MESSAGE" />
 
 		<execute action="Home#open" locator-key1="HOME_URL" />
 
 		<execute action="Home#click" locator1="link=${pageName}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_THREAD" value1="${threadSubject}" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_STARTED_BY" value1="Test Test" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_STARTED_BY" value1="Test Test" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_POSTS" value1="2" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_POSTS" value1="2" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREADS_LAST_POST" value1="By: Test Test" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="THREAD_TABLE_LAST_POST" value1="By: Test Test" />
 
-		<execute action="PGMessageboards#click" locator-key1="THREADS_THREAD" value1="${threadSubject}" />
+		<execute action="PGMessageboards#click" locator-key1="THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
 		<execute action="PGMessageboardsThread#assertTextEquals" locator-key1="MESSAGE_THREAD_SUBJECT_1" value1="${threadSubject}" />
 
@@ -115,11 +115,11 @@
 		<execute action="Home#click" locator1="link=Message Boards" />
 
 		<while>
-			<condition action="CPMessageboards#isElementPresent" locator-key1="THREADS_SELECT_ALL" />
+			<condition action="CPMessageboards#isElementPresent" locator-key1="THREAD_TABLE_ALL_ROWS" />
 			<then>
-				<execute action="CPMessageboards#click" locator-key1="THREADS_SELECT_ALL" />
+				<execute action="CPMessageboards#click" locator-key1="THREAD_TABLE_ALL_ROWS" />
 
-				<execute action="CPMessageboards#click" locator-key1="THREADS_MOVE_TO_THE_RECYCLE_BIN" />
+				<execute action="CPMessageboards#click" locator-key1="THREADS_RECYCLE_BIN" />
 
 				<execute action="CPMessageboards#confirm" locator-key1="CONFIRMATION" value1="Are you sure you want to move the selected entries to the Recycle Bin?" />
 			</then>

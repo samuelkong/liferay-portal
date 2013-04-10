@@ -122,7 +122,8 @@ public class AddDefaultLayoutPrototypesAction extends SimpleAction {
 
 		LayoutPrototype layoutPrototype =
 			LayoutPrototypeLocalServiceUtil.addLayoutPrototype(
-				defaultUserId, companyId, nameMap, description, true);
+				defaultUserId, companyId, nameMap, description, true,
+				new ServiceContext());
 
 		Layout layout = layoutPrototype.getLayout();
 

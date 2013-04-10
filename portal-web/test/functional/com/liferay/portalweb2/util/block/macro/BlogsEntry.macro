@@ -9,9 +9,9 @@
 		<execute action="Home#click" locator1="link=Blogs" />
 
 		<if>
-			<condition action="CPBlogs#isElementPresent" locator-key1="ENTRIES_ALL_ROWS" />
+			<condition action="CPBlogs#isElementPresent" locator-key1="BLOGS_ENTRY_TABLE_ALL_ROWS" />
 			<then>
-				<execute action="CPBlogs#click" locator-key1="ENTRIES_ALL_ROWS" />
+				<execute action="CPBlogs#click" locator-key1="BLOGS_ENTRY_TABLE_ALL_ROWS" />
 
 				<execute action="CPBlogs#click" locator-key1="MOVE_RECYCLE_BIN" value1="Move to the Recycle Bin" />
 			</then>

@@ -1,17 +1,26 @@
 <#-- Default user -->
 
-${sampleSQLBuilder.insertUser(null, null, dataFactory.defaultUser)}
+<@insertUser
+	_user = dataFactory.defaultUser
+/>
 
 <#-- Guest user -->
 
 <#assign user = dataFactory.guestUser>
 
-<@insertGroup _group = dataFactory.newGroup(user) _publicPageCount = 0 />
+<@insertGroup
+	_group = dataFactory.newGroup(user)
+	_publicPageCount = 0
+/>
 
 <#assign groupIds = [dataFactory.guestGroup.groupId]>
 <#assign roleIds = [dataFactory.administratorRole.roleId]>
 
-${sampleSQLBuilder.insertUser(groupIds, roleIds, user)}
+<@insertUser
+	_groupIds = groupIds
+	_roleIds = roleIds
+	_user = user
+/>
 
 <#-- Sample user -->
 
@@ -23,14 +32,23 @@ ${sampleSQLBuilder.insertUser(groupIds, roleIds, user)}
 
 <#assign layout = dataFactory.newLayout(userGroup.groupId, "home", "", "33,")>
 
-<@insertLayout _layout = layout />
+<@insertLayout
+	_layout = layout
+/>
 
-<@insertGroup _group = userGroup _publicPageCount = 1 />
+<@insertGroup
+	_group = userGroup
+	_publicPageCount = 1
+/>
 
 <#assign groupIds = 1..maxGroupCount>
 <#assign roleIds = [dataFactory.administratorRole.roleId, dataFactory.powerUserRole.roleId, dataFactory.userRole.roleId]>
 
-${sampleSQLBuilder.insertUser(groupIds, roleIds, user)}
+<@insertUser
+	_groupIds = groupIds
+	_roleIds = roleIds
+	_user = user
+/>
 
 <#list groupIds as groupId>
 	<#assign blogsStatsUser = dataFactory.newBlogsStatsUser(groupId)>

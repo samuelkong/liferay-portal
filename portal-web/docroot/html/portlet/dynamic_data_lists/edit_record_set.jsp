@@ -165,7 +165,7 @@ if (ddmStructureId > 0) {
 			function(event){
 				var A = AUI();
 
-				A.one('#<portlet:namespace />ddmStructureId').val(event.ddmstructureid);
+				A.one('#<portlet:namespace />ddmStructureId').val(event.ddmStructureId);
 
 				A.one('#<portlet:namespace />ddmStructureNameDisplay').setContent(event.name);
 			}

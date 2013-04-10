@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.LayoutPrototype;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.service.LayoutPrototypeServiceUtil;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.struts.PortletAction;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.sites.util.SitesUtil;
@@ -154,19 +156,23 @@ public class EditLayoutPrototypeAction extends PortletAction {
 		String description = ParamUtil.getString(actionRequest, "description");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
 
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			LayoutPrototype.class.getName(), actionRequest);
+
 		if (layoutPrototypeId <= 0) {
 
 			// Add layout prototoype
 
 			LayoutPrototypeServiceUtil.addLayoutPrototype(
-				nameMap, description, active);
+				nameMap, description, active, serviceContext);
 		}
 		else {
 
 			// Update layout prototoype
 
 			LayoutPrototypeServiceUtil.updateLayoutPrototype(
-				layoutPrototypeId, nameMap, description, active);
+				layoutPrototypeId, nameMap, description, active,
+				serviceContext);
 		}
 	}
 

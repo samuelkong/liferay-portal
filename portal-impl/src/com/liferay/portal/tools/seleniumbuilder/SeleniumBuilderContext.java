@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.xml.Element;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -40,18 +41,163 @@ public class SeleniumBuilderContext {
 		_initSeleniumBuilderContext(_getFileNames());
 	}
 
-	public SeleniumBuilderContext(String baseDir, String fileName)
-		throws Exception {
+	public void addFile(String fileName) throws Exception {
+		fileName = _normalizeFileName(fileName);
 
-		_baseDir = baseDir;
+		if (fileName.endsWith(".action")) {
+			String actionName = _getName(fileName);
 
-		_seleniumBuilderFileUtil = new SeleniumBuilderFileUtil(_baseDir);
+			if (_actionFileNames.containsKey(actionName)) {
+				_seleniumBuilderFileUtil.throwValidationException(
+					1008, fileName, actionName);
+			}
 
-		Set<String> fileNames = _getFileNames();
+			_actionFileNames.put(actionName, fileName);
 
-		fileNames.add(fileName);
+			_actionRootElements.put(actionName, _getRootElement(fileName));
+		}
+		else if (fileName.endsWith(".function")) {
+			String functionName = _getName(fileName);
 
-		_initSeleniumBuilderContext(fileNames);
+			_functionClassNames.put(functionName, _getClassName(fileName));
+
+			_functionFileNames.put(functionName, fileName);
+
+			_functionJavaFileNames.put(
+				functionName, _getJavaFileName(fileName));
+
+			Element rootElement = _getRootElement(fileName);
+
+			_functionLocatorCounts.put(
+				functionName, _getLocatorCount(rootElement));
+
+			if (_functionNames.contains(functionName)) {
+				_seleniumBuilderFileUtil.throwValidationException(
+					1008, fileName, functionName);
+			}
+
+			_functionNames.add(functionName);
+
+			_functionPackageNames.put(functionName, _getPackageName(fileName));
+
+			_functionReturnTypes.put(
+				functionName, _getReturnType(functionName));
+
+			_functionRootElements.put(functionName, rootElement);
+
+			_functionSimpleClassNames.put(
+				functionName, _getSimpleClassName(fileName));
+		}
+		else if (fileName.endsWith(".macro")) {
+			String macroName = _getName(fileName);
+
+			_macroClassNames.put(macroName, _getClassName(fileName));
+
+			_macroFileNames.put(macroName, fileName);
+
+			_macroJavaFileNames.put(macroName, _getJavaFileName(fileName));
+
+			if (_macroNames.contains(macroName)) {
+				_seleniumBuilderFileUtil.throwValidationException(
+					1008, fileName, macroName);
+			}
+
+			_macroNames.add(macroName);
+
+			_macroPackageNames.put(macroName, _getPackageName(fileName));
+
+			_macroSimpleClassNames.put(
+				macroName, _getSimpleClassName(fileName));
+
+			_macroRootElements.put(macroName, _getRootElement(fileName));
+		}
+		else if (fileName.endsWith(".path")) {
+			String pathName = _getName(fileName);
+
+			_actionClassNames.put(pathName, _getClassName(fileName, "Action"));
+
+			_actionJavaFileNames.put(
+				pathName, _getJavaFileName(fileName, "Action"));
+
+			_actionNames.add(pathName);
+
+			_actionPackageNames.put(pathName, _getPackageName(fileName));
+
+			_actionSimpleClassNames.put(
+				pathName, _getSimpleClassName(fileName, "Action"));
+
+			_pathClassNames.put(pathName, _getClassName(fileName));
+
+			_pathFileNames.put(pathName, fileName);
+
+			_pathJavaFileNames.put(pathName, _getJavaFileName(fileName));
+
+			if (_pathNames.contains(pathName)) {
+				_seleniumBuilderFileUtil.throwValidationException(
+					1008, fileName, pathName);
+			}
+
+			_pathNames.add(pathName);
+
+			_pathPackageNames.put(pathName, _getPackageName(fileName));
+
+			_pathRootElements.put(pathName, _getRootElement(fileName));
+
+			_pathSimpleClassNames.put(pathName, _getSimpleClassName(fileName));
+		}
+		else if (fileName.endsWith(".testcase")) {
+			String testCaseName = _getName(fileName);
+
+			_testCaseClassNames.put(testCaseName, _getClassName(fileName));
+
+			_testCaseFileNames.put(testCaseName, fileName);
+
+			_testCaseJavaFileNames.put(
+				testCaseName, _getJavaFileName(fileName));
+
+			if (_testCaseNames.contains(testCaseName)) {
+				_seleniumBuilderFileUtil.throwValidationException(
+					1008, fileName, testCaseName);
+			}
+
+			_testCaseNames.add(testCaseName);
+
+			_testCasePackageNames.put(testCaseName, _getPackageName(fileName));
+
+			_testCaseRootElements.put(testCaseName, _getRootElement(fileName));
+
+			_testCaseSimpleClassNames.put(
+				testCaseName, _getSimpleClassName(fileName));
+		}
+		else if (fileName.endsWith(".testsuite")) {
+			String testSuiteName = _getName(fileName);
+
+			_testSuiteClassNames.put(testSuiteName, _getClassName(fileName));
+
+			_testSuiteFileNames.put(testSuiteName, fileName);
+
+			_testSuiteJavaFileNames.put(
+				testSuiteName, _getJavaFileName(fileName));
+
+			if (_testSuiteNames.contains(testSuiteName)) {
+				_seleniumBuilderFileUtil.throwValidationException(
+					1008, fileName, testSuiteName);
+			}
+
+			_testSuiteNames.add(testSuiteName);
+
+			_testSuitePackageNames.put(
+				testSuiteName, _getPackageName(fileName));
+
+			_testSuiteRootElements.put(
+				testSuiteName, _getRootElement(fileName));
+
+			_testSuiteSimpleClassNames.put(
+				testSuiteName, _getSimpleClassName(fileName));
+		}
+		else {
+			throw new IllegalArgumentException("Invalid file " + fileName);
+		}
 	}
 
 	public String getActionClassName(String actionName) {
@@ -238,6 +384,34 @@ public class SeleniumBuilderContext {
 		return _testSuiteSimpleClassNames.get(testCaseName);
 	}
 
+	public void validateActionElements(String actionName) {
+		Element rootElement = getActionRootElement(actionName);
+
+		if (rootElement == null) {
+			return;
+		}
+
+		List<Element> commandElements =
+			_seleniumBuilderFileUtil.getAllChildElements(
+				rootElement, "command");
+
+		Set<String> commandElementNames = new HashSet<String>();
+
+		for (Element commandElement : commandElements) {
+			String commandName = commandElement.attributeValue("name");
+
+			if (commandElementNames.contains(commandName)) {
+				String actionFileName = getActionFileName(actionName);
+
+				_seleniumBuilderFileUtil.throwValidationException(
+					1009, actionFileName, commandElement, commandName);
+			}
+			else {
+				commandElementNames.add(commandName);
+			}
+		}
+	}
+
 	private String _getClassName(String fileName) {
 		return _seleniumBuilderFileUtil.getClassName(fileName);
 	}
@@ -304,168 +478,7 @@ public class SeleniumBuilderContext {
 		throws Exception {
 
 		for (String fileName : fileNames) {
-			fileName = _normalizeFileName(fileName);
-
-			if (fileName.endsWith(".action")) {
-				String actionName = _getName(fileName);
-
-				if (_actionFileNames.containsKey(actionName)) {
-					_seleniumBuilderFileUtil.throwValidationException(
-						1008, fileName, actionName);
-				}
-
-				_actionFileNames.put(actionName, fileName);
-
-				_actionRootElements.put(actionName, _getRootElement(fileName));
-			}
-			else if (fileName.endsWith(".function")) {
-				String functionName = _getName(fileName);
-
-				_functionClassNames.put(functionName, _getClassName(fileName));
-
-				_functionFileNames.put(functionName, fileName);
-
-				_functionJavaFileNames.put(
-					functionName, _getJavaFileName(fileName));
-
-				Element rootElement = _getRootElement(fileName);
-
-				_functionLocatorCounts.put(
-					functionName, _getLocatorCount(rootElement));
-
-				if (_functionNames.contains(functionName)) {
-					_seleniumBuilderFileUtil.throwValidationException(
-						1008, fileName, functionName);
-				}
-
-				_functionNames.add(functionName);
-
-				_functionPackageNames.put(
-					functionName, _getPackageName(fileName));
-
-				_functionReturnTypes.put(
-					functionName, _getReturnType(functionName));
-
-				_functionRootElements.put(functionName, rootElement);
-
-				_functionSimpleClassNames.put(
-					functionName, _getSimpleClassName(fileName));
-			}
-			else if (fileName.endsWith(".macro")) {
-				String macroName = _getName(fileName);
-
-				_macroClassNames.put(macroName, _getClassName(fileName));
-
-				_macroFileNames.put(macroName, fileName);
-
-				_macroJavaFileNames.put(macroName, _getJavaFileName(fileName));
-
-				if (_macroNames.contains(macroName)) {
-					_seleniumBuilderFileUtil.throwValidationException(
-						1008, fileName, macroName);
-				}
-
-				_macroNames.add(macroName);
-
-				_macroPackageNames.put(macroName, _getPackageName(fileName));
-
-				_macroSimpleClassNames.put(
-					macroName, _getSimpleClassName(fileName));
-
-				_macroRootElements.put(macroName, _getRootElement(fileName));
-			}
-			else if (fileName.endsWith(".path")) {
-				String pathName = _getName(fileName);
-
-				_actionClassNames.put(
-					pathName, _getClassName(fileName, "Action"));
-
-				_actionJavaFileNames.put(
-					pathName, _getJavaFileName(fileName, "Action"));
-
-				_actionNames.add(pathName);
-
-				_actionPackageNames.put(pathName, _getPackageName(fileName));
-
-				_actionSimpleClassNames.put(
-					pathName, _getSimpleClassName(fileName, "Action"));
-
-				_pathClassNames.put(pathName, _getClassName(fileName));
-
-				_pathFileNames.put(pathName, fileName);
-
-				_pathJavaFileNames.put(pathName, _getJavaFileName(fileName));
-
-				if (_pathNames.contains(pathName)) {
-					_seleniumBuilderFileUtil.throwValidationException(
-						1008, fileName, pathName);
-				}
-
-				_pathNames.add(pathName);
-
-				_pathPackageNames.put(pathName, _getPackageName(fileName));
-
-				_pathRootElements.put(pathName, _getRootElement(fileName));
-
-				_pathSimpleClassNames.put(
-					pathName, _getSimpleClassName(fileName));
-			}
-			else if (fileName.endsWith(".testcase")) {
-				String testCaseName = _getName(fileName);
-
-				_testCaseClassNames.put(testCaseName, _getClassName(fileName));
-
-				_testCaseFileNames.put(testCaseName, fileName);
-
-				_testCaseJavaFileNames.put(
-					testCaseName, _getJavaFileName(fileName));
-
-				if (_testCaseNames.contains(testCaseName)) {
-					_seleniumBuilderFileUtil.throwValidationException(
-						1008, fileName, testCaseName);
-				}
-
-				_testCaseNames.add(testCaseName);
-
-				_testCasePackageNames.put(
-					testCaseName, _getPackageName(fileName));
-
-				_testCaseRootElements.put(
-					testCaseName, _getRootElement(fileName));
-
-				_testCaseSimpleClassNames.put(
-					testCaseName, _getSimpleClassName(fileName));
-			}
-			else if (fileName.endsWith(".testsuite")) {
-				String testSuiteName = _getName(fileName);
-
-				_testSuiteClassNames.put(
-					testSuiteName, _getClassName(fileName));
-
-				_testSuiteFileNames.put(testSuiteName, fileName);
-
-				_testSuiteJavaFileNames.put(
-					testSuiteName, _getJavaFileName(fileName));
-
-				if (_testSuiteNames.contains(testSuiteName)) {
-					_seleniumBuilderFileUtil.throwValidationException(
-						1008, fileName, testSuiteName);
-				}
-
-				_testSuiteNames.add(testSuiteName);
-
-				_testSuitePackageNames.put(
-					testSuiteName, _getPackageName(fileName));
-
-				_testSuiteRootElements.put(
-					testSuiteName, _getRootElement(fileName));
-
-				_testSuiteSimpleClassNames.put(
-					testSuiteName, _getSimpleClassName(fileName));
-			}
-			else {
-				throw new IllegalArgumentException("Invalid file " + fileName);
-			}
+			addFile(fileName);
 		}
 
 		String[] seleniumFileNames = {

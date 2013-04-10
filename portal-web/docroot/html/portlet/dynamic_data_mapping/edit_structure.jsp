@@ -229,11 +229,11 @@ if (Validator.isNotNull(script)) {
 				title: '<%= scopeTitle %>'
 			},
 			function(event){
-				document.<portlet:namespace />fm.<portlet:namespace />parentStructureId.value = event.ddmstructureid;
+				document.<portlet:namespace />fm.<portlet:namespace />parentStructureId.value = event.ddmStructureId;
 
 				var nameEl = document.getElementById('<portlet:namespace />parentStructureName');
 
-				nameEl.href = '<portlet:renderURL><portlet:param name="struts_action" value="/dynamic_data_mapping/edit_structure" /><portlet:param name="redirect" value="<%= currentURL %>" /><portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" /><portlet:param name="classNameId" value="<%= String.valueOf(classNameId) %>" /></portlet:renderURL>&<portlet:namespace />classPK=' + event.ddmstructureid;
+				nameEl.href = '<portlet:renderURL><portlet:param name="struts_action" value="/dynamic_data_mapping/edit_structure" /><portlet:param name="redirect" value="<%= currentURL %>" /><portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" /><portlet:param name="classNameId" value="<%= String.valueOf(classNameId) %>" /></portlet:renderURL>&<portlet:namespace />classPK=' + event.ddmStructureId;
 				nameEl.innerHTML = event.name + '&nbsp;';
 
 				document.getElementById('<portlet:namespace />removeParentStructureButton').disabled = false;

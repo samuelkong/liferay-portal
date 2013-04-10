@@ -115,6 +115,10 @@ public class LayoutSetPrototypePersistenceTest {
 
 		newLayoutSetPrototype.setCompanyId(ServiceTestUtil.nextLong());
 
+		newLayoutSetPrototype.setUserId(ServiceTestUtil.nextLong());
+
+		newLayoutSetPrototype.setUserName(ServiceTestUtil.randomString());
+
 		newLayoutSetPrototype.setCreateDate(ServiceTestUtil.nextDate());
 
 		newLayoutSetPrototype.setModifiedDate(ServiceTestUtil.nextDate());
@@ -137,6 +141,10 @@ public class LayoutSetPrototypePersistenceTest {
 			newLayoutSetPrototype.getLayoutSetPrototypeId());
 		Assert.assertEquals(existingLayoutSetPrototype.getCompanyId(),
 			newLayoutSetPrototype.getCompanyId());
+		Assert.assertEquals(existingLayoutSetPrototype.getUserId(),
+			newLayoutSetPrototype.getUserId());
+		Assert.assertEquals(existingLayoutSetPrototype.getUserName(),
+			newLayoutSetPrototype.getUserName());
 		Assert.assertEquals(Time.getShortTimestamp(
 				existingLayoutSetPrototype.getCreateDate()),
 			Time.getShortTimestamp(newLayoutSetPrototype.getCreateDate()));
@@ -190,8 +198,9 @@ public class LayoutSetPrototypePersistenceTest {
 	protected OrderByComparator getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create("LayoutSetPrototype",
 			"uuid", true, "layoutSetPrototypeId", true, "companyId", true,
-			"createDate", true, "modifiedDate", true, "name", true,
-			"description", true, "settings", true, "active", true);
+			"userId", true, "userName", true, "createDate", true,
+			"modifiedDate", true, "name", true, "description", true,
+			"settings", true, "active", true);
 	}
 
 	@Test
@@ -316,6 +325,10 @@ public class LayoutSetPrototypePersistenceTest {
 		layoutSetPrototype.setUuid(ServiceTestUtil.randomString());
 
 		layoutSetPrototype.setCompanyId(ServiceTestUtil.nextLong());
+
+		layoutSetPrototype.setUserId(ServiceTestUtil.nextLong());
+
+		layoutSetPrototype.setUserName(ServiceTestUtil.randomString());
 
 		layoutSetPrototype.setCreateDate(ServiceTestUtil.nextDate());
 

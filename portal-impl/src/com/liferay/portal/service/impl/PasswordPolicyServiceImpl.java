@@ -29,7 +29,10 @@ import com.liferay.portal.service.permission.PortalPermissionUtil;
 public class PasswordPolicyServiceImpl extends PasswordPolicyServiceBaseImpl {
 
 	/**
-	 * @deprecated As of 6.2.0
+	 * @deprecated As of 6.2.0, replaced by {@link #addPasswordPolicy(String,
+	 *             String, boolean, boolean, long, boolean, boolean, int, int,
+	 *             int, int, int, int, String, boolean, int, boolean, long,
+	 *             long, int, boolean, int, long, long, long, ServiceContext)}
 	 */
 	public PasswordPolicy addPasswordPolicy(
 			String name, String description, boolean changeable,
@@ -87,7 +90,11 @@ public class PasswordPolicyServiceImpl extends PasswordPolicyServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 6.2.0
+	 * @deprecated As of 6.2.0, replaced by {@link #updatePasswordPolicy(long,
+	 *             String, String, boolean, boolean, long, boolean, boolean,
+	 *             int, int, int, int, int, int, String, boolean, int, boolean,
+	 *             long, long, int, boolean, int, long, long, long,
+	 *             ServiceContext)}
 	 */
 	public PasswordPolicy updatePasswordPolicy(
 			long passwordPolicyId, String name, String description,

@@ -36,6 +36,7 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.DuplicateTemplateIdException;
 import com.liferay.portlet.journal.NoSuchTemplateException;
 import com.liferay.portlet.journal.RequiredTemplateException;
@@ -328,8 +329,9 @@ public class JournalTemplateLocalServiceImpl
 
 		// Expando
 
-		expandoValueLocalService.deleteValues(
-			JournalTemplate.class.getName(), template.getId());
+		expandoRowLocalService.deleteRow(
+			template.getCompanyId(), JournalTemplate.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, template.getId());
 
 		// Resources
 

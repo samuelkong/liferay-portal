@@ -35,7 +35,9 @@ LPS-30525.
 	</#if>
 </#function>
 
-<#macro css file_name>
+<#macro css
+	file_name
+>
 	<#if file_name = css_main_file>
 		<link class="lfr-css-file" href="${file_name}" id="mainLiferayThemeCSS" rel="stylesheet" type="text/css" />
 	<#else>
@@ -43,7 +45,9 @@ LPS-30525.
 	</#if>
 </#macro>
 
-<#macro js file_name>
+<#macro js
+	file_name
+>
 	<#if file_name == js_main_file>
 		<script id="mainLiferayThemeJavaScript" src="${file_name}" type="text/javascript"></script>
 	<#else>
@@ -51,10 +55,14 @@ LPS-30525.
 	</#if>
 </#macro>
 
-<#macro language key>
+<#macro language
+	key
+>
 ${languageUtil.get(locale, key)}</#macro>
 
-<#macro date format>
+<#macro date
+	format
+>
 ${dateUtil.getCurrentDate(format, locale)}</#macro>
 
 <#macro ie6_png_fix>
@@ -103,7 +111,9 @@ img, .png {
 </#if>
 </#macro>
 
-<#macro breadcrumbs control_panel = "">
+<#macro breadcrumbs
+	control_panel = ""
+>
 	<#if control_panel = "control_panel">
 		${theme.breadcrumb(0, false, false, true, true)}
 	<#else>

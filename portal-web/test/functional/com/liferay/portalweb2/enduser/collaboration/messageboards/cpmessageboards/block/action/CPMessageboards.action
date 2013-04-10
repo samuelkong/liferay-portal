@@ -1,15 +1,15 @@
 <definition>
 	<command name="click">
-		<case locator-key1="CATEGORIES_MOVE_TO_THE_RECYCLE_BIN">
+		<case locator-key1="CATEGORIES_RECYCLE_BIN">
 			<execute function="Click#valueClickAtAndWait" value1="Move to the Recycle Bin" />
 		</case>
-		<case locator-key1="THREADS_MOVE_TO_THE_RECYCLE_BIN">
+		<case locator-key1="THREADS_RECYCLE_BIN">
 			<execute function="Click#valueClickAtAndWait" value1="Move to the Recycle Bin" />
 		</case>
 	</command>
 
 	<command name="isElementPresent">
-		<case locator-key1="THREADS_SELECT_ALL">
+		<case locator-key1="THREAD_TABLE_ALL_ROWS">
 			<execute function="IsElementPresent#isVisible" />
 		</case>
 	</command>

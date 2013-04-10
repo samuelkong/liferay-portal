@@ -18,7 +18,9 @@
 	</@aui.layout>
 </#if>
 
-<#macro displayCategories categories>
+<#macro displayCategories
+	categories
+>
 	<#if categories?has_content>
 		<ul class="categories">
 			<#list categories as category>

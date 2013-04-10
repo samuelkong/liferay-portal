@@ -16,15 +16,15 @@
 
 		<execute action="Home#click" locator1="link=${pageName}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORIES_CATEGORY" value1="${categoryName}" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORY_TABLE_CATEGORY" value1="${categoryName}" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORIES_CATEGORIES" value1="0" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORY_TABLE_CATEGORIES" value1="0" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORIES_THREADS" value1="0" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORY_TABLE_THREADS" value1="0" />
 
-		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORIES_POSTS" value1="0" />
+		<execute action="PGMessageboards#assertTextEquals" locator-key1="CATEGORY_TABLE_POSTS" value1="0" />
 
-		<execute action="PGMessageboards#click" locator-key1="CATEGORIES_CATEGORY" value1="${categoryName}" />
+		<execute action="PGMessageboards#click" locator-key1="CATEGORY_TABLE_CATEGORY" value1="${categoryName}" />
 
 		<execute action="PGMessageboardsCategory#assertTextEquals" locator-key1="NAME" value1="${categoryName}" />
 
@@ -41,11 +41,11 @@
 		<execute action="Home#click" locator1="link=Message Boards" />
 
 		<while>
-			<condition action="CPMessageboards#isElementPresent" locator-key1="CATEGORIES_SELECT_ALL" />
+			<condition action="CPMessageboards#isElementPresent" locator-key1="CATEGORY_TABLE_ALL_ROWS" />
 			<then>
-				<execute action="CPMessageboards#click" locator-key1="CATEGORIES_SELECT_ALL" />
+				<execute action="CPMessageboards#click" locator-key1="CATEGORY_TABLE_ALL_ROWS" />
 
-				<execute action="CPMessageboards#click" locator-key1="CATEGORIES_MOVE_TO_THE_RECYCLE_BIN" />
+				<execute action="CPMessageboards#click" locator-key1="CATEGORIES_RECYCLE_BIN" />
 
 				<execute action="CPMessageboards#confirm" locator-key1="CONFIRMATION" value1="Are you sure you want to move the selected entries to the Recycle Bin?" />
 			</then>

@@ -1312,7 +1312,8 @@ public class DataFactory {
 
 		return newSocialActivity(
 			journalArticle.getGroupId(), getJournalArticleClassNameId(),
-			journalArticle.getId(), type, journalArticle.getUrlTitle());
+			journalArticle.getResourcePrimKey(), type,
+			journalArticle.getUrlTitle());
 	}
 
 	public User newUser(int index) {
@@ -1634,6 +1635,10 @@ public class DataFactory {
 		role.setUuid(SequentialUUID.generate());
 		role.setRoleId(_counter.get());
 		role.setCompanyId(_companyId);
+		role.setUserId(_sampleUserId);
+		role.setUserName(_SAMPLE_USER_NAME);
+		role.setCreateDate(new Date());
+		role.setModifiedDate(new Date());
 		role.setClassNameId(_classNamesMap.get(Role.class.getName()));
 		role.setClassPK(role.getRoleId());
 		role.setName(name);

@@ -9,24 +9,43 @@
 
 		<#assign layout = dataFactory.newLayout(groupId, layoutName, "", portletId)>
 
-		<@insertLayout _layout = layout />
+		<@insertLayout
+			_layout = layout
+		/>
 
 		<#assign ddlRecordSet = dataFactory.newDDLRecordSet(ddmStructure, ddlRecordSetCount)>
 
 		insert into DDLRecordSet values ('${ddlRecordSet.uuid}', ${ddlRecordSet.recordSetId}, ${ddlRecordSet.groupId}, ${ddlRecordSet.companyId}, ${ddlRecordSet.userId}, '${ddlRecordSet.userName}', '${dataFactory.getDateString(ddlRecordSet.createDate)}', '${dataFactory.getDateString(ddlRecordSet.modifiedDate)}', ${ddlRecordSet.DDMStructureId}, '${ddlRecordSet.recordSetKey}', '${ddlRecordSet.name}', '${ddlRecordSet.description}', ${ddlRecordSet.minDisplayRows}, ${ddlRecordSet.scope});
 
-		<@insertDDMStructureLink _entry = ddlRecordSet />
+		<@insertDDMStructureLink
+			_entry = ddlRecordSet
+		/>
 
 		<#if (maxDDLRecordCount > 0)>
 			<#list 1..maxDDLRecordCount as ddlRecordCount>
 				<#assign ddlRecord = dataFactory.newDDLRecord(ddlRecordSet)>
 
-				${sampleSQLBuilder.insertDDLRecord(ddlRecord, ddlRecordCount, ddmStructure.structureId)}
+				insert into DDLRecord values ('${ddlRecord.uuid}', ${ddlRecord.recordId}, ${ddlRecord.groupId}, ${ddlRecord.companyId}, ${ddlRecord.userId}, '${ddlRecord.userName}', ${ddlRecord.versionUserId}, '${ddlRecord.versionUserName}', '${dataFactory.getDateString(ddlRecord.createDate)}', '${dataFactory.getDateString(ddlRecord.modifiedDate)}', ${ddlRecord.DDMStorageId}, ${ddlRecord.recordSetId}, '${ddlRecord.version}', ${ddlRecord.displayIndex});
+
+				<#assign ddlRecordVersion = dataFactory.newDDLRecordVersion(ddlRecord)>
+
+				insert into DDLRecordVersion values (${ddlRecordVersion.recordVersionId}, ${ddlRecordVersion.groupId}, ${ddlRecordVersion.companyId}, ${ddlRecordVersion.userId}, '${ddlRecordVersion.userName}', '${dataFactory.getDateString(ddlRecordVersion.createDate)}', ${ddlRecordVersion.DDMStorageId}, ${ddlRecordVersion.recordSetId}, ${ddlRecordVersion.recordId}, '${ddlRecordVersion.version}', ${ddlRecordVersion.displayIndex}, ${ddlRecordVersion.status}, ${ddlRecordVersion.statusByUserId}, '${ddlRecordVersion.statusByUserName}', '${dataFactory.getDateString(ddlRecordVersion.statusDate)}');
+
+				<@insertDDMContent
+					_currentIndex = ddlRecordCount
+					_ddmStorageLinkId = counter.get()
+					_ddmStructureId = ddmStructure.structureId
+					_entry = ddlRecord
+				/>
 
 				${writerDynamicDataListsCSV.write(layoutName + "," + portletId + "," + ddlRecordSet.recordSetId + "," + ddlRecord.recordId + "\n")}
 			</#list>
 		</#if>
 
-		<@insertPortletPreferences _entry = ddlRecordSet _plid = layout.plid _portletId = portletId />
+		<@insertPortletPreferences
+			_entry = ddlRecordSet
+			_plid = layout.plid
+			_portletId = portletId
+		/>
 	</#list>
 </#if>

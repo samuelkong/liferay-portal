@@ -177,7 +177,9 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 
 		int workFlowAction = serviceContext.getWorkflowAction();
 
-		if ((workFlowAction == WorkflowConstants.STATUS_DRAFT) && !preview) {
+		if ((workFlowAction == WorkflowConstants.STATUS_DRAFT) && !preview &&
+			!serviceContext.isSignedIn()) {
+
 			MBMessagePermission.check(
 				getPermissionChecker(), parentMessageId, ActionKeys.UPDATE);
 		}

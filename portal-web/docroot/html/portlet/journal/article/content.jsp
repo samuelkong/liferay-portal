@@ -701,8 +701,8 @@ if (Validator.isNotNull(content)) {
 				title: '<%= UnicodeLanguageUtil.get(pageContext, "structures") %>'
 			},
 			function(event){
-				if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "selecting-a-new-structure-will-change-the-available-input-fields-and-available-templates") %>') && (document.<portlet:namespace />fm1.<portlet:namespace />ddmStructureId.value != event.ddmstructureid)) {
-					document.<portlet:namespace />fm1.<portlet:namespace />ddmStructureId.value = event.ddmstructureid;
+				if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "selecting-a-new-structure-will-change-the-available-input-fields-and-available-templates") %>') && (document.<portlet:namespace />fm1.<portlet:namespace />ddmStructureId.value != event.ddmStructureId)) {
+					document.<portlet:namespace />fm1.<portlet:namespace />ddmStructureId.value = event.ddmStructureId;
 					document.<portlet:namespace />fm1.<portlet:namespace />templateId.value = "";
 
 					submitForm(document.<portlet:namespace />fm1);

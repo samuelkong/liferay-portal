@@ -105,7 +105,9 @@
 	</#if>
 </#macro>
 
-<#macro getMetadataField fieldName>
+<#macro getMetadataField
+	fieldName
+>
 	<#if stringUtil.split(metadataFields)?seq_contains(metadataFieldName)>
 		<span class="metadata-entry metadata-"${metadataFieldName}">
 			<#assign dateFormat = "dd MMM yyyy - HH:mm:ss" />

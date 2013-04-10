@@ -236,7 +236,10 @@
 	/>
 </#macro>
 
-<#macro getRatings cssClass entry>
+<#macro getRatings
+	cssClass
+	entry
+>
 	<#if enablePageRatings == "true">
 		<div class="${cssClass}">
 			<@liferay_ui["ratings"]

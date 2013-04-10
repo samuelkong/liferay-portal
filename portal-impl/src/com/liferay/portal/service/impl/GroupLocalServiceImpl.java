@@ -84,6 +84,7 @@ import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.comparator.GroupNameComparator;
 import com.liferay.portlet.blogs.model.BlogsEntry;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.journal.model.JournalArticle;
 
 import java.io.File;
@@ -299,6 +300,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		validateParentGroup(groupId, parentGroupId);
 
 		Group group = groupPersistence.create(groupId);
+
+		if (serviceContext != null) {
+			group.setUuid(serviceContext.getUuid());
+		}
 
 		group.setCompanyId(user.getCompanyId());
 		group.setCreatorUserId(userId);
@@ -710,6 +715,12 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			group.getGroupId());
 		scProductEntryLocalService.deleteProductEntries(group.getGroupId());
 
+		// Expando
+
+		expandoRowLocalService.deleteRow(
+			group.getCompanyId(), Group.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, group.getGroupId());
+
 		// Resources
 
 		List<ResourcePermission> resourcePermissions =
@@ -818,6 +829,12 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 
 		return groupLocalService.loadFetchGroup(companyId, name);
+	}
+
+	public Group fetchGroupByUuidandCompanyId(String uuid, long companyId)
+		throws SystemException {
+
+		return groupPersistence.fetchByUuid_C_First(uuid, companyId, null);
 	}
 
 	/**
@@ -1692,9 +1709,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		List<Group> groups = groupPersistence.findByCompanyId(companyId);
 
 		for (Group group : groups) {
-			String treePath = group.buildTreePath();
-
-			group.setTreePath(treePath);
+			group.setTreePath(group.buildTreePath());
 
 			groupPersistence.update(group);
 		}

@@ -35,12 +35,18 @@
 </tr>
 <!--CATEGORIES-->
 <tr>
-	<td>CATEGORIES_MOVE_TO_THE_RECYCLE_BIN</td>
+	<td>CATEGORIES_RECYCLE_BIN</td>
 	<td>//div[contains(@id,'messageBoardsCategoriesPanel')]//input[@value='Move to the Recycle Bin']</td>
 	<td></td>
 </tr>
 <tr>
-	<td>CATEGORIES_SELECT_ALL</td>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CATEGORY_TABLE-->
+<tr>
+	<td>CATEGORY_TABLE_ALL_ROWS</td>
 	<td>//div[contains(@id,'mbCategoriesSearchContainer')]//input[contains(@name,'allRowIds')]</td>
 	<td></td>
 </tr>
@@ -51,12 +57,18 @@
 </tr>
 <!--THREADS-->
 <tr>
-	<td>THREADS_MOVE_TO_THE_RECYCLE_BIN</td>
+	<td>THREADS_RECYCLE_BIN</td>
 	<td>//div[contains(@id,'messageBoardsThreadsPanel')]//input[@value='Move to the Recycle Bin']</td>
 	<td></td>
 </tr>
 <tr>
-	<td>THREADS_SELECT_ALL</td>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--THREAD_TABLE-->
+<tr>
+	<td>THREAD_TABLE_ALL_ROWS</td>
 	<td>//div[contains(@id,'mbThreadsSearchContainer')]//input[contains(@name,'allRowIds')]</td>
 	<td></td>
 </tr>

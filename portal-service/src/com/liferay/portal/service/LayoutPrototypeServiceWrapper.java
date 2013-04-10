@@ -48,6 +48,10 @@ public class LayoutPrototypeServiceWrapper implements LayoutPrototypeService,
 		_layoutPrototypeService.setBeanIdentifier(beanIdentifier);
 	}
 
+	/**
+	* @deprecated As of 6.2.0, replaced by {@link #addLayoutPrototype(long,
+	Map, String, boolean, ServiceContext)}
+	*/
 	public com.liferay.portal.model.LayoutPrototype addLayoutPrototype(
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.lang.String description, boolean active)
@@ -55,6 +59,16 @@ public class LayoutPrototypeServiceWrapper implements LayoutPrototypeService,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _layoutPrototypeService.addLayoutPrototype(nameMap, description,
 			active);
+	}
+
+	public com.liferay.portal.model.LayoutPrototype addLayoutPrototype(
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.lang.String description, boolean active,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _layoutPrototypeService.addLayoutPrototype(nameMap, description,
+			active, serviceContext);
 	}
 
 	public void deleteLayoutPrototype(long layoutPrototypeId)
@@ -78,6 +92,10 @@ public class LayoutPrototypeServiceWrapper implements LayoutPrototypeService,
 		return _layoutPrototypeService.search(companyId, active, obc);
 	}
 
+	/**
+	* @deprecated As of 6.2.0, replaced by {@link #updateLayoutPrototype(long,
+	Map, String, boolean, ServiceContext)}
+	*/
 	public com.liferay.portal.model.LayoutPrototype updateLayoutPrototype(
 		long layoutPrototypeId,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
@@ -86,6 +104,17 @@ public class LayoutPrototypeServiceWrapper implements LayoutPrototypeService,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _layoutPrototypeService.updateLayoutPrototype(layoutPrototypeId,
 			nameMap, description, active);
+	}
+
+	public com.liferay.portal.model.LayoutPrototype updateLayoutPrototype(
+		long layoutPrototypeId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.lang.String description, boolean active,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _layoutPrototypeService.updateLayoutPrototype(layoutPrototypeId,
+			nameMap, description, active, serviceContext);
 	}
 
 	/**

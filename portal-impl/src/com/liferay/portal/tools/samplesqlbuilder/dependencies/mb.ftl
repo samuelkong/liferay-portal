@@ -17,7 +17,9 @@
 				<#list 1..maxMBMessageCount as mbMessageCount>
 					<#assign mbMessage = dataFactory.newMBMessage(mbThread, mbMessageCount)>
 
-					<@insertMBMessage _mbMessage = mbMessage />
+					<@insertMBMessage
+						_mbMessage = mbMessage
+					/>
 				</#list>
 
 				${writerMessageBoardsCSV.write(mbCategory.categoryId + "," + mbThread.threadId + "," + mbThread.rootMessageId + "\n")}

@@ -43,29 +43,29 @@
 	<td></td>
 	<td></td>
 </tr>
-<!--Categories-->
+<!--CATEGORY_TABLE-->
 <tr>
-	<td>CATEGORIES_CATEGORY</td>
+	<td>CATEGORY_TABLE_CATEGORY</td>
 	<td>//div[contains(@id,'mbCategoriesSearchContainer')]/table/tbody/tr/td[1]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>CATEGORIES_CATEGORIES</td>
+	<td>CATEGORY_TABLE_CATEGORIES</td>
 	<td>//div[contains(@id,'mbCategoriesSearchContainer')]/table/tbody/tr/td[2]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>CATEGORIES_THREADS</td>
+	<td>CATEGORY_TABLE_THREADS</td>
 	<td>//div[contains(@id,'mbCategoriesSearchContainer')]/table/tbody/tr/td[3]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>CATEGORIES_POSTS</td>
+	<td>CATEGORY_TABLE_POSTS</td>
 	<td>//div[contains(@id,'mbCategoriesSearchContainer')]/table/tbody/tr/td[4]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>CATEGORIES_ACTIONS</td>
+	<td>CATEGORY_TABLE_ACTIONS</td>
 	<td>//div[contains(@id,'mbCategoriesSearchContainer')]/table/tbody/tr/td/span[@title='Actions']/ul/li/strong/a/span</td>
 	<td></td>
 </tr>
@@ -74,29 +74,70 @@
 	<td></td>
 	<td></td>
 </tr>
-<!--Threads-->
+<!--CATEGORY_ACTION-->
 <tr>
-	<td>THREADS_THREAD</td>
+	<td>CATEGORY_ACTIONS_EDIT</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Edit')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_ACTIONS_MOVE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_ACTIONS_PERMISSIONS</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Permissions')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_ACTIONS_RSS</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'RSS')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_ACTIONS_SUBSCRIBE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Subscribe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_ACTIONS_UNSUBSCRIBE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Unsubscribe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_ACTIONS_RECYCLE_BIN</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move to the Recycle Bin')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--THREAD_TABLE-->
+<tr>
+	<td>THREAD_TABLE_THREAD</td>
 	<td>//div[contains(@id,'mbThreadsSearchContainer')]/table/tbody/tr/td[1]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>THREADS_STARTED_BY</td>
+	<td>THREAD_TABLE_STARTED_BY</td>
 	<td>//div[contains(@id,'mbThreadsSearchContainer')]/table/tbody/tr/td[3]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>THREADS_POSTS</td>
+	<td>THREAD_TABLE_POSTS</td>
 	<td>//div[contains(@id,'mbThreadsSearchContainer')]/table/tbody/tr/td[4]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>THREADS_LAST_POST</td>
+	<td>THREAD_TABLE_LAST_POST</td>
 	<td>//div[contains(@id,'mbThreadsSearchContainer')]/table/tbody/tr/td[6]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>THREADS_ACTIONS</td>
+	<td>THREAD_TABLE_ACTIONS</td>
 	<td>//div[contains(@id,'mbThreadsSearchContainer')]/table/tbody/tr/td/span[@title='Actions']/ul/li/strong/a/span</td>
 	<td></td>
 </tr>
@@ -105,30 +146,50 @@
 	<td></td>
 	<td></td>
 </tr>
-<!--Actions-->
+<!--THREAD_ACTION-->
 <tr>
-	<td>ACTIONS_EDIT</td>
+	<td>THREAD_ACTIONS_EDIT</td>
 	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Edit')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>ACTIONS_MOVE</td>
-	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ACTIONS_PERMISSIONS</td>
+	<td>THREAD_ACTIONS_PERMISSIONS</td>
 	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Permissions')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>ACTIONS_MOVE_TO_THE_RECYCLE_BIN</td>
-	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move to the Recycle Bin')]</td>
+	<td>THREAD_ACTIONS_RSS</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'RSS')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>THREADS_THREAD</td>
-	<td>//div[contains(@id,'mbThreadsSearchContainer')]/table/tbody/tr/td[1]/a</td>
+	<td>THREAD_ACTIONS_SUBSCRIBE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Subscribe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THREAD_ACTIONS_UNSUBSCRIBE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Unsubscribe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THREAD_ACTIONS_UNSUBSCRIBE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Unsubscribe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THREAD_ACTIONS_MOVE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THREAD_ACTIONS_MOVE</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THREAD_ACTIONS_RECYCLE_BIN</td>
+	<td>//div[@class='lfr-component lfr-menu-list']/ul/li/a[contains(.,'Move to the Recycle Bin')]</td>
 	<td></td>
 </tr>
 </tbody>

@@ -147,9 +147,9 @@ List<Organization> organizations = (List<Organization>)request.getAttribute("use
 						rowColumns.push(event.name);
 						rowColumns.push(event.type);
 						rowColumns.push('');
-						rowColumns.push('<a class="modify-link" data-rowId="' + event.organizationid + '" href="javascript:;"><%= UnicodeFormatter.toString(removeOrganizationIcon) %></a>');
+						rowColumns.push('<a class="modify-link" data-rowId="' + event.organizationId + '" href="javascript:;"><%= UnicodeFormatter.toString(removeOrganizationIcon) %></a>');
 
-						searchContainer.addRow(rowColumns, event.organizationid);
+						searchContainer.addRow(rowColumns, event.organizationId);
 
 						searchContainer.updateDataStore();
 					}

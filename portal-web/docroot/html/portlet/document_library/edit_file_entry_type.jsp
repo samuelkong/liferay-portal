@@ -164,7 +164,7 @@ String scopeAvailableFields = ParamUtil.getString(request, "scopeAvailableFields
 
 				var ddmStructureLink = '<a class="modify-link" data-rowId="' + ddmStructureId + '" href="javascript:;"><%= UnicodeFormatter.toString(removeStructureIcon) %></a>';
 
-				searchContainer.addRow([event.name, ddmStructureLink], event.ddmstructureid);
+				searchContainer.addRow([event.name, ddmStructureLink], event.ddmStructureId);
 
 				searchContainer.updateDataStore();
 			}

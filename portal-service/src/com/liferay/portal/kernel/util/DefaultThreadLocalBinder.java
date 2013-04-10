@@ -81,7 +81,7 @@ public class DefaultThreadLocalBinder implements ThreadLocalBinder {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						fieldName +
-							" is not type of ThreadLocal. Skip binding.");
+							" is not of type ThreadLocal. Skip binding.");
 				}
 
 				continue;

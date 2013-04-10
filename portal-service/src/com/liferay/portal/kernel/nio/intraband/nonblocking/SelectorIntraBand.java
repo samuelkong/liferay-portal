@@ -72,17 +72,17 @@ public class SelectorIntraBand extends BaseIntraBand {
 
 		if (!(channel instanceof ScatteringByteChannel)) {
 			throw new IllegalArgumentException(
-				"Channel is not type of ScatteringByteChannel");
+				"Channel is not of type ScatteringByteChannel");
 		}
 
 		if (!(channel instanceof GatheringByteChannel)) {
 			throw new IllegalArgumentException(
-				"Channel is not type of GatheringByteChannel");
+				"Channel is not of type GatheringByteChannel");
 		}
 
 		if (!(channel instanceof SelectableChannel)) {
 			throw new IllegalArgumentException(
-				"Channel is not type of SelectableChannel");
+				"Channel is not of type SelectableChannel");
 		}
 
 		SelectableChannel selectableChannel = (SelectableChannel)channel;
@@ -132,12 +132,12 @@ public class SelectorIntraBand extends BaseIntraBand {
 
 		if (!(scatteringByteChannel instanceof SelectableChannel)) {
 			throw new IllegalArgumentException(
-				"Scattering byte channel is not type of SelectableChannel");
+				"Scattering byte channel is not of type SelectableChannel");
 		}
 
 		if (!(gatheringByteChannel instanceof SelectableChannel)) {
 			throw new IllegalArgumentException(
-				"Gathering byte channel is not type of SelectableChannel");
+				"Gathering byte channel is not of type SelectableChannel");
 		}
 
 		SelectableChannel readSelectableChannel =

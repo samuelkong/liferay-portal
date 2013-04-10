@@ -374,7 +374,7 @@ if (feed != null) {
 			},
 			function(event){
 				if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "selecting-a-new-structure-will-change-the-available-templates-and-available-feed-item-content") %>') && (document.<portlet:namespace />fm.<portlet:namespace />structureId.value != event.structurekey)) {
-					document.<portlet:namespace />fm.<portlet:namespace />structureId.value = event.ddmstructurekey;
+					document.<portlet:namespace />fm.<portlet:namespace />structureId.value = event.ddmStructureKey;
 					document.<portlet:namespace />fm.<portlet:namespace />templateId.value = "";
 					document.<portlet:namespace />fm.<portlet:namespace />rendererTemplateId.value = "";
 					document.<portlet:namespace />fm.<portlet:namespace />contentField.value = "<%= JournalFeedConstants.WEB_CONTENT_DESCRIPTION %>";

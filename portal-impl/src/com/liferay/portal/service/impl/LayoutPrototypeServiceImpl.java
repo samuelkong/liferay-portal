@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.model.LayoutPrototype;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.base.LayoutPrototypeServiceBaseImpl;
 import com.liferay.portal.service.permission.LayoutPrototypePermissionUtil;
 import com.liferay.portal.service.permission.PortalPermissionUtil;
@@ -36,6 +37,10 @@ import java.util.Map;
  */
 public class LayoutPrototypeServiceImpl extends LayoutPrototypeServiceBaseImpl {
 
+	/**
+	 * @deprecated As of 6.2.0, replaced by {@link #addLayoutPrototype(long,
+	 *             Map, String, boolean, ServiceContext)}
+	 */
 	public LayoutPrototype addLayoutPrototype(
 			Map<Locale, String> nameMap, String description, boolean active)
 		throws PortalException, SystemException {
@@ -48,6 +53,21 @@ public class LayoutPrototypeServiceImpl extends LayoutPrototypeServiceBaseImpl {
 		return layoutPrototypeLocalService.addLayoutPrototype(
 			user.getUserId(), user.getCompanyId(), nameMap, description,
 			active);
+	}
+
+	public LayoutPrototype addLayoutPrototype(
+			Map<Locale, String> nameMap, String description, boolean active,
+			ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		PortalPermissionUtil.check(
+			getPermissionChecker(), ActionKeys.ADD_LAYOUT_PROTOTYPE);
+
+		User user = getUser();
+
+		return layoutPrototypeLocalService.addLayoutPrototype(
+			user.getUserId(), user.getCompanyId(), nameMap, description, active,
+			serviceContext);
 	}
 
 	public void deleteLayoutPrototype(long layoutPrototypeId)
@@ -92,6 +112,10 @@ public class LayoutPrototypeServiceImpl extends LayoutPrototypeServiceBaseImpl {
 		return filteredLayoutPrototypes;
 	}
 
+	/**
+	 * @deprecated As of 6.2.0, replaced by {@link #updateLayoutPrototype(long,
+	 *             Map, String, boolean, ServiceContext)}
+	 */
 	public LayoutPrototype updateLayoutPrototype(
 			long layoutPrototypeId, Map<Locale, String> nameMap,
 			String description, boolean active)
@@ -102,6 +126,18 @@ public class LayoutPrototypeServiceImpl extends LayoutPrototypeServiceBaseImpl {
 
 		return layoutPrototypeLocalService.updateLayoutPrototype(
 			layoutPrototypeId, nameMap, description, active);
+	}
+
+	public LayoutPrototype updateLayoutPrototype(
+			long layoutPrototypeId, Map<Locale, String> nameMap,
+			String description, boolean active, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		LayoutPrototypePermissionUtil.check(
+			getPermissionChecker(), layoutPrototypeId, ActionKeys.UPDATE);
+
+		return layoutPrototypeLocalService.updateLayoutPrototype(
+			layoutPrototypeId, nameMap, description, active, serviceContext);
 	}
 
 }

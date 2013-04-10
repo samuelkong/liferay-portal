@@ -35,7 +35,7 @@
 </tr>
 <!--ENTRIES-->
 <tr>
-	<td>ENTRIES_ALL_ROWS</td>
+	<td>BLOGS_ENTRY_TABLE_ALL_ROWS</td>
 	<td>//input[@name='_161_allRowIds']</td>
 	<td></td>
 </tr>

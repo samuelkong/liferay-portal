@@ -9,10 +9,19 @@
 
 		<#assign layout = dataFactory.newLayout(userGroup.groupId, "home", "", "33,")>
 
-		<@insertLayout _layout = layout />
+		<@insertLayout
+			_layout = layout
+		/>
 
-		<@insertGroup _group = userGroup _publicPageCount = 1 />
+		<@insertGroup
+			_group = userGroup
+			_publicPageCount = 1
+		/>
 
-		${sampleSQLBuilder.insertUser(groupIds, roleIds, user)}
+		<@insertUser
+			_groupIds = groupIds
+			_roleIds = roleIds
+			_user = user
+		/>
 	</#list>
 </#if>

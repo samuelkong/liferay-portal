@@ -106,7 +106,7 @@ public class MDRRuleStagedModelDataHandlerTest
 		MDRRuleGroup ruleGroup = (MDRRuleGroup)dependentStagedModels.get(0);
 
 		MDRRuleGroupLocalServiceUtil.getMDRRuleGroupByUuidAndGroupId(
-			ruleGroup.getUuid(), ruleGroup.getGroupId());
+			ruleGroup.getUuid(), group.getGroupId());
 	}
 
 }

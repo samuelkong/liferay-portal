@@ -20,7 +20,9 @@
 	</@aui.layout>
 </#if>
 
-<#macro displayPages pages>
+<#macro displayPages
+	pages
+>
 	<#if pages?has_content>
 		<ul class="child-pages">
 			<#list pages as page>

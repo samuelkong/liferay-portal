@@ -64,7 +64,10 @@ import java.rmi.RemoteException;
  */
 public class PasswordPolicyServiceSoap {
 	/**
-	* @deprecated As of 6.2.0
+	* @deprecated As of 6.2.0, replaced by {@link #addPasswordPolicy(String,
+	String, boolean, boolean, long, boolean, boolean, int, int,
+	int, int, int, int, String, boolean, int, boolean, long,
+	long, int, boolean, int, long, long, long, ServiceContext)}
 	*/
 	public static com.liferay.portal.model.PasswordPolicySoap addPasswordPolicy(
 		java.lang.String name, java.lang.String description,
@@ -137,7 +140,11 @@ public class PasswordPolicyServiceSoap {
 	}
 
 	/**
-	* @deprecated As of 6.2.0
+	* @deprecated As of 6.2.0, replaced by {@link #updatePasswordPolicy(long,
+	String, String, boolean, boolean, long, boolean, boolean,
+	int, int, int, int, int, int, String, boolean, int, boolean,
+	long, long, int, boolean, int, long, long, long,
+	ServiceContext)}
 	*/
 	public static com.liferay.portal.model.PasswordPolicySoap updatePasswordPolicy(
 		long passwordPolicyId, java.lang.String name,

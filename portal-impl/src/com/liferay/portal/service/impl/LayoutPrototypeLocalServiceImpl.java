@@ -24,10 +24,12 @@ import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.LayoutConstants;
 import com.liferay.portal.model.LayoutPrototype;
 import com.liferay.portal.model.ResourceConstants;
+import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.base.LayoutPrototypeLocalServiceBaseImpl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,19 +42,41 @@ import java.util.Map;
 public class LayoutPrototypeLocalServiceImpl
 	extends LayoutPrototypeLocalServiceBaseImpl {
 
+	/**
+	 * @deprecated As of 6.2.0, replaced by {@link #addLayoutPrototype(long,
+	 *             long, Map, String, boolean, ServiceContext)}
+	 */
 	public LayoutPrototype addLayoutPrototype(
 			long userId, long companyId, Map<Locale, String> nameMap,
 			String description, boolean active)
 		throws PortalException, SystemException {
 
+		return addLayoutPrototype(
+			userId, companyId, nameMap, description, active,
+			new ServiceContext());
+	}
+
+	public LayoutPrototype addLayoutPrototype(
+			long userId, long companyId, Map<Locale, String> nameMap,
+			String description, boolean active, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
 		// Layout prototype
+
+		User user = userPersistence.findByPrimaryKey(userId);
+		Date now = new Date();
 
 		long layoutPrototypeId = counterLocalService.increment();
 
 		LayoutPrototype layoutPrototype = layoutPrototypePersistence.create(
 			layoutPrototypeId);
 
+		layoutPrototype.setUuid(serviceContext.getUuid());
 		layoutPrototype.setCompanyId(companyId);
+		layoutPrototype.setUserId(userId);
+		layoutPrototype.setUserName(user.getFullName());
+		layoutPrototype.setCreateDate(serviceContext.getCreateDate(now));
+		layoutPrototype.setModifiedDate(serviceContext.getModifiedDate(now));
 		layoutPrototype.setNameMap(nameMap);
 		layoutPrototype.setDescription(description);
 		layoutPrototype.setActive(active);
@@ -79,8 +103,6 @@ public class LayoutPrototypeLocalServiceImpl
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			layoutPrototype.getName(LocaleUtil.getDefault()), null, 0,
 			friendlyURL, false, true, null);
-
-		ServiceContext serviceContext = new ServiceContext();
 
 		layoutLocalService.addLayout(
 			userId, group.getGroupId(), true,
@@ -188,9 +210,22 @@ public class LayoutPrototypeLocalServiceImpl
 		}
 	}
 
+	/**
+	 * @deprecated As of 6.2.0, replaced by {@link #updateLayoutPrototype(long,
+	 *             Map, String, boolean, ServiceContext)}
+	 */
 	public LayoutPrototype updateLayoutPrototype(
 			long layoutPrototypeId, Map<Locale, String> nameMap,
 			String description, boolean active)
+		throws PortalException, SystemException {
+
+		return updateLayoutPrototype(
+			layoutPrototypeId, nameMap, description, active, null);
+	}
+
+	public LayoutPrototype updateLayoutPrototype(
+			long layoutPrototypeId, Map<Locale, String> nameMap,
+			String description, boolean active, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		// Layout prototype
@@ -198,6 +233,8 @@ public class LayoutPrototypeLocalServiceImpl
 		LayoutPrototype layoutPrototype =
 			layoutPrototypePersistence.findByPrimaryKey(layoutPrototypeId);
 
+		layoutPrototype.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
 		layoutPrototype.setNameMap(nameMap);
 		layoutPrototype.setDescription(description);
 		layoutPrototype.setActive(active);

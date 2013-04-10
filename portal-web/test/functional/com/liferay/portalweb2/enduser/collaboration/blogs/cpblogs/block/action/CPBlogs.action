@@ -6,7 +6,7 @@
 	</command>
 
 	<command name="isElementPresent">
-		<case locator-key1="ENTRIES_ALL_ROWS">
+		<case locator-key1="BLOGS_ENTRY_TABLE_ALL_ROWS">
 			<execute function="IsElementPresent#isVisible" />
 		</case>
 	</command>
