@@ -18,7 +18,7 @@ import com.liferay.portal.DuplicateLockException;
 import com.liferay.portal.ImageTypeException;
 import com.liferay.portal.InvalidChangeFrequencyException;
 import com.liferay.portal.InvalidIncludeException;
-import com.liferay.portal.InvalidPriorityException;
+import com.liferay.portal.InvalidPagePriorityException;
 import com.liferay.portal.LayoutFriendlyURLException;
 import com.liferay.portal.LayoutNameException;
 import com.liferay.portal.LayoutParentLayoutIdException;
@@ -285,7 +285,7 @@ public class EditLayoutsAction extends PortletAction {
 			else if (e instanceof ImageTypeException ||
 					 e instanceof InvalidChangeFrequencyException ||
 					 e instanceof InvalidIncludeException ||
-					 e instanceof InvalidPriorityException ||
+					 e instanceof InvalidPagePriorityException ||
 					 e instanceof LayoutFriendlyURLException ||
 					 e instanceof LayoutNameException ||
 					 e instanceof LayoutParentLayoutIdException ||
