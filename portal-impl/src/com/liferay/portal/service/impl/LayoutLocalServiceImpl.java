@@ -14,6 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.InvalidChangeFrequencyException;
+import com.liferay.portal.InvalidIncludeException;
+import com.liferay.portal.InvalidPagePriorityException;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RequiredLayoutException;
@@ -1891,6 +1894,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		typeSettingsProperties.fastLoad(typeSettings);
 
+		validateTypeSettingsProperties(typeSettingsProperties);
+
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
@@ -2396,6 +2401,45 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		updateScopedPortletNames(
 			groupId, privateLayout, layoutId, map, locales);
+	}
+
+	protected void validateTypeSettingsProperties(
+			UnicodeProperties typeSettingsProperties)
+		throws PortalException {
+
+		String sitemapPriority = typeSettingsProperties.getProperty(
+			"sitemap-priority");
+		String include = typeSettingsProperties.getProperty("sitemap-include");
+		String changeFrequency = typeSettingsProperties.getProperty(
+			"sitemap-changefreq");
+
+		if (Validator.isNotNull(include)) {
+			if (!(include.equals("0") || include.equals("1"))) {
+				throw new InvalidIncludeException();
+			}
+		}
+
+		if (Validator.isNotNull(sitemapPriority)) {
+			if (!sitemapPriority.matches("^\\d+\\.\\d+$") ||
+				(GetterUtil.getFloat(sitemapPriority) < 0) ||
+				(GetterUtil.getFloat(sitemapPriority) > 1)) {
+
+				throw new InvalidPagePriorityException();
+			}
+		}
+
+		if (Validator.isNotNull(changeFrequency)) {
+			if (!(changeFrequency.equals("always") ||
+				changeFrequency.equals("hourly") ||
+				changeFrequency.equals("daily") ||
+				changeFrequency.equals("weekly") ||
+				changeFrequency.equals("monthly") ||
+				changeFrequency.equals("yearly") ||
+				changeFrequency.equals("never"))) {
+
+				throw new InvalidChangeFrequencyException();
+			}
+		}
 	}
 
 	@BeanReference(type = LayoutLocalServiceHelper.class)
