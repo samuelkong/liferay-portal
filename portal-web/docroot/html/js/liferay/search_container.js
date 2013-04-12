@@ -212,7 +212,7 @@ AUI.add(
 
 							instance._table.all('tr').some(
 								function(item, index, collection) {
-									if (!item.hasClass(CSS_TEMPLATE) && index == obj) {
+									if (!item.hasClass(CSS_TEMPLATE) && index == obj + 1) {
 										row = item;
 									}
 
