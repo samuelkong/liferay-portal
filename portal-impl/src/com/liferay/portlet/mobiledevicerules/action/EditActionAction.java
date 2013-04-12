@@ -34,6 +34,7 @@ import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.mobiledevicerules.NoSuchActionException;
 import com.liferay.portlet.mobiledevicerules.NoSuchRuleGroupException;
+import com.liferay.portlet.mobiledevicerules.RequiredActionTypeException;
 import com.liferay.portlet.mobiledevicerules.model.MDRAction;
 import com.liferay.portlet.mobiledevicerules.model.MDRRuleGroupInstance;
 import com.liferay.portlet.mobiledevicerules.service.MDRActionServiceUtil;
@@ -96,6 +97,12 @@ public class EditActionAction extends EditRuleAction {
 					 e instanceof NoSuchRuleGroupException) {
 
 				SessionErrors.add(actionRequest, e.getClass());
+			}
+			else if (e instanceof RequiredActionTypeException) {
+				SessionErrors.add(actionRequest, e.getClass());
+
+				setForward(
+					actionRequest, "portlet.mobile_device_rules.edit_action");
 			}
 			else {
 				throw e;
@@ -204,9 +211,7 @@ public class EditActionAction extends EditRuleAction {
 			type);
 
 		if (actionHandler == null) {
-			SessionErrors.add(actionRequest, "typeInvalid");
-
-			return;
+			throw new RequiredActionTypeException();
 		}
 
 		UnicodeProperties typeSettingsProperties = getTypeSettingsProperties(
