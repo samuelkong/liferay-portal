@@ -2561,11 +2561,11 @@
 		<exception>GroupName</exception>
 		<exception>GroupParent</exception>
 		<exception>ImageType</exception>
-		<exception>InvalidChangeFrequency</exception>
-		<exception>InvalidInclude</exception>
 		<exception>InvalidLock</exception>
-		<exception>InvalidPagePriority</exception>
 		<exception>InvalidRepository</exception>
+		<exception>InvalidSiteMapChangeFrequency</exception>
+		<exception>InvalidSiteMapInclude</exception>
+		<exception>InvalidSiteMapPagePriority</exception>
 		<exception>LARFile</exception>
 		<exception>LARFileSize</exception>
 		<exception>LARType</exception>

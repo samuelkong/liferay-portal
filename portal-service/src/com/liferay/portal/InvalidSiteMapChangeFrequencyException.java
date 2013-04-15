@@ -19,21 +19,21 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Brian Wing Shun Chan
  */
-public class InvalidChangeFrequencyException extends PortalException {
+public class InvalidSiteMapChangeFrequencyException extends PortalException {
 
-	public InvalidChangeFrequencyException() {
+	public InvalidSiteMapChangeFrequencyException() {
 		super();
 	}
 
-	public InvalidChangeFrequencyException(String msg) {
+	public InvalidSiteMapChangeFrequencyException(String msg) {
 		super(msg);
 	}
 
-	public InvalidChangeFrequencyException(String msg, Throwable cause) {
+	public InvalidSiteMapChangeFrequencyException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public InvalidChangeFrequencyException(Throwable cause) {
+	public InvalidSiteMapChangeFrequencyException(Throwable cause) {
 		super(cause);
 	}
 

@@ -14,9 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.InvalidChangeFrequencyException;
-import com.liferay.portal.InvalidIncludeException;
-import com.liferay.portal.InvalidPagePriorityException;
+import com.liferay.portal.InvalidSiteMapChangeFrequencyException;
+import com.liferay.portal.InvalidSiteMapIncludeException;
+import com.liferay.portal.InvalidSiteMapPagePriorityException;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RequiredLayoutException;
@@ -2409,36 +2409,34 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		String sitemapPriority = typeSettingsProperties.getProperty(
 			"sitemap-priority");
-		String include = typeSettingsProperties.getProperty("sitemap-include");
-		String changeFrequency = typeSettingsProperties.getProperty(
+		String sitemapInclude = typeSettingsProperties.getProperty(
+			"sitemap-include");
+		String sitemapChangeFrequency = typeSettingsProperties.getProperty(
 			"sitemap-changefreq");
 
-		if (Validator.isNotNull(include)) {
-			if (!(include.equals("0") || include.equals("1"))) {
-				throw new InvalidIncludeException();
-			}
+		if (Validator.isNotNull(sitemapInclude) &&
+			!(sitemapInclude.equals("0") || sitemapInclude.equals("1"))) {
+				throw new InvalidSiteMapIncludeException();
 		}
 
-		if (Validator.isNotNull(sitemapPriority)) {
-			if (!sitemapPriority.matches("^\\d+\\.\\d+$") ||
-				(GetterUtil.getFloat(sitemapPriority) < 0) ||
-				(GetterUtil.getFloat(sitemapPriority) > 1)) {
+		if (Validator.isNotNull(sitemapPriority) &&
+			!sitemapPriority.matches("^\\d+\\.\\d+$") ||
+			(GetterUtil.getFloat(sitemapPriority) < 0) ||
+			(GetterUtil.getFloat(sitemapPriority) > 1)) {
 
-				throw new InvalidPagePriorityException();
-			}
+				throw new InvalidSiteMapPagePriorityException();
 		}
 
-		if (Validator.isNotNull(changeFrequency)) {
-			if (!(changeFrequency.equals("always") ||
-				changeFrequency.equals("hourly") ||
-				changeFrequency.equals("daily") ||
-				changeFrequency.equals("weekly") ||
-				changeFrequency.equals("monthly") ||
-				changeFrequency.equals("yearly") ||
-				changeFrequency.equals("never"))) {
+		if (Validator.isNotNull(sitemapChangeFrequency) &&
+			!(sitemapChangeFrequency.equals("always") ||
+			sitemapChangeFrequency.equals("hourly") ||
+			sitemapChangeFrequency.equals("daily") ||
+			sitemapChangeFrequency.equals("weekly") ||
+			sitemapChangeFrequency.equals("monthly") ||
+			sitemapChangeFrequency.equals("yearly") ||
+			sitemapChangeFrequency.equals("never"))) {
 
-				throw new InvalidChangeFrequencyException();
-			}
+				throw new InvalidSiteMapChangeFrequencyException();
 		}
 	}
 

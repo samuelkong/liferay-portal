@@ -19,21 +19,21 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Brian Wing Shun Chan
  */
-public class InvalidPagePriorityException extends PortalException {
+public class InvalidSiteMapPagePriorityException extends PortalException {
 
-	public InvalidPagePriorityException() {
+	public InvalidSiteMapPagePriorityException() {
 		super();
 	}
 
-	public InvalidPagePriorityException(String msg) {
+	public InvalidSiteMapPagePriorityException(String msg) {
 		super(msg);
 	}
 
-	public InvalidPagePriorityException(String msg, Throwable cause) {
+	public InvalidSiteMapPagePriorityException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public InvalidPagePriorityException(Throwable cause) {
+	public InvalidSiteMapPagePriorityException(Throwable cause) {
 		super(cause);
 	}
 

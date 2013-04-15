@@ -19,21 +19,21 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Brian Wing Shun Chan
  */
-public class InvalidIncludeException extends PortalException {
+public class InvalidSiteMapIncludeException extends PortalException {
 
-	public InvalidIncludeException() {
+	public InvalidSiteMapIncludeException() {
 		super();
 	}
 
-	public InvalidIncludeException(String msg) {
+	public InvalidSiteMapIncludeException(String msg) {
 		super(msg);
 	}
 
-	public InvalidIncludeException(String msg, Throwable cause) {
+	public InvalidSiteMapIncludeException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public InvalidIncludeException(Throwable cause) {
+	public InvalidSiteMapIncludeException(Throwable cause) {
 		super(cause);
 	}
 
