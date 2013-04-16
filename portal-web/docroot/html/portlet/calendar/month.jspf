@@ -243,6 +243,22 @@ Format timeFormat = FastDateFormatFactoryUtil.getSimpleDateFormat("h:mma", local
 							<a href="<portlet:renderURL><portlet:param name="struts_action" value="/calendar/view_event" /><portlet:param name="redirect" value="<%= currentURL %>" /><portlet:param name="eventId" value="<%= String.valueOf(event.getEventId()) %>" /></portlet:renderURL>">
 							<%= StringUtil.shorten(event.getTitle(), 80) %>
 							</a>
+
+							<div class="event-edit" style="float: right;">
+								<c:if test="<%= CalEventPermission.contains(permissionChecker, event, ActionKeys.UPDATE) %>">
+									<portlet:renderURL var="editDayEventURL">
+										<portlet:param name="struts_action" value="/calendar/edit_event" />
+										<portlet:param name="redirect" value="<%= currentURL %>" />
+										<portlet:param name="backURL" value="<%= currentURL %>" />
+										<portlet:param name="eventId" value="<%= String.valueOf(event.getEventId()) %>" />
+									</portlet:renderURL>
+
+									<liferay-ui:icon
+										image="edit"
+										url="<%= editDayEventURL %>"
+									/>
+								</c:if>
+							</div>
 						</td>
 					</tr>
 
