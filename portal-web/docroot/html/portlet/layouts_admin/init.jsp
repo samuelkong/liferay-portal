@@ -18,6 +18,9 @@
 
 <%@ page import="com.liferay.portal.DuplicateLockException" %><%@
 page import="com.liferay.portal.ImageTypeException" %><%@
+page import="com.liferay.portal.InvalidSiteMapChangeFrequencyException" %><%@
+page import="com.liferay.portal.InvalidSiteMapIncludeException" %><%@
+page import="com.liferay.portal.InvalidSiteMapPagePriorityException" %><%@
 page import="com.liferay.portal.LARFileException" %><%@
 page import="com.liferay.portal.LARFileSizeException" %><%@
 page import="com.liferay.portal.LARTypeException" %><%@

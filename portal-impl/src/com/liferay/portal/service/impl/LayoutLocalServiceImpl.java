@@ -14,6 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.InvalidSiteMapChangeFrequencyException;
+import com.liferay.portal.InvalidSiteMapIncludeException;
+import com.liferay.portal.InvalidSiteMapPagePriorityException;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.RequiredLayoutException;
@@ -1891,6 +1894,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		typeSettingsProperties.fastLoad(typeSettings);
 
+		validateTypeSettingsProperties(typeSettingsProperties);
+
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
@@ -2396,6 +2401,43 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		updateScopedPortletNames(
 			groupId, privateLayout, layoutId, map, locales);
+	}
+
+	protected void validateTypeSettingsProperties(
+			UnicodeProperties typeSettingsProperties)
+		throws PortalException {
+
+		String sitemapPriority = typeSettingsProperties.getProperty(
+			"sitemap-priority");
+		String sitemapInclude = typeSettingsProperties.getProperty(
+			"sitemap-include");
+		String sitemapChangeFrequency = typeSettingsProperties.getProperty(
+			"sitemap-changefreq");
+
+		if (Validator.isNotNull(sitemapInclude) &&
+			!(sitemapInclude.equals("0") || sitemapInclude.equals("1"))) {
+				throw new InvalidSiteMapIncludeException();
+		}
+
+		if (Validator.isNotNull(sitemapPriority) &&
+			!sitemapPriority.matches("^\\d+\\.\\d+$") ||
+			(GetterUtil.getFloat(sitemapPriority) < 0) ||
+			(GetterUtil.getFloat(sitemapPriority) > 1)) {
+
+				throw new InvalidSiteMapPagePriorityException();
+		}
+
+		if (Validator.isNotNull(sitemapChangeFrequency) &&
+			!(sitemapChangeFrequency.equals("always") ||
+			sitemapChangeFrequency.equals("hourly") ||
+			sitemapChangeFrequency.equals("daily") ||
+			sitemapChangeFrequency.equals("weekly") ||
+			sitemapChangeFrequency.equals("monthly") ||
+			sitemapChangeFrequency.equals("yearly") ||
+			sitemapChangeFrequency.equals("never"))) {
+
+				throw new InvalidSiteMapChangeFrequencyException();
+		}
 	}
 
 	@BeanReference(type = LayoutLocalServiceHelper.class)
