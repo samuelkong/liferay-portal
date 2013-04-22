@@ -451,6 +451,30 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			deletePage(curPage);
 		}
 
+		// All versions
+
+		List<WikiPage> pages = wikiPagePersistence.findByN_T(
+			page.getNodeId(), page.getTitle());
+
+		for (WikiPage curPage : pages) {
+
+			// Asset
+
+			assetEntryLocalService.deleteEntry(
+				WikiPage.class.getName(), curPage.getPrimaryKey());
+
+			// Expando
+
+			expandoValueLocalService.deleteValues(
+				WikiPage.class.getName(), curPage.getPrimaryKey());
+
+			// Workflow
+
+			workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
+				curPage.getCompanyId(), curPage.getGroupId(),
+				WikiPage.class.getName(), curPage.getPageId());
+		}
+
 		wikiPagePersistence.removeByN_T(page.getNodeId(), page.getTitle());
 
 		// References
@@ -488,20 +512,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		// Asset
 
-		List<WikiPage> versionPages = wikiPagePersistence.findByN_T(
-			page.getNodeId(), page.getTitle());
-
-		for (WikiPage versionPage : versionPages) {
-			assetEntryLocalService.deleteEntry(
-				WikiPage.class.getName(), versionPage.getPrimaryKey());
-		}
-
 		assetEntryLocalService.deleteEntry(
-			WikiPage.class.getName(), page.getResourcePrimKey());
-
-		// Expando
-
-		expandoValueLocalService.deleteValues(
 			WikiPage.class.getName(), page.getResourcePrimKey());
 
 		// Message boards
@@ -528,20 +539,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		// Cache
 
 		clearPageCache(page);
-
-		// All versions
-
-		List<WikiPage> pages = wikiPagePersistence.findByN_T(
-			page.getNodeId(), page.getTitle());
-
-		for (WikiPage curPage : pages) {
-
-			// Workflow
-
-			workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
-				curPage.getCompanyId(), curPage.getGroupId(),
-				WikiPage.class.getName(), curPage.getPageId());
-		}
 	}
 
 	public void deletePageAttachment(long nodeId, String title, String fileName)
