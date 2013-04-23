@@ -155,7 +155,7 @@ boolean showHeader = ParamUtil.getBoolean(request, "showHeader", true);
 boolean showMinimalActionButtons = ParamUtil.getBoolean(request, "showMinimalActionButtons");
 boolean showTabs = PrefsParamUtil.getBoolean(preferences, request, "showTabs");
 
-if (portletName.equals(PortletKeys.DOCUMENT_LIBRARY)) {
+if (portletId.equals(PortletKeys.DOCUMENT_LIBRARY)) {
 	showActions = true;
 	showAssetMetadata = true;
 	showAddFolderButton = true;
