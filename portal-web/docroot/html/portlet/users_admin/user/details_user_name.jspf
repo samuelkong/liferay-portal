@@ -14,7 +14,27 @@
  */
 --%>
 
-<aui:select bean="<%= selContact %>" label="title[person]" listType="<%= ListTypeConstants.CONTACT_PREFIX %>" listTypeFieldName="prefixId" model="<%= Contact.class %>" name="prefixId" showEmptyOption="<%= true %>" />
+<%
+int prefixId = BeanParamUtil.getInteger(selContact, request, "prefixId");
+int suffixId = BeanParamUtil.getInteger(selContact, request, "suffixId");
+%>
+
+<aui:select label="title[person]" name="prefixId" >
+	<aui:option value="0" />
+
+	<%
+	List<ListType> prefixIdTypes = ListTypeServiceUtil.getListTypes(ListTypeConstants.CONTACT_PREFIX);
+
+	for (ListType prefixIdType : prefixIdTypes) {
+	%>
+
+		<aui:option selected="<%= prefixId == prefixIdType.getListTypeId() %>" value="<%= prefixIdType.getListTypeId() %>"><liferay-ui:message key="<%= prefixIdType.getName() %>" /></aui:option>
+
+	<%
+	}
+	%>
+
+</aui:select>
 
 <liferay-ui:error exception="<%= ContactFirstNameException.class %>" message="please-enter-a-valid-first-name" />
 <liferay-ui:error exception="<%= ContactFullNameException.class %>" message="please-enter-a-valid-first-middle-and-last-name" />
@@ -31,4 +51,19 @@
 	</c:if>
 </aui:input>
 
-<aui:select bean="<%= selContact %>" label="suffix" listType="<%= ListTypeConstants.CONTACT_SUFFIX %>" listTypeFieldName="suffixId" model="<%= Contact.class %>" name="suffixId" showEmptyOption="<%= true %>" />
+<aui:select label="title[person]" name="suffixId" >
+	<aui:option value="0" />
+
+	<%
+	List<ListType> suffixIdTypes = ListTypeServiceUtil.getListTypes(ListTypeConstants.CONTACT_SUFFIX);
+
+	for (ListType suffixIdType : suffixIdTypes) {
+	%>
+
+		<aui:option selected="<%= suffixId == suffixIdType.getListTypeId() %>" value="<%= suffixIdType.getListTypeId() %>"><liferay-ui:message key="<%= suffixIdType.getName() %>" /></aui:option>
+
+	<%
+	}
+	%>
+
+</aui:select>
