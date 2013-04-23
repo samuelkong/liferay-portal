@@ -51,7 +51,7 @@ if (selLayout != null) {
 		String sitemapPriority = layoutTypeSettings.getProperty("sitemap-priority", PropsValues.SITES_SITEMAP_DEFAULT_PRIORITY);
 		%>
 
-		<liferay-ui:error exception="<%= InvalidSiteMapIncludeException.class %>" message="please-enter-a-valid-include" />
+		<liferay-ui:error exception="<%= InvalidSiteMapIncludeException.class %>" message="please-select-a-valid-include" />
 
 		<aui:select label="include" name="TypeSettingsProperties--sitemap-include--">
 			<aui:option label="yes" selected="<%= include %>" value="1" />
@@ -62,7 +62,7 @@ if (selLayout != null) {
 
 		<aui:input helpMessage="(0.0 - 1.0)" label="page-priority" name="TypeSettingsProperties--sitemap-priority--" size="3" type="text" value="<%= sitemapPriority %>" />
 
-		<liferay-ui:error exception="<%= InvalidSiteMapChangeFrequencyException.class %>" message="please-enter-a-valid-change-frequency" />
+		<liferay-ui:error exception="<%= InvalidSiteMapChangeFrequencyException.class %>" message="please-select-a-valid-change-frequency" />
 
 		<aui:select label="change-frequency" name="TypeSettingsProperties--sitemap-changefreq--">
 			<aui:option label="always" selected='<%= changeFrequency.equals("always") %>' />

@@ -2417,15 +2417,21 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(sitemapInclude) &&
 			!(sitemapInclude.equals("0") || sitemapInclude.equals("1"))) {
-				throw new InvalidSiteMapIncludeException();
+
+			throw new InvalidSiteMapIncludeException();
 		}
 
-		if (Validator.isNotNull(sitemapPriority) &&
-			!sitemapPriority.matches("^\\d+\\.\\d+$") ||
-			(GetterUtil.getFloat(sitemapPriority) < 0) ||
-			(GetterUtil.getFloat(sitemapPriority) > 1)) {
+		if (Validator.isNotNull(sitemapPriority)) {
+			try {
+				Float sitemapPriotity = Float.valueOf(sitemapPriority);
 
+				if ((sitemapPriotity < 0) || (sitemapPriotity > 1)) {
+					throw new InvalidSiteMapPagePriorityException();
+				}
+			}
+			catch (NumberFormatException nfe) {
 				throw new InvalidSiteMapPagePriorityException();
+			}
 		}
 
 		if (Validator.isNotNull(sitemapChangeFrequency) &&
@@ -2437,7 +2443,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			sitemapChangeFrequency.equals("yearly") ||
 			sitemapChangeFrequency.equals("never"))) {
 
-				throw new InvalidSiteMapChangeFrequencyException();
+			throw new InvalidSiteMapChangeFrequencyException();
 		}
 	}
 
