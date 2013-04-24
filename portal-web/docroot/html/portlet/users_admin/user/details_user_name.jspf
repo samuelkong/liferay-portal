@@ -19,16 +19,16 @@ int prefixId = BeanParamUtil.getInteger(selContact, request, "prefixId");
 int suffixId = BeanParamUtil.getInteger(selContact, request, "suffixId");
 %>
 
-<aui:select label="title[person]" name="prefixId" >
+<aui:select label="title[person]" name="prefixId">
 	<aui:option value="0" />
 
 	<%
-	List<ListType> prefixIdTypes = ListTypeServiceUtil.getListTypes(ListTypeConstants.CONTACT_PREFIX);
+	List<ListType> prefixListTypes = ListTypeServiceUtil.getListTypes(ListTypeConstants.CONTACT_PREFIX);
 
-	for (ListType prefixIdType : prefixIdTypes) {
+	for (ListType prefixListType : prefixListTypes) {
 	%>
 
-		<aui:option selected="<%= prefixId == prefixIdType.getListTypeId() %>" value="<%= prefixIdType.getListTypeId() %>"><liferay-ui:message key="<%= prefixIdType.getName() %>" /></aui:option>
+		<aui:option label="<%= prefixListType.getName() %>" selected="<%= prefixId == prefixListType.getListTypeId() %>" value="<%= prefixListType.getListTypeId() %>" />
 
 	<%
 	}
@@ -51,16 +51,16 @@ int suffixId = BeanParamUtil.getInteger(selContact, request, "suffixId");
 	</c:if>
 </aui:input>
 
-<aui:select label="title[person]" name="suffixId" >
+<aui:select label="title[person]" name="suffixId">
 	<aui:option value="0" />
 
 	<%
-	List<ListType> suffixIdTypes = ListTypeServiceUtil.getListTypes(ListTypeConstants.CONTACT_SUFFIX);
+	List<ListType> suffixListTypes = ListTypeServiceUtil.getListTypes(ListTypeConstants.CONTACT_SUFFIX);
 
-	for (ListType suffixIdType : suffixIdTypes) {
+	for (ListType suffixListType : suffixListTypes) {
 	%>
 
-		<aui:option selected="<%= suffixId == suffixIdType.getListTypeId() %>" value="<%= suffixIdType.getListTypeId() %>"><liferay-ui:message key="<%= suffixIdType.getName() %>" /></aui:option>
+		<aui:option label="<%= suffixListType.getName() %>" selected="<%= suffixId == suffixListType.getListTypeId() %>" value="<%= suffixListType.getListTypeId() %>" />
 
 	<%
 	}
