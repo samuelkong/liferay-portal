@@ -122,9 +122,20 @@ portletURL.setParameter("tabs1", tabs1);
 		window,
 		'<portlet:namespace />deleteCoupons',
 		function() {
-			if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "are-you-sure-you-want-to-delete-the-selected-coupons") %>')) {
+			var deleteCoupons = true;
+
+			var deleteCouponIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!deleteCouponIds) {
+				deleteCoupons = false;
+			}
+			else if (!confirm('<%= UnicodeLanguageUtil.get(pageContext, "are-you-sure-you-want-to-delete-the-selected-coupons") %>')) {
+				deleteCoupons = false;
+			}
+
+			if (deleteCoupons) {
 				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "<%= Constants.DELETE %>";
-				document.<portlet:namespace />fm.<portlet:namespace />deleteCouponIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				document.<portlet:namespace />fm.<portlet:namespace />deleteCouponIds.value = deleteCouponIds;
 				submitForm(document.<portlet:namespace />fm, "<portlet:actionURL><portlet:param name="struts_action" value="/shopping/edit_coupon" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:actionURL>");
 			}
 		},
