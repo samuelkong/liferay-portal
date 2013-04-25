@@ -158,5 +158,6 @@
 	</entity>
 	<exceptions>
 		<exception>DuplicateRuleGroupInstance</exception>
+		<exception>RequiredActionType</exception>
 	</exceptions>
 </service-builder>

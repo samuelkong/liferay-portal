@@ -48,6 +48,7 @@ MDRRuleGroupInstance ruleGroupInstance = (MDRRuleGroupInstance)renderRequest.get
 	<liferay-ui:error exception="<%= NoSuchActionException.class %>" message="action-does-not-exist" />
 	<liferay-ui:error exception="<%= NoSuchRuleGroupException.class %>" message="rule-group-does-not-exist" />
 	<liferay-ui:error exception="<%= NoSuchRuleGroupInstanceException.class %>" message="rule-group-instance-does-not-exist" />
+	<liferay-ui:error exception="<%= RequiredActionTypeException.class %>" message="please-select-a-valid-action-type" />
 
 	<aui:model-context bean="<%= action %>" model="<%= MDRAction.class %>" />
 

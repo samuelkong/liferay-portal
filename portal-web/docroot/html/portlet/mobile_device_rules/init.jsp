@@ -28,6 +28,7 @@ page import="com.liferay.portlet.mobiledevicerules.NoSuchActionException" %><%@
 page import="com.liferay.portlet.mobiledevicerules.NoSuchRuleException" %><%@
 page import="com.liferay.portlet.mobiledevicerules.NoSuchRuleGroupException" %><%@
 page import="com.liferay.portlet.mobiledevicerules.NoSuchRuleGroupInstanceException" %><%@
+page import="com.liferay.portlet.mobiledevicerules.RequiredActionTypeException" %><%@
 page import="com.liferay.portlet.mobiledevicerules.model.MDRAction" %><%@
 page import="com.liferay.portlet.mobiledevicerules.model.MDRRule" %><%@
 page import="com.liferay.portlet.mobiledevicerules.model.MDRRuleGroup" %><%@
