@@ -105,10 +105,21 @@ portletURL.setParameter("struts_action", "/journal/view_feeds");
 		window,
 		'<portlet:namespace />deleteFeeds',
 		function() {
-			if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "are-you-sure-you-want-to-delete-the-selected-feeds") %>')) {
+			var deleteFeeds = true;
+
+			var deleteFeedIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!deleteFeedIds) {
+				deleteFeeds = false;
+			}
+			else if (!confirm('<%= UnicodeLanguageUtil.get(pageContext, "are-you-sure-you-want-to-delete-the-selected-feeds") %>')) {
+				deleteFeeds = false;
+			}
+
+			if (deleteFeeds) {
 				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "<%= Constants.DELETE %>";
 				document.<portlet:namespace />fm.<portlet:namespace />groupId.value = "<%= scopeGroupId %>";
-				document.<portlet:namespace />fm.<portlet:namespace />deleteFeedIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				document.<portlet:namespace />fm.<portlet:namespace />deleteFeedIds.value = deleteFeedIds;
 				submitForm(document.<portlet:namespace />fm, "<portlet:actionURL><portlet:param name="struts_action" value="/journal/edit_feed" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:actionURL>");
 			}
 		},

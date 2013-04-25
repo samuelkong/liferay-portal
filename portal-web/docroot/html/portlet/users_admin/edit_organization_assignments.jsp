@@ -126,11 +126,21 @@ portletURL.setParameter("organizationId", String.valueOf(organization.getOrganiz
 		window,
 		'<portlet:namespace />updateOrganizationUsers',
 		function(assignmentsRedirect) {
-			document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "organization_users";
-			document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
-			document.<portlet:namespace />fm.<portlet:namespace />addUserIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			document.<portlet:namespace />fm.<portlet:namespace />removeUserIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			submitForm(document.<portlet:namespace />fm);
+			var updateOrganizationUsers = true;
+
+			var updateOrganizationUserIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!updateOrganizationUserIds) {
+				updateOrganizationUsers = false;
+			}
+
+			if (updateOrganizationUsers) {
+				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "organization_users";
+				document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
+				document.<portlet:namespace />fm.<portlet:namespace />addUserIds.value = updateOrganizationUserIds;
+				document.<portlet:namespace />fm.<portlet:namespace />removeUserIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				submitForm(document.<portlet:namespace />fm);
+			}
 		},
 		['liferay-util-list-fields']
 	);

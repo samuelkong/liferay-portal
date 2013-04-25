@@ -243,11 +243,21 @@ portletURL.setParameter("tabs3", tabs3);
 		window,
 		'<portlet:namespace />updatePasswordPolicyOrganizations',
 		function(assignmentsRedirect) {
-			document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "password_policy_organizations";
-			document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
-			document.<portlet:namespace />fm.<portlet:namespace />addOrganizationIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			document.<portlet:namespace />fm.<portlet:namespace />removeOrganizationIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			submitForm(document.<portlet:namespace />fm);
+			var updatePasswardPolicyOrganizations = true;
+
+			var updatePasswardPolicyOrganizationIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!updatePasswardPolicyOrganizationIds) {
+				updatePasswardPolicyOrganizations = false;
+			}
+
+			if (updatePasswardPolicyOrganizations) {
+				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "password_policy_organizations";
+				document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
+				document.<portlet:namespace />fm.<portlet:namespace />addOrganizationIds.value = updatePasswardPolicyOrganizationIds;
+				document.<portlet:namespace />fm.<portlet:namespace />removeOrganizationIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				submitForm(document.<portlet:namespace />fm);
+			}
 		},
 		['liferay-util-list-fields']
 	);
@@ -256,11 +266,21 @@ portletURL.setParameter("tabs3", tabs3);
 		window,
 		'<portlet:namespace />updatePasswordPolicyUsers',
 		function(assignmentsRedirect) {
-			document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "password_policy_users";
-			document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
-			document.<portlet:namespace />fm.<portlet:namespace />addUserIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			document.<portlet:namespace />fm.<portlet:namespace />removeUserIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			submitForm(document.<portlet:namespace />fm);
+			var updatePasswardPolicyUsers = true;
+
+			var updatePasswardPolicyUserIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!updatePasswardPolicyUserIds) {
+				updatePasswardPolicyUsers = false;
+			}
+
+			if (updatePasswardPolicyUsers) {
+				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "password_policy_users";
+				document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
+				document.<portlet:namespace />fm.<portlet:namespace />addUserIds.value = updatePasswardPolicyUserIds;
+				document.<portlet:namespace />fm.<portlet:namespace />removeUserIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				submitForm(document.<portlet:namespace />fm);
+			}
 		},
 		['liferay-util-list-fields']
 	);

@@ -100,11 +100,21 @@ request.setAttribute("edit_role_assignments.jsp-portletURL", portletURL);
 		window,
 		'<portlet:namespace />updateRoleGroups',
 		function(assignmentsRedirect) {
-			document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "role_groups";
-			document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
-			document.<portlet:namespace />fm.<portlet:namespace />addGroupIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			document.<portlet:namespace />fm.<portlet:namespace />removeGroupIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			submitForm(document.<portlet:namespace />fm);
+			var updateRoleGroups = true;
+
+			var updateRoleGroupIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!updateRoleGroupIds) {
+				updateRoleGroups = false;
+			}
+
+			if (updateRoleGroups) {
+				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "role_groups";
+				document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
+				document.<portlet:namespace />fm.<portlet:namespace />addGroupIds.value = updateRoleGroupIds;
+				document.<portlet:namespace />fm.<portlet:namespace />removeGroupIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				submitForm(document.<portlet:namespace />fm);
+			}
 		},
 		['liferay-util-list-fields']
 	);
@@ -113,11 +123,21 @@ request.setAttribute("edit_role_assignments.jsp-portletURL", portletURL);
 		window,
 		'<portlet:namespace />updateRoleUsers',
 		function(assignmentsRedirect) {
-			document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "role_users";
-			document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
-			document.<portlet:namespace />fm.<portlet:namespace />addUserIds.value = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			document.<portlet:namespace />fm.<portlet:namespace />removeUserIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
-			submitForm(document.<portlet:namespace />fm);
+			var updateRoleUsers = true;
+
+			var updateRoleUserIds = Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+
+			if (!updateRoleUserIds) {
+				updateRoleUsers = false;
+			}
+
+			if (updateRoleUsers) {
+				document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "role_users";
+				document.<portlet:namespace />fm.<portlet:namespace />assignmentsRedirect.value = assignmentsRedirect;
+				document.<portlet:namespace />fm.<portlet:namespace />addUserIds.value = updateRoleUserIds;
+				document.<portlet:namespace />fm.<portlet:namespace />removeUserIds.value = Liferay.Util.listUncheckedExcept(document.<portlet:namespace />fm, "<portlet:namespace />allRowIds");
+				submitForm(document.<portlet:namespace />fm);
+			}
 		},
 		['liferay-util-list-fields']
 	);
