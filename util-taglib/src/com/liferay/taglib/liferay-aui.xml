@@ -671,6 +671,11 @@
 				<outputType>boolean</outputType>
 			</attribute>
 			<attribute>
+				<name>emptyOptionValue</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+			</attribute>
+			<attribute>
 				<name>first</name>
 				<inputType>boolean</inputType>
 				<outputType>boolean</outputType>

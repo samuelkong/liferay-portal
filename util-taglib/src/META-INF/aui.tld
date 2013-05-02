@@ -1676,6 +1676,12 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<name>emptyOptionValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<name>first</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -1799,7 +1805,7 @@
 	</tag>
 	<tag>
 		<name>tool</name>
-		<tag-class>com.liferay.taglib.aui.ToolTagImpl</tag-class>
+		<tag-class>com.liferay.taglib.aui.ToolTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>handler</name>

@@ -53,6 +53,10 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		return _disabled;
 	}
 
+	public java.lang.String getEmptyOptionValue() {
+		return _emptyOptionValue;
+	}
+
 	public boolean getFirst() {
 		return _first;
 	}
@@ -161,6 +165,12 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		_disabled = disabled;
 
 		setScopedAttribute("disabled", disabled);
+	}
+
+	public void setEmptyOptionValue(java.lang.String emptyOptionValue) {
+		_emptyOptionValue = emptyOptionValue;
+
+		setScopedAttribute("emptyOptionValue", emptyOptionValue);
 	}
 
 	public void setFirst(boolean first) {
@@ -290,6 +300,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		_cssClass = null;
 		_data = null;
 		_disabled = false;
+		_emptyOptionValue = null;
 		_first = false;
 		_helpMessage = null;
 		_id = null;
@@ -329,6 +340,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		setNamespacedAttribute(request, "cssClass", _cssClass);
 		setNamespacedAttribute(request, "data", _data);
 		setNamespacedAttribute(request, "disabled", _disabled);
+		setNamespacedAttribute(request, "emptyOptionValue", _emptyOptionValue);
 		setNamespacedAttribute(request, "first", _first);
 		setNamespacedAttribute(request, "helpMessage", _helpMessage);
 		setNamespacedAttribute(request, "id", _id);
@@ -364,6 +376,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 	private java.lang.String _cssClass = null;
 	private java.util.Map<java.lang.String, java.lang.Object> _data = null;
 	private boolean _disabled = false;
+	private java.lang.String _emptyOptionValue = null;
 	private boolean _first = false;
 	private java.lang.String _helpMessage = null;
 	private java.lang.String _id = null;

@@ -37,6 +37,7 @@ boolean changesContext = GetterUtil.getBoolean(String.valueOf(request.getAttribu
 java.lang.String cssClass = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:cssClass"));
 java.util.Map<java.lang.String, java.lang.Object> data = (java.util.Map<java.lang.String, java.lang.Object>)request.getAttribute("aui:select:data");
 boolean disabled = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:disabled")));
+java.lang.String emptyOptionValue = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:emptyOptionValue"));
 boolean first = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:first")));
 java.lang.String helpMessage = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:helpMessage"));
 java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:id"));
@@ -63,6 +64,7 @@ _updateOptions(_options, "changesContext", changesContext);
 _updateOptions(_options, "cssClass", cssClass);
 _updateOptions(_options, "data", data);
 _updateOptions(_options, "disabled", disabled);
+_updateOptions(_options, "emptyOptionValue", emptyOptionValue);
 _updateOptions(_options, "first", first);
 _updateOptions(_options, "helpMessage", helpMessage);
 _updateOptions(_options, "id", id);

@@ -12,43 +12,15 @@
  * details.
  */
 
-package com.liferay.taglib.aui.base;
+package com.liferay.taglib.aui;
 
-import javax.servlet.jsp.JspException;
+import com.liferay.taglib.aui.base.BaseToolTag;
 
 /**
  * @author Eduardo Lundgren
  * @author Bruno Basto
  * @author Nathan Cavanaugh
  * @author Julio Camarero
- * @generated
  */
-public class BaseScriptTag extends com.liferay.taglib.util.PositionTagSupport {
-
-	@Override
-	public int doStartTag() throws JspException {
-		return super.doStartTag();
-	}
-
-	public java.lang.String getUse() {
-		return _use;
-	}
-
-	public void setUse(java.lang.String use) {
-		_use = use;
-	}
-
-	protected void cleanUp() {
-		_use = null;
-	}
-
-	protected String getPage() {
-		return _PAGE;
-	}
-
-	private static final String _PAGE =
-		"/html/taglib/aui/script/page.jsp";
-
-	private java.lang.String _use = null;
-
+public class ToolTag extends BaseToolTag {
 }
