@@ -19,6 +19,8 @@
 <%
 String redirect = request.getParameter("redirect");
 
+redirect = PortalUtil.escapeRedirect(redirect);
+
 Portlet selPortlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), portletDisplay.getId());
 %>
 
@@ -31,7 +33,7 @@ Portlet selPortlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId
 
 			<c:choose>
 				<c:when test="<%= redirect != null %>">
-					redirect: '<%= redirect %>'
+					redirect: '<%= HtmlUtil.escapeJS(redirect) %>'
 				</c:when>
 				<c:otherwise>
 					refresh: '<%= portletDisplay.getId() %>'
