@@ -50,12 +50,6 @@ if (!selectableTree) {
 
 	var TreeUtil = {
 		DEFAULT_PARENT_LAYOUT_ID: <%= LayoutConstants.DEFAULT_PARENT_LAYOUT_ID %>,
-
-		<%
-		String openNodes = SessionTreeJSClicks.getOpenNodes(request, treeId);
-		%>
-
-		OPEN_NODES: '<%= openNodes %>'.split(','),
 		PAGINATION_LIMIT: <%= PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN %>,
 		PREFIX_GROUP_ID: '_groupId_',
 		PREFIX_LAYOUT: '_layout_',
@@ -520,8 +514,10 @@ if (!selectableTree) {
 			</c:if>
 
 			<%
-			JSONObject layoutsJSON = JSONFactoryUtil.createJSONObject(LayoutsTreeUtil.getLayoutsJSON(request, groupId, privateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, StringUtil.split(openNodes, 0L), true));
+			long[] openNodes = StringUtil.split(SessionTreeJSClicks.getOpenNodes(request, treeId), 0L);
+			JSONObject layoutsJSON = JSONFactoryUtil.createJSONObject(LayoutsTreeUtil.getLayoutsJSON(request, groupId, privateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, openNodes, true));
 			%>
+			
 
 			children: TreeUtil.formatJSONResults(<%= layoutsJSON %>),
 			draggable: false,
