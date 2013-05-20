@@ -113,12 +113,12 @@ public class OrganizationIndexer extends BaseIndexer {
 			contextQuery.add(booleanQuery, BooleanClauseOccur.MUST);
 		}
 		else {
-			long parentOrganizationId = GetterUtil.getLong(
-				searchContext.getAttribute("parentOrganizationId"));
+			String parentOrganizationId = (String)searchContext.getAttribute(
+				"parentOrganizationId");
 
-			if (parentOrganizationId > 0) {
+			if (Validator.isNotNull(parentOrganizationId)) {
 				contextQuery.addRequiredTerm(
-					"parentOrganizationId", parentOrganizationId);
+					"parentOrganizationId", Long.valueOf(parentOrganizationId));
 			}
 		}
 	}
