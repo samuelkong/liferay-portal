@@ -122,7 +122,7 @@
 											description="<%= HtmlUtil.escape(childGroup.getDescription()) %>"
 											displayStyle="<%= displayStyle %>"
 											showCheckbox="<%= false %>"
-											thumbnailSrc='<%= themeDisplay.getPathImage() + "/layout_set_logo?img_id=" + layoutSet.getLogoId() + "&t=" + WebServerServletTokenUtil.getToken(layoutSet.getLogoId()) %>'
+											thumbnailSrc='<%= HtmlUtil.escapeHREF(themeDisplay.getPathImage()) + "/layout_set_logo?img_id=" + layoutSet.getLogoId() + "&t=" + WebServerServletTokenUtil.getToken(layoutSet.getLogoId()) %>'
 											title="<%= HtmlUtil.escape(childGroup.getDescriptiveName(locale)) %>"
 											url="<%= PortalUtil.getGroupFriendlyURL(childGroup, !childGroup.hasPublicLayouts(), themeDisplay) %>"
 										/>

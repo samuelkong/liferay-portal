@@ -40,7 +40,7 @@ MBMessage message = (MBMessage)objArray[0];
 
 	if (message.isFormatBBCode()) {
 		msgBody = BBCodeTranslatorUtil.getHTML(msgBody);
-		msgBody = StringUtil.replace(msgBody, "@theme_images_path@/emoticons", themeDisplay.getPathThemeImages() + "/emoticons");
+		msgBody = StringUtil.replace(msgBody, "@theme_images_path@/emoticons", HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/emoticons");
 	}
 	%>
 

@@ -170,7 +170,7 @@ List<String> languageIds = new ArrayList<String>();
 
 					<td class="palette-item <%= itemCssClass %>" data-index="<%= index++ %>" data-value="<%= curLanguageId %>">
 						<a class="palette-item-inner" href="javascript:void(0);">
-							<img class="lfr-input-localized-flag" data-languageid="<%= curLanguageId %>" src="<%= themeDisplay.getPathThemeImages() %>/language/<%= curLanguageId %>.png" />
+							<img class="lfr-input-localized-flag" data-languageid="<%= curLanguageId %>" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/language/<%= curLanguageId %>.png" />
 							<div class="lfr-input-localized-state"></div>
 						</a>
 					</td>

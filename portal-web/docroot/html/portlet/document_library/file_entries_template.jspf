@@ -17,7 +17,7 @@
 <div class="lfr-template" id="<portlet:namespace />appViewEntryTemplates">
 
 	<%
-	String thumbnailSrc = themeDisplay.getPathThemeImages() + "/file_system/large/default.png";
+	String thumbnailSrc = HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/file_system/large/default.png";
 	%>
 
 	<liferay-ui:app-view-entry

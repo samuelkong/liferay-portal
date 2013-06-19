@@ -105,7 +105,7 @@ request.setAttribute("view.jsp-repositoryId", String.valueOf(repositoryId));
 			%>
 
 			<div class="<%= cssClass %>" id="<portlet:namespace />showSyncMessageIconContainer">
-				<img alt="<%= LanguageUtil.get(pageContext, "show-liferay-sync-tip") %>" class="show-sync-message" id="<portlet:namespace />showSyncMessageIcon" src="<%= themeDisplay.getPathThemeImages() + "/common/liferay_sync.png" %>" title="<%= LanguageUtil.get(pageContext, "liferay-sync") %>" />
+				<img alt="<%= LanguageUtil.get(pageContext, "show-liferay-sync-tip") %>" class="show-sync-message" id="<portlet:namespace />showSyncMessageIcon" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/common/liferay_sync.png" %>" title="<%= LanguageUtil.get(pageContext, "liferay-sync") %>" />
 			</div>
 
 			<div class="document-library-breadcrumb" id="<portlet:namespace />breadcrumbContainer">

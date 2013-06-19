@@ -244,7 +244,7 @@ portletURL.setParameter("categoryId", String.valueOf(categoryId));
 					sb.append(item.getSmallImageURL());
 				}
 				else {
-					sb.append(themeDisplay.getPathImage());
+					sb.append(HtmlUtil.escapeHREF(themeDisplay.getPathImage()));
 					sb.append("/shopping/item?img_id=");
 					sb.append(item.getSmallImageId());
 					sb.append("&t=");

@@ -37,7 +37,7 @@ if (dataJSONObject.has("values")) {
 
 	<ul class="asset-type unstyled">
 		<li class="facet-value default <%= Validator.isNull(fieldParam) ? "current-term" : StringPool.BLANK %>">
-			<a data-value="" href="javascript:;"><img alt="" src="<%= themeDisplay.getPathThemeImages() %>/common/search.png" /><liferay-ui:message key="everything" /></a>
+			<a data-value="" href="javascript:;"><img alt="" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/common/search.png" /><liferay-ui:message key="everything" /></a>
 		</li>
 
 		<%
