@@ -593,6 +593,13 @@ public class LanguageImpl implements Language {
 	}
 
 	@Override
+	public boolean isAvailableLocale(String languageId) {
+		Locale locale = LocaleUtil.fromLanguageId(languageId);
+
+		return isAvailableLocale(locale);
+	}
+
+	@Override
 	public boolean isBetaLocale(Locale locale) {
 		return _getInstance()._localesBetaSet.contains(locale);
 	}
