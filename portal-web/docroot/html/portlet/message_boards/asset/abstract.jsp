@@ -25,7 +25,7 @@ String summary = StringUtil.shorten(message.getBody(), abstractLength);
 
 if (message.isFormatBBCode()) {
 	summary = BBCodeTranslatorUtil.getHTML(summary);
-	summary = StringUtil.replace(summary, "@theme_images_path@/emoticons", themeDisplay.getPathThemeImages() + "/emoticons");
+	summary = StringUtil.replace(summary, "@theme_images_path@/emoticons", HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/emoticons");
 }
 %>
 

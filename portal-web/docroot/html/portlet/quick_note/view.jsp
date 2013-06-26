@@ -25,7 +25,7 @@
 			</td>
 			<td>
 				<c:if test="<%= portletDisplay.isShowCloseIcon() %>">
-					<a border="0" class="close-note" href="<%= portletDisplay.getURLClose() %>"><img alt="<liferay-ui:message key="close" />" src="<%= themeDisplay.getPathThemeImages() %>/portlet/close.png" /></a>
+					<a border="0" class="close-note" href="<%= portletDisplay.getURLClose() %>"><img alt="<liferay-ui:message key="close" />" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/portlet/close.png" /></a>
 				</c:if>
 
 				<span class="note-color yellow"></span>

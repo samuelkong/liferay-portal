@@ -198,7 +198,7 @@ boolean minQuantityMultiple = PrefsPropsUtil.getBoolean(company.getCompanyId(), 
 				sb.append(item.getSmallImageURL());
 			}
 			else {
-				sb.append(themeDisplay.getPathImage());
+				sb.append(HtmlUtil.escapeHREF(themeDisplay.getPathImage()));
 				sb.append("/shopping/item?img_id=");
 				sb.append(item.getSmallImageId());
 				sb.append("&t=");
@@ -483,7 +483,7 @@ boolean minQuantityMultiple = PrefsPropsUtil.getBoolean(company.getCompanyId(), 
 	if (shoppingPrefs.usePayPal()) {
 	%>
 
-		<img alt="paypal" src="<%= themeDisplay.getPathThemeImages() %>/shopping/cc_paypal.png" />
+		<img alt="paypal" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/shopping/cc_paypal.png" />
 
 		<br /><br />
 
@@ -493,7 +493,7 @@ boolean minQuantityMultiple = PrefsPropsUtil.getBoolean(company.getCompanyId(), 
 		for (int i = 0; i < ccTypes.length; i++) {
 	%>
 
-			<img alt="<%= ccTypes[i] %>" src="<%= themeDisplay.getPathThemeImages() %>/shopping/cc_<%= ccTypes[i] %>.png" />
+			<img alt="<%= ccTypes[i] %>" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/shopping/cc_<%= ccTypes[i] %>.png" />
 
 	<%
 		}

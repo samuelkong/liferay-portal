@@ -33,7 +33,7 @@ if (!strutsAction.equals("/login/open_id") && OpenIdUtil.isEnabled(company.getCo
 
 	<liferay-ui:icon
 		message="open-id"
-		src='<%= themeDisplay.getPathThemeImages() + "/common/openid.gif" %>'
+		src='<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/common/openid.gif" %>'
 		url="<%= openIdURL %>"
 	/>
 </c:if>

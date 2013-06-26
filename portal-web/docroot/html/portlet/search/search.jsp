@@ -60,12 +60,16 @@ request.setAttribute("search.jsp-returnToFullPageURL", portletDisplay.getURLBack
 	<aui:input name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" type="hidden" value="<%= ParamUtil.getInteger(request, SearchContainer.DEFAULT_CUR_PARAM, SearchContainer.DEFAULT_CUR) %>" />
 	<aui:input name="format" type="hidden" value="<%= format %>" />
 
-	<aui:fieldset id="searchContainer">
+	<aui:fieldset>
 		<aui:input inlineField="<%= true %>" label="" name="keywords" size="30" value="<%= HtmlUtil.escape(keywords) %>" />
 
-		<aui:input inlineField="<%= true %>" label="" name="search" src='<%= themeDisplay.getPathThemeImages() + "/common/search.png" %>' title="search" type="image" />
+		<aui:button align="absmiddle" border="0" name="search" onClick='<%= renderResponse.getNamespace() + "search();" %>' src='<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/common/search.png" %>' title="search" type="image" />
 
-		<aui:input inlineField="<%= true %>" label="" name="clearSearch" src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="clear-search" type="image" />
+		<portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="clearSearchURL">
+			<portlet:param name="groupId" value="0" />
+		</portlet:renderURL>
+
+		<aui:button align="absmiddle" border="0" href="<%= clearSearchURL %>" name="clear-search" src='<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/common/close.png" %>' title="clear-search" type="image" />
 	</aui:fieldset>
 
 	<div class="lfr-token-list" id="<portlet:namespace />searchTokens">
@@ -119,25 +123,6 @@ request.setAttribute("search.jsp-returnToFullPageURL", portletDisplay.getURLBack
 </aui:form>
 
 <aui:script use="aui-base">
-	A.on(
-		'click',
-		function(event) {
-			var targetId = event.target.get('id');
-
-			if (targetId === '<portlet:namespace />search') {
-				<portlet:namespace />search();
-			}
-			else if (targetId === '<portlet:namespace />clearSearch') {
-				<portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="clearSearchURL">
-					<portlet:param name="groupId" value="0" />
-				</portlet:renderURL>
-
-				window.location.href = '<%= clearSearchURL %>';
-			}
-		},
-		'#<portlet:namespace />searchContainer'
-	);
-
 	var searchContainer = A.one('.portlet-search .result .lfr-search-container');
 
 	if (searchContainer) {

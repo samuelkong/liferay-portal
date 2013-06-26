@@ -16,6 +16,7 @@ package com.liferay.taglib.ui;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.servlet.taglib.FileAvailabilityUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.util.PwdGenerator;
 
@@ -54,7 +55,7 @@ public class IconHelpTag extends IconTag {
 		jspWriter.write("onFocus=\"Liferay.Portal.ToolTip.show(this);\" ");
 		jspWriter.write("onMouseOver=\"Liferay.Portal.ToolTip.show(this);\" ");
 		jspWriter.write("src=\"");
-		jspWriter.write(themeDisplay.getPathThemeImages());
+		jspWriter.write(HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()));
 		jspWriter.write("/portlet/help.png\" tabIndex=\"0\" ");
 		jspWriter.write("/><span ");
 		jspWriter.write("class=\"hide-accessible tooltip-text\" ");

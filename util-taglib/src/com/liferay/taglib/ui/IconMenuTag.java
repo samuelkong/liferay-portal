@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.servlet.taglib.BaseBodyTagSupport;
 import com.liferay.portal.kernel.servlet.taglib.FileAvailabilityUtil;
 import com.liferay.portal.kernel.servlet.taglib.aui.ScriptData;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -123,7 +124,7 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 		}
 
 		if (_icon == null) {
-			_icon = themeDisplay.getPathThemeImages() + "/common/tool.png";
+			_icon = HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/common/tool.png";
 		}
 
 		if (Validator.isNull(_id)) {

@@ -85,7 +85,7 @@ if (Validator.isNotNull(src) && themeDisplay.isThemeImagesFastLoad() && !auiImag
 
 		sb.append(details);
 		sb.append(" style=\"background-image: url('");
-		sb.append(spriteFileURL);
+		sb.append(HtmlUtil.escapeHREF(spriteFileURL));
 		sb.append("'); background-position: 50% -");
 		sb.append(spriteImage.getOffset());
 		sb.append("px; background-repeat: no-repeat; height: ");
@@ -105,7 +105,7 @@ if (auiImage) {
 
 	sb.append(details);
 	sb.append(" style=\"background-image: url('");
-	sb.append(themeDisplay.getPathThemeImages());
+	sb.append(HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()));
 	sb.append("/aui/icon_sprite.png'); height: 16px; width: 16px;\"");
 
 	details = sb.toString();
@@ -120,10 +120,10 @@ boolean urlIsNotNull = Validator.isNotNull(url);
 	<c:if test="<%= Validator.isNotNull(src) %>">
 		<c:choose>
 			<c:when test="<%= urlIsNotNull %>">
-				<img class="<%= imgClass %>" src="<%= src %>" <%= details %> />
+				<img class="<%= imgClass %>" src="<%= HtmlUtil.escapeHREF(src) %>" <%= details %> />
 			</c:when>
 			<c:otherwise>
-				<img class="<%= imgClass %>" id="<%= id %>" src="<%= src %>" <%= details %> />
+				<img class="<%= imgClass %>" id="<%= id %>" src="<%= HtmlUtil.escapeHREF(src) %>" <%= details %> />
 			</c:otherwise>
 		</c:choose>
 	</c:if>
@@ -200,8 +200,8 @@ boolean forcePost = method.equals("post") && (url.startsWith(Http.HTTP_WITH_SLAS
 				id: '<portlet:namespace /><%= id %>'
 
 				<c:if test="<%= Validator.isNotNull(srcHover) %>">
-					, src: '<%= src %>',
-					srcHover: '<%= srcHover %>'
+					, src: '<%= HtmlUtil.escapeJS(src) %>',
+					srcHover: '<%= HtmlUtil.escapeJS(srcHover) %>'
 				</c:if>
 			}
 		);

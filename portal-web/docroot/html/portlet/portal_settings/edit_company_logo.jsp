@@ -23,7 +23,7 @@ String logoURL = themeDisplay.getPathImage() + "/company_logo?img_id=" + company
 <c:choose>
 	<c:when test='<%= SessionMessages.contains(renderRequest, "requestProcessed") %>'>
 		<aui:script>
-			opener.<portlet:namespace />changeLogo('<%= logoURL %>');
+			opener.<portlet:namespace />changeLogo('<%= HtmlUtil.escapeJS(logoURL) %>');
 
 			window.close();
 		</aui:script>

@@ -69,7 +69,7 @@
 							<liferay-ui:icon-menu direction="down" icon="" message="<%= scopeLabel %>">
 								<liferay-ui:icon
 									message="default"
-									src="<%= curSite.getIconURL(themeDisplay) %>"
+									src="<%= HtmlUtil.escapeHREF(curSite.getIconURL(themeDisplay)) %>"
 									url='<%= HttpUtil.setParameter(PortalUtil.getCurrentURL(request), "doAsGroupId", curSite.getGroupId()) %>'
 								/>
 
@@ -80,7 +80,7 @@
 
 									<liferay-ui:icon
 										message="<%= HtmlUtil.escape(curScopeLayout.getName(locale)) %>"
-										src="<%= scopeGroup.getIconURL(themeDisplay) %>"
+										src="<%= HtmlUtil.escapeHREF(scopeGroup.getIconURL(themeDisplay)) %>"
 										url='<%= HttpUtil.setParameter(PortalUtil.getCurrentURL(request), "doAsGroupId", scopeGroup.getGroupId()) %>'
 										/>
 

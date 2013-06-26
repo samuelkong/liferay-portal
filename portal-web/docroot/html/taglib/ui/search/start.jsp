@@ -52,7 +52,7 @@ pageContext.setAttribute("portletURL", portletURL);
 	<option value="<%= group.getGroupId() %>" <%= (groupId != 0) ? "selected" : "" %>><liferay-ui:message key='<%= "this-" + (group.isOrganization() ? "organization" : "site") %>' /></option>
 </select>
 
-<input align="absmiddle" border="0" src="<%= themeDisplay.getPathThemeImages() %>/common/search.png" title="<liferay-ui:message key="search" />" type="image" />
+<input align="absmiddle" border="0" src="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/common/search.png" title="<liferay-ui:message key="search" />" type="image" />
 
 <aui:script>
 	function <%= randomNamespace %><%= namespace %>search() {

@@ -23,7 +23,7 @@
 <%@ include file="/html/common/themes/top_meta.jspf" %>
 <%@ include file="/html/common/themes/top_meta-ext.jsp" %>
 
-<link href="<%= themeDisplay.getPathThemeImages() %>/<%= PropsValues.THEME_SHORTCUT_ICON %>" rel="Shortcut Icon" />
+<link href="<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) %>/<%= PropsValues.THEME_SHORTCUT_ICON %>" rel="Shortcut Icon" />
 
 <%-- Available Translations --%>
 

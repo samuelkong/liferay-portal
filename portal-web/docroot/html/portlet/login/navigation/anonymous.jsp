@@ -33,7 +33,7 @@ if (!strutsAction.startsWith("/login/create_anonymous_account") && portletName.e
 
 	<liferay-ui:icon
 		message="guest"
-		src='<%= themeDisplay.getPathThemeImages() + "/common/user_icon.png" %>'
+		src='<%= HtmlUtil.escapeHREF(themeDisplay.getPathThemeImages()) + "/common/user_icon.png" %>'
 		url="<%= anonymousURL %>"
 	/>
 </c:if>
