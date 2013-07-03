@@ -163,7 +163,12 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			if (Validator.isNotNull(body)) {
 				int pos = Math.min(body.length(), 50);
 
-				subject = body.substring(0, pos) + "...";
+				if (pos > 50) {
+					subject = body.substring(0, pos) + "...";
+				}
+				else {
+					subject = body.substring(0, pos);
+				}
 			}
 			else {
 				throw new MessageBodyException();
