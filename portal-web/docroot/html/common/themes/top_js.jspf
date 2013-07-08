@@ -355,7 +355,7 @@
 			%>
 
 			<c:if test="<%= !allPortlets.isEmpty() && !layoutTypePortlet.hasStateMax() %>">
-				Liferay.Portlet.list = ['<%= ListUtil.toString(allPortlets, Portlet.PORTLET_ID_ACCESSOR, "','") %>'];
+				Liferay.Portlet.list = ['<%= HtmlUtil.escapeJS(ListUtil.toString(allPortlets, Portlet.PORTLET_ID_ACCESSOR, "','")) %>'];
 			</c:if>
 		</c:if>
 
