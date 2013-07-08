@@ -355,7 +355,26 @@
 			%>
 
 			<c:if test="<%= !allPortlets.isEmpty() && !layoutTypePortlet.hasStateMax() %>">
-				Liferay.Portlet.list = ['<%= ListUtil.toString(allPortlets, Portlet.PORTLET_ID_ACCESSOR, "','") %>'];
+
+				<%
+				StringBundler sb = new StringBundler(2 * allPortlets.size() - 1);
+
+				for (int i = 0; i < allPortlets.size(); i++) {
+					Portlet portletsBean = allPortlets.get(i);
+
+					String portletId = Portlet.PORTLET_ID_ACCESSOR.get(portletsBean);
+
+					if (portletId != null) {
+						sb.append(HtmlUtil.escapeJS(portletId));
+					}
+
+					if ((i + 1) != allPortlets.size()) {
+						sb.append("','");
+					}
+				}
+				%>
+
+				Liferay.Portlet.list = ['<%= sb.toString() %>'];
 			</c:if>
 		</c:if>
 
