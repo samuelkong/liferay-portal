@@ -19,6 +19,6 @@ package com.liferay.portal.kernel.oauth;
  */
 public enum Verb {
 
-	DELETE, GET, POST, PUT
+	DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE
 
 }

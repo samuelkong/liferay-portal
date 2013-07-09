@@ -20,8 +20,16 @@ package com.liferay.portal.kernel.oauth;
 public interface OAuthFactory {
 
 	public OAuthManager createOAuthManager(
-			String key, String secret, String accessURL, String requestURL,
-			String callbackURL, String scope)
+			String key, String secret, String accessURL, String authorizeURL,
+			String requestURL, String callbackURL, String scope,
+			Verb accessTokenVerb, Verb requestTokenVerb,
+			int signatureServiceType)
+		throws OAuthException;
+
+	public OAuthManager createOAuthManager(
+			String key, String secret, String accessURL, String authorizeURL,
+			String callbackURL, String scope, Verb accessTokenVerb,
+			int extractorType)
 		throws OAuthException;
 
 	public OAuthRequest createOAuthRequest(Verb verb, String url)

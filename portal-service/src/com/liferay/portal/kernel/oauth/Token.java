@@ -19,6 +19,8 @@ package com.liferay.portal.kernel.oauth;
  */
 public interface Token {
 
+	public String getRawResponse();
+
 	public String getSecret();
 
 	public String getToken();
