@@ -3079,7 +3079,7 @@
 	</library>
 	<library>
 		<file-name>lib/portal/scribe.jar</file-name>
-		<version>1.0.8</version>
+		<version>1.3.3</version>
 		<project-name>Scribe</project-name>
 		<project-url>https://github.com/fernandezpablo85/scribe-java</project-url>
 		<licenses>

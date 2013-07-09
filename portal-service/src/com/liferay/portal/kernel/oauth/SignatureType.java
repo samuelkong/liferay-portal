@@ -12,40 +12,13 @@
  * details.
  */
 
-package com.liferay.portal.oauth;
-
-import com.liferay.portal.kernel.oauth.Token;
+package com.liferay.portal.kernel.oauth;
 
 /**
  * @author Brian Wing Shun Chan
- * @author Terry Jia
  */
-public class TokenImpl implements Token {
+public enum SignatureType {
 
-	public TokenImpl(org.scribe.model.Token token) {
-		_token = token;
-	}
-
-	@Override
-	public String getRawResponse() {
-		return _token.getRawResponse();
-	}
-
-	@Override
-	public String getSecret() {
-		return _token.getSecret();
-	}
-
-	@Override
-	public String getToken() {
-		return _token.getToken();
-	}
-
-	@Override
-	public Object getWrappedToken() {
-		return _token;
-	}
-
-	private org.scribe.model.Token _token;
+	Header, QueryString
 
 }

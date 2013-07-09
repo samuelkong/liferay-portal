@@ -22,12 +22,26 @@ import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermissio
 public class OAuthFactoryUtil {
 
 	public static OAuthManager createOAuthManager(
-			String key, String secret, String accessURL, String requestURL,
-			String callbackURL, String scope)
+			String key, String secret, String accessURL, String authorizeURL,
+			String requestURL, String callbackURL, String scope,
+			Verb accessTokenVerb, Verb requestTokenVerb,
+			int signatureServiceType)
 		throws OAuthException {
 
 		return getOAuthFactory().createOAuthManager(
-			key, secret, accessURL, requestURL, callbackURL, scope);
+			key, secret, accessURL, authorizeURL, requestURL, callbackURL,
+			scope, accessTokenVerb, requestTokenVerb, signatureServiceType);
+	}
+
+	public static OAuthManager createOAuthManager(
+			String key, String secret, String accessURL, String authorizeURL,
+			String callbackURL, String scope, Verb accessTokenVerb,
+			int extractorType)
+		throws OAuthException {
+
+		return getOAuthFactory().createOAuthManager(
+			key, secret, accessURL, authorizeURL, callbackURL, scope,
+			accessTokenVerb, extractorType);
 	}
 
 	public static OAuthRequest createOAuthRequest(Verb verb, String url)

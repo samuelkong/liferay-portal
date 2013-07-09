@@ -14,14 +14,17 @@
 
 package com.liferay.portal.oauth;
 
+import com.liferay.portal.kernel.oauth.OAuthApi;
+import com.liferay.portal.kernel.oauth.OAuthConfig;
 import com.liferay.portal.kernel.oauth.OAuthException;
 import com.liferay.portal.kernel.oauth.OAuthManager;
 import com.liferay.portal.kernel.oauth.OAuthRequest;
+import com.liferay.portal.kernel.oauth.SignatureType;
 import com.liferay.portal.kernel.oauth.Token;
+import com.liferay.portal.kernel.oauth.Verb;
 import com.liferay.portal.kernel.oauth.Verifier;
+import com.liferay.portal.kernel.util.Validator;
 
-import org.scribe.builder.api.Api;
-import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.OAuthConstants;
 import org.scribe.oauth.OAuthService;
 
@@ -31,28 +34,46 @@ import org.scribe.oauth.OAuthService;
 public class OAuthManagerImpl implements OAuthManager {
 
 	public OAuthManagerImpl(
-		String key, String secret, final String accessURL,
-		final String requestURL, String callbackURL, String scope) {
+		String key, String secret, String accessURL, String authorizeURL,
+		String requestURL, String callbackURL, String scope,
+		Verb accessTokenVerb, Verb requestTokenVerb, int signatureServiceType) {
 
-		Api api = new DefaultApi10a() {
-
-			@Override
-			public String getAccessTokenEndpoint() {
-				return accessURL;
-			}
-
-			@Override
-			public String getRequestTokenEndpoint() {
-				return requestURL;
-			}
-
-		};
-
-		if (callbackURL == null) {
+		if (Validator.isNull(callbackURL)) {
 			callbackURL = OAuthConstants.OUT_OF_BAND;
 		}
 
-		_oAuthService = api.createService(key, secret, callbackURL, scope);
+		OAuthConfig config = new OAuthConfigImpl(
+			key, secret, callbackURL, SignatureType.Header, scope, null);
+
+		OAuthApi api = new OAuthApiImpl(
+			accessURL, authorizeURL, requestURL,
+			VerbTranslator.translate(accessTokenVerb), VerbTranslator.translate(
+				requestTokenVerb), signatureServiceType);
+
+		_oAuthService =
+			((org.scribe.builder.api.Api)api.getWrappedApi()).createService(
+				(org.scribe.model.OAuthConfig)config.getWrappedOAuthConfig());
+	}
+
+	public OAuthManagerImpl(
+		String key, String secret, String accessURL, String authorizeURL,
+		String callbackURL, String scope, Verb accessTokenVerb,
+		int extractorType) {
+
+		if (Validator.isNull(callbackURL)) {
+			callbackURL = OAuthConstants.OUT_OF_BAND;
+		}
+
+		OAuthConfig config = new OAuthConfigImpl(
+			key, secret, callbackURL, SignatureType.Header, scope, null);
+
+		OAuthApi api = new OAuthApiImpl(
+			accessURL, authorizeURL, VerbTranslator.translate(accessTokenVerb),
+			extractorType);
+
+		_oAuthService =
+			((org.scribe.builder.api.Api)api.getWrappedApi()).createService(
+				(org.scribe.model.OAuthConfig)config.getWrappedOAuthConfig());
 	}
 
 	@Override
@@ -64,6 +85,17 @@ public class OAuthManagerImpl implements OAuthManager {
 				_oAuthService.getAccessToken(
 					(org.scribe.model.Token)requestToken.getWrappedToken(),
 					(org.scribe.model.Verifier)verifier.getWrappedVerifier()));
+		}
+		catch (Exception e) {
+			throw new OAuthException(e);
+		}
+	}
+
+	@Override
+	public String getAuthorizeURL(Token requestToken) throws OAuthException {
+		try {
+			return _oAuthService.getAuthorizationUrl(
+				(org.scribe.model.Token)requestToken.getWrappedToken());
 		}
 		catch (Exception e) {
 			throw new OAuthException(e);
