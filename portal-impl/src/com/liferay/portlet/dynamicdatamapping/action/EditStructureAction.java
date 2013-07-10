@@ -35,6 +35,7 @@ import com.liferay.portlet.PortletURLImpl;
 import com.liferay.portlet.dynamicdatamapping.NoSuchStructureException;
 import com.liferay.portlet.dynamicdatamapping.RequiredStructureException;
 import com.liferay.portlet.dynamicdatamapping.StructureDuplicateElementException;
+import com.liferay.portlet.dynamicdatamapping.StructureDuplicateNameException;
 import com.liferay.portlet.dynamicdatamapping.StructureNameException;
 import com.liferay.portlet.dynamicdatamapping.StructureXsdException;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
@@ -120,6 +121,7 @@ public class EditStructureAction extends PortletAction {
 			else if (e instanceof LocaleException ||
 					 e instanceof RequiredStructureException ||
 					 e instanceof StructureDuplicateElementException ||
+					 e instanceof StructureDuplicateNameException ||
 					 e instanceof StructureNameException ||
 					 e instanceof StructureXsdException) {
 
