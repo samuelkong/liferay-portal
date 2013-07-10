@@ -48,7 +48,7 @@ if (fileShortcut != null) {
 	rowCheckerId = fileShortcut.getFileShortcutId();
 }
 
-String actionJsp = "";
+String actionJsp = StringPool.BLANK;
 
 boolean showCheckbox = false;
 

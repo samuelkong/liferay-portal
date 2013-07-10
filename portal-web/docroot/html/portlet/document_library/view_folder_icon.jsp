@@ -23,7 +23,7 @@ String folderImage = (String)request.getAttribute("view_entries.jsp-folderImage"
 
 PortletURL tempRowURL = (PortletURL)request.getAttribute("view_entries.jsp-tempRowURL");
 
-String actionJsp = "";
+String actionJsp = StringPool.BLANK;
 
 boolean showCheckbox = false;
 
