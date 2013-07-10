@@ -50,7 +50,7 @@ public class PortalClassLoaderServlet
 	}
 
 	@Override
-	public void portalDestroy() {
+	public synchronized void portalDestroy() {
 		if (!_calledPortalDestroy) {
 			PortalLifecycleUtil.removeDestroy(this);
 
