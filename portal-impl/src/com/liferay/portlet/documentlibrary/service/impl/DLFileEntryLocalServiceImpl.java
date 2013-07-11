@@ -2413,6 +2413,8 @@ public class DLFileEntryLocalServiceImpl
 			dlFileVersion.setMimeType(mimeType);
 		}
 
+		dlFileVersion.setUserId(user.getUserId());
+		dlFileVersion.setUserName(user.getFullName());
 		dlFileVersion.setTitle(title);
 		dlFileVersion.setDescription(description);
 		dlFileVersion.setChangeLog(changeLog);
