@@ -22,16 +22,28 @@ Folder folder = (Folder)request.getAttribute("view_entries.jsp-folder");
 String folderImage = (String)request.getAttribute("view_entries.jsp-folderImage");
 
 PortletURL tempRowURL = (PortletURL)request.getAttribute("view_entries.jsp-tempRowURL");
+
+String actionJsp = StringPool.BLANK;
+
+boolean showCheckbox = false;
+
+if (ArrayUtil.contains(entryColumns, "action")) {
+	actionJsp = "/html/portlet/document_library/folder_action.jsp";
+
+	if (DLFolderPermission.contains(permissionChecker, folder, ActionKeys.DELETE) || DLFolderPermission.contains(permissionChecker, folder, ActionKeys.UPDATE)) {
+		showCheckbox = true;
+	}
+}
 %>
 
 <liferay-ui:app-view-entry
-	actionJsp="/html/portlet/document_library/folder_action.jsp"
+	actionJsp="<%= actionJsp %>"
 	description="<%= folder.getDescription() %>"
 	displayStyle="icon"
 	folder="<%= true %>"
 	rowCheckerId="<%= String.valueOf(folder.getFolderId()) %>"
 	rowCheckerName="<%= Folder.class.getSimpleName() %>"
-	showCheckbox="<%= DLFolderPermission.contains(permissionChecker, folder, ActionKeys.DELETE) || DLFolderPermission.contains(permissionChecker, folder, ActionKeys.UPDATE) %>"
+	showCheckbox="<%= showCheckbox %>"
 	thumbnailSrc='<%= themeDisplay.getPathThemeImages() + "/file_system/large/" + folderImage + ".png" %>'
 	thumbnailStyle='<%= "height: " + PrefsPropsUtil.getLong(PropsKeys.DL_FILE_ENTRY_THUMBNAIL_MAX_HEIGHT) + "px; width: " + PrefsPropsUtil.getLong(PropsKeys.DL_FILE_ENTRY_THUMBNAIL_MAX_WIDTH) + "px;" %>'
 	title="<%= folder.getName() %>"

@@ -47,10 +47,22 @@ if (fileShortcut != null) {
 	rowCheckerName = DLFileShortcut.class.getSimpleName();
 	rowCheckerId = fileShortcut.getFileShortcutId();
 }
+
+String actionJsp = StringPool.BLANK;
+
+boolean showCheckbox = false;
+
+if (ArrayUtil.contains(entryColumns, "action")) {
+	actionJsp = "/html/portlet/document_library/file_entry_action.jsp";
+
+	if (DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.DELETE) || DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.UPDATE)) {
+		showCheckbox = true;
+	}
+}
 %>
 
 <liferay-ui:app-view-entry
-	actionJsp="/html/portlet/document_library/file_entry_action.jsp"
+	actionJsp="<%= actionJsp %>"
 	assetCategoryClassName="<%= DLFileEntryConstants.getClassName() %>"
 	assetCategoryClassPK="<%= assetClassPK %>"
 	assetTagClassName="<%= DLFileEntryConstants.getClassName() %>"
@@ -66,7 +78,7 @@ if (fileShortcut != null) {
 	rowCheckerId="<%= String.valueOf(rowCheckerId) %>"
 	rowCheckerName="<%= rowCheckerName %>"
 	shortcut="<%= fileShortcut != null %>"
-	showCheckbox="<%= DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.DELETE) || DLFileEntryPermission.contains(permissionChecker, fileEntry, ActionKeys.UPDATE) %>"
+	showCheckbox="<%= showCheckbox %>"
 	status="<%= latestFileVersion.getStatus() %>"
 	thumbnailDivStyle="<%= DLUtil.getThumbnailStyle(false, 4) %>"
 	thumbnailSrc="<%= DLUtil.getThumbnailSrc(fileEntry, latestFileVersion, fileShortcut, themeDisplay) %>"

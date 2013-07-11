@@ -87,7 +87,9 @@ EntriesChecker entriesChecker = new EntriesChecker(liferayPortletRequest, lifera
 
 entriesChecker.setCssClass("entry-selector");
 
-searchContainer.setRowChecker(entriesChecker);
+if (ArrayUtil.contains(entryColumns, "action")) {
+	searchContainer.setRowChecker(entriesChecker);
+}
 
 Map<String, String> orderableHeaders = new HashMap<String, String>();
 
