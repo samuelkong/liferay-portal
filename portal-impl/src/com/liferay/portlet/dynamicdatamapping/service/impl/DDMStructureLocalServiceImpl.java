@@ -157,8 +157,8 @@ public class DDMStructureLocalServiceImpl
 		Date now = new Date();
 
 		validate(
-				user.getCompanyId(), groupId, classNameId, structureKey, nameMap,
-				xsd);
+			user.getCompanyId(), groupId, classNameId, structureKey, nameMap,
+			xsd);
 
 		long structureId = counterLocalService.increment();
 
@@ -1766,8 +1766,7 @@ public class DDMStructureLocalServiceImpl
 
 		for (DDMStructure ddmStructure : ddmStructures) {
 			if (!structureKey.equals(ddmStructure.getStructureKey())) {
-				throw new StructureDuplicateNameException(
-					"There is another ddmStructure named " + name);
+				throw new StructureDuplicateNameException();
 			}
 		}
 	}
