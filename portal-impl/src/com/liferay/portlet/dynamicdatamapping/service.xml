@@ -104,10 +104,6 @@
 		<finder name="StructureKey" return-type="Collection">
 			<finder-column name="structureKey" />
 		</finder>
-		<finder name="C_N" return-type="Collection" >
-			<finder-column name="companyId" />
-			<finder-column name="name" />
-		</finder>
 		<finder name="G_P" return-type="Collection" >
 			<finder-column name="groupId" />
 			<finder-column name="parentStructureId" />
@@ -119,6 +115,10 @@
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_N" return-type="Collection" >
+			<finder-column name="companyId" />
+			<finder-column name="name" />
 		</finder>
 		<finder name="G_C_S" return-type="DDMStructure" unique="true">
 			<finder-column name="groupId" />

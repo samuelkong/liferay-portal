@@ -157,8 +157,8 @@ public class DDMStructureLocalServiceImpl
 		Date now = new Date();
 
 		validate(
-				user.getCompanyId(), groupId, classNameId, structureKey,
-				nameMap, xsd);
+			user.getCompanyId(), groupId, classNameId, structureKey, nameMap,
+			xsd);
 
 		long structureId = counterLocalService.increment();
 
@@ -1711,14 +1711,14 @@ public class DDMStructureLocalServiceImpl
 			catch (StructureDuplicateElementException sdee) {
 				throw sdee;
 			}
+			catch (StructureDuplicateNameException sdne) {
+				throw sdne;
+			}
 			catch (StructureNameException sne) {
 				throw sne;
 			}
 			catch (StructureXsdException sxe) {
 				throw sxe;
-			}
-			catch (StructureDuplicateNameException sdne) {
-				throw sdne;
 			}
 			catch (Exception e) {
 				throw new StructureXsdException();
