@@ -116,6 +116,10 @@
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
 		</finder>
+		<finder name="C_N" return-type="Collection" >
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+		</finder>
 		<finder name="G_C_S" return-type="DDMStructure" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="classNameId" />
@@ -264,6 +268,7 @@
 		<exception>StorageFieldName</exception>
 		<exception>StorageFieldRequired</exception>
 		<exception>StructureDuplicateElement</exception>
+		<exception>StructureDuplicateName</exception>
 		<exception>StructureDuplicateStructureKey</exception>
 		<exception>StructureField</exception>
 		<exception>StructureName</exception>
