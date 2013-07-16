@@ -82,6 +82,7 @@ if (Validator.isNotNull(script)) {
 	</liferay-ui:error>
 
 	<liferay-ui:error exception="<%= StructureDuplicateElementException.class %>" message="please-enter-unique-structure-field-names-(including-field-names-inherited-from-the-parent-structure)" />
+	<liferay-ui:error exception="<%= StructureDuplicateNameException.class %>" message="please-enter-a-unique-structure-name" />
 	<liferay-ui:error exception="<%= StructureNameException.class %>" message="please-enter-a-valid-name" />
 	<liferay-ui:error exception="<%= StructureXsdException.class %>" message="please-enter-a-valid-xsd" />
 

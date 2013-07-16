@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -49,6 +50,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.dynamicdatamapping.NoSuchStructureException;
 import com.liferay.portlet.dynamicdatamapping.RequiredStructureException;
 import com.liferay.portlet.dynamicdatamapping.StructureDuplicateElementException;
+import com.liferay.portlet.dynamicdatamapping.StructureDuplicateNameException;
 import com.liferay.portlet.dynamicdatamapping.StructureDuplicateStructureKeyException;
 import com.liferay.portlet.dynamicdatamapping.StructureNameException;
 import com.liferay.portlet.dynamicdatamapping.StructureXsdException;
@@ -154,7 +156,9 @@ public class DDMStructureLocalServiceImpl
 
 		Date now = new Date();
 
-		validate(groupId, classNameId, structureKey, nameMap, xsd);
+		validate(
+			user.getCompanyId(), groupId, classNameId, structureKey, nameMap,
+			xsd);
 
 		long structureId = counterLocalService.increment();
 
@@ -1426,7 +1430,9 @@ public class DDMStructureLocalServiceImpl
 			throw new StructureXsdException();
 		}
 
-		validate(nameMap, xsd);
+		validate(
+			structure.getCompanyId(), nameMap, structure.getStructureKey(),
+			xsd);
 
 		structure.setModifiedDate(serviceContext.getModifiedDate(null));
 		structure.setParentStructureId(parentStructureId);
@@ -1642,7 +1648,7 @@ public class DDMStructureLocalServiceImpl
 	}
 
 	protected void validate(
-			long groupId, long classNameId, String structureKey,
+			long companyId, long groupId, long classNameId, String structureKey,
 			Map<Locale, String> nameMap, String xsd)
 		throws PortalException, SystemException {
 
@@ -1660,10 +1666,12 @@ public class DDMStructureLocalServiceImpl
 			throw sdske;
 		}
 
-		validate(nameMap, xsd);
+		validate(companyId, nameMap, structureKey, xsd);
 	}
 
-	protected void validate(Map<Locale, String> nameMap, String xsd)
+	protected void validate(
+			long companyId, Map<Locale, String> nameMap, String structureKey,
+			String xsd)
 		throws PortalException {
 
 		if (Validator.isNull(xsd)) {
@@ -1688,6 +1696,9 @@ public class DDMStructureLocalServiceImpl
 
 				validateLanguages(nameMap, contentDefaultLocale);
 
+				validateName(
+					companyId, nameMap, contentDefaultLocale, structureKey);
+
 				elements.addAll(rootElement.elements());
 
 				Set<String> elNames = new HashSet<String>();
@@ -1699,6 +1710,9 @@ public class DDMStructureLocalServiceImpl
 			}
 			catch (StructureDuplicateElementException sdee) {
 				throw sdee;
+			}
+			catch (StructureDuplicateNameException sdne) {
+				throw sdne;
 			}
 			catch (StructureNameException sne) {
 				throw sne;
@@ -1735,6 +1749,25 @@ public class DDMStructureLocalServiceImpl
 			le.setTargetAvailableLocales(availableLocales);
 
 			throw le;
+		}
+	}
+
+	protected void validateName(
+			long companyId, Map<Locale, String> nameMap,
+			Locale contentDefaultLocale, String structureKey)
+		throws PortalException, SystemException {
+
+		String name = LocalizationUtil.updateLocalization(
+			nameMap, StringPool.BLANK, "Name",
+			LocaleUtil.toLanguageId(contentDefaultLocale));
+
+		List<DDMStructure> ddmStructures = ddmStructurePersistence.findByC_N(
+			companyId, name);
+
+		for (DDMStructure ddmStructure : ddmStructures) {
+			if (!structureKey.equals(ddmStructure.getStructureKey())) {
+				throw new StructureDuplicateNameException();
+			}
 		}
 	}
 

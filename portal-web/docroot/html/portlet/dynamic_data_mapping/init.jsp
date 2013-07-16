@@ -31,6 +31,7 @@ page import="com.liferay.portlet.dynamicdatamapping.NoSuchStructureException" %>
 page import="com.liferay.portlet.dynamicdatamapping.RequiredStructureException" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.RequiredTemplateException" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.StructureDuplicateElementException" %><%@
+page import="com.liferay.portlet.dynamicdatamapping.StructureDuplicateNameException" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.StructureFieldException" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.StructureNameException" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.StructureXsdException" %><%@
