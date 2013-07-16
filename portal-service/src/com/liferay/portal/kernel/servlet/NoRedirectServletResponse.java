@@ -14,6 +14,8 @@
 
 package com.liferay.portal.kernel.servlet;
 
+import com.liferay.portal.kernel.util.HttpUtil;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
@@ -36,7 +38,7 @@ public class NoRedirectServletResponse extends HttpServletResponseWrapper {
 
 		// Disable send redirect
 
-		_redirectLocation = location;
+		_redirectLocation = HttpUtil.sanitize(location);
 	}
 
 	private String _redirectLocation;

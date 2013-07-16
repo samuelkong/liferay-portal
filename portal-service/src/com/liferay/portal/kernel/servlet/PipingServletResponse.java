@@ -25,13 +25,12 @@ import java.io.Writer;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.jsp.PageContext;
 
 /**
  * @author Shuyang Zhou
  */
-public class PipingServletResponse extends HttpServletResponseWrapper {
+public class PipingServletResponse extends SecureServletResponseWrapper {
 
 	public PipingServletResponse(
 		HttpServletResponse response, OutputStream outputStream) {

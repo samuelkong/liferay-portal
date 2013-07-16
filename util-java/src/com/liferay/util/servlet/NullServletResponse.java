@@ -14,18 +14,18 @@
 
 package com.liferay.util.servlet;
 
+import com.liferay.portal.kernel.servlet.SecureServletResponseWrapper;
 import com.liferay.portal.kernel.util.UnsyncPrintWriterPool;
 
 import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class NullServletResponse extends HttpServletResponseWrapper {
+public class NullServletResponse extends SecureServletResponseWrapper {
 
 	public NullServletResponse(HttpServletResponse response) {
 		super(response);

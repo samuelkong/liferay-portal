@@ -17,6 +17,7 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.Portlet;
 import com.liferay.portal.model.PublicRenderParameter;
@@ -164,7 +165,7 @@ public abstract class StateAwareResponseImpl
 	}
 
 	public void setRedirectLocation(String redirectLocation) {
-		_redirectLocation = redirectLocation;
+		_redirectLocation = HttpUtil.sanitize(redirectLocation);
 	}
 
 	@Override

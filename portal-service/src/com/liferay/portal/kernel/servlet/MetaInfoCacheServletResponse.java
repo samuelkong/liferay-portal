@@ -36,12 +36,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Shuyang Zhou
  */
-public class MetaInfoCacheServletResponse extends HttpServletResponseWrapper {
+public class MetaInfoCacheServletResponse extends SecureServletResponseWrapper {
 
 	@SuppressWarnings("deprecation")
 	public static void finishResponse(

@@ -14,22 +14,35 @@
 
 package com.liferay.portal.kernel.servlet;
 
+import com.liferay.portal.kernel.util.HttpUtil;
+
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author László Csontos
  */
-public class UncommittedServletResponse extends SecureServletResponseWrapper {
+public class SecureServletResponseWrapper extends HttpServletResponseWrapper {
 
-	public UncommittedServletResponse(HttpServletResponse response) {
+	public SecureServletResponseWrapper(HttpServletResponse response) {
 		super(response);
 	}
 
 	@Override
-	public boolean isCommitted() {
-		return _COMMITTED;
+	public void addHeader(String name, String value) {
+		super.addHeader(name, HttpUtil.sanitize(value));
 	}
 
-	private static final boolean _COMMITTED = false;
+	@Override
+	public void sendRedirect(String location) throws IOException {
+		super.sendRedirect(HttpUtil.sanitize(location));
+	}
+
+	@Override
+	public void setHeader(String name, String value) {
+		super.setHeader(name, HttpUtil.sanitize(value));
+	}
 
 }

@@ -15,6 +15,7 @@
 package com.liferay.util.servlet;
 
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
+import com.liferay.portal.kernel.servlet.SecureServletResponseWrapper;
 import com.liferay.portal.kernel.servlet.ServletOutputStreamAdapter;
 import com.liferay.portal.kernel.util.UnsyncPrintWriterPool;
 
@@ -22,12 +23,11 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class GenericServletResponse extends HttpServletResponseWrapper {
+public class GenericServletResponse extends SecureServletResponseWrapper {
 
 	public GenericServletResponse(HttpServletResponse response) {
 		super(response);

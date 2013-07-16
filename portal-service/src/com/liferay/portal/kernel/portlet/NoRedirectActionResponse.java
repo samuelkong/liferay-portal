@@ -14,6 +14,8 @@
 
 package com.liferay.portal.kernel.portlet;
 
+import com.liferay.portal.kernel.util.HttpUtil;
+
 import javax.portlet.ActionResponse;
 import javax.portlet.filter.ActionResponseWrapper;
 
@@ -35,7 +37,7 @@ public class NoRedirectActionResponse extends ActionResponseWrapper {
 
 		// Disable send redirect
 
-		_redirectLocation = location;
+		_redirectLocation = HttpUtil.sanitize(location);
 	}
 
 	private String _redirectLocation;

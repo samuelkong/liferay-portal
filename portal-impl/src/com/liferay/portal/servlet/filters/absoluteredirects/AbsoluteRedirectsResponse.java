@@ -14,6 +14,7 @@
 
 package com.liferay.portal.servlet.filters.absoluteredirects;
 
+import com.liferay.portal.kernel.servlet.SecureServletResponseWrapper;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.Validator;
@@ -23,13 +24,12 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Jorge Ferrer
  * @author Shuyang Zhou
  */
-public class AbsoluteRedirectsResponse extends HttpServletResponseWrapper {
+public class AbsoluteRedirectsResponse extends SecureServletResponseWrapper {
 
 	public AbsoluteRedirectsResponse(
 		HttpServletRequest request, HttpServletResponse response) {

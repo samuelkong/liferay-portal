@@ -884,6 +884,11 @@ public class HttpImpl implements Http {
 	}
 
 	@Override
+	public String sanitize(String location) {
+		return StringUtil.replace(location, _CRLF, _SPACES);
+	}
+
+	@Override
 	public String setParameter(String url, String name, boolean value) {
 		return setParameter(url, name, String.valueOf(value));
 	}
@@ -1389,6 +1394,10 @@ public class HttpImpl implements Http {
 		}
 	}
 
+	private static final String[] _CRLF = new String[] {
+		StringPool.NEW_LINE, StringPool.RETURN
+	};
+
 	private static final String _DEFAULT_USER_AGENT =
 		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 
@@ -1422,6 +1431,10 @@ public class HttpImpl implements Http {
 
 	private static final String _PROXY_USERNAME = GetterUtil.getString(
 		PropsUtil.get(HttpImpl.class.getName() + ".proxy.username"));
+
+	private static final String[] _SPACES = new String[] {
+		StringPool.SPACE, StringPool.SPACE
+	};
 
 	private static final String _TEMP_SLASH = "_LIFERAY_TEMP_SLASH_";
 

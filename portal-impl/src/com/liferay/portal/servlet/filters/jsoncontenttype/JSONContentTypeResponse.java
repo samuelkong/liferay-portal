@@ -14,16 +14,16 @@
 
 package com.liferay.portal.servlet.filters.jsoncontenttype;
 
+import com.liferay.portal.kernel.servlet.SecureServletResponseWrapper;
 import com.liferay.portal.kernel.util.ContentTypes;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Hugo Huijser
  * @author Igor Spasic
  */
-public class JSONContentTypeResponse extends HttpServletResponseWrapper {
+public class JSONContentTypeResponse extends SecureServletResponseWrapper {
 
 	public JSONContentTypeResponse(HttpServletResponse response) {
 		super(response);
