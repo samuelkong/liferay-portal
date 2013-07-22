@@ -151,6 +151,7 @@ iteratorURL.setParameter("nodeId", String.valueOf(node.getNodeId()));
 						}
 						else {
 							socialActivityWikiPage = WikiPageLocalServiceUtil.getPage(node.getNodeId(), wikiPage.getTitle());
+							version = 0.0;
 						}
 						%>
 
