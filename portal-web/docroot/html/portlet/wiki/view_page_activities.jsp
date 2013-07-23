@@ -139,12 +139,20 @@ iteratorURL.setParameter("nodeId", String.valueOf(node.getNodeId()));
 						</c:choose>
 					</c:when>
 
-					<c:when test="<%= (socialActivity.getType() == SocialActivityConstants.TYPE_MOVE_TO_TRASH) || (socialActivity.getType() == SocialActivityConstants.TYPE_RESTORE_FROM_TRASH) || (socialActivity.getType() == WikiActivityKeys.ADD_PAGE) || (socialActivity.getType() == WikiActivityKeys.UPDATE_PAGE) %>">
+					<c:when test="<%= (socialActivity.getType() == SocialActivityConstants.TYPE_ADD_COMMENT) || (socialActivity.getType() == SocialActivityConstants.TYPE_MOVE_TO_TRASH) || (socialActivity.getType() == SocialActivityConstants.TYPE_RESTORE_FROM_TRASH) || (socialActivity.getType() == WikiActivityKeys.ADD_PAGE) || (socialActivity.getType() == WikiActivityKeys.UPDATE_PAGE) %>">
 
 						<%
 						double version = extraDataJSONObject.getDouble("version");
 
-						WikiPage socialActivityWikiPage = WikiPageLocalServiceUtil.getPage(node.getNodeId(), wikiPage.getTitle(), version);
+						WikiPage socialActivityWikiPage = null;
+
+						if (!Double.isNaN(version)) {
+							socialActivityWikiPage = WikiPageLocalServiceUtil.getPage(node.getNodeId(), wikiPage.getTitle(), version);
+						}
+						else {
+							socialActivityWikiPage = WikiPageLocalServiceUtil.getPage(node.getNodeId(), wikiPage.getTitle());
+							version = 0.0;
+						}
 						%>
 
 						<portlet:renderURL var="viewPageURL">
@@ -155,6 +163,23 @@ iteratorURL.setParameter("nodeId", String.valueOf(node.getNodeId()));
 						</portlet:renderURL>
 
 						<c:choose>
+							<c:when test="<%= (socialActivity.getType() == SocialActivityConstants.TYPE_ADD_COMMENT) %>">
+
+								<%
+								long messageId = extraDataJSONObject.getLong("messageId");
+
+								MBMessage mbMessage = MBMessageLocalServiceUtil.getMBMessage(messageId);
+								%>
+
+								<liferay-util:buffer var="commentLink">
+									<aui:a href="<%= viewPageURL.toString() %>"><%= mbMessage.getBody() %></aui:a>
+								</liferay-util:buffer>
+
+								<liferay-ui:icon
+									label="<%= true %>"
+									message='<%= LanguageUtil.format(pageContext, "x-added-the-comment-x", new Object[] {socialActivityUser.getFullName(), commentLink}) %>'
+								/>
+							</c:when>
 							<c:when test="<%= socialActivity.getType() == SocialActivityConstants.TYPE_MOVE_TO_TRASH %>">
 								<liferay-ui:icon
 									image="trash"
