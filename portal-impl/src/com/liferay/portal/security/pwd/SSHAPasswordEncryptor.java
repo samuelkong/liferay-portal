@@ -24,9 +24,6 @@ import java.io.UnsupportedEncodingException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
-import java.util.Random;
 
 /**
  * @author Michael C. Han
@@ -74,9 +71,14 @@ public class SSHAPasswordEncryptor
 		byte[] saltBytes = new byte[8];
 
 		if (Validator.isNull(encryptedPassword)) {
-			Random random = new SecureRandom();
+			long random = (int)Double.doubleToLongBits(Math.random());
+			random <<= Integer.SIZE;
+			random += (int)Double.doubleToLongBits(Math.random());
 
-			random.nextBytes(saltBytes);
+			for (int i = 0; i < 8; i++) {
+				saltBytes[i] = (byte)random;
+				random >>= Byte.SIZE;
+			}
 		}
 		else {
 			try {

@@ -95,6 +95,8 @@ public class PBKDF2PasswordEncryptor
 
 	private static final int _KEY_SIZE = 160;
 
+	private static final SecureRandom _RANDOM = new SecureRandom();
+
 	private static final int _ROUNDS = 128000;
 
 	private static final int _SALT_BYTES_LENGTH = 8;
@@ -117,9 +119,7 @@ public class PBKDF2PasswordEncryptor
 					_rounds = GetterUtil.getInteger(matcher.group(2), _ROUNDS);
 				}
 
-				SecureRandom random = new SecureRandom();
-
-				random.nextBytes(_saltBytes);
+				_RANDOM.nextBytes(_saltBytes);
 			}
 			else {
 				byte[] bytes = new byte[16];
