@@ -46,11 +46,11 @@ boolean modeHelp = layoutTypePortlet.hasModeHelpPortletId(portletId);
 boolean modePreview = layoutTypePortlet.hasModePreviewPortletId(portletId);
 boolean modePrint = layoutTypePortlet.hasModePrintPortletId(portletId);
 
-PortletPreferences portletSetup = PortletPreferencesFactoryUtil.getStrictLayoutPortletSetup(layout, portletId);
-
 PortletPreferencesIds portletPreferencesIds = PortletPreferencesFactoryUtil.getPortletPreferencesIds(request, portletId);
 
 PortletPreferences portletPreferences = PortletPreferencesLocalServiceUtil.getPreferences(portletPreferencesIds);
+
+PortletPreferences portletSetup = PortletPreferencesFactoryUtil.getStrictLayoutPortletSetup(layout, portletId);
 
 Group group = null;
 boolean privateLayout = false;
@@ -203,8 +203,10 @@ if ((portletParallelRender != null) && (portletParallelRender.booleanValue() == 
 }
 
 if (!portletId.equals(PortletKeys.PORTLET_CONFIGURATION)) {
+	Layout curLayout = PortletConfigurationLayoutUtil.getLayout(themeDisplay);
+
 	if ((!group.hasStagingGroup() || group.isStagingGroup()) &&
-		(PortletPermissionUtil.contains(permissionChecker, layout, portlet, ActionKeys.CONFIGURATION))) {
+		(PortletPermissionUtil.contains(permissionChecker, themeDisplay.getScopeGroupId(), curLayout, portlet, ActionKeys.CONFIGURATION))) {
 
 		showConfigurationIcon = true;
 
