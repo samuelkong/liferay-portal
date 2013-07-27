@@ -33,6 +33,10 @@ public class PwdGenerator {
 
 	public static final String KEY3 = "abcdefghijklmnopqrstuvwxyz";
 
+	public static String getRandomId() {
+		return PwdGenerator.getPassword(PwdGenerator.KEY3, 4);
+	}
+
 	public static String getPassword() {
 		return getPassword(8);
 	}
