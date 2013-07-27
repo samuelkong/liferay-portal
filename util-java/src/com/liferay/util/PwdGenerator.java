@@ -52,7 +52,11 @@ public class PwdGenerator {
 	}
 
 	public static String getPinNumber() {
-		return _getPassword(false, KEY1, 4, true);
+		return getSecurePassword(KEY1, 4, false);
+	}
+
+	public static String getRandomFileName() {
+		return getSecurePassword(PwdGenerator.KEY2, 8, false);
 	}
 
 	public static String getSecurePassword() {
