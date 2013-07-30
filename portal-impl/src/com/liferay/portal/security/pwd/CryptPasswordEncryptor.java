@@ -21,8 +21,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.UnsupportedEncodingException;
 
-import java.util.Random;
-
 import org.vps.crypt.Crypt;
 
 /**
@@ -65,10 +63,8 @@ public class CryptPasswordEncryptor
 
 		try {
 			if (Validator.isNull(encryptedPassword)) {
-				Random random = new Random();
-
-				int x = random.nextInt(Integer.MAX_VALUE) % _SALT.length;
-				int y = random.nextInt(Integer.MAX_VALUE) % _SALT.length;
+				int x = (int) (Math.random() * _SALT.length);
+				int y = (int) (Math.random() * _SALT.length);
 
 				String salt = _SALT[x].concat(_SALT[y]);
 
