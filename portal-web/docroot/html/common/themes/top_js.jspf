@@ -338,25 +338,33 @@
 
 <script type="text/javascript">
 	// <![CDATA[
-		<c:if test="<%= (layoutTypePortlet != null) %>">
+		<c:if test="<%= layoutTypePortlet != null && !layoutTypePortlet.hasStateMax() %>">
 
 			<%
 			List<Portlet> allPortlets = layoutTypePortlet.getAllPortlets(false);
 
 			Iterator<Portlet> itr = allPortlets.iterator();
 
+			StringBundler sb = new StringBundler();
+
 			while (itr.hasNext()) {
 				Portlet portlet = itr.next();
 
 				if (!portlet.isActive() || !portlet.isReady() || portlet.isUndeployedPortlet()) {
 					itr.remove();
+
+					continue;
+				}
+
+				String portletId = Portlet.PORTLET_ID_ACCESSOR.get(portlet);
+
+				if (portletId != null) {
+					sb.append(HtmlUtil.escapeJS(portletId) + "','");
 				}
 			}
 			%>
 
-			<c:if test="<%= !allPortlets.isEmpty() && !layoutTypePortlet.hasStateMax() %>">
-				Liferay.Portlet.list = ['<%= ListUtil.toString(allPortlets, Portlet.PORTLET_ID_ACCESSOR, "','") %>'];
-			</c:if>
+			Liferay.Portlet.list = ['<%= (sb.toString()).substring(0,sb.length()-3) %>'];
 		</c:if>
 
 		<%
