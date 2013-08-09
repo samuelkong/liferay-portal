@@ -2018,9 +2018,10 @@
 				var value = 'false';
 
 				if (checked) {
-					value = checkbox.val();
+					value = 'true';
 				}
 
+				checkbox.val(value);
 				checkbox.previous().val(value);
 			}
 		},
