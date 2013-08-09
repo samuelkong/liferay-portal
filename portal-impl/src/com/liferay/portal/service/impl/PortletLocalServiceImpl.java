@@ -241,17 +241,43 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			companyId, rootPortletId, ResourceConstants.SCOPE_INDIVIDUAL,
 			PortletPermissionUtil.getPrimaryKey(plid, portletId));
 
+		Portlet portlet = getPortletById(companyId, portletId);
+
 		int ownerType = PortletKeys.PREFS_OWNER_TYPE_LAYOUT;
 
 		if (PortletConstants.hasUserId(portletId)) {
 			ownerType = PortletKeys.PREFS_OWNER_TYPE_USER;
 		}
+		else if (portlet.isPreferencesCompanyWide()) {
+			ownerType = PortletKeys.PREFS_OWNER_TYPE_COMPANY;
+			plid = PortletKeys.PREFS_PLID_SHARED;
+			portletId = PortletConstants.getRootPortletId(portletId);
+		}
+		else {
+			if (portlet.isPreferencesUniquePerLayout()) {
+				ownerType = PortletKeys.PREFS_OWNER_TYPE_LAYOUT;
+
+				if (portlet.isPreferencesOwnedByGroup()) {
+				}
+				else {
+					ownerType = PortletKeys.PREFS_OWNER_TYPE_USER;
+				}
+			}
+			else {
+				plid = PortletKeys.PREFS_PLID_SHARED;
+
+				if (portlet.isPreferencesOwnedByGroup()) {
+					ownerType = PortletKeys.PREFS_OWNER_TYPE_GROUP;
+				}
+				else {
+					ownerType = PortletKeys.PREFS_OWNER_TYPE_USER;
+				}
+			}
+		}
 
 		List<PortletPreferences> portletPreferencesList =
 			portletPreferencesLocalService.getPortletPreferences(
 				ownerType, plid, portletId);
-
-		Portlet portlet = getPortletById(companyId, portletId);
 
 		PortletLayoutListener portletLayoutListener = null;
 
