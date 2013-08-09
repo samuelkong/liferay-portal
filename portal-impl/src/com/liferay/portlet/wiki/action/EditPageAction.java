@@ -233,6 +233,9 @@ public class EditPageAction extends PortletAction {
 			data.put(
 				"deleteEntryClassName",
 				new String[] {WikiPage.class.getName()});
+
+			data.put("deleteEntryTitle", new String[] {wikiPage.getTitle()});
+
 			data.put(
 				"restoreEntryIds",
 				new String[] {String.valueOf(wikiPage.getResourcePrimKey())});

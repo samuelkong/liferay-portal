@@ -15,13 +15,11 @@
 package com.liferay.portal.lar;
 
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.ExportImportPathUtil;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.portal.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.lar.UserIdStrategy;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -113,27 +111,11 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 		validateExport(
 			portletDataContext, stagedModel, dependentStagedModelsMap);
 
-		PortletExporter portletExporter = new PortletExporter();
-
-		portletExporter.exportAssetCategories(portletDataContext);
-		portletExporter.exportAssetTags(portletDataContext);
-
-		portletDataContext.addDeletionSystemEventStagedModelTypes(
-			getDeletionSystemEventStagedModelTypes());
-
-		deleteStagedModel(stagedModel, dependentStagedModelsMap, stagingGroup);
-
-		portletDataContext.setEndDate(new Date());
-
-		DeletionSystemEventExporter deletionSystemEventExporter =
-			new DeletionSystemEventExporter();
-
-		deletionSystemEventExporter.exportDeletionSystemEvents(
-			portletDataContext);
-
 		// Import
 
 		initImport();
+
+		deleteStagedModel(stagedModel, dependentStagedModelsMap, stagingGroup);
 
 		// Reread the staged model for import from ZIP for true testing
 
@@ -147,17 +129,6 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 		validateImport(
 			stagedModel, stagedModelAssets, dependentStagedModelsMap,
 			liveGroup);
-
-		portletDataContext.addDeletionSystemEventStagedModelTypes(
-			getDeletionSystemEventStagedModelTypes());
-
-		DeletionSystemEventImporter deletionSystemEventImporter =
-			new DeletionSystemEventImporter();
-
-		deletionSystemEventImporter.importDeletionSystemEvents(
-			portletDataContext);
-
-		validateDeletion(stagedModel, dependentStagedModelsMap, liveGroup);
 	}
 
 	protected List<StagedModel> addDependentStagedModel(
@@ -198,10 +169,6 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 		throws Exception {
 	}
 
-	protected StagedModelType[] getDeletionSystemEventStagedModelTypes() {
-		return new StagedModelType[0];
-	}
-
 	protected Date getEndDate() {
 		return new Date();
 	}
@@ -214,9 +181,6 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 			PortletDataHandlerKeys.DATA_STRATEGY,
 			new String[] {
 				PortletDataHandlerKeys.DATA_STRATEGY_MIRROR_OVERWRITE});
-		parameterMap.put(
-			PortletDataHandlerKeys.DELETIONS,
-			new String[] {Boolean.TRUE.toString()});
 		parameterMap.put(
 			PortletDataHandlerKeys.IGNORE_LAST_PUBLISH_DATE,
 			new String[] {Boolean.TRUE.toString()});
@@ -239,8 +203,7 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 		return parameterMap;
 	}
 
-	protected abstract StagedModel getStagedModel(String uuid, Group group)
-		throws SystemException;
+	protected abstract StagedModel getStagedModel(String uuid, Group group);
 
 	protected abstract Class<? extends StagedModel> getStagedModelClass();
 
@@ -272,6 +235,11 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 	}
 
 	protected void initImport() throws Exception {
+		PortletExporter portletExporter = new PortletExporter();
+
+		portletExporter.exportAssetCategories(portletDataContext);
+		portletExporter.exportAssetTags(portletDataContext);
+
 		userIdStrategy = new CurrentUserIdStrategy(TestPropsValues.getUser());
 		zipReader = ZipReaderFactoryUtil.getZipReader(zipWriter.getFile());
 
@@ -379,26 +347,6 @@ public abstract class BaseStagedModelDataHandlerTestCase extends PowerMockito {
 
 		Assert.assertEquals(
 			assetVocabulary.getUuid(), importedAssetVocabulary.getUuid());
-	}
-
-	protected void validateDeletion(
-			Map<String, List<StagedModel>> dependentStagedModelsMap,
-			Group group)
-		throws Exception {
-	}
-
-	protected void validateDeletion(
-			StagedModel stagedModel,
-			Map<String, List<StagedModel>> dependentStagedModelsMap,
-			Group group)
-		throws Exception {
-
-		StagedModel importedStagedModel = getStagedModel(
-			stagedModel.getUuid(), group);
-
-		Assert.assertNull(importedStagedModel);
-
-		validateDeletion(dependentStagedModelsMap, group);
 	}
 
 	protected void validateExport(
