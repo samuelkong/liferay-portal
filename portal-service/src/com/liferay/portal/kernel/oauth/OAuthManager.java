@@ -22,6 +22,8 @@ public interface OAuthManager {
 	public Token getAccessToken(Token requestToken, Verifier verifier)
 		throws OAuthException;
 
+	public String getAuthorizeURL(Token requestToken) throws OAuthException;
+
 	public Token getRequestToken() throws OAuthException;
 
 	public String getVersion() throws OAuthException;

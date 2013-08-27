@@ -31,13 +31,33 @@ public class OAuthFactoryImpl implements OAuthFactory {
 
 	@Override
 	public OAuthManager createOAuthManager(
-			String key, String secret, String accessURL, String requestURL,
-			String callbackURL, String scope)
+			String key, String secret, String accessURL, String authorizeURL,
+			String requestURL, String callbackURL, String scope,
+			Verb accessTokenVerb, Verb requestTokenVerb,
+			int signatureServiceType)
 		throws OAuthException {
 
 		try {
 			return new OAuthManagerImpl(
-				key, secret, accessURL, requestURL, callbackURL, scope);
+				key, secret, accessURL, authorizeURL, requestURL, callbackURL,
+				scope, accessTokenVerb, requestTokenVerb, signatureServiceType);
+		}
+		catch (Exception e) {
+			throw new OAuthException(e);
+		}
+	}
+
+	@Override
+	public OAuthManager createOAuthManager(
+			String key, String secret, String accessURL, String authorizeURL,
+			String callbackURL, String scope, Verb accessTokenVerb,
+			int extractorType)
+		throws OAuthException {
+
+		try {
+			return new OAuthManagerImpl(
+				key, secret, accessURL, authorizeURL, callbackURL, scope,
+				accessTokenVerb, extractorType);
 		}
 		catch (Exception e) {
 			throw new OAuthException(e);
