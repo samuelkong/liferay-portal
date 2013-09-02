@@ -145,7 +145,6 @@
 		<portlet-name>16</portlet-name>
 		<icon>/html/icons/currency_converter.png</icon>
 		<struts-path>currency_converter</struts-path>
-		<preferences-owned-by-group>false</preferences-owned-by-group>
 		<use-default-template>false</use-default-template>
 		<remoteable>true</remoteable>
 		<private-request-attributes>false</private-request-attributes>
