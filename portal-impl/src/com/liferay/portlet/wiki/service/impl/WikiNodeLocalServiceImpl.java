@@ -638,7 +638,7 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 			throw new NodeNameException(name + " is reserved");
 		}
 
-		if (Validator.isNull(name) || name.indexOf(CharPool.SLASH) != -1) {
+		if (Validator.isNull(name) || (name.indexOf(CharPool.SLASH) != -1)) {
 			throw new NodeNameException();
 		}
 
