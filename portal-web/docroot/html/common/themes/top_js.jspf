@@ -348,19 +348,19 @@
 			<%
 			List<Portlet> allPortlets = layoutTypePortlet.getAllPortlets(false);
 
-			Iterator<Portlet> itr = allPortlets.iterator();
+			List<String> portletIds = new ArrayList<String>();
 
-			while (itr.hasNext()) {
-				Portlet portlet = itr.next();
+			for (Portlet portlet:allPortlets) {
+				if (portlet.isActive() && portlet.isReady() && !portlet.isUndeployedPortlet()) {
+					String portletId = Portlet.PORTLET_ID_ACCESSOR.get(portlet);
 
-				if (!portlet.isActive() || !portlet.isReady() || portlet.isUndeployedPortlet()) {
-					itr.remove();
+					portletIds.add(HtmlUtil.escapeJS(portletId));
 				}
 			}
 			%>
 
-			<c:if test="<%= !allPortlets.isEmpty() && !layoutTypePortlet.hasStateMax() %>">
-				Liferay.Portlet.list = ['<%= ListUtil.toString(allPortlets, Portlet.PORTLET_ID_ACCESSOR, "','") %>'];
+			<c:if test="<%= !portletIds.isEmpty() && !layoutTypePortlet.hasStateMax() %>">
+				Liferay.Portlet.list = ['<%= ListUtil.toString(portletIds, StringPool.BLANK, StringPool.APOSTROPHE + StringPool.COMMA + StringPool.APOSTROPHE) %>']; 
 			</c:if>
 		</c:if>
 
