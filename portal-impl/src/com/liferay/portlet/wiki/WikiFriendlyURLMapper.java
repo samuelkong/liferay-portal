@@ -35,6 +35,15 @@ public class WikiFriendlyURLMapper extends DefaultFriendlyURLMapper {
 
 		buildRouteParameters(liferayPortletURL, routeParameters);
 
+		if (routeParameters.containsKey("nodeName")) {
+			String nodeName = routeParameters.get("nodeName");
+
+			nodeName = StringUtil.replace(
+				nodeName, _UNESCAPED_CHARS, _ESCAPED_CHARS);
+
+			routeParameters.put("nodeName", nodeName);
+		}
+
 		if (routeParameters.containsKey("title")) {
 			String title = routeParameters.get("title");
 
@@ -61,6 +70,15 @@ public class WikiFriendlyURLMapper extends DefaultFriendlyURLMapper {
 	protected void populateParams(
 		Map<String, String[]> parameterMap, String namespace,
 		Map<String, String> routeParameters) {
+
+		if (routeParameters.containsKey("nodeName")) {
+			String nodeName = routeParameters.get("nodeName");
+
+			nodeName = StringUtil.replace(
+				nodeName, _ESCAPED_CHARS, _UNESCAPED_CHARS);
+
+			routeParameters.put("nodeName", nodeName);
+		}
 
 		if (routeParameters.containsKey("title")) {
 			String title = routeParameters.get("title");
