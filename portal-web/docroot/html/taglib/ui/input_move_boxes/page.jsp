@@ -47,7 +47,7 @@ List rightList = (List)request.getAttribute("liferay-ui:input-move-boxes:rightLi
 					KeyValuePair kvp = (KeyValuePair)leftList.get(i);
 				%>
 
-					<aui:option label="<%= kvp.getValue() %>" value="<%= kvp.getKey() %>" />
+					<aui:option label="<%= HtmlUtil.escapeAttribute(kvp.getValue()) %>" value="<%= HtmlUtil.escapeAttribute(kvp.getKey()) %>" />
 
 				<%
 				}
@@ -66,7 +66,7 @@ List rightList = (List)request.getAttribute("liferay-ui:input-move-boxes:rightLi
 					KeyValuePair kvp = (KeyValuePair)rightList.get(i);
 				%>
 
-					<option value="<%= kvp.getKey() %>"><%= kvp.getValue() %></option>
+					<option value="<%= HtmlUtil.escapeAttribute(kvp.getKey()) %>"><%= HtmlUtil.escapeAttribute(kvp.getValue()) %></option>
 
 				<%
 				}
