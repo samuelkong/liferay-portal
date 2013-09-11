@@ -129,7 +129,7 @@ String selectStyle = (String)request.getAttribute("configuration.jsp-selectStyle
 						List<KeyValuePair> subtypesLeftList = new ArrayList<KeyValuePair>();
 
 						for (long subtypeId : assetSelectedClassTypeIds) {
-							subtypesLeftList.add(new KeyValuePair(String.valueOf(subtypeId), HtmlUtil.escape(assetAvailableClassTypes.get(subtypeId))));
+							subtypesLeftList.add(new KeyValuePair(String.valueOf(subtypeId), assetAvailableClassTypes.get(subtypeId)));
 						}
 
 						Arrays.sort(assetSelectedClassTypeIds);
@@ -151,7 +151,7 @@ String selectStyle = (String)request.getAttribute("configuration.jsp-selectStyle
 									<%
 									for (Long classTypeId : assetAvailableClassTypes.keySet()) {
 										if (Arrays.binarySearch(assetSelectedClassTypeIds, classTypeId) < 0) {
-											subtypesRightList.add(new KeyValuePair(String.valueOf(classTypeId), HtmlUtil.escape(assetAvailableClassTypes.get(classTypeId))));
+											subtypesRightList.add(new KeyValuePair(String.valueOf(classTypeId), assetAvailableClassTypes.get(classTypeId)));
 										}
 									%>
 
