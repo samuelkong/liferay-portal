@@ -237,10 +237,10 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 		%>
 
 	</c:when>
-	<c:when test='<%= topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("recent-posts") %>'>
+	<c:when test='<%= topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("my-drafts") || topLink.equals("recent-posts") %>'>
 
 		<%
-		if ((topLink.equals("my-posts") || topLink.equals("my-subscriptions")) && themeDisplay.isSignedIn()) {
+		if ((topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("my-drafts")) && themeDisplay.isSignedIn()) {
 			groupThreadsUserId = user.getUserId();
 		}
 

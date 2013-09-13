@@ -15,12 +15,18 @@
 --%>
 
 <%
-if (Validator.isNull(searchTerms.getKeywords())) {
-	total = BlogsEntryLocalServiceUtil.getGroupEntriesCount(scopeGroupId, WorkflowConstants.STATUS_ANY);
+if (Validator.isNull(searchTerms.getKeywords()) || viewDrafts) {
+	int status = WorkflowConstants.STATUS_ANY;
+
+	if (viewDrafts) {
+		status = WorkflowConstants.STATUS_DRAFT;
+	}
+
+	total = BlogsEntryLocalServiceUtil.getGroupEntriesCount(scopeGroupId, status);
 
 	searchContainer.setTotal(total);
 
-	results = BlogsEntryLocalServiceUtil.getGroupEntries(scopeGroupId, WorkflowConstants.STATUS_ANY, searchContainer.getStart(), searchContainer.getEnd());
+	results = BlogsEntryLocalServiceUtil.getGroupEntries(scopeGroupId, status, searchContainer.getStart(), searchContainer.getEnd());
 }
 else {
 	Indexer indexer = IndexerRegistryUtil.getIndexer(BlogsEntry.class);
