@@ -17,9 +17,13 @@
 <%@ include file="/html/portlet/blogs_admin/init.jsp" %>
 
 <%
+boolean viewDrafts = ParamUtil.getBoolean(request, "viewDrafts");
+
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("struts_action", "/blogs_admin/view");
+
+portletURL.setParameter("viewDrafts", String.valueOf(viewDrafts));
 %>
 
 <portlet:actionURL var="undoTrashURL">
@@ -77,6 +81,13 @@ portletURL.setParameter("struts_action", "/blogs_admin/view");
 
 		<c:if test="<%= total > 0 %>">
 			<aui:button disabled="<%= true %>" name="delete" onClick='<%= renderResponse.getNamespace() + "deleteEntries();" %>' value='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "move-to-the-recycle-bin" : "delete" %>' />
+
+			<liferay-portlet:renderURL varImpl="viewDraftsURL">
+				<portlet:param name="struts_action" value="/blogs_admin/view" />
+				<portlet:param name="viewDrafts" value="<%= String.valueOf(!viewDrafts) %>" />
+			</liferay-portlet:renderURL>
+
+			<aui:button name="viewDrafts" onClick="<%= viewDraftsURL.toString() %>" value='<%= !viewDrafts ? "view-drafts" : "view-all" %>' />
 
 			<div class="separator"><!-- --></div>
 		</c:if>

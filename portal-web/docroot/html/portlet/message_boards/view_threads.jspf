@@ -28,6 +28,9 @@
 	else if (topLink.equals("my-subscriptions")) {
 		emptyResultsMessage = "you-are-not-subscribed-to-any-threads";
 	}
+	else if (topLink.equals("my-drafts")) {
+		emptyResultsMessage = "you-do-not-have-any-drafts";
+	}
 	else if (topLink.equals("recent-posts")) {
 		emptyResultsMessage = "there-are-no-recent-posts";
 	}
@@ -68,6 +71,13 @@
 			searchContainer.setTotal(total);
 
 			results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, true, searchContainer.getStart(), searchContainer.getEnd());
+		}
+		else if (topLink.equals("my-drafts")) {
+			total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_DRAFT, true);
+
+			searchContainer.setTotal(total);
+
+			results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_DRAFT, true, searchContainer.getStart(), searchContainer.getEnd());
 		}
 		else if (topLink.equals("recent-posts")) {
 			Calendar calendar = Calendar.getInstance();
