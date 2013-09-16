@@ -74,9 +74,17 @@ long controlPanelPlid = PortalUtil.getControlPanelPlid(company.getCompanyId());
 
 PortletURL assetBrowserURL = PortletURLFactoryUtil.create(request, PortletKeys.ASSET_BROWSER, controlPanelPlid, PortletRequest.RENDER_PHASE);
 
+List<Group> availableGroups = GroupLocalServiceUtil.getUserGroups(themeDisplay.getUserId());
+
+String selectedGroupIds = StringUtil.valueOf(themeDisplay.getCompanyGroupId());
+
+for (Group group : availableGroups) {
+	selectedGroupIds = selectedGroupIds + "," + group.getGroupId();
+}
+
 assetBrowserURL.setParameter("struts_action", "/asset_browser/view");
 assetBrowserURL.setParameter("groupId", String.valueOf(scopeGroupId));
-assetBrowserURL.setParameter("selectedGroupIds", themeDisplay.getCompanyGroupId() + "," + scopeGroupId);
+assetBrowserURL.setParameter("selectedGroupIds", selectedGroupIds);
 assetBrowserURL.setParameter("eventName", eventName);
 assetBrowserURL.setPortletMode(PortletMode.VIEW);
 assetBrowserURL.setWindowState(LiferayWindowState.POP_UP);
