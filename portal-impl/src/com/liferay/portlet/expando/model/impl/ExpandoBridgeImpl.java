@@ -254,6 +254,10 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 				ExpandoColumnLocalServiceUtil.getDefaultTableColumn(
 					_companyId, _className, name);
 
+			if (column == null) {
+				return null;
+			}
+
 			return column.getTypeSettingsProperties();
 		}
 		catch (Exception e) {

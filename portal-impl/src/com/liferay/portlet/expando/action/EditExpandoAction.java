@@ -174,6 +174,10 @@ public class EditExpandoAction extends PortletAction {
 			properties = new UnicodeProperties();
 		}
 
+		if (properties == null) {
+			properties = new UnicodeProperties();
+		}
+
 		if (preset.equals("PresetSelectionIntegerArray()")) {
 			type = ExpandoColumnConstants.INTEGER_ARRAY;
 
