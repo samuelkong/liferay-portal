@@ -151,6 +151,7 @@ else {
 	<aui:script use="aui-base">
 		var reminderQueryQuestion = A.one('#<portlet:namespace />reminderQueryQuestion');
 		var customQuestionDiv = A.one('#<portlet:namespace />customQuestionDiv');
+		var reminderQueryAnswer = A.one('#<portlet:namespace />reminderQueryAnswer');
 
 		if (<%= !hasCustomQuestion %> && customQuestionDiv) {
 			customQuestionDiv.hide();
@@ -160,6 +161,8 @@ else {
 			reminderQueryQuestion.on(
 				'change',
 				function(event) {
+					reminderQueryAnswer.val('');
+
 					if (event.target.val() == '<%= UsersAdmin.CUSTOM_QUESTION %>') {
 						var reminderQueryCustomQuestion = A.one('#<portlet:namespace />reminderQueryCustomQuestion');
 
@@ -186,7 +189,7 @@ else {
 							customQuestionDiv.hide();
 						}
 
-						Liferay.Util.focusFormField(A.one('#<portlet:namespace />reminderQueryAnswer'));
+						Liferay.Util.focusFormField(reminderQueryAnswer);
 					}
 				}
 			);
