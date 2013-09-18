@@ -27,12 +27,16 @@ for (int i = 0; i < allSections.length; i++) {
 	<c:choose>
 		<c:when test='<%= displayStyle.equals("panel") %>'>
 			<liferay-ui:panel cssClass="panel-page-category unstyled" defaultState='<%= i == 0 ? "open" : "closed" %>' extended="<%= true %>" id="<%= sectionId %>" title="<%= section %>">
-				<liferay-util:include page="<%= sectionJsp %>" portletId="<%= portletDisplay.getRootPortletId() %>" />
+				<liferay-util:include page="<%= sectionJsp %>" portletId="<%= portletDisplay.getRootPortletId() %>">
+					<liferay-util:param name="isCurSection" value="<%= (section == curSection) ? Boolean.TRUE.toString() : Boolean.FALSE.toString() %>" />
+				</liferay-util:include>
 			</liferay-ui:panel>
 		</c:when>
 		<c:otherwise>
 			<div class="form-section <%= (curSection.equals(section) || curSection.equals(sectionId)) ? "active" : StringPool.BLANK %>" id="<%= sectionId %>">
-				<liferay-util:include page="<%= sectionJsp %>" portletId="<%= portletDisplay.getRootPortletId() %>" />
+				<liferay-util:include page="<%= sectionJsp %>" portletId="<%= portletDisplay.getRootPortletId() %>">
+					<liferay-util:param name="isCurSection" value="<%= (section == curSection) ? Boolean.TRUE.toString() : Boolean.FALSE.toString() %>" />
+				</liferay-util:include>
 			</div>
 		</c:otherwise>
 	</c:choose>
