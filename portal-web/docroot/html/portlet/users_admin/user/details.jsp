@@ -29,6 +29,9 @@ birthday.set(Calendar.YEAR, 1970);
 if (selContact != null) {
 	birthday.setTime(selContact.getBirthday());
 }
+
+boolean isCurSection = ParamUtil.getBoolean(request, "isCurSection", true);
+
 %>
 
 <liferay-ui:error-marker key="errorSection" value="details" />
@@ -86,7 +89,7 @@ if (selContact != null) {
 				<aui:input disabled="<%= true %>" name="screenName" />
 			</c:when>
 			<c:otherwise>
-				<aui:input autoFocus="<%= windowState.equals(WindowState.MAXIMIZED) %>" name="screenName" />
+				<aui:input autoFocus="<%= windowState.equals(WindowState.MAXIMIZED) && isCurSection %>" name="screenName" />
 			</c:otherwise>
 		</c:choose>
 	</c:if>
