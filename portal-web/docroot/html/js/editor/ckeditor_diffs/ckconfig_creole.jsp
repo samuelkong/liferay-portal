@@ -23,6 +23,8 @@
 
 <%@ page import="java.util.Locale" %>
 
+<%@ page contentType="text/javascript" %>
+
 <%
 String contentsLanguageId = ParamUtil.getString(request, "contentsLanguageId");
 String cssClasses = ParamUtil.getString(request, "cssClasses");

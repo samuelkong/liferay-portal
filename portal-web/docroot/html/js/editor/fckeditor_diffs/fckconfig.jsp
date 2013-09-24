@@ -24,6 +24,8 @@
 
 <%@ page import="java.util.Locale" %>
 
+<%@ page contentType="text/javascript" %>
+
 <%
 long plid = ParamUtil.getLong(request, "p_l_id");
 String portletId = ParamUtil.getString(request, "p_p_id");
