@@ -107,7 +107,7 @@
 		saveInstance.on(
 			'click',
 			function(event) {
-				config.title = '<%= UnicodeLanguageUtil.get(pageContext, "mobile-device-families") %>';
+				config.title = '<%= UnicodeLanguageUtil.get(pageContext, "device-families") %>';
 
 				config.id = '<portlet:namespace />ruleGroups';
 				config.uri = '<%= selectRuleGroupURL %>';

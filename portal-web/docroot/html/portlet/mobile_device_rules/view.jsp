@@ -30,7 +30,7 @@ portletURL.setParameter("chooseCallback", chooseCallback);
 
 <c:if test="<%= Validator.isNotNull(chooseCallback) %>">
 	<liferay-ui:header
-		title="device-families"
+		title="choose-a-device-family"
 	/>
 </c:if>
 
