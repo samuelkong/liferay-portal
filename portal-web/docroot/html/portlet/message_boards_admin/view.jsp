@@ -388,20 +388,54 @@ if ((category != null) && layout.isTypeControlPanel()) {
 		%>
 
 	</c:when>
-	<c:when test='<%= topLink.equals("recent-posts") %>'>
+	<c:when test='<%= topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("recent-posts") %>'>
 
 		<%
 		long groupThreadsUserId = ParamUtil.getLong(request, "groupThreadsUserId");
+
+		if ((topLink.equals("my-posts") || topLink.equals("my-subscriptions")) && themeDisplay.isSignedIn()) {
+			groupThreadsUserId = user.getUserId();
+		}
 
 		if (groupThreadsUserId > 0) {
 			portletURL.setParameter("groupThreadsUserId", String.valueOf(groupThreadsUserId));
 		}
 		%>
 
-		<c:if test="<%= (groupThreadsUserId > 0) %>">
+		<c:if test='<%= topLink.equals("recent-posts") && (groupThreadsUserId > 0) %>'>
 			<div class="alert alert-info">
 				<liferay-ui:message key="filter-by-user" />: <%= HtmlUtil.escape(PortalUtil.getUserName(groupThreadsUserId, StringPool.BLANK)) %>
 			</div>
+		</c:if>
+
+		<c:if test='<%= topLink.equals("my-subscriptions") %>'>
+			<liferay-ui:search-container
+				deltaConfigurable="<%= false %>"
+				emptyResultsMessage="you-are-not-subscribed-to-any-categories"
+				headerNames="category,categories,threads,posts"
+				iteratorURL="<%= portletURL %>"
+				total="<%= MBCategoryServiceUtil.getSubscribedCategoriesCount(scopeGroupId, user.getUserId()) %>"
+			>
+				<liferay-ui:search-container-results
+					results="<%= MBCategoryServiceUtil.getSubscribedCategories(scopeGroupId, user.getUserId(), searchContainer.getStart(), searchContainer.getEnd()) %>"
+				/>
+
+				<liferay-ui:search-container-row
+					className="com.liferay.portlet.messageboards.model.MBCategory"
+					escapedModel="<%= true %>"
+					keyProperty="categoryId"
+					modelVar="curCategory"
+				>
+					<liferay-portlet:renderURL varImpl="rowURL">
+						<portlet:param name="struts_action" value="/message_boards/view" />
+						<portlet:param name="mbCategoryId" value="<%= String.valueOf(curCategory.getCategoryId()) %>" />
+					</liferay-portlet:renderURL>
+
+					<%@ include file="/html/portlet/message_boards/subscribed_category_columns.jspf" %>
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator type="more" />
+			</liferay-ui:search-container>
 		</c:if>
 
 		<aui:form action="<%= portletURL.toString() %>" method="get" name="fm1">
@@ -415,25 +449,57 @@ if ((category != null) && layout.isTypeControlPanel()) {
 			<aui:input name="threadIds" type="hidden" />
 
 			<liferay-ui:search-container
-				emptyResultsMessage="there-are-no-recent-posts"
 				headerNames="thread,started-by,posts,views,last-post"
 				iteratorURL="<%= portletURL %>"
 				rowChecker="<%= new RowChecker(renderResponse) %>"
 			>
+
+				<%
+				String emptyResultsMessage = null;
+
+				if (topLink.equals("my-posts")) {
+					emptyResultsMessage = "you-do-not-have-any-posts";
+				}
+				else if (topLink.equals("my-subscriptions")) {
+					emptyResultsMessage = "you-are-not-subscribed-to-any-threads";
+				}
+				else if (topLink.equals("recent-posts")) {
+					emptyResultsMessage = "there-are-no-recent-posts";
+				}
+
+				searchContainer.setEmptyResultsMessage(emptyResultsMessage);
+				%>
+
 				<liferay-ui:search-container-results>
 
 					<%
-					Calendar calendar = Calendar.getInstance();
+					if (topLink.equals("my-posts")) {
+						total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_ANY);
 
-					int offset = GetterUtil.getInteger(recentPostsDateOffset);
+						searchContainer.setTotal(total);
 
-					calendar.add(Calendar.DATE, -offset);
+						results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_ANY, searchContainer.getStart(), searchContainer.getEnd());
+					}
+					else if (topLink.equals("my-subscriptions")) {
+						total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, true);
 
-					total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, calendar.getTime(), WorkflowConstants.STATUS_APPROVED);
+						searchContainer.setTotal(total);
 
-					searchContainer.setTotal(total);
+						results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, WorkflowConstants.STATUS_APPROVED, true, searchContainer.getStart(), searchContainer.getEnd());
+					}
+					else if (topLink.equals("recent-posts")) {
+						Calendar calendar = Calendar.getInstance();
 
-					results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, calendar.getTime(), WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd());
+						int offset = GetterUtil.getInteger(recentPostsDateOffset);
+
+						calendar.add(Calendar.DATE, -offset);
+
+						total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, calendar.getTime(), WorkflowConstants.STATUS_APPROVED);
+
+						searchContainer.setTotal(total);
+
+						results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, calendar.getTime(), WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd());
+					}
 
 					searchContainer.setResults(results);
 					%>
@@ -539,6 +605,14 @@ if ((category != null) && layout.isTypeControlPanel()) {
 						%>
 
 					</liferay-ui:search-container-column-text>
+
+					<c:if test='<%= topLink.equals("my-posts") %>'>
+						<liferay-ui:search-container-column-status
+							href="<%= rowURL %>"
+							name="status"
+							status="<%= thread.getStatus() %>"
+						/>
+					</c:if>
 
 					<liferay-ui:search-container-column-jsp
 						align="right"
