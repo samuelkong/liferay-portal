@@ -30,7 +30,6 @@ String displayStyle = BeanPropertiesUtil.getString(category, "displayStyle", MBC
 MBCategoryDisplay categoryDisplay = new MBCategoryDisplayImpl(scopeGroupId, categoryId);
 
 Set<Long> categorySubscriptionClassPKs = null;
-Set<Long> threadSubscriptionClassPKs = null;
 
 if (themeDisplay.isSignedIn()) {
 	categorySubscriptionClassPKs = MBUtil.getCategorySubscriptionClassPKs(user.getUserId());
@@ -38,10 +37,6 @@ if (themeDisplay.isSignedIn()) {
 }
 
 long groupThreadsUserId = ParamUtil.getLong(request, "groupThreadsUserId");
-
-String assetTagName = ParamUtil.getString(request, "tag");
-
-boolean useAssetEntryQuery = Validator.isNotNull(assetTagName);
 
 PortletURL portletURL = renderResponse.createRenderURL();
 

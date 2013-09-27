@@ -67,6 +67,10 @@
 
 <%
 row.setObject(new Object[] {message, threadSubscriptionClassPKs});
+
+if (portletName.equals(PortletKeys.MESSAGE_BOARDS_ADMIN)) {
+	row.setObject(new Object[] {message});
+}
 %>
 
 <%@ include file="/html/portlet/message_boards/user_thread_columns_action.jspf" %>
