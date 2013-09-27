@@ -95,11 +95,7 @@
 </aui:script>
 
 <aui:script use="aui-base">
-	var config = {
-		dialog: {
-			width: 820
-		}
-	};
+	var config = {};
 
 	var saveInstance = A.one('#<portlet:namespace />saveInstance');
 
