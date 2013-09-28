@@ -118,14 +118,17 @@ public class DB2DB extends BaseDB {
 		sb.append("create database ");
 		sb.append(databaseName);
 		sb.append(" pagesize 8192;\n");
-		sb.append("connect to ");
-		sb.append(databaseName);
-		sb.append(";\n");
-		sb.append(getCreateTablesContent(sqlDir, suffix));
-		sb.append("\n\n");
-		sb.append(readFile(sqlDir + "/indexes/indexes-db2.sql"));
-		sb.append("\n\n");
-		sb.append(readFile(sqlDir + "/sequences/sequences-db2.sql"));
+
+		if (population != BARE) {
+			sb.append("connect to ");
+			sb.append(databaseName);
+			sb.append(";\n");
+			sb.append(getCreateTablesContent(sqlDir, suffix));
+			sb.append("\n\n");
+			sb.append(readFile(sqlDir + "/indexes/indexes-db2.sql"));
+			sb.append("\n\n");
+			sb.append(readFile(sqlDir + "/sequences/sequences-db2.sql"));
+		}
 
 		return sb.toString();
 	}

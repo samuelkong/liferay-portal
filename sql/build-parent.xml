@@ -96,7 +96,7 @@
 			<arg value="db.database.name=${database.name}" />
 			<arg value="db.database.type=hypersonic" />
 			<arg value="db.sql.dir=${basedir}" />
-			<arg value="db.file.name=portal${minimal.suffix}/portal${minimal.suffix}-hypersonic.sql" />
+			<arg value="db.file.name=portal${database.create.suffix}/portal${database.create.suffix}-hypersonic.sql" />
 		</java>
 
 		<java

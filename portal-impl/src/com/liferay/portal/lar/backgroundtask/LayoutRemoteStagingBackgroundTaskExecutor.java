@@ -77,6 +77,12 @@ public class LayoutRemoteStagingBackgroundTaskExecutor
 		MissingReferences missingReferences = null;
 
 		try {
+			Date lastPublishDate = endDate;
+
+			if (lastPublishDate == null) {
+				lastPublishDate = new Date();
+			}
+
 			file = exportLayoutsAsFile(
 				sourceGroupId, privateLayout, layoutIdMap, parameterMap,
 				remoteGroupId, startDate, endDate, httpPrincipal);
@@ -126,12 +132,6 @@ public class LayoutRemoteStagingBackgroundTaskExecutor
 				parameterMap, PortletDataHandlerKeys.UPDATE_LAST_PUBLISH_DATE);
 
 			if (updateLastPublishDate) {
-				Date lastPublishDate = endDate;
-
-				if (lastPublishDate == null) {
-					lastPublishDate = new Date();
-				}
-
 				StagingUtil.updateLastPublishDate(
 					sourceGroupId, privateLayout, lastPublishDate);
 			}

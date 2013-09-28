@@ -31,11 +31,13 @@ import javax.naming.NamingException;
  */
 public interface DB {
 
+	public static final int BARE = 0;
+
 	public static final int MINIMAL = 1;
 
-	public static final int POPULATED = 0;
+	public static final int POPULATED = 2;
 
-	public static final int SHARDED = 2;
+	public static final int SHARDED = 3;
 
 	public static final String[] TYPE_ALL = {
 		DB.TYPE_DB2, DB.TYPE_DERBY, DB.TYPE_FIREBIRD, DB.TYPE_HYPERSONIC,

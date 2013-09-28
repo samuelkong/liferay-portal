@@ -14,6 +14,7 @@
 
 package com.liferay.portalweb.portal;
 
+import com.liferay.portal.kernel.util.OSDetector;
 import com.liferay.portal.util.InitUtil;
 import com.liferay.portalweb.portal.util.LiferaySeleneseTestCase;
 import com.liferay.portalweb.portal.util.SeleniumUtil;
@@ -33,17 +34,24 @@ public class BaseTestCase extends LiferaySeleneseTestCase {
 
 	@Override
 	public void setUp() throws Exception {
-		Class<?> clazz = getClass();
+		try {
+			Class<?> clazz = getClass();
 
-		String className = clazz.getName();
+			String className = clazz.getName();
 
-		if (className.contains("evaluatelog")) {
-			return;
+			if (className.contains("evaluatelog")) {
+				return;
+			}
+
+			selenium = SeleniumUtil.getSelenium();
+
+			selenium.startLogger();
 		}
+		catch (Exception e) {
+			killBrowser();
 
-		selenium = SeleniumUtil.getSelenium();
-
-		selenium.startLogger();
+			throw e;
+		}
 	}
 
 	@Override
@@ -57,11 +65,36 @@ public class BaseTestCase extends LiferaySeleneseTestCase {
 		if (!primaryTestSuiteName.endsWith("TestSuite") &&
 			(testCaseCount < 1)) {
 
-			SeleniumUtil.stopSelenium();
+			try {
+				SeleniumUtil.stopSelenium();
+			}
+			catch (Exception e) {
+				killBrowser();
+
+				throw e;
+			}
 		}
 
 		if (TestPropsValues.TESTING_CLASS_METHOD) {
-			SeleniumUtil.stopSelenium();
+			try {
+				SeleniumUtil.stopSelenium();
+			}
+			catch (Exception e) {
+				killBrowser();
+
+				throw e;
+			}
+		}
+	}
+
+	protected void killBrowser() throws Exception {
+		Runtime runtime = Runtime.getRuntime();
+
+		if (OSDetector.isWindows()) {
+			runtime.exec(new String[] {"tskill", "firefox"});
+		}
+		else {
+			runtime.exec(new String[] {"killall", "firefox"});
 		}
 	}
 

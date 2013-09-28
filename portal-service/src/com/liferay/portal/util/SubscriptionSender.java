@@ -250,6 +250,10 @@ public class SubscriptionSender implements Serializable {
 				PortalUtil.getUserName(userId, StringPool.BLANK));
 		}
 
+		if ((groupId == 0) && (serviceContext != null)) {
+			setScopeGroupId(serviceContext.getScopeGroupId());
+		}
+
 		mailId = PortalUtil.getMailId(
 			company.getMx(), _mailIdPopPortletPrefix, _mailIdIds);
 	}
