@@ -75,11 +75,14 @@ public class InformixDB extends BaseDB {
 		sb.append("END IF\n");
 		sb.append("end procedure;\n");
 		sb.append("\n\n");
-		sb.append(getCreateTablesContent(sqlDir, suffix));
-		sb.append("\n\n");
-		sb.append(readFile(sqlDir + "/indexes/indexes-informix.sql"));
-		sb.append("\n\n");
-		sb.append(readFile(sqlDir + "/sequences/sequences-informix.sql"));
+
+		if (population != BARE) {
+			sb.append(getCreateTablesContent(sqlDir, suffix));
+			sb.append("\n\n");
+			sb.append(readFile(sqlDir + "/indexes/indexes-informix.sql"));
+			sb.append("\n\n");
+			sb.append(readFile(sqlDir + "/sequences/sequences-informix.sql"));
+		}
 
 		return sb.toString();
 	}

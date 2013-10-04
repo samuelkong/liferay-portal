@@ -33,8 +33,6 @@ import com.liferay.util.EncryptorException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import java.security.InvalidKeyException;
-
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -69,7 +67,7 @@ public class TunnelingServletAuthVerifier implements AuthVerifier {
 		}
 		catch (AuthException ae) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(ae.getMessage());
+				_log.debug(ae);
 			}
 
 			HttpServletResponse response = accessControlContext.getResponse();
@@ -78,8 +76,7 @@ public class TunnelingServletAuthVerifier implements AuthVerifier {
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(
 					response.getOutputStream());
 
-				objectOutputStream.writeObject(
-					new SystemException(ae.getMessage()));
+				objectOutputStream.writeObject(ae);
 
 				objectOutputStream.flush();
 
@@ -149,15 +146,26 @@ public class TunnelingServletAuthVerifier implements AuthVerifier {
 				TunnelUtil.getSharedSecretKey(), login);
 		}
 		catch (EncryptorException ee) {
-			throw new AuthException("Unable to decrypt login", ee);
+			AuthException authException = new RemoteAuthException(ee);
+
+			authException.setType(AuthException.INTERNAL_SERVER_ERROR);
+
+			throw authException;
 		}
-		catch (InvalidKeyException ike) {
-			throw new AuthException(ike.getMessage());
+		catch (AuthException ae) {
+			AuthException authException = new RemoteAuthException();
+
+			authException.setType(ae.getType());
+
+			throw authException;
 		}
 
 		if (!password.equals(expectedPassword)) {
-			throw new AuthException(
-				"Tunneling servlet shared secrets do not match");
+			AuthException authException = new RemoteAuthException();
+
+			authException.setType(RemoteAuthException.WRONG_SHARED_SECRET);
+
+			throw authException;
 		}
 
 		User user = null;
@@ -189,7 +197,11 @@ public class TunnelingServletAuthVerifier implements AuthVerifier {
 		}
 
 		if (user == null) {
-			throw new AuthException("Internal server error");
+			AuthException authException = new RemoteAuthException();
+
+			authException.setType(AuthException.INTERNAL_SERVER_ERROR);
+
+			throw authException;
 		}
 
 		String[] credentials = new String[2];

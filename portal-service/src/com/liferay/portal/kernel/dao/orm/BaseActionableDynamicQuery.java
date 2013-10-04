@@ -16,12 +16,17 @@ package com.liferay.portal.kernel.dao.orm;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.BaseLocalService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,46 +37,13 @@ public abstract class BaseActionableDynamicQuery
 
 	@Override
 	public void performActions() throws PortalException, SystemException {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			_clazz, _classLoader);
+		long count = doPerformCount();
 
-		Projection minPrimaryKeyProjection = ProjectionFactoryUtil.min(
-			_primaryKeyPropertyName);
-		Projection maxPrimaryKeyProjection = ProjectionFactoryUtil.max(
-			_primaryKeyPropertyName);
-
-		ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
-
-		projectionList.add(minPrimaryKeyProjection);
-		projectionList.add(maxPrimaryKeyProjection);
-
-		dynamicQuery.setProjection(projectionList);
-
-		addDefaultCriteria(dynamicQuery);
-		addCriteria(dynamicQuery);
-
-		List<Object[]> results = (List<Object[]>)executeDynamicQuery(
-			_dynamicQueryMethod, dynamicQuery);
-
-		Object[] minAndMaxPrimaryKeys = results.get(0);
-
-		if ((minAndMaxPrimaryKeys[0] == null) ||
-			(minAndMaxPrimaryKeys[1] == null)) {
-
-			return;
+		if (count > _interval) {
+			performActionsInMultipleIntervals();
 		}
-
-		long minPrimaryKey = (Long)minAndMaxPrimaryKeys[0];
-		long maxPrimaryKey = (Long)minAndMaxPrimaryKeys[1];
-
-		long startPrimaryKey = minPrimaryKey;
-		long endPrimaryKey = startPrimaryKey + _interval;
-
-		while (startPrimaryKey <= maxPrimaryKey) {
-			performActions(startPrimaryKey, endPrimaryKey);
-
-			startPrimaryKey = endPrimaryKey;
-			endPrimaryKey += _interval;
+		else {
+			performActionsInSingleInterval();
 		}
 	}
 
@@ -101,14 +73,7 @@ public abstract class BaseActionableDynamicQuery
 
 	@Override
 	public long performCount() throws PortalException, SystemException {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			_clazz, _classLoader);
-
-		addCriteria(dynamicQuery);
-		addDefaultCriteria(dynamicQuery);
-
-		return (Long)executeDynamicQuery(
-			_dynamicQueryCountMethod, dynamicQuery, getCountProjection());
+		return doPerformCount();
 	}
 
 	@Override
@@ -165,6 +130,11 @@ public abstract class BaseActionableDynamicQuery
 		_primaryKeyPropertyName = primaryKeyPropertyName;
 	}
 
+	@Override
+	public void setSearchEngineId(String searchEngineId) {
+		_searchEngineId = searchEngineId;
+	}
+
 	protected void addCriteria(DynamicQuery dynamicQuery) {
 	}
 
@@ -181,6 +151,34 @@ public abstract class BaseActionableDynamicQuery
 
 			dynamicQuery.add(property.eq(_groupId));
 		}
+	}
+
+	protected void addDocument(Document document) {
+		if (_documents == null) {
+			_documents = new ArrayList<Document>();
+		}
+
+		_documents.add(document);
+	}
+
+	protected void addDocuments(Collection<Document> documents) {
+		if (_documents == null) {
+			_documents = new ArrayList<Document>();
+		}
+
+		_documents.addAll(documents);
+	}
+
+	protected long doPerformCount() throws PortalException, SystemException {
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			_clazz, _classLoader);
+
+		addDefaultCriteria(dynamicQuery);
+
+		addCriteria(dynamicQuery);
+
+		return (Long)executeDynamicQuery(
+			_dynamicQueryCountMethod, dynamicQuery, getCountProjection());
 	}
 
 	protected Object executeDynamicQuery(
@@ -211,18 +209,113 @@ public abstract class BaseActionableDynamicQuery
 		return ProjectionFactoryUtil.rowCount();
 	}
 
+	protected String getSearchEngineId() {
+		return _searchEngineId;
+	}
+
+	protected void indexInterval() throws PortalException {
+		if (Validator.isNull(_searchEngineId) || (_documents == null) ||
+			_documents.isEmpty()) {
+
+			return;
+		}
+
+		SearchEngineUtil.updateDocuments(
+			_searchEngineId, _companyId, new ArrayList<Document>(_documents));
+
+		_documents.clear();
+	}
+
+	@SuppressWarnings("unused")
+	protected void intervalCompleted(long startPrimaryKey, long endPrimaryKey)
+		throws PortalException, SystemException {
+	}
+
 	protected abstract void performAction(Object object)
 		throws PortalException, SystemException;
+
+	protected void performActionsInMultipleIntervals()
+		throws PortalException, SystemException {
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			_clazz, _classLoader);
+
+		Projection minPrimaryKeyProjection = ProjectionFactoryUtil.min(
+			_primaryKeyPropertyName);
+		Projection maxPrimaryKeyProjection = ProjectionFactoryUtil.max(
+			_primaryKeyPropertyName);
+
+		ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
+
+		projectionList.add(minPrimaryKeyProjection);
+		projectionList.add(maxPrimaryKeyProjection);
+
+		dynamicQuery.setProjection(projectionList);
+
+		addDefaultCriteria(dynamicQuery);
+
+		addCriteria(dynamicQuery);
+
+		List<Object[]> results = (List<Object[]>)executeDynamicQuery(
+			_dynamicQueryMethod, dynamicQuery);
+
+		Object[] minAndMaxPrimaryKeys = results.get(0);
+
+		if ((minAndMaxPrimaryKeys[0] == null) ||
+			(minAndMaxPrimaryKeys[1] == null)) {
+
+			return;
+		}
+
+		long minPrimaryKey = (Long)minAndMaxPrimaryKeys[0];
+		long maxPrimaryKey = (Long)minAndMaxPrimaryKeys[1];
+
+		long startPrimaryKey = minPrimaryKey;
+		long endPrimaryKey = startPrimaryKey + _interval;
+
+		while (startPrimaryKey <= maxPrimaryKey) {
+			performActions(startPrimaryKey, endPrimaryKey);
+
+			indexInterval();
+
+			intervalCompleted(startPrimaryKey, endPrimaryKey);
+
+			startPrimaryKey = endPrimaryKey;
+			endPrimaryKey += _interval;
+		}
+	}
+
+	protected void performActionsInSingleInterval()
+		throws PortalException, SystemException {
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			_clazz, _classLoader);
+
+		addDefaultCriteria(dynamicQuery);
+
+		addCriteria(dynamicQuery);
+
+		List<Object> objects = (List<Object>)executeDynamicQuery(
+			_dynamicQueryMethod, dynamicQuery);
+
+		for (Object object : objects) {
+			performAction(object);
+		}
+
+		indexInterval();
+	}
 
 	private BaseLocalService _baseLocalService;
 	private ClassLoader _classLoader;
 	private Class<?> _clazz;
 	private long _companyId;
+	private Collection<Document> _documents;
 	private Method _dynamicQueryCountMethod;
 	private Method _dynamicQueryMethod;
 	private long _groupId;
 	private String _groupIdPropertyName = "groupId";
 	private int _interval = Indexer.DEFAULT_INTERVAL;
 	private String _primaryKeyPropertyName;
+	private String _searchEngineId;
 
 }

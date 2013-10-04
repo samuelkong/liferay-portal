@@ -100,12 +100,14 @@ public class FIFOUtilTest {
 		SecurityManager securityManager = new SecurityManager() {
 
 			@Override
-			public void checkDelete(String file) {
-				if (!checkFlag.get() && file.contains("temp-fifo-")) {
+			public void checkDelete(String fileName) {
+				if (!checkFlag.get() && fileName.contains("temp-fifo-")) {
 					checkFlag.set(true);
 
 					if (checkDeleteCount.getAndIncrement() == 0) {
-						Assert.assertTrue(new File(file).delete());
+						File file = new File(fileName);
+
+						Assert.assertTrue(file.delete());
 					}
 
 					checkFlag.set(false);
@@ -155,21 +157,19 @@ public class FIFOUtilTest {
 		List<LogRecord> logRecords = JDKLoggerTestUtil.configureJDKLogger(
 			FIFOUtil.class.getName(), Level.WARNING);
 
-		File tempFolder = new File("tempFolder");
+		File newTmpDir = new File("newTmpDir");
 
-		tempFolder.mkdirs();
+		newTmpDir.delete();
 
-		tempFolder.setReadOnly();
+		String oldTmpDirName = System.getProperty("java.io.tmpdir");
 
-		String oldTempFolder = System.getProperty("java.io.tmpdir");
-
-		System.setProperty("java.io.tmpdir", tempFolder.getAbsolutePath());
+		System.setProperty("java.io.tmpdir", newTmpDir.getAbsolutePath());
 
 		try {
 			Assert.assertFalse(FIFOUtil.isFIFOSupported());
 		}
 		finally {
-			System.setProperty("java.io.tmpdir", oldTempFolder);
+			System.setProperty("java.io.tmpdir", oldTmpDirName);
 		}
 
 		Assert.assertEquals(1, logRecords.size());
@@ -200,21 +200,19 @@ public class FIFOUtilTest {
 		List<LogRecord> logRecords = JDKLoggerTestUtil.configureJDKLogger(
 			FIFOUtil.class.getName(), Level.OFF);
 
-		File tempFolder = new File("tempFolder");
+		File newTmpDir = new File("newTmpDir");
 
-		tempFolder.mkdirs();
+		newTmpDir.delete();
 
-		tempFolder.setReadOnly();
+		String oldTmpDirName = System.getProperty("java.io.tmpdir");
 
-		String oldTempFolder = System.getProperty("java.io.tmpdir");
-
-		System.setProperty("java.io.tmpdir", tempFolder.getAbsolutePath());
+		System.setProperty("java.io.tmpdir", newTmpDir.getAbsolutePath());
 
 		try {
 			Assert.assertFalse(FIFOUtil.isFIFOSupported());
 		}
 		finally {
-			System.setProperty("java.io.tmpdir", oldTempFolder);
+			System.setProperty("java.io.tmpdir", oldTmpDirName);
 		}
 
 		Assert.assertTrue(logRecords.isEmpty());

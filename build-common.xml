@@ -829,7 +829,7 @@ Please set the environment variable ANT_OPTS to the recommended value of
 		</if>
 
 		<ant target="test-cmd">
-			<property name="junit.forkmode" value="once" />
+			<property name="junit.forkmode" value="perTest" />
 			<property name="test.type" value="${test.type}" />
 		</ant>
 
@@ -938,7 +938,7 @@ Please set the environment variable ANT_OPTS to the recommended value of
 		</junit>
 	</target>
 
-	<target name="test-package">
+	<target name="test-package" depends="compile,compile-test">
 		<if>
 			<not>
 				<isset property="test.package" />
@@ -948,11 +948,112 @@ Please set the environment variable ANT_OPTS to the recommended value of
 			</then>
 		</if>
 
-		<propertyregex property="test.class" input="${test.package}." regexp="\." replace="/" global="true" />
+		<propertyregex
+			global="true"
+			input="${test.package}"
+			property="test.package.dir"
+			regexp="\."
+			replace="/"
+		/>
 
-		<ant target="test-class">
-			<property name="test.class" value="${test.class}**/*Test" />
-		</ant>
+		<if>
+			<available file="test/integration" type="dir" />
+			<then>
+				<resourcecount property="test.integration.other.count">
+					<fileset
+						dir="test/integration"
+						excludes="**/${test.package.dir}/*PersistenceTest.java"
+						includes="**/${test.package.dir}/*Test.java"
+					/>
+				</resourcecount>
+
+				<if>
+					<not>
+						<equals arg1="${test.integration.other.count}" arg2="0" />
+					</not>
+					<then>
+						<var name="test.class" value="**/${test.package.dir}/*Test" />
+
+						<if>
+							<equals arg1="${test.package}" arg2="com.liferay.portal.security.pacl.test" />
+							<then>
+								<var name="junit.forkmode" value="once" />
+							</then>
+							<else>
+								<var name="junit.forkmode" value="perTest" />
+							</else>
+						</if>
+
+						<ant target="test-cmd">
+							<property name="junit.forkmode" value="${junit.forkmode}" />
+							<property name="test.excludes" value="**/*PersistenceTest.class" />
+							<property name="test.type" value="integration" />
+						</ant>
+
+						<var name="junit.forkmode" unset="true" />
+
+						<antcall target="report-test-coverage">
+							<param name="test.type" value="integration" />
+						</antcall>
+					</then>
+				</if>
+
+				<resourcecount property="test.integration.persistence.count">
+					<fileset
+						dir="test/integration"
+						includes="**/${test.package.dir}/*PersistenceTest.java"
+					/>
+				</resourcecount>
+
+				<if>
+					<not>
+						<equals arg1="${test.integration.persistence.count}" arg2="0" />
+					</not>
+					<then>
+						<var name="test.class" value="**/${test.package.dir}/*PersistenceTest" />
+
+						<ant target="test-cmd">
+							<property name="junit.forkmode" value="once" />
+							<property name="test.type" value="integration" />
+						</ant>
+
+						<antcall target="report-test-coverage">
+							<param name="test.type" value="integration" />
+						</antcall>
+					</then>
+				</if>
+			</then>
+		</if>
+
+		<if>
+			<available file="test/unit" type="dir" />
+			<then>
+				<resourcecount property="test.unit.count">
+					<fileset
+						dir="test/unit"
+						includes="**/${test.package.dir}/*Test.java"
+					/>
+				</resourcecount>
+
+				<if>
+					<not>
+						<equals arg1="${test.unit.count}" arg2="0" />
+					</not>
+					<then>
+						<var name="test.class" value="**/${test.package.dir}/*Test" />
+
+						<ant target="test-cmd">
+							<property name="junit.forkmode" value="perTest" />
+							<property name="test.type" value="unit" />
+						</ant>
+
+						<antcall target="report-test-coverage" >
+							<param name="test.type" value="unit" />
+						</antcall>
+					</then>
+				</if>
+			</then>
+		</if>
 	</target>
 
 	<target name="test-unit" depends="compile,compile-test-unit">

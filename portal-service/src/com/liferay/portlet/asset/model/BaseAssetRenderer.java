@@ -61,15 +61,15 @@ public abstract class BaseAssetRenderer implements AssetRenderer {
 	}
 
 	public AssetRendererFactory getAssetRendererFactory() {
-		if (_assetRendererFactory != null) {
-			return _assetRendererFactory;
+		if (assetRendererFactory != null) {
+			return assetRendererFactory;
 		}
 
-		_assetRendererFactory =
+		assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
 				getClassName());
 
-		return _assetRendererFactory;
+		return assetRendererFactory;
 	}
 
 	@Override
@@ -367,9 +367,10 @@ public abstract class BaseAssetRenderer implements AssetRenderer {
 		return sb.toString();
 	}
 
+	protected AssetRendererFactory assetRendererFactory;
+
 	private static final String[] _AVAILABLE_LANGUAGE_IDS = new String[0];
 
-	private AssetRendererFactory _assetRendererFactory;
 	private int _assetRendererType = AssetRendererFactory.TYPE_LATEST_APPROVED;
 
 }

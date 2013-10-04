@@ -187,9 +187,11 @@ public class TestPropsValues {
 			List<User> users = UserLocalServiceUtil.getRoleUsers(
 				role.getRoleId(), 0, 2);
 
-			_user = users.get(0);
+			if (!users.isEmpty()) {
+				_user = users.get(0);
 
-			_userId = _user.getUserId();
+				_userId = _user.getUserId();
+			}
 		}
 
 		return _user;
@@ -197,7 +199,11 @@ public class TestPropsValues {
 
 	public static long getUserId() throws PortalException, SystemException {
 		if (_userId == 0) {
-			_userId = getUser().getUserId();
+			User user = getUser();
+
+			if (user != null) {
+				_userId = user.getUserId();
+			}
 		}
 
 		return _userId;

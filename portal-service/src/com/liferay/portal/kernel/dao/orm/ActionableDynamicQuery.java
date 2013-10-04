@@ -44,4 +44,6 @@ public interface ActionableDynamicQuery {
 
 	public void setPrimaryKeyPropertyName(String primaryKeyPropertyName);
 
+	public void setSearchEngineId(String searchEngineId);
+
 }

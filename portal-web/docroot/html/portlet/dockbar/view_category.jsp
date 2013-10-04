@@ -81,7 +81,7 @@ if (!categories.isEmpty() || !portlets.isEmpty()) {
 	<div class="lfr-add-content">
 		<liferay-ui:panel collapsible="<%= layout.isTypePortlet() %>" cssClass="lfr-content-category panel-page-category unstyled" defaultState="closed" extended="<%= true %>" id="<%= panelId %>" parentId="<%= panelContainerId %>" persistState="<%= true %>" title="<%= title %>">
 
-			<aui:nav cssClass="nav-list">
+			<aui:nav collapsible="<%= false %>" cssClass="nav-list">
 
 				<%
 				for (PortletCategory category : categories) {
@@ -212,7 +212,7 @@ if (!categories.isEmpty() || !portlets.isEmpty()) {
 				%>
 
 			</aui:nav>
-		 </liferay-ui:panel>
+		</liferay-ui:panel>
 	</div>
 
 	<input id="<portlet:namespace />portletCategory<%= portletCategoryIndex %>CategoryPath" type="hidden" value="<%= newCategoryPath.replace(':', '-') %>" />

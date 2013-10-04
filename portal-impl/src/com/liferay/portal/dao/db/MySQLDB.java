@@ -110,8 +110,6 @@ public class MySQLDB extends BaseDB {
 			String sqlDir, String databaseName, int population)
 		throws IOException {
 
-		String suffix = getSuffix(population);
-
 		StringBundler sb = new StringBundler(14);
 
 		sb.append("drop database if exists ");
@@ -120,14 +118,20 @@ public class MySQLDB extends BaseDB {
 		sb.append("create database ");
 		sb.append(databaseName);
 		sb.append(" character set utf8;\n");
-		sb.append("use ");
-		sb.append(databaseName);
-		sb.append(";\n\n");
-		sb.append(getCreateTablesContent(sqlDir, suffix));
-		sb.append("\n\n");
-		sb.append(readFile(sqlDir + "/indexes/indexes-mysql.sql"));
-		sb.append("\n\n");
-		sb.append(readFile(sqlDir + "/sequences/sequences-mysql.sql"));
+
+		if (population != BARE) {
+			sb.append("use ");
+			sb.append(databaseName);
+			sb.append(";\n\n");
+
+			String suffix = getSuffix(population);
+
+			sb.append(getCreateTablesContent(sqlDir, suffix));
+			sb.append("\n\n");
+			sb.append(readFile(sqlDir + "/indexes/indexes-mysql.sql"));
+			sb.append("\n\n");
+			sb.append(readFile(sqlDir + "/sequences/sequences-mysql.sql"));
+		}
 
 		return sb.toString();
 	}

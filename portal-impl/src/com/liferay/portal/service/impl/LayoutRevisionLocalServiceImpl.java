@@ -174,6 +174,13 @@ public class LayoutRevisionLocalServiceImpl
 			user, layoutRevision.getLayoutSetBranchId(),
 			layoutRevision.getPlid());
 
+		if (layoutRevision.isPending()) {
+			workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(
+				layoutRevision.getCompanyId(), layoutRevision.getGroupId(),
+				LayoutRevision.class.getName(),
+				layoutRevision.getLayoutRevisionId());
+		}
+
 		return layoutRevisionPersistence.remove(layoutRevision);
 	}
 

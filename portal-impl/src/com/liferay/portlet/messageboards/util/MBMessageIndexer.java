@@ -59,8 +59,6 @@ import com.liferay.portlet.messageboards.service.permission.MBMessagePermission;
 import com.liferay.portlet.messageboards.service.persistence.MBCategoryActionableDynamicQuery;
 import com.liferay.portlet.messageboards.service.persistence.MBMessageActionableDynamicQuery;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -418,8 +416,6 @@ public class MBMessageIndexer extends BaseIndexer {
 			long companyId, long groupId, final long categoryId)
 		throws PortalException, SystemException {
 
-		final Collection<Document> documents = new ArrayList<Document>();
-
 		ActionableDynamicQuery actionableDynamicQuery =
 			new MBMessageActionableDynamicQuery() {
 
@@ -446,17 +442,16 @@ public class MBMessageIndexer extends BaseIndexer {
 
 				Document document = getDocument(message);
 
-				documents.add(document);
+				addDocument(document);
 			}
 
 		};
 
+		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setGroupId(groupId);
+		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		actionableDynamicQuery.performActions();
-
-		SearchEngineUtil.updateDocuments(
-			getSearchEngineId(), companyId, documents);
 	}
 
 	protected void reindexRoot(final long companyId)

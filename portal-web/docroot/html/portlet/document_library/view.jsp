@@ -146,10 +146,10 @@ request.setAttribute("view.jsp-repositoryId", String.valueOf(repositoryId));
 						</c:when>
 						<c:otherwise>
 							<liferay-util:include page="/html/portlet/document_library/view_entries.jsp" />
-
-							<%@ include file="/html/portlet/document_library/file_entries_template.jspf" %>
 						</c:otherwise>
 					</c:choose>
+
+					<%@ include file="/html/portlet/document_library/file_entries_template.jspf" %>
 				</div>
 
 				<div class="document-entries-pagination"></div>
@@ -204,7 +204,7 @@ if (!defaultFolderView && (folder != null) && portletName.equals(PortletKeys.DOC
 			displayStyle: '<%= HtmlUtil.escapeJS(displayStyle) %>',
 			folders: {
 				defaultParams: {
-					p_p_id: <%= portletId %>,
+					p_p_id: <%= HtmlUtil.escapeJS(portletId) %>,
 					p_p_lifecycle: 0
 				},
 				defaultParentFolderId: '<%= DLFolderConstants.DEFAULT_PARENT_FOLDER_ID %>',
@@ -243,7 +243,7 @@ if (!defaultFolderView && (folder != null) && portletName.equals(PortletKeys.DOC
 				foldersTotal: <%= foldersTotal %>
 			},
 			namespace: '<portlet:namespace />',
-			portletId: '<%= portletId %>',
+			portletId: '<%= HtmlUtil.escapeJS(portletId) %>',
 			redirect: encodeURIComponent('<%= currentURL %>'),
 			repositories: [
 				{

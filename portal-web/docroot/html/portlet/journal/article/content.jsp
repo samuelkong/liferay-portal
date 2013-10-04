@@ -243,7 +243,8 @@ if (Validator.isNotNull(content)) {
 
 									<c:if test="<%= classNameId == JournalArticleConstants.CLASSNAME_ID_DEFAULT %>">
 										<liferay-ui:icon
-											image="add"
+											cssClass="btn"
+											iconClass="icon-search"
 											label="<%= true %>"
 											message="select"
 											url='<%= "javascript:" + renderResponse.getNamespace() + "openDDMStructureSelector();" %>'
@@ -279,22 +280,12 @@ if (Validator.isNotNull(content)) {
 									</c:if>
 
 									<c:if test="<%= ddmStructure != null %>">
-
-										<%
-										StringBundler sb = new StringBundler(5);
-
-										sb.append("javascript:");
-										sb.append(renderResponse.getNamespace());
-										sb.append("openDDMTemplateSelector('");
-										sb.append(ddmStructure.getStructureId());
-										sb.append("');");
-										%>
-
 										<liferay-ui:icon
-											image="add"
+											iconClass="icon-search"
 											label="<%= true %>"
+											linkCssClass="btn"
 											message="select"
-											url="<%= sb.toString() %>"
+											url='<%= "javascript:" + renderResponse.getNamespace() + "openDDMTemplateSelector();" %>'
 										/>
 									</c:if>
 								</div>
@@ -639,12 +630,12 @@ if (Validator.isNotNull(content)) {
 		);
 	}
 
-	function <portlet:namespace />openDDMTemplateSelector(ddmStructureId) {
+	function <portlet:namespace />openDDMTemplateSelector() {
 		Liferay.Util.openDDMPortlet(
 			{
 				basePortletURL: '<%= PortletURLFactoryUtil.create(request, PortletKeys.DYNAMIC_DATA_MAPPING, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
 				classNameId: '<%= PortalUtil.getClassNameId(DDMStructure.class) %>',
-				classPK: ddmStructureId,
+				classPK: <%= (ddmStructure != null) ? ddmStructure.getPrimaryKey() : 0 %>,
 				dialog: {
 					destroyOnHide: true
 				},
@@ -652,12 +643,15 @@ if (Validator.isNotNull(content)) {
 				groupId: <%= groupId %>,
 				refererPortletName: '<%= PortletKeys.JOURNAL_CONTENT %>',
 				struts_action: '/dynamic_data_mapping/select_template',
+				templateId: <%= (ddmTemplate != null) ? ddmTemplate.getTemplateId() : 0 %>,
 				title: '<%= UnicodeLanguageUtil.get(pageContext, "templates") %>'
 			},
 			function(event) {
-				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateId.value = event.ddmtemplateid;
+				if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "selecting-a-new-template-will-delete-all-unsaved-content") %>')) {
+					document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateId.value = event.ddmtemplateid;
 
-				submitForm(document.<portlet:namespace />fm1, null, false, false);
+					submitForm(document.<portlet:namespace />fm1, null, false, false);
+				}
 			}
 		);
 	}

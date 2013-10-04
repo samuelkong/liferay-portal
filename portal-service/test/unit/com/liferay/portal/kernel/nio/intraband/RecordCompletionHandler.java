@@ -64,7 +64,7 @@ public class RecordCompletionHandler<A> implements CompletionHandler<A> {
 	}
 
 	@Override
-	public void timeouted(A attachment) {
+	public void timedOut(A attachment) {
 		_attachment = attachment;
 
 		_timeoutedCountDownLatch.countDown();

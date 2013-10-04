@@ -106,11 +106,11 @@ public class StartupHelper {
 	}
 
 	public void upgradeProcess(int buildNumber) throws UpgradeException {
-		if (buildNumber == ReleaseInfo.getParentBuildNumber()) {
+		if (buildNumber == ReleaseInfo.getBuildNumber()) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Skipping upgrade process from " + buildNumber + " to " +
-						ReleaseInfo.getParentBuildNumber());
+						ReleaseInfo.getBuildNumber());
 			}
 
 			return;
@@ -127,7 +127,7 @@ public class StartupHelper {
 				if (_log.isInfoEnabled()) {
 					_log.info(
 						"Upgrading from " + buildNumber + " to " +
-							ReleaseInfo.getParentBuildNumber() + " is not " +
+							ReleaseInfo.getBuildNumber() + " is not " +
 								"supported");
 				}
 
@@ -140,8 +140,11 @@ public class StartupHelper {
 			ClassLoaderUtil.getPortalClassLoader());
 	}
 
-	public void verifyProcess(boolean verified) throws VerifyException {
-		_verified = VerifyProcessUtil.verifyProcess(_upgraded, verified);
+	public void verifyProcess(boolean newBuildNumber, boolean verified)
+		throws VerifyException {
+
+		_verified = VerifyProcessUtil.verifyProcess(
+			_upgraded, newBuildNumber, verified);
 	}
 
 	protected String[] getUpgradeProcessClassNames(String key) {

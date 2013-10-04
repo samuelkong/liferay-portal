@@ -29,7 +29,7 @@ public interface CompletionHandler<A> {
 
 	public void submitted(A attachment);
 
-	public void timeouted(A attachment);
+	public void timedOut(A attachment);
 
 	public static enum CompletionType {
 

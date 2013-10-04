@@ -14,6 +14,7 @@
 
 package com.liferay.portal.cluster;
 
+import com.liferay.portal.kernel.resiliency.spi.SPIUtil;
 import com.liferay.portal.spring.aop.ChainableMethodAdviceInjector;
 import com.liferay.portal.util.PropsValues;
 
@@ -29,6 +30,13 @@ public class ClusterableChainableMethodAdviceInjector
 		setNewChainableMethodAdvice(new ClusterableAdvice());
 
 		super.inject();
+
+		if (SPIUtil.isSPI()) {
+			setInjectCondition(true);
+			setNewChainableMethodAdvice(new SPIClusterableAdvice());
+
+			super.inject();
+		}
 	}
 
 	/**

@@ -1481,7 +1481,7 @@ public class BaseIntrabandTest {
 
 		sendSyncDatagramCompletionHandler.delivered(null);
 		sendSyncDatagramCompletionHandler.submitted(null);
-		sendSyncDatagramCompletionHandler.timeouted(null);
+		sendSyncDatagramCompletionHandler.timedOut(null);
 	}
 
 	protected void assertMessageStartWith(

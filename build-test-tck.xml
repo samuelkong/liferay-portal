@@ -4,21 +4,6 @@
 	<import file="build-test.xml" />
 
 	<target name="prepare-tck">
-		<antcall target="prepare-portal-ext-properties" />
-
-		<echo file="portal-impl/src/portal-ext.properties" append="true">
-
-tck.url=true</echo>
-
-		<exec executable="cmd.exe">
-			<arg line="/c svn revert portal-web/docroot/WEB-INF/web.xml" />
-		</exec>
-
-		<antcall target="clean" />
-		<antcall target="start" />
-
-		<ant antfile="build-dist.xml" target="build-dist-tomcat" />
-
 		<delete dir="tools/tck" />
 
 		<if>
@@ -39,6 +24,12 @@ tck.url=true</echo>
 			</else>
 		</if>
 
+		<chmod
+			dir="tools/tck/bin/"
+			includes="tsant*"
+			perm="744"
+		/>
+
 		<replace file="tools/tck/bin/ts.jte">
 			<replacefilter token="http://localhost:8080/pluto/tck" value="http://localhost:8080/c/portal/tck" />
 		</replace>
@@ -46,8 +37,65 @@ tck.url=true</echo>
 		<echo file="tools/tck/bin/build.properties" append="true">
 
 work.dir=${basedir.unix}/tools/tck/work</echo>
+	</target>
 
-		<delete dir="${user.home}/liferay" />
+	<target name="record-test-tck-packages">
+		<ant antfile="build-test-tck.xml" target="prepare-tck" />
+
+		<script classpathref="project.classpath" language="beanshell">
+			import com.liferay.portal.kernel.util.OSDetector;
+			import com.liferay.portal.kernel.util.StringUtil;
+
+			import org.apache.tools.ant.DirectoryScanner;
+
+			DirectoryScanner directoryScanner = new DirectoryScanner();
+
+			directoryScanner.setBasedir(project.getBaseDir());
+			directoryScanner.setIncludes(new String[] {"**/com/sun/ts/tests/**/*.war"});
+
+			directoryScanner.scan();
+
+			String[] fileNames = directoryScanner.getIncludedFiles();
+
+			Arrays.sort(fileNames);
+
+			Set packageNames = new TreeSet();
+
+			for (String fileName : fileNames) {
+				int x = fileName.indexOf("com/");
+				int y = fileName.lastIndexOf("/");
+
+				if (OSDetector.isWindows()) {
+					x = fileName.indexOf("com\\");
+					y = fileName.lastIndexOf("\\");
+				}
+
+				String packageName = fileName.substring(x, y);
+
+				if (packageName.endsWith("PortletSessionSecondapp")) {
+					continue;
+				}
+
+				packageName = StringUtil.replace(packageName, "/", ".");
+				packageName = StringUtil.replace(packageName, "\\", ".");
+
+				packageNames.add(packageName);
+			}
+
+			project.setProperty("test.tck.packages", StringUtil.merge(packageNames, " "));
+		</script>
+
+		<echo file="test-tck-packages">${test.tck.packages}</echo>
+	</target>
+
+	<target name="run-tck-tomcat">
+		<antcall target="prepare-portal-ext-properties">
+			<param name="tck.url" value="true" />
+		</antcall>
+
+		<antcall target="rebuild-database" inheritAll="false" />
+
+		<antcall target="prepare-tck" />
 
 		<ant antfile="build-test-plugins.xml" target="deploy-simple-server-plugins">
 			<property name="plugin.types" value="portlets" />
@@ -59,20 +107,29 @@ work.dir=${basedir.unix}/tools/tck/work</echo>
 			<property name="simple.server.portal.dir" value="${app.server.tomcat.portal.dir}" />
 		</ant>
 
+		<if>
+			<not>
+				<isset property="test.package" />
+			</not>
+			<then>
+				<property name="test.package" value="com.sun.ts.tests" />
+			</then>
+		</if>
+
+		<propertyregex
+			global="true"
+			input="${test.package}."
+			property="test.directory"
+			regexp="\."
+			replace="/"
+		/>
+
 		<copy todir="${user.home}/liferay/deploy" flatten="true">
 			<fileset
-				dir="tools/tck"
+				dir="tools/tck/dist/${test.directory}"
 				includes="**/*.war"
 			/>
 		</copy>
-
-		<antcall target="rebuild-database" inheritAll="false">
-			<param name="skip.delete-liferay-home" value="true" />
-		</antcall>
-	</target>
-
-	<target name="run-tck-286-tomcat">
-		<antcall target="prepare-tck" />
 
 		<parallel>
 			<exec dir="${app.server.tomcat.bin.dir}" executable="catalina${file.suffix.bat}" resolveexecutable="true">
@@ -84,11 +141,15 @@ work.dir=${basedir.unix}/tools/tck/work</echo>
 					<http url="http://localhost:8080" />
 				</waitfor>
 
-				<sleep seconds="60" />
+				<sleep seconds="30" />
 
-				<exec dir="tools/tck/src/com" executable="${basedir}/tools/tck/bin/tsant.bat">
+				<condition property="tsant.file.suffix.bat" value=".bat" else="">
+					<contains string="${os.name}" substring="Windows" casesensitive="false" />
+				</condition>
+
+				<exec dir="tools/tck/src/${test.directory}" executable="${basedir}/tools/tck/bin/tsant${tsant.file.suffix.bat}">
 					<arg line="runclient" />
-					<env key="TS_HOME" value="${basedir}\tools\tck" />
+					<env key="TS_HOME" value="${basedir}/tools/tck" />
 				</exec>
 
 				<exec dir="${app.server.tomcat.bin.dir}" executable="shutdown${file.suffix.bat}" resolveexecutable="true" />

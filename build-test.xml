@@ -44,6 +44,15 @@
 
 	<target name="build-sql-file">
 		<if>
+			<equals arg1="${test.database.minimal}" arg2="true" />
+			<then>
+				<var name="database.create.suffix" unset="true" />
+
+				<var name="database.create.suffix" value="-minimal" />
+			</then>
+		</if>
+
+		<if>
 			<isset property="sql.legacy.url" />
 			<then>
 				<delete dir="sql/legacy" failonerror="false" />
@@ -106,17 +115,8 @@
 						</not>
 					</or>
 					<then>
-						<if>
-							<isset property="test.database.minimal" />
-							<then>
-								<property name="sql.dir" value="sql\create-minimal\" />
-								<property name="sql.file" value="create-minimal-${database.family}.sql" />
-							</then>
-							<else>
-								<property name="sql.dir" value="sql\create\" />
-								<property name="sql.file" value="create-${database.family}.sql" />
-							</else>
-						</if>
+						<property name="sql.dir" value="sql\create${database.create.suffix}\" />
+						<property name="sql.file" value="create${database.create.suffix}-${database.family}.sql" />
 					</then>
 				</if>
 
@@ -475,7 +475,7 @@
 	</target>
 
 	<target name="build-test-ant-scripts">
-		<property name="build-test-ant-scripts.version" value="4" />
+		<property name="build-test-ant-scripts.version" value="0" />
 
 		<if>
 			<available file="portal-web/test-ant-scripts/version" />
@@ -1700,6 +1700,15 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			</then>
 		</if>
 
+		<if>
+			<equals arg1="${tck.url}" arg2="true" />
+			<then>
+				<echo file="portal-impl/src/portal-ext.properties" append="true">
+
+tck.url=true</echo>
+			</then>
+		</if>
+
 		<copy
 			file="portal-impl/src/portal-ext.properties"
 			tofile="${app.server.classes.portal.dir}/portal-ext.properties"
@@ -1956,7 +1965,11 @@ svn --username ${svn.username} --password ${svn.password} update -r ${svn.info.r
 		</if>
 
 		<if>
-			<isset property="test.database.minimal" />
+			<or>
+				<equals arg1="${database.create.suffix}" arg2="-bare" />
+				<equals arg1="${database.create.suffix}" arg2="-minimal" />
+				<isset property="test.database.minimal" />
+			</or>
 			<then>
 				<replace
 					file="portal-web/test/test-portal-web.properties"
@@ -2316,7 +2329,11 @@ custom.sql.function.isnotnull=CONVERT(VARCHAR,?) IS NOT NULL</echo>
 
 						<if>
 							<not>
-								<isset property="test.database.minimal" />
+								<or>
+									<equals arg1="${test.database.minimal}" arg2="true" />
+									<equals arg1="${database.create.suffix}" arg2="-bare" />
+									<equals arg1="${database.create.suffix}" arg2="-minimal" />
+								</or>
 							</not>
 							<then>
 								<copy file="sql/${database.name}.properties" tofile="${user.home}/liferay/data/hsql/${database.name}.properties" />
@@ -2397,6 +2414,53 @@ custom.sql.function.isnotnull=CONVERT(VARCHAR,?) IS NOT NULL</echo>
 				</exec>
 			</else>
 		</if>
+	</target>
+
+	<target name="record-test-packages">
+		<script classpathref="project.classpath" language="beanshell">
+			import com.liferay.portal.kernel.util.OSDetector;
+			import com.liferay.portal.kernel.util.StringUtil;
+
+			import org.apache.tools.ant.DirectoryScanner;
+
+			DirectoryScanner directoryScanner = new DirectoryScanner();
+
+			directoryScanner.setBasedir(project.getBaseDir());
+			directoryScanner.setIncludes(new String[] {"**/test/integration/**/*Test.java", "**/test/unit/**/*Test.java"});
+
+			directoryScanner.scan();
+
+			String[] fileNames = directoryScanner.getIncludedFiles();
+
+			Arrays.sort(fileNames);
+
+			Set packageNames = new TreeSet();
+
+			for (String fileName : fileNames) {
+				int x = fileName.indexOf("com/");
+				int y = fileName.lastIndexOf("/");
+
+				if (OSDetector.isWindows()) {
+					x = fileName.indexOf("com\\");
+					y = fileName.lastIndexOf("\\");
+				}
+
+				if (fileName.endsWith("ServiceHttpTest.java") || fileName.endsWith("ServiceJsonTest.java") || fileName.endsWith("ServiceSoapTest.java")) {
+					continue;
+				}
+
+				String packageName = fileName.substring(x, y);
+
+				packageName = StringUtil.replace(packageName, "/", ".");
+				packageName = StringUtil.replace(packageName, "\\", ".");
+
+				packageNames.add(packageName);
+			}
+
+			project.setProperty("test.packages", StringUtil.merge(packageNames, " "));
+		</script>
+
+		<echo file="test-packages">${test.packages}</echo>
 	</target>
 
 	<target name="replace-remote-file">
@@ -2773,6 +2837,7 @@ custom.sql.function.isnotnull=CONVERT(VARCHAR,?) IS NOT NULL</echo>
 				<if>
 					<and>
 						<or>
+							<contains string="${hook.plugins.includes}" substring="so-hook" />
 							<contains string="${simple.server.dir}" substring="glassfish" />
 							<contains string="${simple.server.dir}" substring="jonas" />
 						</or>
@@ -2994,6 +3059,12 @@ Please set "ie.driver.zip" in test.properties to point to "IEDriverServer_x64_2.
 		<ant dir="portal-service" target="test-integration" inheritAll="false" />
 		<ant dir="portal-impl" target="test-integration" inheritAll="false" />
 		<ant dir="util-java" target="test-integration" inheritAll="false" />
+	</target>
+
+	<target name="test-package">
+		<ant dir="portal-service" target="test-package" inheritAll="false" />
+		<ant dir="portal-impl" target="test-package" inheritAll="false" />
+		<ant dir="util-java" target="test-package" inheritAll="false" />
 	</target>
 
 	<target name="test-unit">

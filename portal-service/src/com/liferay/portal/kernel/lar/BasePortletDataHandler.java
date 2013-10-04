@@ -166,9 +166,9 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 		// Setup
 
 		if ((PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
-				companyId, groupId, PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid, portlet,
-				privateLayout, false) > 0) ||
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid, portlet, false)
+				> 0) ||
 			(PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
 				groupId, PortletKeys.PREFS_OWNER_TYPE_GROUP,
 				portlet.getRootPortletId(), false) > 0) ||
@@ -198,12 +198,11 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 		// User preferences
 
 		if ((PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
-				companyId, groupId, -1, PortletKeys.PREFS_OWNER_TYPE_USER, plid,
-				portlet, privateLayout, false) > 0) ||
+				-1, PortletKeys.PREFS_OWNER_TYPE_USER, plid, portlet, false)
+				> 0) ||
 			(PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
-				companyId, groupId, groupId, PortletKeys.PREFS_OWNER_TYPE_USER,
-				PortletKeys.PREFS_PLID_SHARED, portlet, privateLayout, false)
-				> 0)) {
+				groupId, PortletKeys.PREFS_OWNER_TYPE_USER,
+				PortletKeys.PREFS_PLID_SHARED, portlet, false) > 0)) {
 
 			configurationControls.add(
 				new PortletDataHandlerBoolean(
@@ -360,6 +359,17 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 	}
 
 	@Override
+	public boolean isDisplayPortlet() {
+		if (isDataPortletInstanceLevel() &&
+			!ArrayUtil.isEmpty(getDataPortletPreferences())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean isPublishToLiveByDefault() {
 		return _publishToLiveByDefault;
 	}
@@ -393,7 +403,7 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 	@Override
 	public PortletPreferences processExportPortletPreferences(
 			PortletDataContext portletDataContext, String portletId,
-			PortletPreferences portletPreferences, Element rootElement)
+			PortletPreferences portletPreferences)
 		throws PortletDataException {
 
 		String displayStyle = getDisplayTemplate(
@@ -426,7 +436,7 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 
 		try {
 			return doProcessExportPortletPreferences(
-				portletDataContext, portletId, portletPreferences, rootElement);
+				portletDataContext, portletId, portletPreferences);
 		}
 		catch (Exception e) {
 			throw new PortletDataException(e);
@@ -630,7 +640,7 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 
 	protected PortletPreferences doProcessExportPortletPreferences(
 			PortletDataContext portletDataContext, String portletId,
-			PortletPreferences portletPreferences, Element rootElement)
+			PortletPreferences portletPreferences)
 		throws Exception {
 
 		return portletPreferences;

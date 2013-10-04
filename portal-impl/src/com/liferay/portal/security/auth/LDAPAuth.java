@@ -19,8 +19,11 @@ import com.liferay.portal.PasswordExpiredException;
 import com.liferay.portal.UserLockoutException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.AutoResetThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,6 +37,7 @@ import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.admin.util.OmniadminUtil;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
@@ -123,7 +127,7 @@ public class LDAPAuth implements Authenticator {
 			String userDN, String password)
 		throws Exception {
 
-		LDAPAuthResult ldapAuthResult = new LDAPAuthResult();
+		LDAPAuthResult ldapAuthResult = null;
 
 		// Check passwords by either doing a comparison between the passwords or
 		// by binding to the LDAP server. If using LDAP password policies, bind
@@ -131,29 +135,38 @@ public class LDAPAuth implements Authenticator {
 
 		String authMethod = PrefsPropsUtil.getString(
 			companyId, PropsKeys.LDAP_AUTH_METHOD);
-		InitialLdapContext innerCtx = null;
 
 		if (authMethod.equals(AUTH_METHOD_BIND)) {
+			Hashtable<String, Object> env =
+				(Hashtable<String, Object>)ctx.getEnvironment();
+
+			env.put(Context.SECURITY_PRINCIPAL, userDN);
+			env.put(Context.SECURITY_CREDENTIALS, password);
+			env.put(
+				Context.REFERRAL,
+				PrefsPropsUtil.getString(companyId, PropsKeys.LDAP_REFERRAL));
+
+			// Do not use pooling because principal changes
+
+			env.put("com.sun.jndi.ldap.connect.pool", "false");
+
+			ldapAuthResult = getFailedLDAPAuthResult(env);
+
+			if (ldapAuthResult != null) {
+				return ldapAuthResult;
+			}
+
+			ldapAuthResult = new LDAPAuthResult();
+
+			InitialLdapContext initialLdapContext = null;
+
 			try {
-				Hashtable<String, Object> env =
-					(Hashtable<String, Object>)ctx.getEnvironment();
-
-				env.put(Context.SECURITY_PRINCIPAL, userDN);
-				env.put(Context.SECURITY_CREDENTIALS, password);
-				env.put(
-					Context.REFERRAL,
-					PrefsPropsUtil.getString(
-						companyId, PropsKeys.LDAP_REFERRAL));
-
-				// Do not use pooling because principal changes
-
-				env.put("com.sun.jndi.ldap.connect.pool", "false");
-
-				innerCtx = new InitialLdapContext(env, null);
+				initialLdapContext = new InitialLdapContext(env, null);
 
 				// Get LDAP bind results
 
-				Control[] responseControls = innerCtx.getResponseControls();
+				Control[] responseControls =
+					initialLdapContext.getResponseControls();
 
 				ldapAuthResult.setAuthenticated(true);
 				ldapAuthResult.setResponseControl(responseControls);
@@ -168,14 +181,18 @@ public class LDAPAuth implements Authenticator {
 
 				ldapAuthResult.setAuthenticated(false);
 				ldapAuthResult.setErrorMessage(e.getMessage());
+
+				setFailedLDAPAuthResult(env, ldapAuthResult);
 			}
 			finally {
-				if (innerCtx != null) {
-					innerCtx.close();
+				if (initialLdapContext != null) {
+					initialLdapContext.close();
 				}
 			}
 		}
 		else if (authMethod.equals(AUTH_METHOD_PASSWORD_COMPARE)) {
+			ldapAuthResult = new LDAPAuthResult();
+
 			Attribute userPassword = attributes.get("userPassword");
 
 			if (userPassword != null) {
@@ -547,6 +564,48 @@ public class LDAPAuth implements Authenticator {
 		}
 	}
 
+	protected LDAPAuthResult getFailedLDAPAuthResult(Map<String, Object> env) {
+		Map<String, LDAPAuthResult> failedLDAPAuthResults =
+			_failedLDAPAuthResults.get();
+
+		String cacheKey = getKey(env);
+
+		return failedLDAPAuthResults.get(cacheKey);
+	}
+
+	protected String getKey(Map<String, Object> env) {
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(MapUtil.getString(env, Context.PROVIDER_URL));
+		sb.append(StringPool.POUND);
+		sb.append(MapUtil.getString(env, Context.SECURITY_PRINCIPAL));
+		sb.append(StringPool.POUND);
+		sb.append(MapUtil.getString(env, Context.SECURITY_CREDENTIALS));
+
+		return sb.toString();
+	}
+
+	protected void setFailedLDAPAuthResult(
+		Map<String, Object> env, LDAPAuthResult ldapAuthResult) {
+
+		Map<String, LDAPAuthResult> failedLDAPAuthResults =
+			_failedLDAPAuthResults.get();
+
+		String cacheKey = getKey(env);
+
+		if (failedLDAPAuthResults.containsKey(cacheKey)) {
+			return;
+		}
+
+		failedLDAPAuthResults.put(cacheKey, ldapAuthResult);
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(LDAPAuth.class);
+
+	private ThreadLocal<Map<String, LDAPAuthResult>>
+		_failedLDAPAuthResults =
+			new AutoResetThreadLocal<Map<String, LDAPAuthResult>>(
+				LDAPAuth.class + "._failedLDAPAuthResultCache",
+				new HashMap<String, LDAPAuthResult>());
 
 }

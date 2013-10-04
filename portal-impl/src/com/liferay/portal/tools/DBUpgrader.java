@@ -100,14 +100,14 @@ public class DBUpgrader {
 
 		int buildNumber = ReleaseLocalServiceUtil.getBuildNumberOrCreate();
 
-		if (buildNumber > ReleaseInfo.getParentBuildNumber()) {
+		if (buildNumber > ReleaseInfo.getBuildNumber()) {
 			StringBundler sb = new StringBundler(6);
 
 			sb.append("Attempting to deploy an older Liferay Portal version. ");
 			sb.append("Current build version is ");
 			sb.append(buildNumber);
 			sb.append(" and attempting to deploy version ");
-			sb.append(ReleaseInfo.getParentBuildNumber());
+			sb.append(ReleaseInfo.getBuildNumber());
 			sb.append(".");
 
 			throw new IllegalStateException(sb.toString());
@@ -207,7 +207,7 @@ public class DBUpgrader {
 		if (release == null) {
 			release = ReleaseLocalServiceUtil.addRelease(
 				ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-				ReleaseInfo.getParentBuildNumber());
+				ReleaseInfo.getBuildNumber());
 		}
 
 		_checkReleaseState(release.getState());
@@ -229,8 +229,15 @@ public class DBUpgrader {
 			_disableTransactions();
 		}
 
+		boolean newBuildNumber = false;
+
+		if (ReleaseInfo.getBuildNumber() > release.getBuildNumber()) {
+			newBuildNumber = true;
+		}
+
 		try {
-			StartupHelperUtil.verifyProcess(release.isVerified());
+			StartupHelperUtil.verifyProcess(
+				newBuildNumber, release.isVerified());
 		}
 		catch (Exception e) {
 			_updateReleaseState(ReleaseConstants.STATE_VERIFY_FAILURE);
@@ -260,7 +267,7 @@ public class DBUpgrader {
 		}
 
 		ReleaseLocalServiceUtil.updateRelease(
-			release.getReleaseId(), ReleaseInfo.getParentBuildNumber(),
+			release.getReleaseId(), ReleaseInfo.getBuildNumber(),
 			ReleaseInfo.getBuildDate(), verified);
 
 		// Enable database caching after verify

@@ -22,6 +22,7 @@ page import="com.liferay.portlet.dynamicdatalists.model.DDLRecordSetConstants" %
 page import="com.liferay.portlet.dynamicdatalists.search.RecordSetSearch" %><%@
 page import="com.liferay.portlet.dynamicdatalists.search.RecordSetSearchTerms" %><%@
 page import="com.liferay.portlet.dynamicdatalists.service.DDLRecordSetLocalServiceUtil" %><%@
+page import="com.liferay.portlet.dynamicdatalists.service.DDLRecordSetServiceUtil" %><%@
 page import="com.liferay.portlet.dynamicdatalists.service.permission.DDLPermission" %><%@
 page import="com.liferay.portlet.dynamicdatalists.service.permission.DDLRecordSetPermission" %><%@
 page import="com.liferay.portlet.dynamicdatalists.util.DDLUtil" %><%@

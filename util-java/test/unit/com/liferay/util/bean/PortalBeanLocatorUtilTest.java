@@ -47,6 +47,7 @@ public class PortalBeanLocatorUtilTest extends PowerMockito {
 		}
 		catch (BeanLocatorException ble) {
 			Assert.assertTrue(true);
+
 			return;
 		}
 

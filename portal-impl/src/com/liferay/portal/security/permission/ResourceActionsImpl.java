@@ -102,6 +102,7 @@ public class ResourceActionsImpl implements ResourceActions {
 			new HashMap<String, List<String>>();
 		_portletResourceLayoutManagerActions =
 			new HashMap<String, List<String>>();
+		_portletRootModelResource = new HashMap<String, String>();
 		_modelPortletResources = new HashMap<String, Set<String>>();
 		_modelResourceActions = new HashMap<String, List<String>>();
 		_modelResourceGroupDefaultActions = new HashMap<String, List<String>>();
@@ -484,6 +485,13 @@ public class ResourceActionsImpl implements ResourceActions {
 		}
 
 		return actions;
+	}
+
+	@Override
+	public String getPortletRootModelResource(String portletName) {
+		portletName = PortletConstants.getRootPortletId(portletName);
+
+		return _portletRootModelResource.get(portletName);
 	}
 
 	@Override
@@ -1001,6 +1009,15 @@ public class ResourceActionsImpl implements ResourceActions {
 			}
 
 			portletResources.add(portletName);
+
+			// Reference for a model to root portlets
+
+			boolean root = GetterUtil.getBoolean(
+				modelResourceElement.elementText("root"));
+
+			if (root) {
+				_portletRootModelResource.put(portletName, name);
+			}
 		}
 
 		double weight = GetterUtil.getDouble(
@@ -1161,5 +1178,6 @@ public class ResourceActionsImpl implements ResourceActions {
 	private Map<String, List<String>> _portletResourceGuestDefaultActions;
 	private Map<String, List<String>> _portletResourceGuestUnsupportedActions;
 	private Map<String, List<String>> _portletResourceLayoutManagerActions;
+	private Map<String, String> _portletRootModelResource;
 
 }

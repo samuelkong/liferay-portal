@@ -181,6 +181,8 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 		dlFileEntryLocalService.deleteFileEntries(
 			groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
+		dlFileEntryTypeLocalService.deleteFileEntryTypes(groupId);
+
 		dlFileShortcutLocalService.deleteFileShortcuts(
 			groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
@@ -637,6 +639,22 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	@Override
+	public int getFoldersCount(
+			long groupId, long parentFolderId, int status,
+			boolean includeMountfolders)
+		throws SystemException {
+
+		if (includeMountfolders) {
+			return dlFolderPersistence.countByG_P_H_S(
+				groupId, parentFolderId, false, status);
+		}
+		else {
+			return dlFolderPersistence.countByG_M_P_H_S(
+				groupId, false, parentFolderId, false, status);
+		}
+	}
+
+	@Override
 	public DLFolder getMountFolder(long repositoryId)
 		throws PortalException, SystemException {
 
@@ -871,19 +889,18 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 			}
 
 			for (long fileEntryTypeId : fileEntryTypeIds) {
-				if (overrideFileEntryTypes) {
-					String workflowDefinition = ParamUtil.getString(
-						serviceContext, "workflowDefinition" + fileEntryTypeId);
+				String workflowDefinition = StringPool.BLANK;
 
-					workflowDefinitionOVPs.add(
-						new ObjectValuePair<Long, String>(
-							fileEntryTypeId, workflowDefinition));
+				if (overrideFileEntryTypes ||
+					(folderId == DLFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
+
+					workflowDefinition = ParamUtil.getString(
+						serviceContext, "workflowDefinition" + fileEntryTypeId);
 				}
-				else {
-					workflowDefinitionOVPs.add(
-						new ObjectValuePair<Long, String>(
-							fileEntryTypeId, StringPool.BLANK));
-				}
+
+				workflowDefinitionOVPs.add(
+					new ObjectValuePair<Long, String>(
+						fileEntryTypeId, workflowDefinition));
 			}
 
 			workflowDefinitionLinkLocalService.updateWorkflowDefinitionLinks(

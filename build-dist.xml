@@ -3,6 +3,41 @@
 <project name="portal-dist" basedir="." default="dist" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build.xml" />
 
+	<macrodef name="update-plugins-includes-plugin">
+		<attribute name="plugins.includes.plugin.bundle" />
+		<attribute name="plugins.includes.plugin.dependent-apps" />
+		<attribute name="plugins.includes.plugin.marketplace" />
+		<attribute name="plugins.includes.plugin.name" />
+		<attribute name="plugins.includes.plugin.public" />
+
+		<sequential>
+			<if>
+				<and>
+					<or>
+						<and>
+							<equals arg1="${lp.release.type}" arg2="CE" />
+							<equals arg1="@{plugins.includes.plugin.public}" arg2="true" />
+						</and>
+						<equals arg1="${lp.release.type}" arg2="EE" />
+					</or>
+					<or>
+						<and>
+							<equals arg1="${plugins.includes.bundle.required}" arg2="true" />
+							<equals arg1="@{plugins.includes.plugin.bundle}" arg2="true" />
+						</and>
+						<and>
+							<equals arg1="${plugins.includes.marketplace.required}" arg2="true" />
+							<equals arg1="@{plugins.includes.plugin.marketplace}" arg2="true" />
+						</and>
+					</or>
+				</and>
+				<then>
+					<echo append="true" file="${lp.plugins.dir}/build.${user.name}.properties">@{plugins.includes.plugin.dependent-apps},@{plugins.includes.plugin.name},</echo>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<target name="build-dist-geronimo">
 		<antcall target="unzip-geronimo" />
 
@@ -2100,43 +2135,16 @@ plugins.includes=</echo>
 				<param name="plugins.includes.plugin.name" path="artifact-id/text()" />
 				<param name="plugins.includes.plugin.public" path="releng/public/text()" />
 				<actions>
-					<antcall target="update-plugins-includes-plugin">
-						<param name="plugins.includes.plugin.bundle" value="@{plugins.includes.plugin.bundle}" />
-						<param name="plugins.includes.plugin.dependent-apps" value="@{plugins.includes.plugin.dependent-apps}" />
-						<param name="plugins.includes.plugin.marketplace" value="@{plugins.includes.plugin.marketplace}" />
-						<param name="plugins.includes.plugin.name" value="@{plugins.includes.plugin.name}" />
-						<param name="plugins.includes.plugin.public" value="@{plugins.includes.plugin.public}" />
-					</antcall>
+					<update-plugins-includes-plugin
+						plugins.includes.plugin.bundle="@{plugins.includes.plugin.bundle}"
+						plugins.includes.plugin.dependent-apps="@{plugins.includes.plugin.dependent-apps}"
+						plugins.includes.plugin.marketplace="@{plugins.includes.plugin.marketplace}"
+						plugins.includes.plugin.name="@{plugins.includes.plugin.name}"
+						plugins.includes.plugin.public="@{plugins.includes.plugin.public}"
+					/>
 				</actions>
 			</call>
 		</xmltask>
-	</target>
-
-	<target name="update-plugins-includes-plugin">
-		<if>
-			<and>
-				<or>
-					<and>
-						<equals arg1="${lp.release.type}" arg2="CE" />
-						<equals arg1="${plugins.includes.plugin.public}" arg2="true" />
-					</and>
-					<equals arg1="${lp.release.type}" arg2="EE" />
-				</or>
-				<or>
-					<and>
-						<equals arg1="${plugins.includes.bundle.required}" arg2="true" />
-						<equals arg1="${plugins.includes.plugin.bundle}" arg2="true" />
-					</and>
-					<and>
-						<equals arg1="${plugins.includes.marketplace.required}" arg2="true" />
-						<equals arg1="${plugins.includes.plugin.marketplace}" arg2="true" />
-					</and>
-				</or>
-			</and>
-			<then>
-				<echo append="true" file="${lp.plugins.dir}/build.${user.name}.properties">${plugins.includes.plugin.dependent-apps},${plugins.includes.plugin.name},</echo>
-			</then>
-		</if>
 	</target>
 
 	<target name="zip-api">
@@ -2281,6 +2289,10 @@ plugins.includes=</echo>
 								</antcall>
 							</else>
 						</if>
+
+						<delete>
+							<fileset dir="${zip.executable.dir}/../patching-tool/logs" />
+						</delete>
 
 						<replace
 							file="${zip.executable.dir}/../patching-tool/default.properties"

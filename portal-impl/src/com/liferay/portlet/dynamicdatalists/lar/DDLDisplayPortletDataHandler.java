@@ -16,6 +16,7 @@ package com.liferay.portlet.dynamicdatalists.lar;
 
 import com.liferay.portal.kernel.lar.DataLevel;
 import com.liferay.portal.kernel.lar.PortletDataContext;
+import com.liferay.portal.kernel.lar.PortletDataHandlerControl;
 import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -41,7 +42,8 @@ public class DDLDisplayPortletDataHandler extends DDLPortletDataHandler {
 	public DDLDisplayPortletDataHandler() {
 		setDataLevel(DataLevel.PORTLET_INSTANCE);
 		setDataPortletPreferences(
-			"recordSetId", "displayDDMTemplateId", "formDDMTemplateId");
+			"displayDDMTemplateId", "formDDMTemplateId", "recordSetId");
+		setExportControls(new PortletDataHandlerControl[0]);
 	}
 
 	@Override
@@ -54,17 +56,17 @@ public class DDLDisplayPortletDataHandler extends DDLPortletDataHandler {
 			return portletPreferences;
 		}
 
-		portletPreferences.setValue("recordSetId", StringPool.BLANK);
 		portletPreferences.setValue("displayDDMTemplateId", StringPool.BLANK);
-		portletPreferences.setValue("formDDMTemplateId", StringPool.BLANK);
 		portletPreferences.setValue("editable", Boolean.TRUE.toString());
+		portletPreferences.setValue("formDDMTemplateId", StringPool.BLANK);
+		portletPreferences.setValue("recordSetId", StringPool.BLANK);
 		portletPreferences.setValue("spreadsheet", Boolean.FALSE.toString());
 
 		return portletPreferences;
 	}
 
 	@Override
-	protected String doExportData(
+	protected PortletPreferences doProcessExportPortletPreferences(
 			PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences)
 		throws Exception {
@@ -79,28 +81,26 @@ public class DDLDisplayPortletDataHandler extends DDLPortletDataHandler {
 				_log.debug("Unable to get record set with ID " + portletId);
 			}
 
-			return StringPool.BLANK;
+			return portletPreferences;
 		}
-
-		Element rootElement = addExportDataRootElement(portletDataContext);
 
 		DDLRecordSet recordSet = DDLRecordSetLocalServiceUtil.fetchRecordSet(
 			recordSetId);
 
 		if (recordSet == null) {
-			return getExportDataRootElementString(rootElement);
+			return portletPreferences;
 		}
 
 		StagedModelDataHandlerUtil.exportReferenceStagedModel(
 			portletDataContext, portletId, recordSet);
 
-		return getExportDataRootElementString(rootElement);
+		return portletPreferences;
 	}
 
 	@Override
-	protected PortletPreferences doImportData(
+	protected PortletPreferences doProcessImportPortletPreferences(
 			PortletDataContext portletDataContext, String portletId,
-			PortletPreferences portletPreferences, String data)
+			PortletPreferences portletPreferences)
 		throws Exception {
 
 		portletDataContext.importPortletPermissions(

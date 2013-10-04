@@ -44,13 +44,20 @@ public class ${seleniumBuilderContext.getTestCaseSimpleClassName(testCaseName)} 
 
 	@Override
 	public void setUp() throws Exception {
-		selenium = SeleniumUtil.getSelenium();
+		try {
+			selenium = SeleniumUtil.getSelenium();
 
-		if (Validator.isNull(selenium.getPrimaryTestSuiteName())) {
-			selenium.setPrimaryTestSuiteName("${seleniumBuilderContext.getTestCaseClassName(testCaseName)}");
+			if (Validator.isNull(selenium.getPrimaryTestSuiteName())) {
+				selenium.setPrimaryTestSuiteName("${seleniumBuilderContext.getTestCaseClassName(testCaseName)}");
+			}
+
+			selenium.startLogger();
 		}
+		catch (Exception e) {
+			killBrowser();
 
-		selenium.startLogger();
+			throw e;
+		}
 	}
 
 	<#assign commandElements = rootElement.elements("command")>

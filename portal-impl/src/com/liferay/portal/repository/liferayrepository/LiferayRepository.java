@@ -348,7 +348,7 @@ public class LiferayRepository
 
 	@Override
 	public int getFileEntriesAndFileShortcutsCount(long folderId, int status)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return dlFolderService.getFileEntriesAndFileShortcutsCount(
 			getGroupId(), toFolderId(folderId), status);
@@ -357,7 +357,7 @@ public class LiferayRepository
 	@Override
 	public int getFileEntriesAndFileShortcutsCount(
 			long folderId, int status, String[] mimeTypes)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return dlFolderService.getFileEntriesAndFileShortcutsCount(
 			getGroupId(), toFolderId(folderId), status, mimeTypes);
@@ -503,7 +503,7 @@ public class LiferayRepository
 	@Override
 	public int getFoldersAndFileEntriesAndFileShortcutsCount(
 			long folderId, int status, boolean includeMountFolders)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return dlFolderService.getFoldersAndFileEntriesAndFileShortcutsCount(
 			getGroupId(), toFolderId(folderId), status, includeMountFolders);
@@ -513,7 +513,7 @@ public class LiferayRepository
 	public int getFoldersAndFileEntriesAndFileShortcutsCount(
 			long folderId, int status, String[] mimeTypes,
 			boolean includeMountFolders)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return dlFolderService.getFoldersAndFileEntriesAndFileShortcutsCount(
 			getGroupId(), toFolderId(folderId), status, mimeTypes,
@@ -522,7 +522,7 @@ public class LiferayRepository
 
 	@Override
 	public int getFoldersCount(long parentFolderId, boolean includeMountfolders)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return getFoldersCount(
 			parentFolderId, WorkflowConstants.STATUS_APPROVED,
@@ -532,7 +532,7 @@ public class LiferayRepository
 	@Override
 	public int getFoldersCount(
 			long parentFolderId, int status, boolean includeMountfolders)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return dlFolderService.getFoldersCount(
 			getGroupId(), toFolderId(parentFolderId), status,
@@ -560,7 +560,7 @@ public class LiferayRepository
 
 	@Override
 	public int getMountFoldersCount(long parentFolderId)
-		throws SystemException {
+		throws PortalException, SystemException {
 
 		return dlFolderService.getMountFoldersCount(
 			getGroupId(), toFolderId(parentFolderId));

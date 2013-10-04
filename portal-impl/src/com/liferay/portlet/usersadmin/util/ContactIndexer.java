@@ -34,8 +34,6 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.service.persistence.ContactActionableDynamicQuery;
 import com.liferay.portal.util.PortletKeys;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
@@ -195,8 +193,6 @@ public class ContactIndexer extends BaseIndexer {
 	protected void reindexContacts(long companyId)
 		throws PortalException, SystemException {
 
-		final Collection<Document> documents = new ArrayList<Document>();
-
 		ActionableDynamicQuery actionableDynamicQuery =
 			new ContactActionableDynamicQuery() {
 
@@ -207,18 +203,16 @@ public class ContactIndexer extends BaseIndexer {
 				Document document = getDocument(contact);
 
 				if (document != null) {
-					documents.add(document);
+					addDocument(document);
 				}
 			}
 
 		};
 
 		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		actionableDynamicQuery.performActions();
-
-		SearchEngineUtil.updateDocuments(
-			getSearchEngineId(), companyId, documents);
 	}
 
 }

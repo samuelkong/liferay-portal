@@ -50,8 +50,6 @@ import com.liferay.portlet.wiki.service.permission.WikiPagePermission;
 import com.liferay.portlet.wiki.service.persistence.WikiNodeActionableDynamicQuery;
 import com.liferay.portlet.wiki.service.persistence.WikiPageActionableDynamicQuery;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Locale;
 
 import javax.portlet.PortletURL;
@@ -302,8 +300,6 @@ public class WikiPageIndexer extends BaseIndexer {
 	protected void reindexPages(long companyId, long groupId, final long nodeId)
 		throws PortalException, SystemException {
 
-		final Collection<Document> documents = new ArrayList<Document>();
-
 		ActionableDynamicQuery actionableDynamicQuery =
 			new WikiPageActionableDynamicQuery() {
 
@@ -324,17 +320,16 @@ public class WikiPageIndexer extends BaseIndexer {
 
 				Document document = getDocument(page);
 
-				documents.add(document);
+				addDocument(document);
 			}
 
 		};
 
+		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setGroupId(groupId);
+		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		actionableDynamicQuery.performActions();
-
-		SearchEngineUtil.updateDocuments(
-			getSearchEngineId(), companyId, documents);
 	}
 
 }

@@ -977,8 +977,8 @@ public class SelectorIntrabandTest {
 		recordCompletionHandler = new RecordCompletionHandler<Object>() {
 
 			@Override
-			public void timeouted(Object attachment) {
-				super.timeouted(attachment);
+			public void timedOut(Object attachment) {
+				super.timedOut(attachment);
 
 				throw new NullPointerException();
 			}

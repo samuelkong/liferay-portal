@@ -781,8 +781,6 @@ print AdminControl.invoke(appManager, 'startApplication', 'liferay-portal')
 		<var name="git.plugins.dir" unset="true" />
 
 		<echo file="git-commit-plugins">${git.commit.plugins.rev.parse}</echo>
-
-		<var name="git.commit.plugins.rev.parse" unset="true" />
 	</target>
 
 	<target name="record-git-commit-portal">
@@ -790,17 +788,7 @@ print AdminControl.invoke(appManager, 'startApplication', 'liferay-portal')
 			<arg line="rev-parse HEAD" />
 		</exec>
 
-		<if>
-			<isset property="env.JENKINS_HOME" />
-			<then>
-				<echo file="${env.JENKINS_HOME}/userContent/git-commit-portal">${git.commit.portal.rev.parse}</echo>
-			</then>
-			<else>
-				<echo file="git-commit-portal">${git.commit.portal.rev.parse}</echo>
-			</else>
-		</if>
-
-		<var name="git.commit.portal.rev.parse" unset="true" />
+		<echo file="git-commit-portal">${git.commit.portal.rev.parse}</echo>
 	</target>
 
 	<target name="record-svn-revision">
@@ -922,6 +910,10 @@ Plugins: ${lp.plugins.dir}</echo>
 
 	<target name="test-integration">
 		<ant antfile="build-test.xml" target="test-integration" inheritAll="false" />
+	</target>
+
+	<target name="test-package">
+		<ant antfile="build-test.xml" target="test-package" inheritAll="false" />
 	</target>
 
 	<target name="test-unit">

@@ -376,6 +376,10 @@ public class FileChecker extends BaseChecker {
 			addPermission(_workDir, actions);
 			addPermission(_workDir + "/-", actions);
 
+			if (ServerDetector.isWebLogic()) {
+				addPermission(_workDir + "/../-", actions);
+			}
+
 			if (servletContext != null) {
 				File tempDir = (File)servletContext.getAttribute(
 					JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR);
@@ -439,6 +443,22 @@ public class FileChecker extends BaseChecker {
 							"jboss.home.dir");
 
 						if (fileName.startsWith(jBossHomeDir)) {
+							continue;
+						}
+					}
+
+					if (ServerDetector.isJetty()) {
+						String jettyHome = System.getProperty("jetty.home");
+
+						if (fileName.startsWith(jettyHome)) {
+							continue;
+						}
+					}
+
+					if (ServerDetector.isResin()) {
+						String resinHome = System.getProperty("resin.home");
+
+						if (fileName.startsWith(resinHome)) {
 							continue;
 						}
 					}

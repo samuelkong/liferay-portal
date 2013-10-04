@@ -402,6 +402,10 @@ public class ServiceTestUtil {
 	}
 
 	public static void setUser(User user) throws Exception {
+		if (user == null) {
+			return;
+		}
+
 		PrincipalThreadLocal.setName(user.getUserId());
 
 		PermissionChecker permissionChecker =

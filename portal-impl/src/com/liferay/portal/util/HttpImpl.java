@@ -635,7 +635,7 @@ public class HttpImpl implements Http {
 
 	@Override
 	public String getRequestURL(HttpServletRequest request) {
-		return request.getRequestURL().toString();
+		return String.valueOf(request.getRequestURL());
 	}
 
 	@Override
@@ -1313,10 +1313,12 @@ public class HttpImpl implements Http {
 					if (!hasRequestHeader(
 							postMethod, HttpHeaders.CONTENT_TYPE)) {
 
-						postMethod.addRequestHeader(
-							HttpHeaders.CONTENT_TYPE,
-							ContentTypes.
-								APPLICATION_X_WWW_FORM_URLENCODED_UTF8);
+						HttpClientParams httpClientParams =
+							httpClient.getParams();
+
+						httpClientParams.setParameter(
+							HttpMethodParams.HTTP_CONTENT_CHARSET,
+							StringPool.UTF8);
 					}
 
 					processPostMethod(postMethod, fileParts, parts);

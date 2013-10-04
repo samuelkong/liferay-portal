@@ -284,7 +284,7 @@ public abstract class BaseIntraband implements Intraband {
 					"Removed timeout response waiting datagram " + datagram);
 			}
 
-			datagram.completionHandler.timeouted(datagram.attachment);
+			datagram.completionHandler.timedOut(datagram.attachment);
 		}
 	}
 
@@ -572,7 +572,7 @@ public abstract class BaseIntraband implements Intraband {
 		}
 
 		@Override
-		public void timeouted(Object attachment) {
+		public void timedOut(Object attachment) {
 		}
 
 		public Datagram waitResult(long timeout)

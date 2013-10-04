@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.TempAttributesServletRequest;
 import com.liferay.portal.kernel.struts.LastPath;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -180,6 +181,12 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 		if (portlet == null) {
 			return;
+		}
+
+		if (!isValidPortletId(portlet.getPortletId())) {
+			_log.warn("Invalid portlet id " + portlet.getPortletId());
+
+			throw new PrincipalException();
 		}
 
 		if (portlet.isUndeployedPortlet()) {
@@ -575,6 +582,32 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 		}
 
 		return false;
+	}
+
+	protected boolean isValidPortletId(String portletId) {
+		for (int i = 0; i < portletId.length(); i++) {
+			char c = portletId.charAt(i);
+
+			if ((c >= CharPool.LOWER_CASE_A) && (c <= CharPool.LOWER_CASE_Z)) {
+				continue;
+			}
+
+			if ((c >= CharPool.UPPER_CASE_A) && (c <= CharPool.UPPER_CASE_Z)) {
+				continue;
+			}
+
+			if ((c >= CharPool.NUMBER_0) && (c <= CharPool.NUMBER_9)) {
+				continue;
+			}
+
+			if (c == CharPool.UNDERLINE) {
+				continue;
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 
 	protected ActionResult processActionException(

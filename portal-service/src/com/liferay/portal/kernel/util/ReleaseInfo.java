@@ -105,10 +105,6 @@ public class ReleaseInfo {
 		return _NAME;
 	}
 
-	public static final int getParentBuildNumber() {
-		return _PARENT_BUILD_NUMBER;
-	}
-
 	public static final String getReleaseInfo() {
 		if (_releaseInfo == null) {
 			_releaseInfo =
@@ -142,11 +138,9 @@ public class ReleaseInfo {
 
 	private static final String _CODE_NAME = "Newton";
 
-	private static final String _DATE = "September 27, 2013";
+	private static final String _DATE = "October 4, 2013";
 
 	private static final String _NAME = "Liferay Portal Community Edition";
-
-	private static final int _PARENT_BUILD_NUMBER = _BUILD_NUMBER;
 
 	private static final String _RELEASE_INFO_PREFIX = System.getProperty(
 		"liferay.release.info.prefix" , StringPool.BLANK);
@@ -158,7 +152,7 @@ public class ReleaseInfo {
 
 	private static final String _VERSION = "6.2.0";
 
-	private static final String _VERSION_DISPLAY_NAME = "6.2.0 CE RC2";
+	private static final String _VERSION_DISPLAY_NAME = "6.2.0 CE RC3";
 
 	private static String _releaseInfo;
 	private static String _serverInfo;

@@ -26,7 +26,7 @@
 		}
 
 		ul {
-		 	margin-top: 0;
+			margin-top: 0;
 		}
 
 		li.toclevel-1 {
@@ -59,26 +59,6 @@
 
 	.page-tags {
 		color: #7d7d7d;
-	}
-
-	.portlet-body h2 {
-		border-bottom: 1px solid #999;
-		font-size: 1.5em;
-		font-weight: normal;
-		margin-bottom: 0.5em;
-	}
-
-	.portlet-body h3 {
-		color: #222;
-		font-weight: bold;
-		font-size: 1.4em;
-		margin-bottom: 1em;
-	}
-
-	.portlet-body h4 {
-		color: #222;
-		font-size: 1.2em;
-		margin: 1em 0;
 	}
 
 	.portlet-body h2 a.hashlink,
@@ -233,6 +213,14 @@
 
 	.page-actions {
 		margin-top: 1.5em;
+
+		&:after {
+			clear: both;
+			content: ".";
+			display: block;
+			height: 0;
+			visibility: hidden;
+		}
 	}
 
 	.page-actions .article-actions {
