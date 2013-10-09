@@ -580,7 +580,7 @@ if ((category != null) && layout.isTypeControlPanel()) {
 						<liferay-ui:message key="num-of-posts" />:
 					</dt>
 					<dd>
-						<%= numberFormat.format(MBStatsUserLocalServiceUtil.getMessageCountByGroupId(scopeGroupId)) %>
+						<%= numberFormat.format(MBMessageServiceUtil.getGroupMessagesCount(scopeGroupId, WorkflowConstants.STATUS_APPROVED)) %>
 					</dd>
 					<dt>
 						<liferay-ui:message key="num-of-participants" />:
