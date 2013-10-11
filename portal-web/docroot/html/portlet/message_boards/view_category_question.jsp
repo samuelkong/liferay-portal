@@ -26,7 +26,8 @@ long categoryId = MBUtil.getCategoryId(request, category);
 MBCategoryDisplay categoryDisplay = (MBCategoryDisplay)request.getAttribute("view.jsp-categoryDisplay");
 
 Set<Long> categorySubscriptionClassPKs = (Set<Long>)request.getAttribute("view.jsp-threadSubscriptionClassPKs");
-Set<Long> threadSubscriptionClassPKs = (Set<Long>)request.getAttribute("view.jsp-threadSubscriptionClassPKs");
+
+threadSubscriptionClassPKs = (Set<Long>)request.getAttribute("view.jsp-threadSubscriptionClassPKs");
 
 PortletURL portletURL = renderResponse.createRenderURL();
 

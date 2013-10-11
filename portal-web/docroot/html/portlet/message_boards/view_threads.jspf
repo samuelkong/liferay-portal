@@ -36,6 +36,12 @@
 	}
 
 	searchContainer.setEmptyResultsMessage(emptyResultsMessage);
+
+	if (portletName.equals(PortletKeys.MESSAGE_BOARDS_ADMIN)) {
+		RowChecker rowChecker = new RowChecker(renderResponse);
+
+		searchContainer.setRowChecker(rowChecker);
+	}
 	%>
 
 	<liferay-ui:search-container-results>
@@ -123,6 +129,18 @@
 
 		<%@ include file="/html/portlet/message_boards/user_thread_columns.jspf" %>
 	</liferay-ui:search-container-row>
+
+	<c:if test="<%= portletName.equals(PortletKeys.MESSAGE_BOARDS_ADMIN) %>">
+		<br>
+
+		<aui:button onClick='<%= renderResponse.getNamespace() + "deleteThreads();" %>' value='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "move-to-the-recycle-bin" : "delete" %>' />
+
+		<aui:button onClick='<%= renderResponse.getNamespace() + "lockThreads();" %>' value="lock" />
+
+		<aui:button onClick='<%= renderResponse.getNamespace() + "unlockThreads();" %>' value="unlock" />
+
+		<div class="separator"><!-- --></div>
+	</c:if>
 
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>
