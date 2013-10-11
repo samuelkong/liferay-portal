@@ -393,7 +393,7 @@ if ((category != null) && layout.isTypeControlPanel()) {
 		<%
 		long groupThreadsUserId = ParamUtil.getLong(request, "groupThreadsUserId");
 
-		if ((topLink.equals("my-posts") || topLink.equals("my-subscriptions"))) {
+		if (topLink.equals("my-posts") || topLink.equals("my-subscriptions")) {
 			groupThreadsUserId = user.getUserId();
 		}
 
