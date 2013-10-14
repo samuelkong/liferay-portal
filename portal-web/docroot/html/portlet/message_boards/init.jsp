@@ -94,6 +94,10 @@ page import="com.liferay.portlet.trash.util.TrashUtil" %><%@
 page import="com.liferay.util.RSSUtil" %>
 
 <%
+String assetTagName = ParamUtil.getString(request, "tag");
+
+boolean useAssetEntryQuery = Validator.isNotNull(assetTagName);
+
 String currentLanguageId = LanguageUtil.getLanguageId(request);
 Locale currentLocale = LocaleUtil.fromLanguageId(currentLanguageId);
 Locale defaultLocale = themeDisplay.getSiteDefaultLocale();
@@ -135,10 +139,6 @@ boolean showSearch = true;
 
 Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
-
-String assetTagName = ParamUtil.getString(request, "tag");
-
-boolean useAssetEntryQuery = Validator.isNotNull(assetTagName);
 
 NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 %>
