@@ -388,20 +388,54 @@ if ((category != null) && layout.isTypeControlPanel()) {
 		%>
 
 	</c:when>
-	<c:when test='<%= topLink.equals("recent-posts") %>'>
+	<c:when test='<%= topLink.equals("my-posts") || topLink.equals("my-subscriptions") || topLink.equals("recent-posts") %>'>
 
 		<%
 		long groupThreadsUserId = ParamUtil.getLong(request, "groupThreadsUserId");
+
+		if (topLink.equals("my-posts") || topLink.equals("my-subscriptions")) {
+			groupThreadsUserId = user.getUserId();
+		}
 
 		if (groupThreadsUserId > 0) {
 			portletURL.setParameter("groupThreadsUserId", String.valueOf(groupThreadsUserId));
 		}
 		%>
 
-		<c:if test="<%= (groupThreadsUserId > 0) %>">
+		<c:if test='<%= topLink.equals("recent-posts") && (groupThreadsUserId > 0) %>'>
 			<div class="alert alert-info">
 				<liferay-ui:message key="filter-by-user" />: <%= HtmlUtil.escape(PortalUtil.getUserName(groupThreadsUserId, StringPool.BLANK)) %>
 			</div>
+		</c:if>
+
+		<c:if test='<%= topLink.equals("my-subscriptions") %>'>
+			<liferay-ui:search-container
+				deltaConfigurable="<%= false %>"
+				emptyResultsMessage="you-are-not-subscribed-to-any-categories"
+				headerNames="category,categories,threads,posts"
+				iteratorURL="<%= portletURL %>"
+				total="<%= MBCategoryServiceUtil.getSubscribedCategoriesCount(scopeGroupId, user.getUserId()) %>"
+			>
+				<liferay-ui:search-container-results
+					results="<%= MBCategoryServiceUtil.getSubscribedCategories(scopeGroupId, user.getUserId(), searchContainer.getStart(), searchContainer.getEnd()) %>"
+				/>
+
+				<liferay-ui:search-container-row
+					className="com.liferay.portlet.messageboards.model.MBCategory"
+					escapedModel="<%= true %>"
+					keyProperty="categoryId"
+					modelVar="curCategory"
+				>
+					<liferay-portlet:renderURL varImpl="rowURL">
+						<portlet:param name="struts_action" value="/message_boards/view" />
+						<portlet:param name="mbCategoryId" value="<%= String.valueOf(curCategory.getCategoryId()) %>" />
+					</liferay-portlet:renderURL>
+
+					<%@ include file="/html/portlet/message_boards/subscribed_category_columns.jspf" %>
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator type="more" />
+			</liferay-ui:search-container>
 		</c:if>
 
 		<aui:form action="<%= portletURL.toString() %>" method="get" name="fm1">
@@ -414,150 +448,7 @@ if ((category != null) && layout.isTypeControlPanel()) {
 			<aui:input name="redirect" type="hidden" value="<%= portletURL.toString() %>" />
 			<aui:input name="threadIds" type="hidden" />
 
-			<liferay-ui:search-container
-				emptyResultsMessage="there-are-no-recent-posts"
-				headerNames="thread,started-by,posts,views,last-post"
-				iteratorURL="<%= portletURL %>"
-				rowChecker="<%= new RowChecker(renderResponse) %>"
-			>
-				<liferay-ui:search-container-results>
-
-					<%
-					Calendar calendar = Calendar.getInstance();
-
-					int offset = GetterUtil.getInteger(recentPostsDateOffset);
-
-					calendar.add(Calendar.DATE, -offset);
-
-					total = MBThreadServiceUtil.getGroupThreadsCount(scopeGroupId, groupThreadsUserId, calendar.getTime(), WorkflowConstants.STATUS_APPROVED);
-
-					searchContainer.setTotal(total);
-
-					results = MBThreadServiceUtil.getGroupThreads(scopeGroupId, groupThreadsUserId, calendar.getTime(), WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd());
-
-					searchContainer.setResults(results);
-					%>
-
-				</liferay-ui:search-container-results>
-
-				<liferay-ui:search-container-row
-					className="com.liferay.portlet.messageboards.model.MBThread"
-					keyProperty="threadId"
-					modelVar="thread"
-				>
-
-					<%
-					MBMessage message = null;
-
-					try {
-						message = MBMessageLocalServiceUtil.getMessage(thread.getRootMessageId());
-					}
-					catch (NoSuchMessageException nsme) {
-						_log.error("Thread requires missing root message id " + thread.getRootMessageId());
-
-						continue;
-					}
-
-					message = message.toEscapedModel();
-
-					row.setBold(!MBThreadFlagLocalServiceUtil.hasThreadFlag(themeDisplay.getUserId(), thread));
-					row.setObject(new Object[] {message});
-					row.setRestricted(!MBMessagePermission.contains(permissionChecker, message, ActionKeys.VIEW));
-					%>
-
-					<liferay-portlet:renderURL varImpl="rowURL">
-						<portlet:param name="struts_action" value="/message_boards/view_message" />
-						<portlet:param name="messageId" value="<%= String.valueOf(message.getMessageId()) %>" />
-					</liferay-portlet:renderURL>
-
-					<liferay-ui:search-container-column-text
-						buffer="buffer"
-						href="<%= rowURL %>"
-						name="thread"
-					>
-
-						<%
-						String[] threadPriority = MBUtil.getThreadPriority(portletPreferences, themeDisplay.getLanguageId(), thread.getPriority(), themeDisplay);
-
-						if ((threadPriority != null) && (thread.getPriority() > 0)) {
-							buffer.append("<img class=\"thread-priority\" alt=\"");
-							buffer.append(threadPriority[0]);
-							buffer.append("\" src=\"");
-							buffer.append(threadPriority[1]);
-							buffer.append("\" title=\"");
-							buffer.append(threadPriority[0]);
-							buffer.append("\" />");
-						}
-
-						buffer.append(message.getSubject());
-						%>
-
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-text
-						href="<%= rowURL %>"
-						name="started-by"
-						value='<%= message.isAnonymous() ? LanguageUtil.get(pageContext, "anonymous") : PortalUtil.getUserName(message) %>'
-					/>
-
-					<liferay-ui:search-container-column-text
-						href="<%= rowURL %>"
-						name="posts"
-						value="<%= String.valueOf(thread.getMessageCount()) %>"
-					/>
-
-					<liferay-ui:search-container-column-text
-						href="<%= rowURL %>"
-						name="views"
-						value="<%= String.valueOf(thread.getViewCount()) %>"
-					/>
-
-					<liferay-ui:search-container-column-text
-						buffer="buffer"
-						href="<%= rowURL %>"
-						name="last-post"
-					>
-
-						<%
-						if (thread.getLastPostDate() == null) {
-							buffer.append(LanguageUtil.get(pageContext, "none"));
-						}
-						else {
-							buffer.append(LanguageUtil.get(pageContext, "date"));
-							buffer.append(": ");
-							buffer.append(dateFormatDateTime.format(thread.getLastPostDate()));
-
-							String lastPostByUserName = HtmlUtil.escape(PortalUtil.getUserName(thread.getLastPostByUserId(), StringPool.BLANK));
-
-							if (Validator.isNotNull(lastPostByUserName)) {
-								buffer.append("<br />");
-								buffer.append(LanguageUtil.get(pageContext, "by"));
-								buffer.append(": ");
-								buffer.append(lastPostByUserName);
-							}
-						}
-						%>
-
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-jsp
-						align="right"
-						path="/html/portlet/message_boards/message_action.jsp"
-					/>
-				</liferay-ui:search-container-row>
-
-				<br>
-
-				<aui:button onClick='<%= renderResponse.getNamespace() + "deleteThreads();" %>' value='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "move-to-the-recycle-bin" : "delete" %>' />
-
-				<aui:button onClick='<%= renderResponse.getNamespace() + "lockThreads();" %>' value="lock" />
-
-				<aui:button onClick='<%= renderResponse.getNamespace() + "unlockThreads();" %>' value="unlock" />
-
-				<div class="separator"><!-- --></div>
-
-				<liferay-ui:search-iterator />
-			</liferay-ui:search-container>
+			<%@ include file="/html/portlet/message_boards/view_threads.jspf" %>
 		</aui:form>
 
 		<%

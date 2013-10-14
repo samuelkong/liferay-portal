@@ -127,12 +127,18 @@ boolean categoriesPanelExtended = true;
 boolean threadsPanelCollapsible = true;
 boolean threadsPanelExtended = true;
 
+Set<Long> threadSubscriptionClassPKs = null;
+
 boolean childrenMessagesTaggable = true;
 boolean includeFormTag = true;
 boolean showSearch = true;
 
 Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
+
+String assetTagName = ParamUtil.getString(request, "tag");
+
+boolean useAssetEntryQuery = Validator.isNotNull(assetTagName);
 
 NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 %>
