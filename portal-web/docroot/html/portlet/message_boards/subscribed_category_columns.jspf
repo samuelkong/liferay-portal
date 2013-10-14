@@ -50,6 +50,14 @@ _buildCategoryBreadcrumb(request, curCategory, sb);
 private void _buildCategoryBreadcrumb(HttpServletRequest request, MBCategory category, StringBundler sb) throws Exception {
 	ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(WebKeys.THEME_DISPLAY);
 
+	String portletId = (String)request.getAttribute(WebKeys.PORTLET_ID);
+
+	String url = "/message_boards/view";
+
+	if (portletId.equals(PortletKeys.MESSAGE_BOARDS_ADMIN)) {
+		url = "/message_boards_admin/view";
+	}
+
 	List<MBCategory> ancestorCategories = category.getAncestors();
 
 	Collections.reverse(ancestorCategories);
@@ -59,9 +67,9 @@ private void _buildCategoryBreadcrumb(HttpServletRequest request, MBCategory cat
 	for (int i = 0; i < ancestorCategories.size(); i++) {
 		MBCategory ancestorCategory = ancestorCategories.get(i);
 
-		PortletURL portletURL = PortletURLFactoryUtil.create(request, PortletKeys.MESSAGE_BOARDS, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+		PortletURL portletURL = PortletURLFactoryUtil.create(request, portletId, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
 
-		portletURL.setParameter("struts_action", "/message_boards/view");
+		portletURL.setParameter("struts_action", url);
 		portletURL.setParameter("mbCategoryId", String.valueOf(ancestorCategory.getCategoryId()));
 
 		String cssClass = StringPool.BLANK;
@@ -83,9 +91,9 @@ private void _buildCategoryBreadcrumb(HttpServletRequest request, MBCategory cat
 		sb.append("</li>");
 	}
 
-	PortletURL portletURL = PortletURLFactoryUtil.create(request, PortletKeys.MESSAGE_BOARDS, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+	PortletURL portletURL = PortletURLFactoryUtil.create(request, portletId, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
 
-	portletURL.setParameter("struts_action", "/message_boards/view");
+	portletURL.setParameter("struts_action", url);
 	portletURL.setParameter("mbCategoryId", String.valueOf(category.getCategoryId()));
 
 	sb.append("<li class=\"active last\">");

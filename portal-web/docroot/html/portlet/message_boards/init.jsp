@@ -94,6 +94,10 @@ page import="com.liferay.portlet.trash.util.TrashUtil" %><%@
 page import="com.liferay.util.RSSUtil" %>
 
 <%
+String assetTagName = ParamUtil.getString(request, "tag");
+
+boolean useAssetEntryQuery = Validator.isNotNull(assetTagName);
+
 String currentLanguageId = LanguageUtil.getLanguageId(request);
 Locale currentLocale = LocaleUtil.fromLanguageId(currentLanguageId);
 Locale defaultLocale = themeDisplay.getSiteDefaultLocale();
@@ -126,6 +130,8 @@ boolean categoriesPanelCollapsible = true;
 boolean categoriesPanelExtended = true;
 boolean threadsPanelCollapsible = true;
 boolean threadsPanelExtended = true;
+
+Set<Long> threadSubscriptionClassPKs = null;
 
 boolean childrenMessagesTaggable = true;
 boolean includeFormTag = true;
