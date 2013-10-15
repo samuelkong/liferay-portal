@@ -453,7 +453,9 @@ else {
 			<aui:button name="saveButton" onClick='<%= renderResponse.getNamespace() + "saveMessage(true);" %>' value="<%= saveButtonLabel %>" />
 		</c:if>
 
-		<aui:button onClick='<%= renderResponse.getNamespace() + "previewMessage();" %>' value="preview" />
+		<c:if test="<%= (message == null) || message.isDraft() || preview %>">
+			<aui:button onClick='<%= renderResponse.getNamespace() + "previewMessage();" %>' value="preview" />
+		</c:if>
 
 		<aui:button disabled="<%= pending %>" name="publishButton" type="submit" value="<%= publishButtonLabel %>" />
 
