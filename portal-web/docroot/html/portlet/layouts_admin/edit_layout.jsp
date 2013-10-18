@@ -118,16 +118,16 @@ boolean showAddAction = ParamUtil.getBoolean(request, "showAddAction", true);
 <aui:nav-bar>
 	<aui:nav id="layoutsNav">
 		<c:if test="<%= LayoutPermissionUtil.contains(permissionChecker, selPlid, ActionKeys.ADD_LAYOUT) && showAddAction %>">
-			<aui:nav-item data-value="add-child-page" iconClass="icon-plus" label="add-child-page" />
+			<aui:nav-item data-value="add-child-page" iconCssClass="icon-plus" label="add-child-page" />
 		</c:if>
 		<c:if test="<%= LayoutPermissionUtil.contains(permissionChecker, selPlid, ActionKeys.PERMISSIONS) %>">
-			<aui:nav-item data-value="permissions" iconClass="icon-lock" label="permissions" />
+			<aui:nav-item data-value="permissions" iconCssClass="icon-lock" label="permissions" />
 		</c:if>
 		<c:if test="<%= !portletName.equals(PortletKeys.DOCKBAR) && LayoutPermissionUtil.contains(permissionChecker, selPlid, ActionKeys.DELETE) %>">
-			<aui:nav-item data-value="delete" iconClass="icon-remove" label="delete" />
+			<aui:nav-item data-value="delete" iconCssClass="icon-remove" label="delete" />
 		</c:if>
 		<c:if test="<%= LayoutPermissionUtil.contains(permissionChecker, selLayout, ActionKeys.UPDATE) %>">
-			<aui:nav-item data-value="copy-applications" iconClass="icon-list-alt" label="copy-applications" />
+			<aui:nav-item data-value="copy-applications" iconCssClass="icon-list-alt" label="copy-applications" />
 		</c:if>
 	</aui:nav>
 </aui:nav-bar>

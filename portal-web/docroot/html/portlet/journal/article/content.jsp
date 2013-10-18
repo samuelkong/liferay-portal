@@ -226,7 +226,7 @@ if (Validator.isNotNull(content)) {
 
 									<c:if test="<%= classNameId == JournalArticleConstants.CLASSNAME_ID_DEFAULT %>">
 										<liferay-ui:icon
-											iconClass="icon-search"
+											iconCssClass="icon-search"
 											label="<%= true %>"
 											linkCssClass="btn"
 											message="select"
@@ -264,7 +264,7 @@ if (Validator.isNotNull(content)) {
 
 									<c:if test="<%= ddmStructure != null %>">
 										<liferay-ui:icon
-											iconClass="icon-search"
+											iconCssClass="icon-search"
 											label="<%= true %>"
 											linkCssClass="btn"
 											message="select"

@@ -94,7 +94,7 @@ List<Group> groups = (List<Group>)request.getAttribute("user.groups");
 
 	<liferay-ui:icon
 		cssClass="modify-link"
-		iconClass="icon-search"
+		iconCssClass="icon-search"
 		id="selectSiteLink"
 		label="<%= true %>"
 		linkCssClass="btn"

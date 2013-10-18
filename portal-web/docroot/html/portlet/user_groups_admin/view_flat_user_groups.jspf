@@ -37,7 +37,7 @@ UserGroupSearch userGroupSearch = new UserGroupSearch(renderRequest, portletURL)
 					<portlet:param name="redirect" value="<%= viewUserGroupsURL %>" />
 				</portlet:renderURL>
 
-				<aui:nav-item href="<%= addUsergroupURL %>" iconClass="icon-plus" label="add" />
+				<aui:nav-item href="<%= addUsergroupURL %>" iconCssClass="icon-plus" label="add" />
 			</c:if>
 		</aui:nav>
 

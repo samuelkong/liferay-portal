@@ -30,7 +30,7 @@ if (bodyContent != null) {
 
 <c:if test="<%= !dropdown || Validator.isNotNull(bodyContentString.trim()) %>">
 	<li class="<%= cssClass %><%= selected ? " active " : StringPool.SPACE %><%= state %>" id="<%= id %>" role="presentation" <%= AUIUtil.buildData(data) %> <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>
-		<c:if test="<%= Validator.isNotNull(iconClass) || Validator.isNotNull(label) %>">
+		<c:if test="<%= Validator.isNotNull(iconCssClass) || Validator.isNotNull(label) %>">
 			<c:if test="<%= Validator.isNotNull(href) %>">
 				<c:choose>
 					<c:when test="<%= Validator.isNull(ariaLabel) %>">
@@ -47,8 +47,8 @@ if (bodyContent != null) {
 					</aui:script>
 				</c:if>
 			</c:if>
-					<c:if test="<%= Validator.isNotNull(iconClass) %>">
-						<i class="<%= iconClass %>"></i>
+					<c:if test="<%= Validator.isNotNull(iconCssClass) %>">
+						<i class="<%= iconCssClass %>"></i>
 					</c:if>
 
 					<span class="nav-item-label">

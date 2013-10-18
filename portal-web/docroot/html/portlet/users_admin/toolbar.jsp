@@ -30,7 +30,7 @@ String usersListView = ParamUtil.get(request, "usersListView", UserConstants.LIS
 	%>
 
 	<c:if test="<%= hasAddOrganizationPermission || hasAddUserPermission %>">
-		<aui:nav-item dropdown="<%= true %>" iconClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>'>
+		<aui:nav-item dropdown="<%= true %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>'>
 			<portlet:renderURL var="viewUsersURL">
 				<portlet:param name="struts_action" value="/users_admin/view" />
 				<portlet:param name="sitesListView" value="<%= usersListView %>" />
@@ -42,7 +42,7 @@ String usersListView = ParamUtil.get(request, "usersListView", UserConstants.LIS
 					<portlet:param name="redirect" value="<%= viewUsersURL %>" />
 				</portlet:renderURL>
 
-				<aui:nav-item href="<%= addUserURL %>" iconClass="icon-user" label="user" />
+				<aui:nav-item href="<%= addUserURL %>" iconCssClass="icon-user" label="user" />
 			</c:if>
 
 			<aui:nav-item cssClass="divider" />
@@ -59,7 +59,7 @@ String usersListView = ParamUtil.get(request, "usersListView", UserConstants.LIS
 						<portlet:param name="type" value="<%= organizationType %>" />
 					</portlet:renderURL>
 
-					<aui:nav-item href="<%= addOrganizationURL %>" iconClass="icon-globe" label="<%= LanguageUtil.get(pageContext, organizationType) %>" />
+					<aui:nav-item href="<%= addOrganizationURL %>" iconCssClass="icon-globe" label="<%= LanguageUtil.get(pageContext, organizationType) %>" />
 
 				<%
 				}

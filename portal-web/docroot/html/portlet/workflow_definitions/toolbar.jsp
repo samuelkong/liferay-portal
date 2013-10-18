@@ -40,9 +40,9 @@ String toolbarItem = ParamUtil.getString(request, "toolbarItem");
 			String taglibHREF = "javascript:Liferay.Util.getOpener()." + renderResponse.getNamespace() + "openKaleoDesigner('', '0', '', Liferay.Util.getWindowName());";
 			%>
 
-			<aui:nav-item href="<%= taglibHREF %>" iconClass="icon-plus" label='<%= LanguageUtil.format(pageContext, "add-new-x", "definition") %>' />
+			<aui:nav-item href="<%= taglibHREF %>" iconCssClass="icon-plus" label='<%= LanguageUtil.format(pageContext, "add-new-x", "definition") %>' />
 		</c:if>
-		<aui:nav-item href="<%= addWorkflowDefinitionURL %>" iconClass="icon-upload" label="upload-definition" selected='<%= toolbarItem.equals("add") %>' />
+		<aui:nav-item href="<%= addWorkflowDefinitionURL %>" iconCssClass="icon-upload" label="upload-definition" selected='<%= toolbarItem.equals("add") %>' />
 	</aui:nav>
 </aui:nav-bar>
 

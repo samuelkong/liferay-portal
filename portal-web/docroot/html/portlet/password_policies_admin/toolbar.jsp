@@ -32,7 +32,7 @@ String toolbarItem = ParamUtil.getString(request, "toolbarItem");
 				<portlet:param name="redirect" value="<%= viewPasswordPoliciesURL %>" />
 			</portlet:renderURL>
 
-			<aui:nav-item href="<%= addPasswordPolicyURL %>" iconClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
+			<aui:nav-item href="<%= addPasswordPolicyURL %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
 		</c:if>
 	</aui:nav>
 </aui:nav-bar>

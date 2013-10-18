@@ -51,7 +51,7 @@ long classPK = ParamUtil.getLong(request, "classPK");
 					}
 					%>
 
-					<aui:nav-item href="<%= addTemplateURL %>" iconClass="icon-plus" label="<%= message %>" selected='<%= toolbarItem.equals("add-form-template") %>' />
+					<aui:nav-item href="<%= addTemplateURL %>" iconCssClass="icon-plus" label="<%= message %>" selected='<%= toolbarItem.equals("add-form-template") %>' />
 				</c:if>
 
 				<c:if test="<%= DDMPermission.contains(permissionChecker, scopeGroupId, ddmDisplay.getResourceName(), ddmDisplay.getAddTemplateActionId()) && (Validator.isNull(templateTypeValue) || templateTypeValue.equals(DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY)) %>">
@@ -70,7 +70,7 @@ long classPK = ParamUtil.getLong(request, "classPK");
 					}
 					%>
 
-					<aui:nav-item href="<%= addTemplateURL %>" iconClass="icon-plus" label="<%= message %>" selected='<%= toolbarItem.equals("add-display-template") %>' />
+					<aui:nav-item href="<%= addTemplateURL %>" iconCssClass="icon-plus" label="<%= message %>" selected='<%= toolbarItem.equals("add-display-template") %>' />
 				</c:if>
 			</c:when>
 			<c:otherwise>
@@ -88,7 +88,7 @@ long classPK = ParamUtil.getLong(request, "classPK");
 				if (!templateHandlers.isEmpty()) {
 				%>
 
-					<aui:nav-item dropdown="<%= true %>" iconClass="icon-plus" label="add">
+					<aui:nav-item dropdown="<%= true %>" iconCssClass="icon-plus" label="add">
 						<liferay-portlet:renderURL varImpl="addPortletDisplayTemplateURL">
 							<portlet:param name="struts_action" value="/dynamic_data_mapping/edit_template" />
 							<portlet:param name="redirect" value="<%= redirect %>" />
@@ -104,7 +104,7 @@ long classPK = ParamUtil.getLong(request, "classPK");
 
 							<aui:nav-item
 								href="<%= addPortletDisplayTemplateURL.toString() %>"
-								iconClass="icon-list-alt"
+								iconCssClass="icon-list-alt"
 								label="<%= templateHandler.getName(locale) %>"
 							/>
 

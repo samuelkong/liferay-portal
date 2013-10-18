@@ -784,8 +784,7 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			return false;
 		}
 
-		Parameters parameters = OSGiHeader.parseHeader(
-			activationPolicy);
+		Parameters parameters = OSGiHeader.parseHeader(activationPolicy);
 
 		if (parameters.containsKey(Constants.ACTIVATION_LAZY)) {
 			return true;
@@ -943,7 +942,7 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 		Parameters parameters = OSGiHeader.parseHeader(exportPackage);
 
-		for (Map.Entry<String,Attrs> entry : parameters.entrySet()) {
+		for (Map.Entry<String, Attrs> entry : parameters.entrySet()) {
 			String key = entry.getKey();
 
 			List<URL> urls = _extraPackageMap.get(key);

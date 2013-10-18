@@ -3034,13 +3034,14 @@ public class PortalImpl implements Portal {
 			if ((layoutSet.getLayoutSetId() != curLayoutSetId) ||
 				portalURL.startsWith(themeDisplay.getURLPortal())) {
 
-				String layoutSetFriendlyURL = StringPool.BLANK;
+				String layoutSetFriendlyURL = portalURL + _pathContext;
 
 				if (themeDisplay.isI18n()) {
-					layoutSetFriendlyURL = themeDisplay.getI18nPath();
+					layoutSetFriendlyURL += themeDisplay.getI18nPath();
 				}
 
-				return portalURL + _pathContext + layoutSetFriendlyURL;
+				return addPreservedParameters(
+					themeDisplay, layoutSetFriendlyURL);
 			}
 		}
 

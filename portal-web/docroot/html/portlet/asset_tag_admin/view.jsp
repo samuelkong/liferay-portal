@@ -36,9 +36,9 @@
 			</c:if>
 
 			<aui:nav-item cssClass="hide" dropdown="<%= true %>" id="tagsActionsButton" label="actions">
-				<aui:nav-item iconClass="icon-remove" id="deleteSelectedTags" label="delete" />
+				<aui:nav-item iconCssClass="icon-remove" id="deleteSelectedTags" label="delete" />
 
-				<aui:nav-item iconClass="icon-random" id="mergeSelectedTags" label="merge" />
+				<aui:nav-item iconCssClass="icon-random" id="mergeSelectedTags" label="merge" />
 			</aui:nav-item>
 		</aui:nav>
 

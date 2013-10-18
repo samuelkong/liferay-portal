@@ -36,46 +36,46 @@ if (group == null) {
 <aui:nav-bar>
 	<aui:nav>
 		<c:if test="<%= GroupPermissionUtil.contains(permissionChecker, group.getGroupId(), ActionKeys.ASSIGN_MEMBERS) %>">
-			<aui:nav-item dropdown="<%= true %>" iconClass="icon-plus" label="add-members" selected='<%= toolbarItem.equals("add-members") %>'>
+			<aui:nav-item dropdown="<%= true %>" iconCssClass="icon-plus" label="add-members" selected='<%= toolbarItem.equals("add-members") %>'>
 
 				<%
 				assignMembersURL.setParameter("tabs1", "users");
 				assignMembersURL.setParameter("tabs2", "available");
 				%>
 
-				<aui:nav-item href="<%= assignMembersURL.toString() %>" iconClass="icon-user" label="user" />
+				<aui:nav-item href="<%= assignMembersURL.toString() %>" iconCssClass="icon-user" label="user" />
 
 				<%
 				assignMembersURL.setParameter("tabs1", "organizations");
 				assignMembersURL.setParameter("tabs2", "available");
 				%>
 
-				<aui:nav-item href="<%= assignMembersURL.toString() %>" iconClass="icon-globe" label="organization" />
+				<aui:nav-item href="<%= assignMembersURL.toString() %>" iconCssClass="icon-globe" label="organization" />
 
 				<%
 				assignMembersURL.setParameter("tabs1", "user-groups");
 				assignMembersURL.setParameter("tabs2", "available");
 				%>
 
-				<aui:nav-item href="<%= assignMembersURL.toString() %>" iconClass="icon-globe" label="user-group" />
+				<aui:nav-item href="<%= assignMembersURL.toString() %>" iconCssClass="icon-globe" label="user-group" />
 			</aui:nav-item>
 		</c:if>
 
 		<c:if test="<%= permissionChecker.isGroupOwner(group.getGroupId()) || GroupPermissionUtil.contains(permissionChecker, group.getGroupId(), ActionKeys.ASSIGN_USER_ROLES) %>">
-			<aui:nav-item dropdown="<%= true %>" iconClass="icon-plus" label="add-site-roles-to" selected='<%= toolbarItem.equals("assign-user-roles") %>'>
+			<aui:nav-item dropdown="<%= true %>" iconCssClass="icon-plus" label="add-site-roles-to" selected='<%= toolbarItem.equals("assign-user-roles") %>'>
 				<portlet:renderURL var="assignUserRolesURL">
 					<portlet:param name="struts_action" value="/sites_admin/edit_user_roles" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 				</portlet:renderURL>
 
-				<aui:nav-item href="<%= assignUserRolesURL %>" iconClass="icon-user" label="users" />
+				<aui:nav-item href="<%= assignUserRolesURL %>" iconCssClass="icon-user" label="users" />
 
 				<portlet:renderURL var="assignUserGroupRolesURL">
 					<portlet:param name="struts_action" value="/sites_admin/edit_user_group_roles" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 				</portlet:renderURL>
 
-				<aui:nav-item href="<%= assignUserGroupRolesURL %>" iconClass="icon-globe" label="user-groups" />
+				<aui:nav-item href="<%= assignUserGroupRolesURL %>" iconCssClass="icon-globe" label="user-groups" />
 			</aui:nav-item>
 		</c:if>
 

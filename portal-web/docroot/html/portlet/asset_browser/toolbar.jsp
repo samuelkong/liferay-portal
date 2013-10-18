@@ -55,7 +55,7 @@ Map<Long, String> classTypes = assetRendererFactory.getClassTypes(new long[] {th
 				</c:if>
 			</c:when>
 			<c:otherwise>
-				<aui:nav-item dropdown="<%= true %>" iconClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>'>
+				<aui:nav-item dropdown="<%= true %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>'>
 
 					<%
 					PortletURL addPortletURL = AssetUtil.getAddPortletURL(liferayPortletRequest, liferayPortletResponse, typeSelection, 0, null, null, portletURL.toString());

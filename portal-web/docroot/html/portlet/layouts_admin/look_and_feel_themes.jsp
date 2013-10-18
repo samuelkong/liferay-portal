@@ -209,7 +209,7 @@ Map<String, ThemeSetting> configurableSettings = selTheme.getConfigurableSetting
 
 					<liferay-ui:icon
 						cssClass="manage-layout-set-branches-link pull-right"
-						iconClass="icon-inbox"
+						iconCssClass="icon-inbox"
 						id="installMore"
 						label="<%= true %>"
 						linkCssClass="btn"

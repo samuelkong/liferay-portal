@@ -49,7 +49,7 @@ boolean hasAddDocumentPermission = DLFolderPermission.contains(permissionChecker
 			<portlet:param name="parentFolderId" value="<%= String.valueOf(folderId) %>" />
 		</portlet:renderURL>
 
-		<aui:nav-item href="<%= addFolderURL %>" iconClass="icon-folder-open" label='<%= (folder != null) ? "subfolder" : "folder" %>' />
+		<aui:nav-item href="<%= addFolderURL %>" iconCssClass="icon-folder-open" label='<%= (folder != null) ? "subfolder" : "folder" %>' />
 	</c:if>
 
 	<c:if test="<%= ((folder == null) || folder.isSupportsShortcuts()) && DLFolderPermission.contains(permissionChecker, scopeGroupId, folderId, ActionKeys.ADD_SHORTCUT) %>">
@@ -69,7 +69,7 @@ boolean hasAddDocumentPermission = DLFolderPermission.contains(permissionChecker
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 		</portlet:renderURL>
 
-		<aui:nav-item href="<%= addRepositoryURL %>" iconClass="icon-hdd" label="repository" />
+		<aui:nav-item href="<%= addRepositoryURL %>" iconCssClass="icon-hdd" label="repository" />
 	</c:if>
 
 	<c:if test="<%= ((folder == null) || folder.isSupportsMultipleUpload()) && hasAddDocumentPermission && !fileEntryTypes.isEmpty() %>">
@@ -95,7 +95,7 @@ boolean hasAddDocumentPermission = DLFolderPermission.contains(permissionChecker
 				<portlet:param name="folderId" value="<%= String.valueOf(folderId) %>" />
 			</portlet:renderURL>
 
-			<aui:nav-item href="<%= editFileEntryURL %>" iconClass="icon-file" label="basic-document" />
+			<aui:nav-item href="<%= editFileEntryURL %>" iconCssClass="icon-file" label="basic-document" />
 		</c:when>
 		<c:when test="<%= !fileEntryTypes.isEmpty() && hasAddDocumentPermission %>">
 
@@ -112,7 +112,7 @@ boolean hasAddDocumentPermission = DLFolderPermission.contains(permissionChecker
 					<portlet:param name="fileEntryTypeId" value="<%= String.valueOf(fileEntryType.getFileEntryTypeId()) %>" />
 				</portlet:renderURL>
 
-				<aui:nav-item href="<%= addFileEntryTypeURL %>" iconClass="icon-file" label="<%= HtmlUtil.escape(fileEntryType.getName(locale)) %>" />
+				<aui:nav-item href="<%= addFileEntryTypeURL %>" iconCssClass="icon-file" label="<%= HtmlUtil.escape(fileEntryType.getName(locale)) %>" />
 
 			<%
 			}

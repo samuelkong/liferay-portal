@@ -132,7 +132,7 @@ String scopeAvailableFields = ParamUtil.getString(request, "scopeAvailableFields
 
 			<liferay-ui:icon
 				cssClass="modify-link select-metadata"
-				iconClass="icon-search"
+				iconCssClass="icon-search"
 				label="<%= true %>"
 				linkCssClass="btn"
 				message="select-metadata-set"

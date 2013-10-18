@@ -50,7 +50,7 @@ String strutsAction = ParamUtil.getString(request, "struts_action");
 			taglibURL = "javascript:" + renderResponse.getNamespace() + "deleteEntries();";
 			%>
 
-			<aui:nav-item href="<%= taglibURL %>" iconClass='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "icon-trash" : "icon-remove" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "move-to-the-recycle-bin" : "delete" %>' />
+			<aui:nav-item href="<%= taglibURL %>" iconCssClass='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "icon-trash" : "icon-remove" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "move-to-the-recycle-bin" : "delete" %>' />
 		</aui:nav-item>
 
 		<liferay-util:include page="/html/portlet/journal/add_button.jsp" />
@@ -64,20 +64,20 @@ String strutsAction = ParamUtil.getString(request, "struts_action");
 				String taglibURL = "javascript:" + renderResponse.getNamespace() + "openStructuresView()";
 				%>
 
-				<aui:nav-item href="<%= taglibURL %>" iconClass="icon-tasks" label="structures" />
+				<aui:nav-item href="<%= taglibURL %>" iconCssClass="icon-tasks" label="structures" />
 
 				<%
 				taglibURL = "javascript:" + renderResponse.getNamespace() + "openTemplatesView()";
 				%>
 
-				<aui:nav-item href="<%= taglibURL %>" iconClass="icon-list-alt" label="templates" />
+				<aui:nav-item href="<%= taglibURL %>" iconCssClass="icon-list-alt" label="templates" />
 
 				<%
 				taglibURL = "javascript:" + renderResponse.getNamespace() + "openFeedsView()";
 				%>
 
 				<c:if test="<%= PortalUtil.isRSSFeedsEnabled() %>">
-					<aui:nav-item href="<%= taglibURL %>" iconClass="icon-rss" label="feeds" />
+					<aui:nav-item href="<%= taglibURL %>" iconCssClass="icon-rss" label="feeds" />
 				</c:if>
 			</aui:nav-item>
 		</c:if>

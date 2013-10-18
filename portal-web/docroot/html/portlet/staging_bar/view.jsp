@@ -169,7 +169,7 @@ if (layout != null) {
 					String remoteURL = StagingUtil.buildRemoteURL(remoteAddress, remotePort, remotePathContext, secureConnection, remoteGroupId, layout.isPrivateLayout());
 					%>
 
-					<aui:nav-item cssClass="remote-live-link" href="<%= remoteURL %>" iconClass="icon-external-link-sign" label="go-to-remote-live" />
+					<aui:nav-item cssClass="remote-live-link" href="<%= remoteURL %>" iconCssClass="icon-external-link-sign" label="go-to-remote-live" />
 				</c:when>
 				<c:when test="<%= group.isStagingGroup() %>">
 					<c:if test="<%= Validator.isNotNull(liveFriendlyURL) %>">

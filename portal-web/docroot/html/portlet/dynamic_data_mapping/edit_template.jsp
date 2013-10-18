@@ -142,7 +142,7 @@ if (Validator.isNotNull(structureAvailableFields)) {
 
 						<c:if test="<%= ((template == null) || (template.getClassPK() == 0)) %>">
 							<liferay-ui:icon
-								iconClass="icon-search"
+								iconCssClass="icon-search"
 								label="<%= true %>"
 								linkCssClass="btn"
 								message="select"

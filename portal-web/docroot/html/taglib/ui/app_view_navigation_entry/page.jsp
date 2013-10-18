@@ -41,7 +41,7 @@ else if (!data.containsKey("view-folders")) {
 }
 %>
 
-<aui:nav-item anchorCssClass='<%= "browse-" + cssClass %>' anchorData="<%= data %>" cssClass='<%= "app-view-navigation-entry " + cssClass %>' href="<%= viewURL.toString() %>" iconClass="<%= iconImage %>" label="<%= entryTitle %>" selected="<%= selected %>">
+<aui:nav-item anchorCssClass='<%= "browse-" + cssClass %>' anchorData="<%= data %>" cssClass='<%= "app-view-navigation-entry " + cssClass %>' href="<%= viewURL.toString() %>" iconCssClass="<%= iconImage %>" label="<%= entryTitle %>" selected="<%= selected %>">
 
 	<%
 	request.removeAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);

@@ -96,7 +96,7 @@ for (long defaultTeamId : defaultTeamIds) {
 
 <liferay-ui:icon
 	cssClass="modify-link"
-	iconClass="icon-search"
+	iconCssClass="icon-search"
 	id="selectSiteRoleLink"
 	label="<%= true %>"
 	linkCssClass="btn"
@@ -137,7 +137,7 @@ for (long defaultTeamId : defaultTeamIds) {
 
 <liferay-ui:icon
 	cssClass="modify-link"
-	iconClass="icon-search"
+	iconCssClass="icon-search"
 	id="selectTeamLink"
 	label="<%= true %>"
 	linkCssClass="btn"

@@ -836,7 +836,7 @@
 				<defaultValue>javascript:void(0);</defaultValue>
 			</attribute>
 			<attribute>
-				<name>iconClass</name>
+				<name>iconCssClass</name>
 				<inputType>java.lang.String</inputType>
 				<outputType>java.lang.String</outputType>
 			</attribute>

@@ -34,7 +34,7 @@ String toolbarItem = ParamUtil.getString(request, "toolbarItem");
 				<portlet:param name="redirect" value="<%= viewFileEntryTypesURL %>" />
 			</portlet:renderURL>
 
-			<aui:nav-item href="<%= addFileEntryTypeURL %>" iconClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
+			<aui:nav-item href="<%= addFileEntryTypeURL %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
 		</c:if>
 	</aui:nav>
 

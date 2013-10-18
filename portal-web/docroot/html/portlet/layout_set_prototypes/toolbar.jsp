@@ -33,7 +33,7 @@ String toolbarItem = ParamUtil.getString(request, "toolbarItem");
 				<portlet:param name="backURL" value="<%= viewLayoutSetPrototypesURL %>" />
 			</portlet:renderURL>
 
-			<aui:nav-item href="<%= addLayoutSetPrototypeURL %>" iconClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
+			<aui:nav-item href="<%= addLayoutSetPrototypeURL %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
 		</c:if>
 	</aui:nav>
 </aui:nav-bar>

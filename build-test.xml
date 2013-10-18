@@ -2878,7 +2878,7 @@ custom.sql.function.isnotnull=CONVERT(VARCHAR,?) IS NOT NULL</echo>
 						import org.apache.commons.io.FileUtils;
 
 						Set requiredPluginNamesSet = new HashSet();
-						
+
 						requiredPluginNamesSet.add("marketplace-portlet");
 
 						String[] pluginTypes = {"hook", "layouttpl", "portlet", "theme", "web"};

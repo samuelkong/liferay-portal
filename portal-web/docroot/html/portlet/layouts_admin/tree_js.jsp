@@ -166,7 +166,7 @@ if (!selectableTree) {
 					var cssIcons = {};
 					var total = 0;
 
-					var iconClassName = 'icon-link';
+					var iconCssClassName = 'icon-link';
 
 					var hasChildren = node.hasChildren;
 					var nodeChildren = node.children;
@@ -177,9 +177,9 @@ if (!selectableTree) {
 						(nodeType === 'url')) {
 
 						cssIcons.pages = {
-							iconCollapsed: iconClassName,
-							iconExpanded: iconClassName,
-							iconLeaf: iconClassName
+							iconCollapsed: iconCssClassName,
+							iconExpanded: iconCssClassName,
+							iconLeaf: iconCssClassName
 						};
 					}
 

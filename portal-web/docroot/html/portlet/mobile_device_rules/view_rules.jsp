@@ -56,7 +56,7 @@ portletURL.setParameter("redirect", redirect);
 			<portlet:param name="ruleGroupId" value="<%= String.valueOf(ruleGroupId) %>" />
 		</liferay-portlet:renderURL>
 
-		<aui:nav-item href="<%= addURL %>" iconClass="icon-plus" label="add-classification-rule" />
+		<aui:nav-item href="<%= addURL %>" iconCssClass="icon-plus" label="add-classification-rule" />
 	</aui:nav>
 </aui:nav-bar>
 

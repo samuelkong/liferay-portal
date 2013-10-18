@@ -41,7 +41,7 @@ java.lang.String cssClass = GetterUtil.getString((java.lang.String)request.getAt
 java.util.Map data = (java.util.Map)request.getAttribute("aui:nav-item:data");
 boolean dropdown = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:nav-item:dropdown")));
 java.lang.String href = GetterUtil.getString((java.lang.Object)request.getAttribute("aui:nav-item:href"), "javascript:void(0);");
-java.lang.String iconClass = GetterUtil.getString((java.lang.String)request.getAttribute("aui:nav-item:iconClass"));
+java.lang.String iconCssClass = GetterUtil.getString((java.lang.String)request.getAttribute("aui:nav-item:iconCssClass"));
 java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribute("aui:nav-item:id"));
 java.lang.String label = GetterUtil.getString((java.lang.String)request.getAttribute("aui:nav-item:label"));
 boolean selected = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:nav-item:selected")));
@@ -60,7 +60,7 @@ _updateOptions(_options, "cssClass", cssClass);
 _updateOptions(_options, "data", data);
 _updateOptions(_options, "dropdown", dropdown);
 _updateOptions(_options, "href", href);
-_updateOptions(_options, "iconClass", iconClass);
+_updateOptions(_options, "iconCssClass", iconCssClass);
 _updateOptions(_options, "id", id);
 _updateOptions(_options, "label", label);
 _updateOptions(_options, "selected", selected);

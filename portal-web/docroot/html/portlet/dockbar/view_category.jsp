@@ -189,7 +189,7 @@ if (!categories.isEmpty() || !portlets.isEmpty()) {
 								portletItemData.put("title", HtmlUtil.escape(portletItem.getName()));
 							%>
 
-								<aui:nav-item cssClass="lfr-content-item lfr-archived-setup" data="<%= portletItemData %>" href="" iconClass='<%= portletInstanceable ? "icon-th-large" : "icon-stop" %>' label="<%= HtmlUtil.escape(portletItem.getName()) %>">
+								<aui:nav-item cssClass="lfr-content-item lfr-archived-setup" data="<%= portletItemData %>" href="" iconCssClass='<%= portletInstanceable ? "icon-th-large" : "icon-stop" %>' label="<%= HtmlUtil.escape(portletItem.getName()) %>">
 									<span <%= AUIUtil.buildData(portletItemData) %> class='add-content-item <%= portletLocked ? "lfr-portlet-used" : StringPool.BLANK %>'>
 										<liferay-ui:message key="add" />
 									</span>

@@ -39,7 +39,7 @@ Boolean iconMenuSingleIcon = (Boolean)request.getAttribute("liferay-ui:icon-menu
 
 String alt = (String)request.getAttribute("liferay-ui:icon:alt");
 String ariaRole = (String)request.getAttribute("liferay-ui:icon:ariaRole");
-String iconClass = (String)request.getAttribute("liferay-ui:icon:iconClass");
+String iconCssClass = (String)request.getAttribute("liferay-ui:icon:iconCssClass");
 String id = (String)request.getAttribute("liferay-ui:icon:id");
 String image = (String)request.getAttribute("liferay-ui:icon:image");
 String imageHover = (String)request.getAttribute("liferay-ui:icon:imageHover");

@@ -126,8 +126,8 @@ boolean urlIsNotNull = Validator.isNotNull(url);
 					</c:choose>
 				</c:when>
 				<c:otherwise>
-					<c:if test="<%= Validator.isNotNull(iconClass) %>">
-						<i class="<%= iconClass %>"></i>
+					<c:if test="<%= Validator.isNotNull(iconCssClass) %>">
+						<i class="<%= iconCssClass %>"></i>
 					</c:if>
 				</c:otherwise>
 			</c:choose>
