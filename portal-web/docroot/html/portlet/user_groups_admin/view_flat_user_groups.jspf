@@ -40,9 +40,12 @@ UserGroupSearch userGroupSearch = new UserGroupSearch(renderRequest, portletURL)
 				<aui:nav-item href="<%= addUsergroupURL %>" iconCssClass="icon-plus" label="add" />
 			</c:if>
 		</aui:nav>
-
-		<aui:nav-bar-search cssClass="pull-right" file="/html/portlet/user_groups_admin/user_group_search.jsp" searchContainer="<%= userGroupSearch %>" />
 	</aui:nav-bar>
+
+	<liferay-ui:search-form
+		page="/html/portlet/user_groups_admin/user_group_search.jsp"
+		searchContainer="<%= userGroupSearch %>"
+	/>
 
 	<%
 	UserGroupDisplayTerms searchTerms = (UserGroupDisplayTerms)searchContainer.getSearchTerms();
