@@ -87,7 +87,7 @@
 				for (String type : PropsUtil.getArray(PropsKeys.SOCIAL_BOOKMARK_TYPES)) {
 				%>
 
-						<aui:input checked="<%= ArrayUtil.contains(socialBookmarksTypesArray, type) %>" label="<%= type %>" name="preferences--socialBookmarksTypes--" type="checkbox" value="<%= type %>" />
+						<aui:input checked="<%= ArrayUtil.contains(socialBookmarksTypesArray, type) %>" ignoreRequestValue="<%= true %>" includeHiddenField="<%= false %>" label="<%= type %>" name="preferences--socialBookmarksTypes--" type="checkbox" value="<%= type %>" />
 
 				<%
 				}
