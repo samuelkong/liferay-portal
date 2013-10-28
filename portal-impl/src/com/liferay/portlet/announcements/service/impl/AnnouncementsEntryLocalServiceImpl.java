@@ -376,7 +376,7 @@ public class AnnouncementsEntryLocalServiceImpl
 		AnnouncementsEntry entry =
 			announcementsEntryPersistence.findByPrimaryKey(entryId);
 
-		entry.setModifiedDate(new Date());
+		entry.setModifiedDate(now);
 		entry.setTitle(title);
 		entry.setContent(content);
 		entry.setUrl(url);
