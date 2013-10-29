@@ -74,6 +74,17 @@ public class AssetCategoryPropertyServiceImpl
 			companyId, key);
 	}
 
+	public void updateCategoryProperty(AssetCategoryProperty categoryProperty)
+		throws PortalException, SystemException {
+
+		AssetCategoryPermission.check(
+				getPermissionChecker(), categoryProperty.getCategoryId(),
+				ActionKeys.UPDATE);
+
+		assetCategoryPropertyLocalService.updateCategoryProperty(
+			categoryProperty);
+	}
+
 	@Override
 	public AssetCategoryProperty updateCategoryProperty(
 			long categoryPropertyId, String key, String value)

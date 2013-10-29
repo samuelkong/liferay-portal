@@ -569,7 +569,7 @@ public class AssetCategoryLocalServiceImpl
 				}
 				else if (updateCategoryProperty) {
 					assetCategoryPropertyLocalService.
-						updateAssetCategoryProperty(oldCategoryProperty);
+						updateCategoryProperty(oldCategoryProperty);
 				}
 			}
 		}

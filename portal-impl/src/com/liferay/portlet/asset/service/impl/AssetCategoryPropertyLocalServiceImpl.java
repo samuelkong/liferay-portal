@@ -128,6 +128,16 @@ public class AssetCategoryPropertyLocalServiceImpl
 		return assetCategoryPropertyFinder.findByG_K(groupId, key);
 	}
 
+	public void updateCategoryProperty(AssetCategoryProperty categoryProperty)
+		throws PortalException, SystemException {
+
+		validate(categoryProperty.getKey(), categoryProperty.getValue());
+
+		categoryProperty.setModifiedDate(new Date());
+
+		assetCategoryPropertyPersistence.update(categoryProperty);
+	}
+
 	@Override
 	public AssetCategoryProperty updateCategoryProperty(
 			long categoryPropertyId, String key, String value)
