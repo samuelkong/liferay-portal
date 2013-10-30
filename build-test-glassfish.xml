@@ -91,7 +91,6 @@ app.server.glassfish.dir=${app.server.parent.dir}/${bundled.dir.name}</echo>
 		<ant dir="portal-impl" target="deploy-properties" inheritAll="false" />
 
 		<delete dir="${liferay.home}/data" />
-		<delete dir="${liferay.home}/deploy" />
 		<delete dir="${liferay.home}/logs" />
 
 		<if>
