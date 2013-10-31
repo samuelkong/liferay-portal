@@ -33,15 +33,19 @@
 
 		<record action="start" name="log" />
 
+		<condition property="file.suffix.cmd" value=".cmd" else=".sh">
+			<contains string="${os.name}" substring="Windows" casesensitive="false" />
+		</condition>
+
 		<antcall target="run-simple-server">
 			<param name="simple.server.dir" value="${app.server.weblogic.dir}" />
 			<param name="simple.server.bin.dir" value="${app.server.weblogic.bin.dir}" />
 			<param name="simple.server.deploy.dir" value="${app.server.weblogic.deploy.dir}" />
 			<param name="simple.server.lib.global.dir" value="${app.server.weblogic.lib.global.dir}" />
 			<param name="simple.server.portal.dir" value="${app.server.weblogic.portal.dir}" />
-			<param name="simple.server.start.executable" value="../startWebLogic.cmd" />
+			<param name="simple.server.start.executable" value="../startWebLogic.${file.suffix.cmd}" />
 			<param name="simple.server.start.executable.arg.line" value="" />
-			<param name="simple.server.stop.executable" value="../stopWebLogic.cmd" />
+			<param name="simple.server.stop.executable" value="../stopWebLogic.${file.suffix.cmd}" />
 			<param name="simple.server.stop.executable.arg.line" value="" />
 		</antcall>
 
