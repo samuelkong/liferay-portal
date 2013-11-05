@@ -156,13 +156,9 @@ if (fileEntryTypeId >= 0) {
 
 	Hits hits = indexer.search(searchContext);
 
-	total = hits.getLength();
-
-	searchContainer.setTotal(total);
-
 	Document[] docs = hits.getDocs();
 
-	results = new ArrayList(docs.length);
+	results = new ArrayList();
 
 	for (Document doc : docs) {
 		long fileEntryId = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
@@ -171,6 +167,10 @@ if (fileEntryTypeId >= 0) {
 
 		try {
 			fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+
+			if (fileEntry.getFileVersion().getStatus() == WorkflowConstants.STATUS_IN_TRASH) {
+				continue;
+			}
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -182,6 +182,10 @@ if (fileEntryTypeId >= 0) {
 
 		results.add(fileEntry);
 	}
+
+	total = results.size();
+
+	searchContainer.setTotal(total);
 }
 else {
 	if (navigation.equals("home")) {
