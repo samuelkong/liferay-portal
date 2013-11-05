@@ -171,6 +171,10 @@ if (fileEntryTypeId >= 0) {
 
 		try {
 			fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+
+			if (fileEntry.getFileVersion().getStatus() == WorkflowConstants.STATUS_IN_TRASH) {
+				continue;
+			}
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
