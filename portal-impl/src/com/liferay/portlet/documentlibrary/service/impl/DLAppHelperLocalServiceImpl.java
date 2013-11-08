@@ -1648,6 +1648,11 @@ public class DLAppHelperLocalServiceImpl
 			SocialActivityConstants.TYPE_MOVE_TO_TRASH,
 			extraDataJSONObject.toString(), 0);
 
+		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			DLFileEntry.class);
+
+		indexer.reindex(dlFileEntry);
+
 		// Workflow
 
 		if (oldStatus == WorkflowConstants.STATUS_PENDING) {
