@@ -91,7 +91,14 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 		keyProperty="organizationId"
 		modelVar="organization"
 	>
+		<liferay-portlet:renderURL portletName="<%= PortletKeys.USERS_ADMIN %>" varImpl="rowURL">
+			<portlet:param name="struts_action" value="/users_admin/view" />
+			<portlet:param name="redirect" value="<%= currentURL %>" />
+			<portlet:param name="organizationId" value="<%= String.valueOf(organization.getOrganizationId()) %>" />
+		</liferay-portlet:renderURL>
+
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="name"
 			orderable="<%= true %>"
 		>
@@ -105,6 +112,7 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 
 		<liferay-ui:search-container-column-text
 			buffer="buffer"
+			href="<%= rowURL %>"
 			name="parent-organization"
 		>
 
@@ -123,23 +131,27 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="type"
 			orderable="<%= true %>"
 			value="<%= LanguageUtil.get(pageContext, organization.getType()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="city"
 			value="<%= HtmlUtil.escape(organization.getAddress().getCity()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="region"
 		>
 			<liferay-ui:write bean="<%= organization %>" property="region" />
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="country"
 		>
 			<liferay-ui:write bean="<%= organization %>" property="country" />
