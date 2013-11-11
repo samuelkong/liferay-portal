@@ -91,18 +91,26 @@ userGroupSearch.setEmptyResultsMessage(emptyResultsMessage);
 		keyProperty="userGroupId"
 		modelVar="userGroup"
 	>
+		<liferay-portlet:renderURL portletName="<%= PortletKeys.USER_GROUPS_ADMIN %>" varImpl="rowURL">
+			<portlet:param name="struts_action" value="/user_groups_admin/edit_user_group" />
+			<portlet:param name="redirect" value="<%= currentURL %>" />
+			<portlet:param name="userGroupId" value="<%= String.valueOf(userGroup.getUserGroupId()) %>" />
+		</liferay-portlet:renderURL>
+
 		<liferay-ui:search-container-row-parameter
 			name="group"
 			value="<%= group %>"
 		/>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="name"
 			orderable="<%= true %>"
 			property="name"
 		/>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="description"
 			orderable="<%= true %>"
 			property="description"
@@ -111,6 +119,7 @@ userGroupSearch.setEmptyResultsMessage(emptyResultsMessage);
 		<c:if test='<%= tabs1.equals("summary") || tabs2.equals("current") %>'>
 			<liferay-ui:search-container-column-text
 				buffer="buffer"
+				href="<%= rowURL %>"
 				name="site-roles"
 			>
 

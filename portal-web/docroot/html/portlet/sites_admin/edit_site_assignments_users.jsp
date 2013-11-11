@@ -111,6 +111,12 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 		modelVar="user2"
 		rowIdProperty="screenName"
 	>
+		<liferay-portlet:renderURL portletName="<%= PortletKeys.USERS_ADMIN %>" varImpl="rowURL">
+			<portlet:param name="struts_action" value="/users_admin/edit_user" />
+			<portlet:param name="redirect" value="<%= currentURL %>" />
+			<portlet:param name="p_u_i_d" value="<%= String.valueOf(user2.getUserId()) %>" />
+		</liferay-portlet:renderURL>
+
 		<liferay-ui:search-container-row-parameter
 			name="group"
 			value="<%= group %>"
@@ -118,6 +124,7 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 
 		<liferay-ui:search-container-column-text
 			buffer="buffer"
+			href="<%= rowURL %>"
 			name="name"
 		>
 
@@ -157,6 +164,7 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
+			href="<%= rowURL %>"
 			name="screen-name"
 			orderable="<%= true %>"
 			property="screenName"
@@ -165,6 +173,7 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 		<c:if test='<%= tabs1.equals("summary") || tabs2.equals("current") %>'>
 			<liferay-ui:search-container-column-text
 				buffer="buffer"
+				href="<%= rowURL %>"
 				name="site-roles-and-teams"
 			>
 
