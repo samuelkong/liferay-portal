@@ -1023,8 +1023,7 @@ public class DLAppHelperLocalServiceImpl
 
 		dlFileEntryPersistence.update(dlFileEntry);
 
-		FileVersion fileVersion = new LiferayFileVersion(
-			dlFileEntry.getLatestFileVersion(true));
+		FileVersion fileVersion = fileEntry.getFileVersion();
 
 		TrashEntry trashEntry = trashEntryLocalService.getEntry(
 			DLFileEntryConstants.getClassName(), fileEntry.getFileEntryId());
@@ -1664,7 +1663,7 @@ public class DLAppHelperLocalServiceImpl
 		dlFileVersions = ListUtil.sort(
 			dlFileVersions, new FileVersionVersionComparator());
 
-		FileVersion fileVersion = new LiferayFileVersion(dlFileVersions.get(0));
+		FileVersion fileVersion = fileEntry.getFileVersion();
 
 		int oldStatus = fileVersion.getStatus();
 
@@ -1697,11 +1696,11 @@ public class DLAppHelperLocalServiceImpl
 		List<ObjectValuePair<Long, Integer>> dlFileVersionStatusOVPs =
 			new ArrayList<ObjectValuePair<Long, Integer>>();
 
+		DLFileVersion oldDLFileVersion = (DLFileVersion)fileVersion.getModel();
+
+		oldDLFileVersionStatus = oldDLFileVersion.getStatus();
+
 		if ((dlFileVersions != null) && !dlFileVersions.isEmpty()) {
-			DLFileVersion oldDLFileVersion = dlFileVersions.get(0);
-
-			oldDLFileVersionStatus = oldDLFileVersion.getStatus();
-
 			dlFileVersionStatusOVPs = getDlFileVersionStatuses(dlFileVersions);
 		}
 
