@@ -74,6 +74,10 @@ td {
 	}
 }
 
+.aui .table-sortable-column {
+	cursor: default;
+}
+
 .lfr-grid {
 	width: 100%;
 }
