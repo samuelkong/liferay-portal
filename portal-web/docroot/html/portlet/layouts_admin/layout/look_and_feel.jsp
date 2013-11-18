@@ -89,7 +89,7 @@ else {
 		taglibLabel = LanguageUtil.get(pageContext, "use-the-same-look-and-feel-of-the-pages-in-which-this-template-is-used");
 	}
 	else {
-		taglibLabel = LanguageUtil.format(pageContext, "use-the-same-look-and-feel-of-the-x", rootNodeNameLink);
+		taglibLabel = LanguageUtil.format(pageContext, "use-the-same-look-and-feel-of-the-x", StringUtil.trim(rootNodeNameLink));
 	}
 	%>
 
