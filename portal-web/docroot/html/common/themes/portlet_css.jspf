@@ -330,6 +330,12 @@ String[] finalCSSArray = (String[])finalCSS.toArray(new String[0]);
 
 String finalCSSString = StringUtil.merge(finalCSSArray, ";\n");
 
+finalCSSString = StringUtil.replace(
+	finalCSSString,
+	new String[] {"<", ">", "expression("},
+	new String[] {"&lt;", "&gt;", ""}
+);
+
 out.print(finalCSSString);
 
 out.print("\n}\n");
