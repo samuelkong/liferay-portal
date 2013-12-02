@@ -435,8 +435,9 @@ public class JournalArticleIndexer extends BaseIndexer {
 			Collection<Document> documents = getArticleVersions(article);
 
 			for (Document document : documents) {
-				SearchEngineUtil.deleteDocument(getSearchEngineId(),
-					article.getCompanyId(), document.get(Field.UID));
+				SearchEngineUtil.deleteDocument(
+					getSearchEngineId(), article.getCompanyId(),
+					document.get(Field.UID));
 			}
 
 			return;
