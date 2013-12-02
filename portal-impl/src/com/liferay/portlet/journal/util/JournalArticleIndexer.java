@@ -428,15 +428,17 @@ public class JournalArticleIndexer extends BaseIndexer {
 	protected void doReindex(Object obj) throws Exception {
 		JournalArticle article = (JournalArticle)obj;
 
-		if (!article.isIndexable() ||
-			(PortalUtil.getClassNameId(DDMStructure.class) ==
-				article.getClassNameId())) {
+		if ((!article.isIndexable() ||
+			 (PortalUtil.getClassNameId(DDMStructure.class) ==
+				article.getClassNameId())) && article.isApproved()) {
 
-			Document document = getDocument(article);
+			Collection<Document> documents = getArticleVersions(article);
 
-			SearchEngineUtil.deleteDocument(
-				getSearchEngineId(), article.getCompanyId(),
-				document.get(Field.UID));
+			for (Document document : documents) {
+				SearchEngineUtil.deleteDocument(
+					getSearchEngineId(), article.getCompanyId(),
+					document.get(Field.UID));
+			}
 
 			return;
 		}
