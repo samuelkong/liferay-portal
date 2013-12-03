@@ -15,4 +15,10 @@
 			padding-bottom: 0.5em;
 		}
 	}
+
+	.test-settings-table {
+		tr th {
+			text-align: left;
+		}
+	}
 }

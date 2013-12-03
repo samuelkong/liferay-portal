@@ -398,6 +398,7 @@ for (int i = 0 ; i < groupMappingArray.length ; i++) {
 				var dialog = Liferay.Util.Window.getWindow(
 					{
 						dialog: {
+							cssClass: 'portlet-users-admin',
 							destroyOnHide: true
 						},
 						title: '<%= UnicodeLanguageUtil.get(pageContext, "ldap") %>'
