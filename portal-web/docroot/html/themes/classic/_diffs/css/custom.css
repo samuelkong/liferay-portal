@@ -307,6 +307,13 @@ hr, .separator {
 	zoom: 1;
 }
 
+/* ---------- Set password reminder portlet ---------- */
+
+.update-reminder-query .reminder-query-answer input,
+.update-reminder-query .reminder-query-question select {
+	width: 350px;
+}
+
 /* ---------- Footer ---------- */
 
 #footer {
