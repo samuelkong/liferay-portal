@@ -159,7 +159,7 @@ ShoppingItem[] prevAndNext = ShoppingItemServiceUtil.getItemsPrevAndNext(item.ge
 
 			<%
 			for (int i = 0; i < itemFields.length; i++) {
-				ShoppingItemField itemField = itemFields[i];
+				ShoppingItemField itemField = itemFields[i].toEscapedModel();
 
 				String fieldName = itemField.getName();
 				String[] fieldValues = itemField.getValuesArray();
@@ -174,7 +174,7 @@ ShoppingItem[] prevAndNext = ShoppingItemServiceUtil.getItemsPrevAndNext(item.ge
 						for (int j = 0; j < fieldValues.length; j++) {
 						%>
 
-							<aui:option label="<%= fieldValues[j] %>" />
+							<aui:option label="<%= HtmlUtil.escape(fieldValues[j]) %>" />
 
 						<%
 						}
@@ -225,7 +225,7 @@ ShoppingItem[] prevAndNext = ShoppingItemServiceUtil.getItemsPrevAndNext(item.ge
 
 		<%
 		for (int i = 0; i < itemFields.length; i++) {
-			ShoppingItemField itemField = itemFields[i];
+			ShoppingItemField itemField = itemFields[i].toEscapedModel();
 
 			String fieldName = itemField.getName();
 			String[] fieldValues = itemField.getValuesArray();
