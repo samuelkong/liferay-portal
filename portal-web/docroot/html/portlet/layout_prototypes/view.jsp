@@ -38,12 +38,12 @@ portletURL.setParameter("struts_action", "/layout_prototypes/view");
 	String orderByType = ParamUtil.getString(request, "orderByType");
 
 	if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
-		portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-col", orderByCol);
-		portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-type", orderByType);
+		portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "layout-prototypes-order-by-col", orderByCol);
+		portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "layout-prototypes-order-by-type", orderByType);
 	}
 	else {
-		orderByCol = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-col", "name");
-		orderByType = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-type", "asc");
+		orderByCol = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "layout-prototypes-order-by-col", "name");
+		orderByType = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "layout-prototypes-order-by-type", "asc");
 	}
 
 	OrderByComparator obc = OrderByComparatorFactoryUtil.create(LayoutPrototypeModelImpl.TABLE_NAME, orderByCol, orderByType.equals("asc"));
