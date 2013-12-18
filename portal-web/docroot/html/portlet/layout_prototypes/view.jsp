@@ -20,20 +20,6 @@
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("struts_action", "/layout_prototypes/view");
-
-String orderByCol = ParamUtil.getString(request, "orderByCol");
-String orderByType = ParamUtil.getString(request, "orderByType");
-
-if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
-	portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-col", orderByCol);
-	portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-type", orderByType);
-}
-else {
-	orderByCol = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-col", "name");
-	orderByType = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-type", "asc");
-}
-
-OrderByComparator obc = OrderByComparatorFactoryUtil.create(LayoutPrototypeModelImpl.TABLE_NAME, orderByCol, orderByType.equals("asc"));
 %>
 
 <liferay-ui:error exception="<%= RequiredLayoutPrototypeException.class %>" message="you-cannot-delete-page-templates-that-are-used-by-a-page" />
@@ -44,6 +30,24 @@ OrderByComparator obc = OrderByComparatorFactoryUtil.create(LayoutPrototypeModel
 	<liferay-portlet:renderURLParams varImpl="portletURL" />
 	<aui:input name="<%= Constants.CMD %>" type="hidden" />
 	<aui:input name="redirect" type="hidden" value="<%= portletURL.toString() %>" />
+
+	<%
+	PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+	String orderByCol = ParamUtil.getString(request, "orderByCol");
+	String orderByType = ParamUtil.getString(request, "orderByType");
+
+	if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
+		portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-col", orderByCol);
+		portalPreferences.setValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-type", orderByType);
+	}
+	else {
+		orderByCol = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-col", "name");
+		orderByType = portalPreferences.getValue(PortletKeys.LAYOUT_PROTOTYPE, "entries-order-by-type", "asc");
+	}
+
+	OrderByComparator obc = OrderByComparatorFactoryUtil.create(LayoutPrototypeModelImpl.TABLE_NAME, orderByCol, orderByType.equals("asc"));
+	%>
 
 	<liferay-ui:search-container
 		emptyResultsMessage="no-page-templates-were-found"
