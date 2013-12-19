@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.util.PortalUtil;
@@ -347,12 +348,13 @@ public class JournalArticleIndexer extends BaseIndexer {
 		document.addKeyword("ddmTemplateKey", article.getTemplateId());
 		document.addDate("displayDate", article.getDisplayDate());
 
-		JournalArticle latestIndexableArticle =
-			JournalArticleLocalServiceUtil.fetchLatestIndexableArticle(
-				article.getResourcePrimKey());
+		JournalArticle latestApprovedArticle =
+			JournalArticleLocalServiceUtil.fetchLatestArticle(
+				article.getResourcePrimKey(), WorkflowConstants.STATUS_APPROVED,
+				true);
 
-		if ((latestIndexableArticle != null) &&
-			(article.getId() == latestIndexableArticle.getId())) {
+		if ((latestApprovedArticle != null) &&
+			(article.getId() == latestApprovedArticle.getId())) {
 
 			document.addKeyword("head", true);
 		}
@@ -437,8 +439,6 @@ public class JournalArticleIndexer extends BaseIndexer {
 			SearchEngineUtil.deleteDocument(
 				getSearchEngineId(), article.getCompanyId(),
 				document.get(Field.UID));
-
-			return;
 		}
 
 		reindexArticleVersions(article);
