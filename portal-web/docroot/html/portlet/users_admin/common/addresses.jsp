@@ -65,7 +65,7 @@ else {
 <h3><liferay-ui:message key="addresses" /></h3>
 
 <div class="alert alert-info">
-	<liferay-ui:message key="street-1-and-city-are-required-fields.-postal-code-could-be-required-in-some-countries" />
+	<liferay-ui:message key="postal-code-could-be-required-in-some-countries" />
 </div>
 
 <liferay-ui:error exception="<%= AddressCityException.class %>" message="please-enter-a-valid-city" />
