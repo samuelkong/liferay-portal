@@ -102,6 +102,10 @@ public class HtmlUtil {
 		return getHtml().toInputSafe(html);
 	}
 
+	public static String toVariableNameSafe(String html) {
+		return getHtml().toVariableNameSafe(html);
+	}
+
 	public static String unescape(String html) {
 		return getHtml().unescape(html);
 	}
