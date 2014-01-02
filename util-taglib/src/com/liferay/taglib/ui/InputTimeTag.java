@@ -14,6 +14,7 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.Date;
@@ -98,14 +99,23 @@ public class InputTimeTag extends IncludeTag {
 	protected void setAttributes(HttpServletRequest request) {
 		request.setAttribute("liferay-ui:input-time:amPmParam", _amPmParam);
 		request.setAttribute(
+				"liferay-ui:input-time:amPmParamId",
+				HtmlUtil.toVariableNameSafe(_amPmParam));
+		request.setAttribute(
 			"liferay-ui:input-time:amPmValue", String.valueOf(_amPmValue));
 		request.setAttribute("liferay-ui:input-time:cssClass", _cssClass);
 		request.setAttribute(
 			"liferay-ui:input-time:dateParam", String.valueOf(_dateParam));
+		request.setAttribute(
+				"liferay-ui:input-time:dateParamId",
+				HtmlUtil.toVariableNameSafe(_dateParam));
 		request.setAttribute("liferay-ui:input-time:dateValue", _dateValue);
 		request.setAttribute(
 			"liferay-ui:input-time:disabled", String.valueOf(_disabled));
 		request.setAttribute("liferay-ui:input-time:hourParam", _hourParam);
+		request.setAttribute(
+				"liferay-ui:input-time:hourParamId",
+				HtmlUtil.toVariableNameSafe(_hourParam));
 		request.setAttribute(
 			"liferay-ui:input-time:hourValue", String.valueOf(_hourValue));
 		request.setAttribute(
@@ -113,8 +123,13 @@ public class InputTimeTag extends IncludeTag {
 			String.valueOf(_minuteInterval));
 		request.setAttribute("liferay-ui:input-time:minuteParam", _minuteParam);
 		request.setAttribute(
+				"liferay-ui:input-time:minuteParamId",
+				HtmlUtil.toVariableNameSafe(_minuteParam));
+		request.setAttribute(
 			"liferay-ui:input-time:minuteValue", String.valueOf(_minuteValue));
 		request.setAttribute("liferay-ui:input-time:name", _name);
+		request.setAttribute(
+			"liferay-ui:input-time:nameId", HtmlUtil.toVariableNameSafe(_name));
 	}
 
 	private static final String _PAGE = "/html/taglib/ui/input_time/page.jsp";

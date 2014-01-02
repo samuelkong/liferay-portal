@@ -100,7 +100,7 @@ public class HtmlImpl implements Html {
 
 					break;
 
-				case '\u00bb': // '�'
+				case '\u00bb': // '锟�
 					replacement = "&#187;";
 
 					break;
@@ -409,6 +409,16 @@ public class HtmlImpl implements Html {
 			text,
 			new String[] {"&", "\""},
 			new String[] {"&amp;", "&quot;"});
+	}
+
+	@Override
+	public String toVariableNameSafe(String text) {
+		if (Validator.isNull(text)) {
+			return text;
+		}
+		else {
+			return text.replaceAll("[^a-z0-9_]", text);
+		}
 	}
 
 	@Override
