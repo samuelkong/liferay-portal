@@ -404,6 +404,15 @@ public class HtmlImpl implements Html {
 	}
 
 	@Override
+	public String toAttributeSafe(String text) {
+		if (Validator.isNull(text)) {
+			return text;
+		}
+
+		return text.replaceAll("[^\\w-]", StringPool.DASH);
+	}
+
+	@Override
 	public String toInputSafe(String text) {
 		return StringUtil.replace(
 			text,
