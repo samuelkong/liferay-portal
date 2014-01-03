@@ -98,6 +98,10 @@ public class HtmlUtil {
 		return getHtml().stripHtml(html);
 	}
 
+	public static String toAttributeSafe(String html) {
+		return getHtml().toAttributeSafe(html);
+	}
+
 	public static String toInputSafe(String html) {
 		return getHtml().toInputSafe(html);
 	}
