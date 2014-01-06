@@ -191,12 +191,19 @@ public class LoginAction extends PortletAction {
 		String login = ParamUtil.getString(actionRequest, "login");
 		String password = actionRequest.getParameter("password");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
+		boolean signInNotByPortlet = ParamUtil.getBoolean(
+			actionRequest, "signInNotByPortlet");
+
+		String authType = null;
 
 		if (!themeDisplay.isSignedIn()) {
-			PortletPreferences portletPreferences =
-				PortletPreferencesFactoryUtil.getPortletSetup(actionRequest);
+			if (!signInNotByPortlet) {
+				PortletPreferences portletPreferences =
+					PortletPreferencesFactoryUtil.getPortletSetup(
+						actionRequest);
 
-			String authType = portletPreferences.getValue("authType", null);
+				authType = portletPreferences.getValue("authType", null);
+			}
 
 			LoginUtil.login(
 				request, response, login, password, rememberMe, authType);
