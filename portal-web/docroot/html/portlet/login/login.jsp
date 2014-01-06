@@ -16,6 +16,10 @@
 
 <%@ include file="/html/portlet/login/init.jsp" %>
 
+<%
+String signInNotByPortlet = ParamUtil.getString(request, "signInNotByPortlet");
+%>
+
 <c:choose>
 	<c:when test="<%= themeDisplay.isSignedIn() %>">
 
@@ -60,6 +64,7 @@
 			<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
 			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 			<aui:input name="doActionAfterLogin" type="hidden" value="<%= portletName.equals(PortletKeys.FAST_LOGIN) ? true : false %>" />
+			<aui:input name="signInNotByPortlet" type="hidden" value="<%= signInNotByPortlet %>" />
 
 			<c:choose>
 				<c:when test='<%= SessionMessages.contains(request, "userAdded") %>'>
