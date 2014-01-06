@@ -14,6 +14,7 @@
 
 package com.liferay.portal.action;
 
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.WindowStateFactory;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -135,6 +136,20 @@ public class LoginAction extends Action {
 			PortletURL portletURL = PortletURLFactoryUtil.create(
 				request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
+
+			String windowState = ParamUtil.getString(request, "windowState");
+
+			if (windowState.equals(LiferayWindowState.EXCLUSIVE.toString())) {
+				portletURL.setParameter(
+					"signInNotByPortlet", Boolean.TRUE.toString());
+			}
+			else {
+				String signInNotByPortlet = ParamUtil.getString(
+					request, "signInNotByPortlet");
+
+				portletURL.setParameter(
+					"signInNotByPortlet", signInNotByPortlet);
+			}
 
 			portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 			portletURL.setParameter("struts_action", "/login/login");

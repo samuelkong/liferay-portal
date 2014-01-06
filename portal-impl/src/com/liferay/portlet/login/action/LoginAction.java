@@ -29,11 +29,8 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.AuthException;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.struts.PortletAction;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
@@ -194,26 +191,18 @@ public class LoginAction extends PortletAction {
 		String login = ParamUtil.getString(actionRequest, "login");
 		String password = actionRequest.getParameter("password");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
+		boolean signInNotByPortlet = ParamUtil.getBoolean(
+			actionRequest, "signInNotByPortlet");
 
 		String authType = null;
 
 		if (!themeDisplay.isSignedIn()) {
-			if (!themeDisplay.isStateExclusive() &&
-				!themeDisplay.isStateMaximized() &&
-				!themeDisplay.isStatePopUp()) {
-					PortletPreferences portletPreferences =
-						PortletPreferencesFactoryUtil.getPortletSetup(
-							actionRequest);
+			if (!signInNotByPortlet) {
+				PortletPreferences portletPreferences =
+					PortletPreferencesFactoryUtil.getPortletSetup(
+						actionRequest);
 
-					authType = portletPreferences.getValue("authType", null);
-			}
-			else {
-				User user = themeDisplay.getUser();
-
-				Company company = CompanyLocalServiceUtil.getCompanyById(
-					user.getCompanyId());
-
-				authType = company.getAuthType();
+				authType = portletPreferences.getValue("authType", null);
 			}
 
 			LoginUtil.login(
