@@ -269,9 +269,13 @@ if (organization != null) {
 						<liferay-ui:panel collapsible="<%= true %>" extended="<%= true %>" id="usersAdminOrganizationsPanel" persistState="<%= true %>" title="<%= organizationsPanelTitle %>">
 
 							<%
+							RowChecker rowChecker = new RowChecker(renderResponse);
+
+							rowChecker.setRowIds("rowIdsOrganizationCheckbox");
+
 							SearchContainer searchContainer = new OrganizationSearch(renderRequest, "cur1", currentURLObj);
 
-							searchContainer.setRowChecker(new RowChecker(renderResponse));
+							searchContainer.setRowChecker(rowChecker);
 							%>
 
 							<liferay-ui:search-container
