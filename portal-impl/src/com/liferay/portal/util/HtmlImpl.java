@@ -412,6 +412,16 @@ public class HtmlImpl implements Html {
 	}
 
 	@Override
+	public String toWordCharacters(String text) {
+
+		if (Validator.isNull(text)) {
+			return text;
+		}
+
+		return text.replaceAll("[^\\w]", StringPool.UNDERLINE);
+	}
+
+	@Override
 	public String unescape(String text) {
 		if (text == null) {
 			return null;

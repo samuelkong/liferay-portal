@@ -102,6 +102,10 @@ public class HtmlUtil {
 		return getHtml().toInputSafe(html);
 	}
 
+	public static String toWordCharacters(String html) {
+		return getHtml().toWordCharacters(html);
+	}
+
 	public static String unescape(String html) {
 		return getHtml().unescape(html);
 	}

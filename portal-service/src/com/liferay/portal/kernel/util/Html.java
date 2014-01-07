@@ -58,6 +58,8 @@ public interface Html {
 
 	public String toInputSafe(String text);
 
+	public String toWordCharacters(String text);
+
 	public String unescape(String text);
 
 	public String unescapeCDATA(String text);
