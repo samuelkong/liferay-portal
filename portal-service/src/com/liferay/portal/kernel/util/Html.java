@@ -50,6 +50,8 @@ public interface Html {
 
 	public String replaceNewLine(String html);
 
+	public String replaceNonwordCharacters(String text);
+
 	public String stripBetween(String text, String tag);
 
 	public String stripComments(String text);

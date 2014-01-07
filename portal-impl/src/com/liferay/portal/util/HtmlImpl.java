@@ -343,6 +343,15 @@ public class HtmlImpl implements Html {
 	}
 
 	@Override
+	public String replaceNonwordCharacters(String text) {
+		if (Validator.isNull(text)) {
+			return text;
+		}
+
+		return text.replaceAll("[^\\w]", StringPool.UNDERLINE);
+	}
+
+	@Override
 	public String stripBetween(String text, String tag) {
 		return StringUtil.stripBetween(text, "<" + tag, "</" + tag + ">");
 	}

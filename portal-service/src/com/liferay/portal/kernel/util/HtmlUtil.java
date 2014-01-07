@@ -86,6 +86,10 @@ public class HtmlUtil {
 		return getHtml().replaceNewLine(html);
 	}
 
+	public static String replaceNonwordCharacters(String html) {
+		return getHtml().replaceNonwordCharacters(html);
+	}
+
 	public static String stripBetween(String html, String tag) {
 		return getHtml().stripBetween(html, tag);
 	}
