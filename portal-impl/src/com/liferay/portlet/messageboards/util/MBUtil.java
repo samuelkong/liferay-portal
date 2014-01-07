@@ -290,12 +290,14 @@ public class MBUtil {
 		sb.append(StringPool.SPACE);
 
 		for (MBCategory curCategory : categories) {
-			sb.append(StringPool.RAQUO);
+			sb.append(StringPool.GREATER_THAN);
+			sb.append(StringPool.GREATER_THAN);
 			sb.append(StringPool.SPACE);
 			sb.append(curCategory.getName());
 		}
 
-		sb.append(StringPool.RAQUO);
+		sb.append(StringPool.GREATER_THAN);
+		sb.append(StringPool.GREATER_THAN);
 		sb.append(StringPool.SPACE);
 		sb.append(mbCategory.getName());
 
