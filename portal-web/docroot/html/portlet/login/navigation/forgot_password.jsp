@@ -19,7 +19,7 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
-String signInNotByPortlet = ParamUtil.getString(request, "signInNotByPortlet");
+String signInByPortlet = ParamUtil.getString(request, "signInByPortlet");
 
 boolean showForgotPasswordIcon = false;
 
@@ -31,7 +31,7 @@ if (!strutsAction.equals("/login/forgot_password") && (company.isSendPassword() 
 <c:if test="<%= showForgotPasswordIcon %>">
 	<portlet:renderURL var="forgotPasswordURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 		<portlet:param name="struts_action" value="/login/forgot_password" />
-		<portlet:param name="signInNotByPortlet" value="<%= signInNotByPortlet %>" />
+		<portlet:param name="signInByPortlet" value="<%= signInByPortlet %>" />
 	</portlet:renderURL>
 
 	<liferay-ui:icon
