@@ -20,6 +20,12 @@
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("struts_action", "/layout_prototypes/view");
+
+OrderByComparator obc =
+	OrderByComparatorFactoryUtil.create(request, LayoutPrototypeModelImpl.class, PortletKeys.LAYOUT_PROTOTYPE, "name", Constants.ASC);
+
+String orderByCol = obc.getOrderByFields()[0];
+String orderByType = obc.isAscending() ? Constants.ASC : Constants.DESC;
 %>
 
 <liferay-ui:error exception="<%= RequiredLayoutPrototypeException.class %>" message="you-cannot-delete-page-templates-that-are-used-by-a-page" />
@@ -35,12 +41,14 @@ portletURL.setParameter("struts_action", "/layout_prototypes/view");
 		emptyResultsMessage="no-page-templates-were-found"
 		headerNames="name"
 		iteratorURL="<%= portletURL %>"
+		orderByCol="<%= orderByCol %>"
+		orderByType="<%= orderByType %>"
 		total="<%= LayoutPrototypeLocalServiceUtil.searchCount(company.getCompanyId(), null) %>"
 	>
 		<aui:input name="deleteLayoutPrototypesIds" type="hidden" />
 
 		<liferay-ui:search-container-results
-			results="<%= LayoutPrototypeLocalServiceUtil.search(company.getCompanyId(), null, searchContainer.getStart(), searchContainer.getEnd(), null) %>"
+			results="<%= LayoutPrototypeLocalServiceUtil.search(company.getCompanyId(), null, searchContainer.getStart(), searchContainer.getEnd(), obc) %>"
 		/>
 
 		<liferay-ui:search-container-row
