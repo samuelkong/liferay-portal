@@ -19,8 +19,6 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
-String signInNotByPortlet = ParamUtil.getString(request, "signInNotByPortlet");
-
 boolean showFacebookConnectIcon = false;
 
 if (!strutsAction.startsWith("/login/facebook_connect") && FacebookConnectUtil.isEnabled(company.getCompanyId())) {
@@ -31,7 +29,6 @@ if (!strutsAction.startsWith("/login/facebook_connect") && FacebookConnectUtil.i
 <c:if test="<%= showFacebookConnectIcon %>">
 	<portlet:renderURL var="loginRedirectURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 		<portlet:param name="struts_action" value="/login/login_redirect" />
-		<portlet:param name="signInNotByPortlet" value="<%= signInNotByPortlet %>" />
 	</portlet:renderURL>
 
 	<%
