@@ -19,6 +19,8 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
+String signInByPortlet = ParamUtil.getString(request, "signInByPortlet");
+
 boolean showOpenIdIcon = false;
 
 if (!strutsAction.equals("/login/open_id") && OpenIdUtil.isEnabled(company.getCompanyId())) {
@@ -29,6 +31,7 @@ if (!strutsAction.equals("/login/open_id") && OpenIdUtil.isEnabled(company.getCo
 <c:if test="<%= showOpenIdIcon %>">
 	<portlet:renderURL var="openIdURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 		<portlet:param name="struts_action" value="/login/open_id" />
+		<portlet:param name="signInByPortlet" value="<%= signInByPortlet %>" />
 	</portlet:renderURL>
 
 	<liferay-ui:icon

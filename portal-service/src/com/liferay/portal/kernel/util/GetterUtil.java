@@ -286,7 +286,7 @@ public class GetterUtil {
 	}
 
 	public static boolean get(String value, boolean defaultValue) {
-		if (value == null) {
+		if ((value == null) || (value.equals(StringPool.BLANK))) {
 			return defaultValue;
 		}
 

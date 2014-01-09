@@ -17,6 +17,8 @@
 <%@ include file="/html/portlet/login/init.jsp" %>
 
 <%
+String signInByPortlet = ParamUtil.getString(request, "signInByPortlet");
+
 String redirect = ParamUtil.getString(request, "redirect");
 
 String openId = ParamUtil.getString(request, "openId");
@@ -37,6 +39,7 @@ birthdayCalendar.set(Calendar.YEAR, 1970);
 	<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+	<aui:input name="signInByPortlet" type="hidden" value="<%= signInByPortlet %>" />
 	<aui:input name="openId" type="hidden" value="<%= openId %>" />
 
 	<liferay-ui:error exception="<%= AddressCityException.class %>" message="please-enter-a-valid-city" />

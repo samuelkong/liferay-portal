@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.captcha.CaptchaTextException;
 import com.liferay.portal.kernel.captcha.CaptchaUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Company;
@@ -234,6 +235,11 @@ public class ForgotPasswordAction extends PortletAction {
 
 		User user = getUser(actionRequest);
 
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+		String signInByPortlet = ParamUtil.getString(
+			actionRequest, "signInByPortlet");
+
 		if (PropsValues.USERS_REMINDER_QUERIES_ENABLED) {
 			if (PropsValues.USERS_REMINDER_QUERIES_REQUIRED &&
 				!user.hasReminderQuery()) {
@@ -275,7 +281,20 @@ public class ForgotPasswordAction extends PortletAction {
 			actionRequest, emailFromName, emailFromAddress, emailToAddress,
 			subject, body);
 
-		sendRedirect(actionRequest, actionResponse);
+		if (isDisplaySuccessMessage(actionRequest)) {
+			addSuccessMessage(actionRequest, actionResponse);
+		}
+
+		String loginPortletNamespace = PortalUtil.getPortletNamespace(
+			PropsValues.AUTH_LOGIN_PORTLET_NAME);
+
+		if (Validator.isNotNull(signInByPortlet)) {
+			redirect = HttpUtil.addParameter(
+				redirect, loginPortletNamespace + "signInByPortlet",
+				signInByPortlet);
+		}
+
+		actionResponse.sendRedirect(redirect);
 	}
 
 	private static final boolean _CHECK_METHOD_ON_PROCESS_ACTION = false;

@@ -19,6 +19,8 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
+String signInByPortlet = ParamUtil.getString(request, "signInByPortlet");
+
 boolean showSignInIcon = false;
 
 if (Validator.isNotNull(strutsAction) && !strutsAction.equals("/login/login")) {
@@ -34,6 +36,8 @@ if (Validator.isNotNull(strutsAction) && !strutsAction.equals("/login/login")) {
 	if (portletName.equals(PortletKeys.FAST_LOGIN)) {
 		signInURL = HttpUtil.addParameter(signInURL, "windowState", LiferayWindowState.POP_UP.toString());
 	}
+
+	signInURL = HttpUtil.addParameter(signInURL, "signInByPortlet", Validator.isNotNull(signInByPortlet) ? signInByPortlet : Boolean.TRUE.toString());
 	%>
 
 	<liferay-ui:icon

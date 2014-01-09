@@ -136,6 +136,14 @@ public class LoginAction extends Action {
 				request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
+			boolean signInByPortlet = ParamUtil.getBoolean(
+				request, "signInByPortlet");
+
+			if (!signInByPortlet) {
+				portletURL.setParameter(
+					"signInByPortlet", String.valueOf(signInByPortlet));
+			}
+
 			portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 			portletURL.setParameter("struts_action", "/login/login");
 			portletURL.setPortletMode(PortletMode.VIEW);
