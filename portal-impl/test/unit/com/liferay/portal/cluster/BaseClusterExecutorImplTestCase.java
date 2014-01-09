@@ -278,7 +278,7 @@ public abstract class BaseClusterExecutorImplTestCase
 			channel.setReceiver(
 				new MockClusterRequestReceiver(clusterExecutorImpl));
 
-			clusterExecutorImpl.bindInetAddress = null;
+			ClusterExecutorImpl.bindInetAddress = null;
 		}
 
 		clusterExecutorImpl.initialize();
