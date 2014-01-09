@@ -198,7 +198,6 @@ public class LoginAction extends PortletAction {
 
 		if (!themeDisplay.isSignedIn()) {
 			if (signInByPortlet) {
-				System.out.println("good!");
 				PortletPreferences portletPreferences =
 					PortletPreferencesFactoryUtil.getPortletSetup(
 						actionRequest);
