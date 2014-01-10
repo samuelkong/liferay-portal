@@ -17,6 +17,8 @@
 <%@ include file="/html/portlet/login/init.jsp" %>
 
 <%
+String signInByMenubar = ParamUtil.getString(request, "signInByMenubar");
+
 User user2 = (User)request.getAttribute(WebKeys.FORGOT_PASSWORD_REMINDER_USER);
 
 if (Validator.isNull(authType)) {
@@ -36,6 +38,7 @@ if (reminderAttempts == null) {
 
 <aui:form action="<%= forgotPasswordURL %>" method="post" name="fm">
 	<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
+	<aui:input name="signInByMenubar" type="hidden" value="<%= signInByMenubar %>" />
 
 	<portlet:renderURL var="redirectURL" />
 

@@ -191,12 +191,19 @@ public class LoginAction extends PortletAction {
 		String login = ParamUtil.getString(actionRequest, "login");
 		String password = actionRequest.getParameter("password");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
+		boolean signInByMenubar = ParamUtil.getBoolean(
+			actionRequest, "signInByMenubar");
+
+		String authType = null;
 
 		if (!themeDisplay.isSignedIn()) {
-			PortletPreferences portletPreferences =
-				PortletPreferencesFactoryUtil.getPortletSetup(actionRequest);
+			if (!signInByMenubar) {
+				PortletPreferences portletPreferences =
+					PortletPreferencesFactoryUtil.getPortletSetup(
+						actionRequest);
 
-			String authType = portletPreferences.getValue("authType", null);
+				authType = portletPreferences.getValue("authType", null);
+			}
 
 			LoginUtil.login(
 				request, response, login, password, rememberMe, authType);
@@ -252,6 +259,12 @@ public class LoginAction extends PortletAction {
 		PortletURL portletURL = new PortletURLImpl(
 			actionRequest, PortletKeys.LOGIN, layout.getPlid(),
 			PortletRequest.RENDER_PHASE);
+
+		boolean signInByMenubar = ParamUtil.getBoolean(
+			actionRequest, "signInByMenubar");
+
+		portletURL.setParameter(
+			"signInByMenubar", String.valueOf(signInByMenubar));
 
 		portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 

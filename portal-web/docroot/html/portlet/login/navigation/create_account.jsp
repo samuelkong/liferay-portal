@@ -19,6 +19,8 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
+String signInByMenubar = ParamUtil.getString(request, "signInByMenubar");
+
 boolean showCreateAccountIcon = false;
 
 if (!strutsAction.equals("/login/create_account") && company.isStrangers() && !portletName.equals(PortletKeys.FAST_LOGIN)) {
@@ -27,9 +29,18 @@ if (!strutsAction.equals("/login/create_account") && company.isStrangers() && !p
 %>
 
 <c:if test="<%= showCreateAccountIcon %>">
+
+	<%
+	String createAccountURL = PortalUtil.getCreateAccountURL(request, themeDisplay);
+
+	if (Validator.isNotNull(signInByMenubar)) {
+		createAccountURL = HttpUtil.addParameter(createAccountURL, portletDisplay.getNamespace() + "signInByMenubar", signInByMenubar);
+	}
+	%>
+
 	<liferay-ui:icon
 		image="add_user"
 		message="create-account"
-		url="<%= PortalUtil.getCreateAccountURL(request, themeDisplay) %>"
+		url="<%= createAccountURL %>"
 	/>
 </c:if>
