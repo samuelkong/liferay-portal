@@ -15,22 +15,94 @@
 package com.liferay.portal.util;
 
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactory;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.TextFormatter;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.model.impl.BaseModelImpl;
+import com.liferay.portlet.PortalPreferences;
+import com.liferay.portlet.PortletPreferencesFactoryUtil;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan
  */
 @DoPrivileged
 public class OrderByComparatorFactoryImpl implements OrderByComparatorFactory {
+
+	@Override
+	public OrderByComparator create(
+			HttpServletRequest request, Class<? extends BaseModelImpl<?>> clazz,
+			String portletKey, Object... defaultOrderByColumns)
+		throws IllegalArgumentException, SystemException {
+
+		String tableName = null;
+		String modelName = null;
+
+		try {
+			tableName = (String)ReflectionUtil.getDeclaredField(
+				clazz, "TABLE_NAME").get(null);
+
+			String modelClassName = clazz.getSimpleName();
+			modelName = modelClassName.substring(
+					0, modelClassName.indexOf("ModelImpl"));
+		}
+		catch (Exception e) {
+			_log.error("Failed to get obc for " + clazz.getName());
+			return null;
+		}
+
+		String modelKey = TextFormatter.format(modelName, TextFormatter.P);
+		String orderByColKey = modelKey + "-order-by-col";
+		String orderByTypeKey = modelKey + "-order-by-type";
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+		String orderByCol = ParamUtil.getString(
+			request, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM);
+		String orderByType = ParamUtil.getString(
+			request, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM);
+
+		if (Validator.isNotNull(orderByCol) &&
+			Validator.isNotNull(orderByType)) {
+
+			portalPreferences.setValue(portletKey, orderByColKey, orderByCol);
+			portalPreferences.setValue(portletKey, orderByTypeKey, orderByType);
+		}
+		else {
+			for (int i = 0; i < defaultOrderByColumns.length; i += 2) {
+				if (String.valueOf(defaultOrderByColumns[i+1]).equals(
+						Constants.ASC)) {
+
+					defaultOrderByColumns[i+1] = true;
+				}
+				else {
+					defaultOrderByColumns[i+1] = false;
+				}
+			}
+
+			return create(tableName, defaultOrderByColumns);
+		}
+
+		return create(tableName, orderByCol, orderByType.equals(Constants.ASC));
+	}
 
 	@Override
 	public OrderByComparator create(String tableName, Object... columns) {
@@ -202,5 +274,8 @@ public class OrderByComparatorFactoryImpl implements OrderByComparatorFactory {
 		private String _tableName;
 
 	}
+
+	private static Log _log = LogFactoryUtil.getLog(
+			OrderByComparatorFactoryImpl.class);
 
 }

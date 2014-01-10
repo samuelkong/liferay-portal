@@ -14,12 +14,25 @@
 
 package com.liferay.portal.kernel.util;
 
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermission;
+import com.liferay.portal.model.impl.BaseModelImpl;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class OrderByComparatorFactoryUtil {
+
+	public static OrderByComparator create(
+			HttpServletRequest request, Class<? extends BaseModelImpl<?>> clazz,
+			String portletKey, Object... defaultOrderBycolumns)
+		throws IllegalArgumentException, SystemException {
+
+		return getOrderByComparatorFactory().create(
+			request, clazz, portletKey, defaultOrderBycolumns);
+	}
 
 	public static OrderByComparator create(
 		String tableName, Object... columns) {
