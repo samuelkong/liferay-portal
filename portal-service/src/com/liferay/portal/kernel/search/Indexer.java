@@ -94,6 +94,10 @@ public interface Indexer {
 	public void reindexDDMStructures(List<Long> ddmStructureIds)
 		throws SearchException;
 
+	public void reindexRelatedEntries(
+			long companyId, String className, long classPK)
+		throws SearchException;
+
 	public Hits search(SearchContext searchContext) throws SearchException;
 
 	public void unregisterIndexerPostProcessor(

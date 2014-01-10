@@ -1208,7 +1208,7 @@ public class ResourcePermissionLocalServiceImpl
 
 		PermissionCacheUtil.clearCache();
 
-		SearchEngineUtil.updatePermissionFields(name, primKey);
+		SearchEngineUtil.updatePermissionFields(companyId, name, primKey);
 	}
 
 	protected void doUpdateResourcePermission(
@@ -1256,7 +1256,7 @@ public class ResourcePermissionLocalServiceImpl
 
 			PermissionCacheUtil.clearCache();
 
-			SearchEngineUtil.updatePermissionFields(name, primKey);
+			SearchEngineUtil.updatePermissionFields(companyId, name, primKey);
 		}
 	}
 

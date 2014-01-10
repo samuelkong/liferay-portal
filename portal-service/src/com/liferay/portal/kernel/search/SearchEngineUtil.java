@@ -789,12 +789,15 @@ public class SearchEngineUtil {
 		indexWriter.updateDocuments(searchContext, documents);
 	}
 
-	public static void updatePermissionFields(String name, String primKey) {
+	public static void updatePermissionFields(
+		long companyId, String name, String primKey) {
+
 		if (isIndexReadOnly() || !PermissionThreadLocal.isFlushEnabled()) {
 			return;
 		}
 
-		_searchPermissionChecker.updatePermissionFields(name, primKey);
+		_searchPermissionChecker.updatePermissionFields(
+			companyId, name, primKey);
 	}
 
 	public void setExcludedEntryClassNames(

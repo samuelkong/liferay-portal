@@ -136,10 +136,10 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 
 	@Override
 	public void updatePermissionFields(
-		String resourceName, String resourceClassPK) {
+		long companyId, String resourceName, String resourceClassPK) {
 
 		try {
-			doUpdatePermissionFields(resourceName, resourceClassPK);
+			doUpdatePermissionFields(companyId, resourceName, resourceClassPK);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -460,13 +460,16 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 	}
 
 	protected void doUpdatePermissionFields(
-			String resourceName, String resourceClassPK)
+			long companyId, String resourceName, String resourceClassPK)
 		throws Exception {
 
 		Indexer indexer = IndexerRegistryUtil.getIndexer(resourceName);
 
 		if (indexer != null) {
 			indexer.reindex(resourceName, GetterUtil.getLong(resourceClassPK));
+
+			indexer.reindexRelatedEntries(
+				companyId, resourceName, GetterUtil.getLong(resourceClassPK));
 		}
 	}
 

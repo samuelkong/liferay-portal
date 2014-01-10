@@ -798,7 +798,7 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 
 			PermissionCacheUtil.clearCache();
 
-			SearchEngineUtil.updatePermissionFields(name, primKey);
+			SearchEngineUtil.updatePermissionFields(companyId, name, primKey);
 		}
 	}
 
@@ -910,7 +910,7 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 
 			PermissionCacheUtil.clearCache();
 
-			SearchEngineUtil.updatePermissionFields(name, primKey);
+			SearchEngineUtil.updatePermissionFields(companyId, name, primKey);
 		}
 	}
 

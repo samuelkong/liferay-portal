@@ -149,6 +149,12 @@ public class DummyIndexer implements Indexer {
 	}
 
 	@Override
+	public void reindexRelatedEntries(
+			long companyId, String className, long classPK)
+		throws SearchException {
+	}
+
+	@Override
 	public Hits search(SearchContext searchContext) {
 		return null;
 	}

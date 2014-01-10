@@ -484,6 +484,12 @@ public abstract class BaseIndexer implements Indexer {
 	}
 
 	@Override
+	public void reindexRelatedEntries(
+			long companyId, String className, long classPK)
+		throws SearchException {
+	}
+
+	@Override
 	public Hits search(SearchContext searchContext) throws SearchException {
 		try {
 			searchContext.setSearchEngineId(getSearchEngineId());

@@ -162,6 +162,63 @@ public class MBMessageIndexer extends BaseIndexer {
 		}
 	}
 
+	public void reindexRelatedMessages(
+			long companyId, final long classNameId, final long classPK)
+		throws PortalException, SystemException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			new MBMessageActionableDynamicQuery() {
+
+			@Override
+			protected void addCriteria(DynamicQuery dynamicQuery) {
+				Property classNameIdProperty = PropertyFactoryUtil.forName(
+					"classNameId");
+
+				dynamicQuery.add(classNameIdProperty.eq(classNameId));
+
+				Property classPKProperty = PropertyFactoryUtil.forName(
+					"classPK");
+
+				dynamicQuery.add(classPKProperty.eq(classPK));
+
+				Property categoryIdProperty = PropertyFactoryUtil.forName(
+					"categoryId");
+
+				dynamicQuery.add(
+					categoryIdProperty.eq(
+						MBCategoryConstants.DISCUSSION_CATEGORY_ID));
+
+				Property statusProperty = PropertyFactoryUtil.forName("status");
+
+				Integer[] statuses = {
+					WorkflowConstants.STATUS_APPROVED,
+					WorkflowConstants.STATUS_IN_TRASH
+				};
+
+				dynamicQuery.add(statusProperty.in(statuses));
+			}
+
+			@Override
+			protected void performAction(Object object) throws PortalException {
+				MBMessage message = (MBMessage)object;
+
+				if (message.isDiscussion() && message.isRoot()) {
+					return;
+				}
+
+				Document document = getDocument(message);
+
+				addDocument(document);
+			}
+
+		};
+
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
+
+		actionableDynamicQuery.performActions();
+	}
+
 	@Override
 	protected void doDelete(Object obj) throws Exception {
 		SearchContext searchContext = new SearchContext();

@@ -24,19 +24,24 @@ import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.blogs.model.BlogsEntry;
 import com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.portlet.blogs.service.permission.BlogsEntryPermission;
 import com.liferay.portlet.blogs.service.persistence.BlogsEntryActionableDynamicQuery;
+import com.liferay.portlet.messageboards.model.MBMessage;
+import com.liferay.portlet.messageboards.util.MBMessageIndexer;
 
 import java.util.Date;
 import java.util.Locale;
@@ -85,6 +90,24 @@ public class BlogsIndexer extends BaseIndexer {
 		throws Exception {
 
 		addStatus(contextQuery, searchContext);
+	}
+
+	@Override
+	public void reindexRelatedEntries(
+			long companyId, String className, long classPK)
+		throws SearchException {
+
+		long classNameId = PortalUtil.getClassNameId(className);
+
+		MBMessageIndexer indexer =
+			(MBMessageIndexer)IndexerRegistryUtil.getIndexer(MBMessage.class);
+
+		try {
+			indexer.reindexRelatedMessages(companyId, classNameId, classPK);
+		}
+		catch (Exception e) {
+			throw new SearchException(e);
+		}
 	}
 
 	@Override

@@ -177,6 +177,12 @@ public class IndexerWrapper implements Indexer {
 	}
 
 	@Override
+	public void reindexRelatedEntries(
+			long companyId, String className, long classPK)
+		throws SearchException {
+	}
+
+	@Override
 	public Hits search(SearchContext searchContext) throws SearchException {
 		return _indexer.search(searchContext);
 	}
