@@ -164,7 +164,7 @@ public class StringPool {
 
 	public static final String QUOTE = "\"";
 
-	public static final String RAQUO = "&raquo;";
+	public static final String RAQUO = "\u00bb";
 
 	public static final String RETURN = "\r";
 
