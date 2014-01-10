@@ -1702,6 +1702,13 @@ public class PortalImpl implements Portal {
 				request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
+			String signInNotOnPage = request.getParameter("signInNotOnPage");
+
+			if (Validator.isNotNull(signInNotOnPage)) {
+				createAccountURL.setParameter(
+					"signInNotOnPage", signInNotOnPage);
+			}
+
 			createAccountURL.setParameter(
 				"saveLastPath", Boolean.FALSE.toString());
 			createAccountURL.setParameter(

@@ -92,7 +92,7 @@ AUI.add(
 					_loadIO: function() {
 						var instance = this;
 
-						var modalSignInURL = Liferay.Util.addParams('windowState=exclusive&signInByMenubar=true', instance._signInURL);
+						var modalSignInURL = Liferay.Util.addParams('windowState=exclusive&signInNotOnPage=true', instance._signInURL);
 
 						A.io.request(
 							modalSignInURL,

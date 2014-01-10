@@ -19,7 +19,7 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
-String signInByMenubar = ParamUtil.getString(request, "signInByMenubar");
+String signInNotOnPage = ParamUtil.getString(request, "signInNotOnPage");
 
 boolean showSignInIcon = false;
 
@@ -37,8 +37,8 @@ if (Validator.isNotNull(strutsAction) && !strutsAction.equals("/login/login")) {
 		signInURL = HttpUtil.addParameter(signInURL, "windowState", LiferayWindowState.POP_UP.toString());
 	}
 
-	if (Validator.isNotNull(signInByMenubar)) {
-		signInURL = HttpUtil.addParameter(signInURL, "signInByMenubar", signInByMenubar);
+	if (Validator.isNotNull(signInNotOnPage)) {
+		signInURL = HttpUtil.addParameter(signInURL, "signInNotOnPage", signInNotOnPage);
 	}
 	%>
 

@@ -530,6 +530,7 @@ Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZo
 	<%
 	PortletURL loginURL = PortletURLFactoryUtil.create(request, PortletKeys.FAST_LOGIN, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
 
+	loginURL.setParameter("signInNotOnPage", Boolean.TRUE.toString());
 	loginURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 	loginURL.setParameter("struts_action", "/login/login");
 	loginURL.setPortletMode(PortletMode.VIEW);

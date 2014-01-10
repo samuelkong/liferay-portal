@@ -372,9 +372,6 @@ public class CreateAccountAction extends PortletAction {
 			ThemeDisplay themeDisplay, String login, String password)
 		throws Exception {
 
-		String signInByMenubar = ParamUtil.getString(
-			actionRequest, "signInByMenubar");
-
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(
 			actionRequest);
 
@@ -392,7 +389,11 @@ public class CreateAccountAction extends PortletAction {
 				request, themeDisplay.getPlid());
 
 			loginURL.setParameter("login", login);
-			loginURL.setParameter("signInByMenubar", signInByMenubar);
+
+			String signInNotOnPage = ParamUtil.getString(
+				actionRequest, "signInNotOnPage");
+
+			loginURL.setParameter("signInNotOnPage", signInNotOnPage);
 
 			redirect = loginURL.toString();
 		}

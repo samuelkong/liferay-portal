@@ -282,17 +282,16 @@ public class ForgotPasswordAction extends PortletAction {
 
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
-		String signInByMenubar = ParamUtil.getString(
-			actionRequest, "signInByMenubar");
+		String signInNotOnPage = ParamUtil.getString(
+			actionRequest, "signInNotOnPage");
 
-		String loginPortletNamespace = PortalUtil.getPortletNamespace(
-			PropsValues.AUTH_LOGIN_PORTLET_NAME);
-
-		if (Validator.isNotNull(signInByMenubar)) {
+		if (Validator.isNotNull(signInNotOnPage)) {
 			redirect = HttpUtil.addParameter(
-				redirect, loginPortletNamespace + "signInByMenubar",
-				signInByMenubar);
+				redirect, actionResponse.getNamespace() + "signInNotOnPage",
+				signInNotOnPage);
 		}
+
+		redirect = PortalUtil.escapeRedirect(redirect);
 
 		actionResponse.sendRedirect(redirect);
 	}

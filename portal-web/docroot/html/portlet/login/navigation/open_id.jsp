@@ -19,7 +19,7 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
-String signInByMenubar = ParamUtil.getString(request, "signInByMenubar");
+String signInNotOnPage = ParamUtil.getString(request, "signInNotOnPage");
 
 boolean showOpenIdIcon = false;
 
@@ -31,7 +31,7 @@ if (!strutsAction.equals("/login/open_id") && OpenIdUtil.isEnabled(company.getCo
 <c:if test="<%= showOpenIdIcon %>">
 	<portlet:renderURL var="openIdURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 		<portlet:param name="struts_action" value="/login/open_id" />
-		<portlet:param name="signInByMenubar" value="<%= signInByMenubar %>" />
+		<portlet:param name="signInNotOnPage" value="<%= signInNotOnPage %>" />
 	</portlet:renderURL>
 
 	<liferay-ui:icon
