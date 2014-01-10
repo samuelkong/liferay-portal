@@ -136,12 +136,12 @@ public class LoginAction extends Action {
 				request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
-			boolean signInByPortlet = ParamUtil.getBoolean(
-				request, "signInByPortlet");
+			boolean signInByMenubar = ParamUtil.getBoolean(
+				request, "signInByMenubar");
 
-			if (!signInByPortlet) {
+			if (signInByMenubar) {
 				portletURL.setParameter(
-					"signInByPortlet", String.valueOf(signInByPortlet));
+					"signInByMenubar", String.valueOf(signInByMenubar));
 			}
 
 			portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());

@@ -19,7 +19,7 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
-String signInByPortlet = ParamUtil.getString(request, "signInByPortlet");
+String signInByMenubar = ParamUtil.getString(request, "signInByMenubar");
 
 boolean showCreateAccountIcon = false;
 
@@ -33,8 +33,8 @@ if (!strutsAction.equals("/login/create_account") && company.isStrangers() && !p
 	<%
 	String createAccountURL = PortalUtil.getCreateAccountURL(request, themeDisplay);
 
-	if (Validator.isNotNull(signInByPortlet)) {
-		createAccountURL = HttpUtil.addParameter(createAccountURL, portletDisplay.getNamespace() + "signInByPortlet", signInByPortlet);
+	if (Validator.isNotNull(signInByMenubar)) {
+		createAccountURL = HttpUtil.addParameter(createAccountURL, portletDisplay.getNamespace() + "signInByMenubar", signInByMenubar);
 	}
 	%>
 

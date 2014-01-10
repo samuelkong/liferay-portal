@@ -235,11 +235,6 @@ public class ForgotPasswordAction extends PortletAction {
 
 		User user = getUser(actionRequest);
 
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
-		String signInByPortlet = ParamUtil.getString(
-			actionRequest, "signInByPortlet");
-
 		if (PropsValues.USERS_REMINDER_QUERIES_ENABLED) {
 			if (PropsValues.USERS_REMINDER_QUERIES_REQUIRED &&
 				!user.hasReminderQuery()) {
@@ -285,13 +280,18 @@ public class ForgotPasswordAction extends PortletAction {
 			addSuccessMessage(actionRequest, actionResponse);
 		}
 
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+		String signInByMenubar = ParamUtil.getString(
+			actionRequest, "signInByMenubar");
+
 		String loginPortletNamespace = PortalUtil.getPortletNamespace(
 			PropsValues.AUTH_LOGIN_PORTLET_NAME);
 
-		if (Validator.isNotNull(signInByPortlet)) {
+		if (Validator.isNotNull(signInByMenubar)) {
 			redirect = HttpUtil.addParameter(
-				redirect, loginPortletNamespace + "signInByPortlet",
-				signInByPortlet);
+				redirect, loginPortletNamespace + "signInByMenubar",
+				signInByMenubar);
 		}
 
 		actionResponse.sendRedirect(redirect);
