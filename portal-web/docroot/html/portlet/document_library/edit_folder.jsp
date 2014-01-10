@@ -69,6 +69,7 @@ if (workflowEnabled) {
 
 	<liferay-ui:error exception="<%= DuplicateFileException.class %>" message="please-enter-a-unique-folder-name" />
 	<liferay-ui:error exception="<%= DuplicateFolderNameException.class %>" message="please-enter-a-unique-folder-name" />
+	<liferay-ui:error exception="<%= FileEntryTypeException.class %>" message="please-choose-at-least-one-document-type" />
 	<liferay-ui:error exception="<%= FolderNameException.class %>" message="please-enter-a-valid-name" />
 
 	<aui:model-context bean="<%= folder %>" model="<%= DLFolder.class %>" />
