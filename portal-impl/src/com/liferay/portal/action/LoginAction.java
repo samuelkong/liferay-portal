@@ -136,6 +136,14 @@ public class LoginAction extends Action {
 				request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
+			boolean signInNotOnPage = ParamUtil.getBoolean(
+				request, "signInNotOnPage");
+
+			if (signInNotOnPage) {
+				portletURL.setParameter(
+					"signInNotOnPage", String.valueOf(signInNotOnPage));
+			}
+
 			portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 			portletURL.setParameter("struts_action", "/login/login");
 			portletURL.setPortletMode(PortletMode.VIEW);

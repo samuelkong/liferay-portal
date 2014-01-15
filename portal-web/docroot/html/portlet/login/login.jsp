@@ -47,6 +47,8 @@
 		String password = StringPool.BLANK;
 		boolean rememberMe = ParamUtil.getBoolean(request, "rememberMe");
 
+		String signInNotOnPage = ParamUtil.getString(request, "signInNotOnPage");
+
 		if (Validator.isNull(authType)) {
 			authType = company.getAuthType();
 		}
@@ -59,6 +61,7 @@
 		<aui:form action="<%= loginURL %>" autocomplete='<%= PropsValues.COMPANY_SECURITY_LOGIN_FORM_AUTOCOMPLETE ? "on" : "off" %>' cssClass="sign-in-form" method="post" name="fm">
 			<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
 			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+			<aui:input name="signInNotOnPage" type="hidden" value="<%= signInNotOnPage %>" />
 			<aui:input name="doActionAfterLogin" type="hidden" value="<%= portletName.equals(PortletKeys.FAST_LOGIN) ? true : false %>" />
 
 			<c:choose>
