@@ -19,6 +19,8 @@
 <%
 String strutsAction = ParamUtil.getString(request, "struts_action");
 
+String signInModal = ParamUtil.getString(request, "signInModal");
+
 boolean showCreateAccountIcon = false;
 
 if (!strutsAction.equals("/login/create_account") && company.isStrangers() && !portletName.equals(PortletKeys.FAST_LOGIN)) {

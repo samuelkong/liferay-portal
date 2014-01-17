@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.captcha.CaptchaTextException;
 import com.liferay.portal.kernel.captcha.CaptchaUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Company;
@@ -275,7 +276,23 @@ public class ForgotPasswordAction extends PortletAction {
 			actionRequest, emailFromName, emailFromAddress, emailToAddress,
 			subject, body);
 
-		sendRedirect(actionRequest, actionResponse);
+		if (isDisplaySuccessMessage(actionRequest)) {
+			addSuccessMessage(actionRequest, actionResponse);
+		}
+
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+		String signInModal = ParamUtil.getString(actionRequest, "signInModal");
+
+		if (Validator.isNotNull(signInModal)) {
+			redirect = HttpUtil.addParameter(
+				redirect, actionResponse.getNamespace() + "signInModal",
+				signInModal);
+		}
+
+		redirect = PortalUtil.escapeRedirect(redirect);
+
+		actionResponse.sendRedirect(redirect);
 	}
 
 	private static final boolean _CHECK_METHOD_ON_PROCESS_ACTION = false;

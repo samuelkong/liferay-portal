@@ -17,6 +17,8 @@
 <%@ include file="/html/portlet/login/init.jsp" %>
 
 <%
+String signInModal = ParamUtil.getString(request, "signInModal");
+
 User user2 = (User)request.getAttribute(WebKeys.FORGOT_PASSWORD_REMINDER_USER);
 
 if (Validator.isNull(authType)) {
@@ -36,6 +38,7 @@ if (reminderAttempts == null) {
 
 <aui:form action="<%= forgotPasswordURL %>" method="post" name="fm">
 	<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
+	<aui:input name="signInModal" type="hidden" value="<%= signInModal %>" />
 
 	<portlet:renderURL var="redirectURL" />
 

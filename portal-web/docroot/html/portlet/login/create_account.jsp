@@ -19,6 +19,8 @@
 <%
 String redirect = ParamUtil.getString(request, "redirect");
 
+String signInModal = ParamUtil.getString(request, "signInModal");
+
 String openId = ParamUtil.getString(request, "openId");
 boolean male = ParamUtil.getBoolean(request, "male", true);
 
@@ -38,6 +40,7 @@ birthdayCalendar.set(Calendar.YEAR, 1970);
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="openId" type="hidden" value="<%= openId %>" />
+	<aui:input name="signInModal" type="hidden" value="<%= signInModal %>" />
 
 	<liferay-ui:error exception="<%= AddressCityException.class %>" message="please-enter-a-valid-city" />
 	<liferay-ui:error exception="<%= AddressStreetException.class %>" message="please-enter-a-valid-street" />

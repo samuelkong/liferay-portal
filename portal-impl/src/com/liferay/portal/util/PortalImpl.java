@@ -1704,6 +1704,12 @@ public class PortalImpl implements Portal {
 				request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
+			String signInModal = request.getParameter("signInModal");
+
+			if (Validator.isNotNull(signInModal)) {
+				createAccountURL.setParameter("signInModal", signInModal);
+			}
+
 			createAccountURL.setParameter(
 				"saveLastPath", Boolean.FALSE.toString());
 			createAccountURL.setParameter(

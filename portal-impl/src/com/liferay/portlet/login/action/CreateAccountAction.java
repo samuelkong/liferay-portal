@@ -390,6 +390,11 @@ public class CreateAccountAction extends PortletAction {
 
 			loginURL.setParameter("login", login);
 
+			String signInModal = ParamUtil.getString(
+				actionRequest, "signInModal");
+
+			loginURL.setParameter("signInModal", signInModal);
+
 			redirect = loginURL.toString();
 		}
 

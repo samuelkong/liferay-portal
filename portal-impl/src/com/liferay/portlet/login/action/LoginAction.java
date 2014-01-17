@@ -192,11 +192,19 @@ public class LoginAction extends PortletAction {
 		String password = actionRequest.getParameter("password");
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 
-		if (!themeDisplay.isSignedIn()) {
-			PortletPreferences portletPreferences =
-				PortletPreferencesFactoryUtil.getPortletSetup(actionRequest);
+		boolean signInModal = ParamUtil.getBoolean(
+			actionRequest, "signInModal");
 
-			String authType = portletPreferences.getValue("authType", null);
+		String authType = null;
+
+		if (!themeDisplay.isSignedIn()) {
+			if (!signInModal) {
+				PortletPreferences portletPreferences =
+					PortletPreferencesFactoryUtil.getPortletSetup(
+						actionRequest);
+
+				authType = portletPreferences.getValue("authType", null);
+			}
 
 			LoginUtil.login(
 				request, response, login, password, rememberMe, authType);
@@ -252,6 +260,11 @@ public class LoginAction extends PortletAction {
 		PortletURL portletURL = new PortletURLImpl(
 			actionRequest, PortletKeys.LOGIN, layout.getPlid(),
 			PortletRequest.RENDER_PHASE);
+
+		boolean signInModal = ParamUtil.getBoolean(
+			actionRequest, "signInModal");
+
+		portletURL.setParameter("signInModal", String.valueOf(signInModal));
 
 		portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 
