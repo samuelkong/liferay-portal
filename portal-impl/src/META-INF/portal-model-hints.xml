@@ -1882,7 +1882,6 @@
 			<hint name="max-length">4000</hint>
 		</field>
 		<field name="articleId" type="String">
-			<hint name="auto-escape">false</hint>
 			<hint name="upper-case">true</hint>
 		</field>
 		<field name="version" type="double" />
