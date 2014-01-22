@@ -404,6 +404,49 @@ public class HtmlImpl implements Html {
 	}
 
 	@Override
+	public String toAuiCompatibleId(String text) {
+		if (Validator.isNull(text)) {
+			return text;
+		}
+
+		StringBundler sb = null;
+		char firstChar = text.charAt(0);
+
+		if ((firstChar < CharPool.UPPER_CASE_A) ||
+			((firstChar > CharPool.UPPER_CASE_Z) &&
+			 (firstChar < CharPool.LOWER_CASE_A)) ||
+			(firstChar > CharPool.LOWER_CASE_Z)) {
+
+			sb = new StringBundler(text.length()+3);
+			sb.append(CharPool.LOWER_CASE_L);
+			sb.append(CharPool.LOWER_CASE_R);
+			sb.append(CharPool.UNDERLINE);
+		}
+		else {
+			sb = new StringBundler(text.length());
+		}
+
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+
+			if (((c >= CharPool.UPPER_CASE_A) &&
+				 (c <= CharPool.UPPER_CASE_Z)) ||
+				((c >= CharPool.LOWER_CASE_A) &&
+				 (c <= CharPool.LOWER_CASE_Z)) ||
+				((c >= CharPool.NUMBER_0) && (c <= CharPool.NUMBER_9)) ||
+				(c == CharPool.UNDERLINE)) {
+
+				sb.append(c);
+			}
+			else {
+				sb.append(Integer.toHexString(c));
+			}
+		}
+
+		return sb.toString();
+	}
+
+	@Override
 	public String toInputSafe(String text) {
 		return StringUtil.replace(
 			text,
