@@ -270,8 +270,7 @@ public class EditGroupAssignmentsAction extends PortletAction {
 
 				UserServiceUtil.addGroupUsers(groupId, userIds, serviceContext);
 
-				LiveUsers.joinGroup(
-					user.getCompanyId(), groupId, userIds);
+				LiveUsers.joinGroup(user.getCompanyId(), groupId, userIds);
 			}
 
 			UserGroupRoleServiceUtil.addUserGroupRoles(

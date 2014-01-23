@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.image.ImageBag;
@@ -55,12 +56,14 @@ import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
+import com.liferay.portal.kernel.spring.util.ClassNameUtil;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.upload.UploadServletRequest;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ContextPathUtil;
 import com.liferay.portal.kernel.util.CookieKeys;
@@ -77,8 +80,11 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.ServerDetector;
@@ -86,6 +92,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringComparator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -119,6 +126,7 @@ import com.liferay.portal.model.TicketConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.model.VirtualLayoutConstants;
+import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.model.impl.CookieRemotePreference;
 import com.liferay.portal.model.impl.LayoutTypePortletImpl;
 import com.liferay.portal.model.impl.VirtualLayout;
@@ -167,6 +175,7 @@ import com.liferay.portal.util.comparator.PortletControlPanelWeightComparator;
 import com.liferay.portal.webserver.WebServerServlet;
 import com.liferay.portlet.ActionResponseImpl;
 import com.liferay.portlet.InvokerPortlet;
+import com.liferay.portlet.PortalPreferences;
 import com.liferay.portlet.PortletConfigFactoryUtil;
 import com.liferay.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portlet.PortletPreferencesFactoryUtil;
@@ -215,6 +224,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.Serializable;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import java.net.InetAddress;
@@ -3590,6 +3600,69 @@ public class PortalImpl implements Portal {
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
+	}
+
+	@Override
+	public OrderByComparator getOrderByComparator(
+			HttpServletRequest request, Class<? extends BaseModelImpl<?>> clazz,
+			String portletKey, Object... defaultOrderByColumns)
+		throws IllegalArgumentException, SystemException {
+
+		String tableName = null;
+		String modelName = null;
+
+		try {
+			Field tableNameField = ReflectionUtil.getDeclaredField(
+				clazz, "TABLE_NAME");
+
+			tableName = (String)tableNameField.get(null);
+
+			BaseModelImpl modelObj = clazz.newInstance();
+			modelName = ClassNameUtil.getSimpleClassName(
+					modelObj.getModelClassName());
+		}
+		catch (Exception e) {
+			_log.error(
+				"Failed to get order by comparator for " + clazz.getName());
+			return null;
+		}
+
+		String modelKey = TextFormatter.format(modelName, TextFormatter.P);
+		String orderByColKey = modelKey + "-order-by-col";
+		String orderByTypeKey = modelKey + "-order-by-type";
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+		String orderByCol = ParamUtil.getString(
+			request, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM);
+		String orderByType = ParamUtil.getString(
+			request, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM);
+
+		if (Validator.isNotNull(orderByCol) &&
+			Validator.isNotNull(orderByType)) {
+
+			portalPreferences.setValue(portletKey, orderByColKey, orderByCol);
+			portalPreferences.setValue(portletKey, orderByTypeKey, orderByType);
+		}
+		else {
+			for (int i = 0; i < defaultOrderByColumns.length; i += 2) {
+				if (String.valueOf(defaultOrderByColumns[i+1]).equals(
+						Constants.ASC)) {
+
+					defaultOrderByColumns[i+1] = true;
+				}
+				else {
+					defaultOrderByColumns[i+1] = false;
+				}
+			}
+
+			return OrderByComparatorFactoryUtil.create(
+					tableName, defaultOrderByColumns);
+		}
+
+		return OrderByComparatorFactoryUtil.create(
+				tableName, orderByCol, orderByType.equals(Constants.ASC));
 	}
 
 	@Override
