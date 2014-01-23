@@ -98,6 +98,10 @@ public class HtmlUtil {
 		return getHtml().stripHtml(html);
 	}
 
+	public static String toAuiCompatibleId(String html) {
+		return getHtml().toAuiCompatibleId(html);
+	}
+
 	public static String toInputSafe(String html) {
 		return getHtml().toInputSafe(html);
 	}

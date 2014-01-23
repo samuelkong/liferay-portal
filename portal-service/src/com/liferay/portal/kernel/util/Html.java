@@ -56,6 +56,8 @@ public interface Html {
 
 	public String stripHtml(String text);
 
+	public String toAuiCompatibleId(String text);
+
 	public String toInputSafe(String text);
 
 	public String unescape(String text);
