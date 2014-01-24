@@ -52,6 +52,65 @@ public class HtmlImpl implements Html {
 	public static final int ESCAPE_MODE_URL = 5;
 
 	@Override
+	public String auiCompatibleId(String text) {
+		if (Validator.isNull(text)) {
+			return text;
+		}
+
+		StringBundler sb = null;
+
+		char c0 = text.charAt(0);
+
+		if ((c0 < CharPool.UPPER_CASE_A) ||
+			((c0 > CharPool.UPPER_CASE_Z) &&
+			 (c0 < CharPool.LOWER_CASE_A)) ||
+			(c0 > CharPool.LOWER_CASE_Z)) {
+
+			sb = new StringBundler(text.length() + 3);
+			sb.append(CharPool.LOWER_CASE_L);
+			sb.append(CharPool.LOWER_CASE_R);
+			sb.append(CharPool.UNDERLINE);
+		}
+
+		int lastReplacementIndex = 0;
+
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+
+			if ((c < CharPool.NUMBER_0) ||
+				((c < CharPool.UPPER_CASE_A) &&
+				 (c > CharPool.NUMBER_9)) ||
+				((c > CharPool.UPPER_CASE_Z) &&
+				 (c < CharPool.LOWER_CASE_A) &&
+				 c != CharPool.UNDERLINE) ||
+				(c > CharPool.LOWER_CASE_Z)) {
+
+				if (sb == null) {
+					sb = new StringBundler(text.length());
+				}
+
+				if (i > lastReplacementIndex) {
+					sb.append(text.substring(lastReplacementIndex, i));
+				}
+
+				sb.append(Integer.toHexString(c));
+
+				lastReplacementIndex = i + 1;
+			}
+		}
+
+		if (sb == null) {
+			return text;
+		}
+
+		if (lastReplacementIndex < text.length()) {
+			sb.append(text.substring(lastReplacementIndex));
+		}
+
+		return sb.toString();
+	}
+
+	@Override
 	public String escape(String text) {
 		if (text == null) {
 			return null;
