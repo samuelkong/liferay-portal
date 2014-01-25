@@ -59,44 +59,44 @@ public class HtmlImpl implements Html {
 
 		StringBundler sb = null;
 
-		char c0 = text.charAt(0);
+		char c = text.charAt(0);
 
-		if ((c0 < CharPool.UPPER_CASE_A) ||
-			((c0 > CharPool.UPPER_CASE_Z) &&
-			 (c0 < CharPool.LOWER_CASE_A)) ||
-			(c0 > CharPool.LOWER_CASE_Z)) {
+		if ((c < CharPool.UPPER_CASE_A) ||
+			((c > CharPool.UPPER_CASE_Z) && (c < CharPool.LOWER_CASE_A)) ||
+			(c > CharPool.LOWER_CASE_Z)) {
 
-			sb = new StringBundler(text.length() + 3);
-			sb.append(CharPool.LOWER_CASE_L);
-			sb.append(CharPool.LOWER_CASE_R);
-			sb.append(CharPool.UNDERLINE);
+			sb = new StringBundler();
+
+			sb.append("lfr_");
 		}
 
 		int lastReplacementIndex = 0;
 
 		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
+			c = text.charAt(i);
 
-			if ((c < CharPool.NUMBER_0) ||
-				((c < CharPool.UPPER_CASE_A) &&
-				 (c > CharPool.NUMBER_9)) ||
-				((c > CharPool.UPPER_CASE_Z) &&
-				 (c < CharPool.LOWER_CASE_A) &&
-				 c != CharPool.UNDERLINE) ||
-				(c > CharPool.LOWER_CASE_Z)) {
+			if (((c >= CharPool.NUMBER_0) && (c <= CharPool.NUMBER_9)) ||
+				((c >= CharPool.UPPER_CASE_A) &&
+				 (c <= CharPool.UPPER_CASE_Z)) ||
+				((c >= CharPool.LOWER_CASE_A) &&
+				 (c <= CharPool.LOWER_CASE_Z)) ||
+				(c == CharPool.UNDERLINE)) {
 
-				if (sb == null) {
-					sb = new StringBundler(text.length());
-				}
-
-				if (i > lastReplacementIndex) {
-					sb.append(text.substring(lastReplacementIndex, i));
-				}
-
-				sb.append(Integer.toHexString(c));
-
-				lastReplacementIndex = i + 1;
+				continue;
 			}
+
+
+			if (sb == null) {
+				sb = new StringBundler();
+			}
+
+			if (i > lastReplacementIndex) {
+				sb.append(text.substring(lastReplacementIndex, i));
+			}
+
+			sb.append(Integer.toHexString(c));
+
+			lastReplacementIndex = i + 1;
 		}
 
 		if (sb == null) {
