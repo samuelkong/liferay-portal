@@ -28,38 +28,17 @@ public class HtmlImplTest {
 	public void testAuiCompatibleId() {
 		Assert.assertEquals(null, _htmlImpl.auiCompatibleId(null));
 
-		Assert.assertEquals(
-			"lr_20StartWithWhiteSpace",
-			_htmlImpl.auiCompatibleId(" StartWithWhiteSpace"));
+		Assert.assertEquals("", _htmlImpl.auiCompatibleId(""));
 
 		Assert.assertEquals(
-			"ASpace20InTheMiddleOfString",
-			_htmlImpl.auiCompatibleId("ASpace InTheMiddleOfString"));
-
-		Assert.assertEquals(
-			"ARegularStringWith_And0123",
-			_htmlImpl.auiCompatibleId("ARegularStringWith_And0123"));
-
-		Assert.assertEquals(
-			"lr_5bStringStartsWith5b",
-			_htmlImpl.auiCompatibleId("[StringStartsWith["));
-
-		Assert.assertEquals(
-			"lr__StringStartWith_",
-			_htmlImpl.auiCompatibleId("_StringStartWith_"));
-
-		Assert.assertEquals(
-			"lr_bbStringStartWithRaquo",
-			_htmlImpl.auiCompatibleId(CharPool.RAQUO+"StringStartWithRaquo"));
-
-		Assert.assertEquals(
-			"lr_1StringStartWithNumber",
-			_htmlImpl.auiCompatibleId("1StringStartWithNumber"));
-
-		Assert.assertEquals(
-			"lr_6c49StringWithChinese5b57",
+			"92022232425262728292a2b2c2d2e2f3a3c3d3e3f405b5c5d5e7b7c7d7ea0",
 			_htmlImpl.auiCompatibleId(
-				'\u6c49' + "StringWithChinese" + '\u5b57'));
+				CharPool.TAB + " \"#$%&'()*+,-./:<=>?@[\\]^{|}~" + '\u00A0'));
+
+		Assert.assertEquals("string", _htmlImpl.auiCompatibleId("string"));
+
+		Assert.assertEquals(
+			"a20sentence2e", _htmlImpl.auiCompatibleId("a sentence."));
 	}
 
 	private HtmlImpl _htmlImpl = new HtmlImpl();
