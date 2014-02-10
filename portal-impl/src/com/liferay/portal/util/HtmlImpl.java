@@ -57,34 +57,31 @@ public class HtmlImpl implements Html {
 			return text;
 		}
 
-		StringBundler sb = null;
-
-		char c = text.charAt(0);
-
-		if ((c < CharPool.UPPER_CASE_A) ||
-			((c > CharPool.UPPER_CASE_Z) && (c < CharPool.LOWER_CASE_A)) ||
-			(c > CharPool.LOWER_CASE_Z)) {
-
-			sb = new StringBundler();
-
-			sb.append("lfr_");
+		if (text.length() == 0) {
+			return StringPool.BLANK;
 		}
+
+		//Encode characters appears in css selecters and illegal to HTML5 id
+		//Encode characters that cause Aui one method error
+		//http://www.w3.org/TR/css3-selectors/
+		//http://validator.w3.org/
+
+		StringBundler sb = null;
 
 		int lastReplacementIndex = 0;
 
 		for (int i = 0; i < text.length(); i++) {
-			c = text.charAt(i);
+			char c = text.charAt(i);
 
-			if (((c >= CharPool.NUMBER_0) && (c <= CharPool.NUMBER_9)) ||
-				((c >= CharPool.UPPER_CASE_A) &&
-				 (c <= CharPool.UPPER_CASE_Z)) ||
-				((c >= CharPool.LOWER_CASE_A) &&
-				 (c <= CharPool.LOWER_CASE_Z)) ||
-				(c == CharPool.UNDERLINE)) {
+			if (!(Character.isWhitespace(c) ||
+				((c >= CharPool.QUOTE) && (c <= CharPool.SLASH)) ||
+				((c >= CharPool.COLON) && (c <= CharPool.AT)) ||
+				((c >= CharPool.OPEN_BRACKET) && (c <= '^')) ||
+				((c >= CharPool.OPEN_CURLY_BRACE) && (c <= CharPool.TILDE)) ||
+				(c == '\u00A0'))) {
 
 				continue;
 			}
-
 
 			if (sb == null) {
 				sb = new StringBundler();
