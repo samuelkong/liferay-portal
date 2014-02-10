@@ -52,6 +52,63 @@ public class HtmlImpl implements Html {
 	public static final int ESCAPE_MODE_URL = 5;
 
 	@Override
+	public String auiCompatibleId(String text) {
+		if (Validator.isNull(text)) {
+			return text;
+		}
+
+		if (text.length() == 0) {
+			return StringPool.BLANK;
+		}
+
+		//Encode characters appears in css selecters and illegal to HTML5 id
+		//http://www.w3.org/TR/css3-selectors/
+		//http://validator.w3.org/
+
+		StringBundler sb = null;
+
+		int lastReplacementIndex = 0;
+
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+
+			if (!(Character.isWhitespace(c) ||
+				(c >= CharPool.QUOTE && c <= CharPool.SLASH) ||
+				(c >= CharPool.COLON && c <= CharPool.AT) ||
+				(c >= CharPool.OPEN_BRACKET && c <= '^') ||
+				(c >= CharPool.OPEN_CURLY_BRACE && c <= CharPool.TILDE) ||
+				 c == '\u00A0')) {
+
+				continue;
+			}
+
+			String replacement = Integer.toHexString(c);
+
+			if (sb == null) {
+				sb = new StringBundler();
+			}
+
+			if (i > lastReplacementIndex) {
+				sb.append(text.substring(lastReplacementIndex, i));
+			}
+
+			sb.append(replacement);
+
+			lastReplacementIndex = i + 1;
+		}
+
+		if (sb == null) {
+			return text;
+		}
+
+		if (lastReplacementIndex < text.length()) {
+			sb.append(text.substring(lastReplacementIndex));
+		}
+
+		return sb.toString();
+	}
+
+	@Override
 	public String escape(String text) {
 		if (text == null) {
 			return null;
