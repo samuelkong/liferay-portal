@@ -57,34 +57,27 @@ public class HtmlImpl implements Html {
 			return text;
 		}
 
-		StringBundler sb = null;
-
-		char c = text.charAt(0);
-
-		if ((c < CharPool.UPPER_CASE_A) ||
-			((c > CharPool.UPPER_CASE_Z) && (c < CharPool.LOWER_CASE_A)) ||
-			(c > CharPool.LOWER_CASE_Z)) {
-
-			sb = new StringBundler();
-
-			sb.append("lfr_");
+		if (text.length() == 0) {
+			return StringPool.BLANK;
 		}
+
+		StringBundler sb = null;
 
 		int lastReplacementIndex = 0;
 
 		for (int i = 0; i < text.length(); i++) {
-			c = text.charAt(i);
+			char c = text.charAt(i);
 
-			if (((c >= CharPool.NUMBER_0) && (c <= CharPool.NUMBER_9)) ||
-				((c >= CharPool.UPPER_CASE_A) &&
-				 (c <= CharPool.UPPER_CASE_Z)) ||
-				((c >= CharPool.LOWER_CASE_A) &&
-				 (c <= CharPool.LOWER_CASE_Z)) ||
-				(c == CharPool.UNDERLINE)) {
+			if (!((c == '\u007F') || (c == '\u00A0') || (c == '\u2007') ||
+				  (c == '\u202F') || (c == CharPool.PRIME) ||
+				  (c <= CharPool.SLASH) ||
+				  ((c >= CharPool.COLON) && (c <= CharPool.AT)) ||
+				  ((c >= CharPool.OPEN_BRACKET) && (c <= '^')) ||
+				  ((c >= CharPool.OPEN_CURLY_BRACE) &&
+				   (c <= CharPool.TILDE)))) {
 
 				continue;
 			}
-
 
 			if (sb == null) {
 				sb = new StringBundler();

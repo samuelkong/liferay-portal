@@ -14,7 +14,8 @@
 
 package com.liferay.portal.util;
 
-import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,37 +30,30 @@ public class HtmlImplTest {
 		Assert.assertEquals(null, _htmlImpl.auiCompatibleId(null));
 
 		Assert.assertEquals(
-			"lr_20StartWithWhiteSpace",
-			_htmlImpl.auiCompatibleId(" StartWithWhiteSpace"));
+			StringPool.BLANK, _htmlImpl.auiCompatibleId(StringPool.BLANK));
 
 		Assert.assertEquals(
-			"ASpace20InTheMiddleOfString",
-			_htmlImpl.auiCompatibleId("ASpace InTheMiddleOfString"));
+			"2122232425262728292a2b2c2d2e2f3a3b3c3d3e3f405b5c5d5e7b7c7d7e60_",
+			_htmlImpl.auiCompatibleId("!\"#$%&'()*+,-./:;<=>?@[\\]^{|}~`_"));
+
+		StringBundler sb = new StringBundler();
+
+		for (int i = 0; i <= 32; i++) {
+			sb.append(StringPool.ASCII_TABLE[i]);
+		}
+
+		sb.append('\u007F');
 
 		Assert.assertEquals(
-			"ARegularStringWith_And0123",
-			_htmlImpl.auiCompatibleId("ARegularStringWith_And0123"));
+			"0123456789abcdef101112131415161718191a1b1c1d1e1f207f",
+			_htmlImpl.auiCompatibleId(sb.toString()));
 
 		Assert.assertEquals(
-			"lr_5bStringStartsWith5b",
-			_htmlImpl.auiCompatibleId("[StringStartsWith["));
-
-		Assert.assertEquals(
-			"lr__StringStartWith_",
-			_htmlImpl.auiCompatibleId("_StringStartWith_"));
-
-		Assert.assertEquals(
-			"lr_bbStringStartWithRaquo",
-			_htmlImpl.auiCompatibleId(CharPool.RAQUO+"StringStartWithRaquo"));
-
-		Assert.assertEquals(
-			"lr_1StringStartWithNumber",
-			_htmlImpl.auiCompatibleId("1StringStartWithNumber"));
-
-		Assert.assertEquals(
-			"lr_6c49StringWithChinese5b57",
+			"non20breaking20spacea02007202f",
 			_htmlImpl.auiCompatibleId(
-				'\u6c49' + "StringWithChinese" + '\u5b57'));
+				"non breaking space" + '\u00A0' + '\u2007' + '\u202F'));
+
+		Assert.assertEquals("string", _htmlImpl.auiCompatibleId("string"));
 	}
 
 	private HtmlImpl _htmlImpl = new HtmlImpl();
