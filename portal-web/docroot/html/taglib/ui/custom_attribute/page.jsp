@@ -76,7 +76,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 								curValue = (Boolean)defaultValue;
 							}
 
-							curValue = ParamUtil.getBoolean(request, "ExpandoAttribute--" + HtmlUtil.escapeAttribute(name) + "--", curValue);
+							curValue = ParamUtil.getBoolean(request, "ExpandoAttribute--" + name + "--", curValue);
 							%>
 
 							<select id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--">
@@ -231,7 +231,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										value = defaultValue;
 									}
 
-									double[] values = ParamUtil.getDoubleValues(request, "ExpandoAttribute--" + HtmlUtil.escape(name) + "--", (double[])value);
+									double[] values = ParamUtil.getDoubleValues(request, "ExpandoAttribute--" + name + "--", (double[])value);
 									%>
 
 									<textarea class="lfr-textarea" id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--"><%= StringUtil.merge(values, StringPool.NEW_LINE) %></textarea>
@@ -294,7 +294,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										value = defaultValue;
 									}
 
-									float[] values = ParamUtil.getFloatValues(request, "ExpandoAttribute--" + HtmlUtil.escape(name) + "--", (float[])value);
+									float[] values = ParamUtil.getFloatValues(request, "ExpandoAttribute--" + name + "--", (float[])value);
 									%>
 
 									<textarea class="lfr-textarea" id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--"><%= StringUtil.merge((float[])value, StringPool.NEW_LINE) %></textarea>
@@ -357,7 +357,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										value = defaultValue;
 									}
 
-									int[] values = ParamUtil.getIntegerValues(request, "ExpandoAttribute--" + HtmlUtil.escape(name) + "--", (int[])value);
+									int[] values = ParamUtil.getIntegerValues(request, "ExpandoAttribute--" + name + "--", (int[])value);
 									%>
 
 									<textarea class="lfr-textarea" id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--"><%= StringUtil.merge(values, StringPool.NEW_LINE) %></textarea>
@@ -420,7 +420,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										value = defaultValue;
 									}
 
-									long[] values = ParamUtil.getLongValues(request, "ExpandoAttribute--" + HtmlUtil.escape(name) + "--", (long[])value);
+									long[] values = ParamUtil.getLongValues(request, "ExpandoAttribute--" + name + "--", (long[])value);
 									%>
 
 									<textarea class="lfr-textarea" id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--"><%= StringUtil.merge(values, StringPool.NEW_LINE) %></textarea>
@@ -483,7 +483,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										value = defaultValue;
 									}
 
-									Number[] values = ParamUtil.getNumberValues(request, "ExpandoAttribute--" + HtmlUtil.escape(name) + "--", (Number[])value);
+									Number[] values = ParamUtil.getNumberValues(request, "ExpandoAttribute--" + name + "--", (Number[])value);
 									%>
 
 									<textarea class="lfr-textarea" id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--"><%= StringUtil.merge(values, StringPool.NEW_LINE) %></textarea>
@@ -547,7 +547,7 @@ ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(company.
 										value = defaultValue;
 									}
 
-									short[] values = ParamUtil.getShortValues(request, "ExpandoAttribute--" + HtmlUtil.escape(name) + "--", (short[])value);
+									short[] values = ParamUtil.getShortValues(request, "ExpandoAttribute--" + name + "--", (short[])value);
 									%>
 
 									<textarea class="lfr-textarea" id="<%= randomNamespace %><%= HtmlUtil.auiCompatibleId(name) %>" name="<portlet:namespace />ExpandoAttribute--<%= HtmlUtil.escapeAttribute(name) %>--"><%= StringUtil.merge(values, StringPool.NEW_LINE) %></textarea>
