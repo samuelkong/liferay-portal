@@ -57,34 +57,28 @@ public class HtmlImpl implements Html {
 			return text;
 		}
 
-		StringBundler sb = null;
-
-		char c = text.charAt(0);
-
-		if ((c < CharPool.UPPER_CASE_A) ||
-			((c > CharPool.UPPER_CASE_Z) && (c < CharPool.LOWER_CASE_A)) ||
-			(c > CharPool.LOWER_CASE_Z)) {
-
-			sb = new StringBundler();
-
-			sb.append("lfr_");
+		if (text.length() == 0) {
+			return StringPool.BLANK;
 		}
+
+		StringBundler sb = null;
 
 		int lastReplacementIndex = 0;
 
 		for (int i = 0; i < text.length(); i++) {
-			c = text.charAt(i);
+			char c = text.charAt(i);
 
-			if (((c >= CharPool.NUMBER_0) && (c <= CharPool.NUMBER_9)) ||
-				((c >= CharPool.UPPER_CASE_A) &&
-				 (c <= CharPool.UPPER_CASE_Z)) ||
-				((c >= CharPool.LOWER_CASE_A) &&
-				 (c <= CharPool.LOWER_CASE_Z)) ||
-				(c == CharPool.UNDERLINE)) {
+			if (!((c <= CharPool.SLASH) ||
+				  ((c >= CharPool.COLON) && (c <= CharPool.AT)) ||
+				  ((c >= CharPool.OPEN_BRACKET) && (c <= CharPool.PRIME)) ||
+				  ((c >= CharPool.OPEN_CURLY_BRACE) &&
+				   (c <= CharPool.DELETE)) ||
+				  (c == CharPool.NO_BREAK_SPACE) ||
+				  (c == CharPool.FIGURE_SPACE) ||
+				  (c == CharPool.NARROW_NO_BREAK_SPACE))) {
 
 				continue;
 			}
-
 
 			if (sb == null) {
 				sb = new StringBundler();
@@ -94,7 +88,13 @@ public class HtmlImpl implements Html {
 				sb.append(text.substring(lastReplacementIndex, i));
 			}
 
-			sb.append(Integer.toHexString(c));
+			sb.append(CharPool.UNDERLINE);
+
+			if (c != CharPool.UNDERLINE) {
+				sb.append(Integer.toHexString(c));
+			}
+
+			sb.append(CharPool.UNDERLINE);
 
 			lastReplacementIndex = i + 1;
 		}
