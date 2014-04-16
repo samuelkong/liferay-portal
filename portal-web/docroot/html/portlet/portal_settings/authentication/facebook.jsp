@@ -20,7 +20,6 @@
 boolean facebookConnectAuthEnabled = FacebookConnectUtil.isEnabled(company.getCompanyId());
 boolean facebookConnectVerifiedAccountRequired = FacebookConnectUtil.isVerifiedAccountRequired(company.getCompanyId());
 String facebookConnectAppId = FacebookConnectUtil.getAppId(company.getCompanyId());
-String facebookConnectAppSecret = FacebookConnectUtil.getAppSecret(company.getCompanyId());
 String facebookConnectGraphURL = FacebookConnectUtil.getGraphURL(company.getCompanyId());
 String facebookConnectOauthAuthURL = FacebookConnectUtil.getAuthURL(company.getCompanyId());
 String facebookConnectOauthTokenURL = FacebookConnectUtil.getAccessTokenURL(company.getCompanyId());
@@ -34,7 +33,7 @@ String facebookConnectRedirectURL = FacebookConnectUtil.getRedirectURL(company.g
 
 	<aui:input cssClass="lfr-input-text-container" label="application-id" name='<%= "settings--" + PropsKeys.FACEBOOK_CONNECT_APP_ID + "--" %>' type="text" value="<%= facebookConnectAppId %>" />
 
-	<aui:input cssClass="lfr-input-text-container" label="application-secret" name='<%= "settings--" + PropsKeys.FACEBOOK_CONNECT_APP_SECRET + "--" %>' type="text" value="<%= facebookConnectAppSecret %>" />
+	<aui:input cssClass="lfr-input-text-container" label="application-secret" name='<%= "settings--" + PropsKeys.FACEBOOK_CONNECT_APP_SECRET + "--" %>' type="password" value="<%= Portal.TEMP_OBFUSCATION_VALUE %>" />
 
 	<aui:input cssClass="lfr-input-text-container" label="graph-url" name='<%= "settings--" + PropsKeys.FACEBOOK_CONNECT_GRAPH_URL + "--" %>' type="text" value="<%= facebookConnectGraphURL %>" />
 

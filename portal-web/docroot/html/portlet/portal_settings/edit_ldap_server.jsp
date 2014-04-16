@@ -29,12 +29,6 @@ String ldapBaseProviderUrl = PrefsPropsUtil.getString(company.getCompanyId(), Pr
 String ldapBaseDN = PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.LDAP_BASE_DN + postfix);
 String ldapSecurityPrincipal = PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.LDAP_SECURITY_PRINCIPAL + postfix);
 
-String ldapSecurityCredentials = PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.LDAP_SECURITY_CREDENTIALS + postfix);
-
-if (Validator.isNotNull(ldapSecurityCredentials)) {
-	ldapSecurityCredentials = Portal.TEMP_OBFUSCATION_VALUE;
-}
-
 String ldapAuthSearchFilter = PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.LDAP_AUTH_SEARCH_FILTER + postfix);
 String ldapImportUserSearchFilter = PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.LDAP_IMPORT_USER_SEARCH_FILTER + postfix);
 String ldapImportGroupSearchFilter = PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.LDAP_IMPORT_GROUP_SEARCH_FILTER + postfix);
@@ -200,7 +194,7 @@ for (int i = 0 ; i < groupMappingArray.length ; i++) {
 
 		<aui:input cssClass="lfr-input-text-container" label="principal" name='<%= "settings--" + PropsKeys.LDAP_SECURITY_PRINCIPAL + postfix + "--" %>' type="text" value="<%= ldapSecurityPrincipal %>" />
 
-		<aui:input cssClass="lfr-input-text-container" label="credentials" name='<%= "settings--" + PropsKeys.LDAP_SECURITY_CREDENTIALS + postfix + "--" %>' type="password" value="<%= ldapSecurityCredentials %>" />
+		<aui:input cssClass="lfr-input-text-container" label="credentials" name='<%= "settings--" + PropsKeys.LDAP_SECURITY_CREDENTIALS + postfix + "--" %>' type="password" value="<%= Portal.TEMP_OBFUSCATION_VALUE %>" />
 
 		<aui:button-row>
 
