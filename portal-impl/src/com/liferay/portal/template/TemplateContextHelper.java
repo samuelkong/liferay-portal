@@ -341,7 +341,7 @@ public class TemplateContextHelper {
 			String pageTitle = pageTitleListMergeable.mergeToString(
 				StringPool.SPACE);
 
-			template.put("pageTitle", pageTitle);
+			template.put("pageTitle", HtmlUtil.stripHtml(pageTitle));
 		}
 
 		ListMergeable<String> pageSubtitleListMergeable =
@@ -351,7 +351,7 @@ public class TemplateContextHelper {
 			String pageSubtitle = pageSubtitleListMergeable.mergeToString(
 				StringPool.SPACE);
 
-			template.put("pageSubtitle", pageSubtitle);
+			template.put("pageSubtitle", HtmlUtil.stripHtml(pageSubtitle));
 		}
 	}
 
