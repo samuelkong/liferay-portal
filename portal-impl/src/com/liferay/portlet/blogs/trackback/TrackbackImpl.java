@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.Function;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -72,6 +74,11 @@ public class TrackbackImpl implements Trackback {
 		ThemeDisplay themeDisplay, String excerpt, String url) {
 
 		StringBundler sb = new StringBundler(7);
+
+		url = StringUtil.replace(
+			url,
+			new String[]{StringPool.CLOSE_BRACKET, StringPool.OPEN_BRACKET},
+			new String[]{"%5D", "%5B"});
 
 		sb.append("[...] ");
 		sb.append(excerpt);
