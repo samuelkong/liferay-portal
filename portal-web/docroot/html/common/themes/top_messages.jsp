@@ -17,7 +17,7 @@
 <%@ include file="/html/common/themes/init.jsp" %>
 
 <%
-if (!user.isDefaultUser() && (user.getLocale() != locale)) {
+if (!user.isDefaultUser() && !locale.equals(user.getLocale())) {
 	PortalUtil.addUserLocaleOptionsMessage(request);
 }
 %>
