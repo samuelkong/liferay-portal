@@ -103,6 +103,11 @@ public class HtmlImpl implements Html {
 
 					break;
 
+				case '\u2019':
+					replacement = "&rsquo;";
+
+					break;
+
 				case '"':
 					replacement = "&#034;";
 
@@ -628,6 +633,7 @@ public class HtmlImpl implements Html {
 		text = StringUtil.replace(text, "&lt;", "<");
 		text = StringUtil.replace(text, "&gt;", ">");
 		text = StringUtil.replace(text, "&amp;", "&");
+		text = StringUtil.replace(text, "&rsquo;", "\u2019");
 		text = StringUtil.replace(text, "&#034;", "\"");
 		text = StringUtil.replace(text, "&#039;", "'");
 		text = StringUtil.replace(text, "&#040;", "(");
