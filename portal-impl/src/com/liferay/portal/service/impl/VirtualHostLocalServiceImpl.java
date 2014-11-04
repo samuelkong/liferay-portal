@@ -78,7 +78,7 @@ public class VirtualHostLocalServiceImpl
 			layoutSetId);
 
 		if (layoutSet != null) {
-			layoutSetPersistence.clearCache(layoutSet);
+			layoutSetPersistence.clearCache();
 		}
 
 		return virtualHost;
