@@ -15,6 +15,7 @@
 package com.liferay.portal.deploy.hot;
 
 import com.liferay.portal.captcha.CaptchaImpl;
+import com.liferay.portal.captcha.simplecaptcha.SimpleCaptchaImpl;
 import com.liferay.portal.kernel.bean.BeanLocatorException;
 import com.liferay.portal.kernel.bean.ClassLoaderBeanHandler;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
@@ -64,6 +65,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
+import com.liferay.portal.kernel.util.InstancePool;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -111,6 +113,7 @@ import com.liferay.portal.service.persistence.BasePersistence;
 import com.liferay.portal.servlet.filters.cache.CacheUtil;
 import com.liferay.portal.spring.aop.ServiceBeanAopProxy;
 import com.liferay.portal.spring.context.PortalContextLoaderListener;
+import com.liferay.portal.util.ClassLoaderUtil;
 import com.liferay.portal.util.CustomJspRegistryUtil;
 import com.liferay.portal.util.JavaScriptBundleUtil;
 import com.liferay.portal.util.PortalInstances;
@@ -159,6 +162,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 
+import nl.captcha.backgrounds.BackgroundProducer;
+import nl.captcha.gimpy.GimpyRenderer;
+import nl.captcha.noise.NoiseProducer;
+import nl.captcha.text.producer.TextProducer;
+import nl.captcha.text.renderer.WordRenderer;
+
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.AdvisedSupport;
 
@@ -187,8 +196,12 @@ public class HookHotDeployListener
 		"auth.token.ignore.portlets", "auth.token.impl", "auth.pipeline.post",
 		"auth.pipeline.pre", "auto.login.hooks",
 		"captcha.check.portal.create_account", "captcha.engine.impl",
-		"company.default.locale", "company.default.time.zone",
-		"company.settings.form.authentication",
+		"captcha.engine.simplecaptcha.background.producers",
+		"captcha.engine.simplecaptcha.gimpy.renderers",
+		"captcha.engine.simplecaptcha.noise.producers",
+		"captcha.engine.simplecaptcha.text.producers",
+		"captcha.engine.simplecaptcha.word.renderers", "company.default.locale",
+		"company.default.time.zone", "company.settings.form.authentication",
 		"company.settings.form.configuration",
 		"company.settings.form.identification",
 		"company.settings.form.miscellaneous", "company.settings.form.social",
@@ -457,7 +470,18 @@ public class HookHotDeployListener
 			}
 		}
 
-		if (portalProperties.containsKey(PropsKeys.CAPTCHA_ENGINE_IMPL)) {
+		if (portalProperties.containsKey(PropsKeys.CAPTCHA_ENGINE_IMPL) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_BACKGROUND_PRODUCERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_GIMPY_RENDERERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_NOISE_PRODUCERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_TEXT_PRODUCERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_WORD_RENDERERS)) {
+
 			CaptchaImpl captchaImpl = null;
 
 			Captcha captcha = CaptchaUtil.getCaptcha();
@@ -1499,12 +1523,152 @@ public class HookHotDeployListener
 				authToken);
 		}
 
-		if (portalProperties.containsKey(PropsKeys.CAPTCHA_ENGINE_IMPL)) {
-			String captchaClassName = portalProperties.getProperty(
-				PropsKeys.CAPTCHA_ENGINE_IMPL);
+		if (portalProperties.containsKey(PropsKeys.CAPTCHA_ENGINE_IMPL) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_BACKGROUND_PRODUCERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_GIMPY_RENDERERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_NOISE_PRODUCERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_TEXT_PRODUCERS) ||
+			portalProperties.containsKey(
+				PropsKeys.CAPTCHA_ENGINE_SIMPLECAPTCHA_WORD_RENDERERS)) {
 
-			Captcha captcha = (Captcha)newInstance(
-				portletClassLoader, Captcha.class, captchaClassName);
+			String captchaClassName = StringPool.BLANK;
+
+			Captcha captcha = null;
+
+			if (portalProperties.containsKey(PropsKeys.CAPTCHA_ENGINE_IMPL)) {
+				captchaClassName = portalProperties.getProperty(
+					PropsKeys.CAPTCHA_ENGINE_IMPL);
+
+				if (!captchaClassName.equals(
+						SimpleCaptchaImpl.class.getName())) {
+
+					captcha = (Captcha)newInstance(
+						portletClassLoader, Captcha.class, captchaClassName);
+				}
+			}
+			else {
+				captchaClassName = PropsValues.CAPTCHA_ENGINE_IMPL;
+			}
+
+			if (captchaClassName.equals(SimpleCaptchaImpl.class.getName())) {
+				SimpleCaptchaImpl simpleCaptchaImpl =
+					(SimpleCaptchaImpl)InstanceFactory.newInstance(
+						ClassLoaderUtil.getPortalClassLoader(),
+						captchaClassName);
+
+				if (portalProperties.containsKey(PropsKeys.
+						CAPTCHA_ENGINE_SIMPLECAPTCHA_BACKGROUND_PRODUCERS)) {
+
+					String[] backgroundProducerNames = StringUtil.split(
+						portalProperties.getProperty(PropsKeys.
+							CAPTCHA_ENGINE_SIMPLECAPTCHA_BACKGROUND_PRODUCERS));
+
+					BackgroundProducer[] backgroundProducers =
+						new BackgroundProducer[backgroundProducerNames.length];
+
+					for (int i = 0; i < backgroundProducerNames.length; i++) {
+						String backgroundProducerName =
+							backgroundProducerNames[i];
+
+						backgroundProducers[i] =
+							(BackgroundProducer)InstancePool.get(
+								backgroundProducerName);
+					}
+
+					simpleCaptchaImpl.setBackgroundProducer(
+						backgroundProducers);
+				}
+
+				if (portalProperties.containsKey(PropsKeys.
+						CAPTCHA_ENGINE_SIMPLECAPTCHA_GIMPY_RENDERERS)) {
+
+					String[] gimpyRendererNames =
+						StringUtil.split(
+							portalProperties.getProperty(PropsKeys.
+								CAPTCHA_ENGINE_SIMPLECAPTCHA_GIMPY_RENDERERS));
+
+					GimpyRenderer[] gimpyRenderers =
+						new GimpyRenderer[gimpyRendererNames.length];
+
+					for (int i = 0; i < gimpyRendererNames.length; i++) {
+						String gimpyRendererName = gimpyRendererNames[i];
+
+						gimpyRenderers[i] = (GimpyRenderer)InstancePool.get(
+							gimpyRendererName);
+					}
+
+					simpleCaptchaImpl.setGimpyRenderer(gimpyRenderers);
+				}
+
+				if (portalProperties.containsKey(PropsKeys.
+						CAPTCHA_ENGINE_SIMPLECAPTCHA_NOISE_PRODUCERS)) {
+
+					String[] noiseProducerNames =
+						StringUtil.split(
+							portalProperties.getProperty(PropsKeys.
+								CAPTCHA_ENGINE_SIMPLECAPTCHA_NOISE_PRODUCERS));
+
+					NoiseProducer[] noiseProducers =
+						new NoiseProducer[noiseProducerNames.length];
+
+					for (int i = 0; i < noiseProducerNames.length; i++) {
+						String noiseProducerName = noiseProducerNames[i];
+
+						noiseProducers[i] = (NoiseProducer)InstancePool.get(
+							noiseProducerName);
+					}
+
+					simpleCaptchaImpl.setNoiseProducer(noiseProducers);
+				}
+
+				if (portalProperties.containsKey(PropsKeys.
+						CAPTCHA_ENGINE_SIMPLECAPTCHA_TEXT_PRODUCERS)) {
+
+					String[] textProducerNames =
+						StringUtil.split(
+							portalProperties.getProperty(PropsKeys.
+								CAPTCHA_ENGINE_SIMPLECAPTCHA_TEXT_PRODUCERS));
+
+					TextProducer[] textProducers =
+						new TextProducer[textProducerNames.length];
+
+					for (int i = 0; i < textProducerNames.length; i++) {
+						String textProducerName = textProducerNames[i];
+
+						textProducers[i] = (TextProducer)InstancePool.get(
+							textProducerName);
+					}
+
+					simpleCaptchaImpl.setTextProducer(textProducers);
+				}
+
+				if (portalProperties.containsKey(PropsKeys.
+						CAPTCHA_ENGINE_SIMPLECAPTCHA_WORD_RENDERERS)) {
+
+					String[] wordRendererNames =
+						StringUtil.split(
+							portalProperties.getProperty(PropsKeys.
+								CAPTCHA_ENGINE_SIMPLECAPTCHA_WORD_RENDERERS));
+
+					WordRenderer[] wordRenderers =
+						new WordRenderer[wordRendererNames.length];
+
+					for (int i = 0; i < wordRendererNames.length; i++) {
+						String wordRendererName = wordRendererNames[i];
+
+						wordRenderers[i] = (WordRenderer)InstancePool.get(
+							wordRendererName);
+					}
+
+					simpleCaptchaImpl.setWordRenderer(wordRenderers);
+				}
+
+				captcha = simpleCaptchaImpl;
+			}
 
 			CaptchaImpl captchaImpl = null;
 

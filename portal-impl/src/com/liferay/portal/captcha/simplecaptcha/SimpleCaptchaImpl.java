@@ -167,6 +167,28 @@ public class SimpleCaptchaImpl implements Captcha {
 			simpleCaptcha.getImage());
 	}
 
+	public void setBackgroundProducer(
+		BackgroundProducer[] backgroundProducers) {
+
+		_backgroundProducers = backgroundProducers;
+	}
+
+	public void setGimpyRenderer(GimpyRenderer[] gimpyRenderers) {
+		_gimpyRenderers = gimpyRenderers;
+	}
+
+	public void setNoiseProducer(NoiseProducer[] noiseProducers) {
+		_noiseProducers = noiseProducers;
+	}
+
+	public void setTextProducer(TextProducer[] textProducers) {
+		_textProducers = textProducers;
+	}
+
+	public void setWordRenderer(WordRenderer[] wordRenderers) {
+		_wordRenderers = wordRenderers;
+	}
+
 	protected void checkMaxChallenges(HttpServletRequest request)
 		throws CaptchaMaxChallengesException {
 
