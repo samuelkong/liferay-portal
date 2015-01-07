@@ -3779,9 +3779,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				continue;
 			}
 
-			boolean containsName = matches(group.getName(), names);
+			boolean containsName = matches(group.getNameCurrentValue(), names);
 			boolean containsDescription = matches(
-				group.getDescription(), descriptions);
+				group.getDescriptionCurrentValue(), descriptions);
 
 			if ((andOperator && (!containsName || !containsDescription)) ||
 				(!andOperator && !containsName && !containsDescription)) {
