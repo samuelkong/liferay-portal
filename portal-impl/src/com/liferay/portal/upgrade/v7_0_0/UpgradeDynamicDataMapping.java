@@ -482,9 +482,8 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 		}
 
 		protected int countDDMFieldRepetitions(
-				Element rootElement, String fieldName, String parentFieldName,
-				int parentOffset)
-			throws PortalException {
+			Element rootElement, String fieldName, String parentFieldName,
+			int parentOffset) {
 
 			String[] ddmFieldsDisplayValues = getDDMFieldsDisplayValues(
 				rootElement, true);
@@ -506,9 +505,8 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 		}
 
 		protected int countDDMFieldRepetitions(
-				String[] fieldsDisplayValues, String fieldName,
-				String parentFieldName, int parentOffset)
-			throws PortalException {
+			String[] fieldsDisplayValues, String fieldName,
+			String parentFieldName, int parentOffset) {
 
 			int offset = -1;
 
@@ -706,7 +704,7 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 			XPath dynamicContentXPath = SAXReaderUtil.createXPath(
 				"dynamic-content[(@language-id='" + languageId + "')]");
 
-			List<Node> nodes = (List<Node>)dynamicContentXPath.selectNodes(
+			List<Node> nodes = dynamicContentXPath.selectNodes(
 				dynamicElementElement);
 
 			return (Element)nodes.get(index);
@@ -819,9 +817,8 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 		}
 
 		protected void setDDMFormFieldValueValues(
-				DDMFormFieldValue ddmFormFieldValue, DDMFormField ddmFormField,
-				Element rootElement, DDMFieldsCounter ddmFieldsCounter)
-			throws PortalException {
+			DDMFormFieldValue ddmFormFieldValue, DDMFormField ddmFormField,
+			Element rootElement, DDMFieldsCounter ddmFieldsCounter) {
 
 			String fieldName = ddmFormFieldValue.getName();
 

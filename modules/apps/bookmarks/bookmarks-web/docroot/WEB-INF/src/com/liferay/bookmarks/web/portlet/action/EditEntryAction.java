@@ -36,7 +36,6 @@ import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.asset.AssetCategoryException;
 import com.liferay.portlet.asset.AssetTagException;
-import com.liferay.portlet.assetpublisher.util.AssetPublisherUtil;
 import com.liferay.portlet.trash.util.TrashUtil;
 
 import java.util.ArrayList;
@@ -244,10 +243,6 @@ public class EditEntryAction extends PortletAction {
 
 			entry = BookmarksEntryServiceUtil.addEntry(
 				groupId, folderId, name, url, description, serviceContext);
-
-			AssetPublisherUtil.addAndStoreSelection(
-				actionRequest, BookmarksEntry.class.getName(),
-				entry.getEntryId(), -1);
 		}
 		else {
 
@@ -257,9 +252,6 @@ public class EditEntryAction extends PortletAction {
 				entryId, groupId, folderId, name, url, description,
 				serviceContext);
 		}
-
-		AssetPublisherUtil.addRecentFolderId(
-			actionRequest, BookmarksEntry.class.getName(), folderId);
 
 		return entry;
 	}

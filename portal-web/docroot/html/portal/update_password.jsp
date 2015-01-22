@@ -62,7 +62,7 @@ PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 						</c:when>
 
 						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithModelListeners.class.getName()) %>">
-							<liferay-ui:message key="that-password-is-invalid-please-enter-in-a-different-password" />
+							<liferay-ui:message key="that-password-is-invalid-please-enter-a-different-password" />
 						</c:when>
 
 						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithRegex.class.getName()) %>">
@@ -79,15 +79,19 @@ PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 						</c:when>
 
 						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeEqualToCurrent.class.getName()) %>">
-							<liferay-ui:message key="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-in-a-different-password" />
+							<liferay-ui:message key="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-a-different-password" />
+						</c:when>
+
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeNull.class.getName()) %>">
+							<liferay-ui:message key="the-password-cannot-be-blank" />
 						</c:when>
 
 						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeRecentlyUsed.class.getName()) %>">
-							<liferay-ui:message key="that-password-has-already-been-used-please-enter-in-a-different-password" />
+							<liferay-ui:message key="that-password-has-already-been-used-please-enter-a-different-password" />
 						</c:when>
 
 						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeTrivial.class.getName()) %>">
-							<liferay-ui:message key="that-password-uses-common-words-please-enter-in-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />
+							<liferay-ui:message key="that-password-uses-common-words-please-enter-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />
 						</c:when>
 
 						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotContainDictionaryWords.class.getName()) %>">
