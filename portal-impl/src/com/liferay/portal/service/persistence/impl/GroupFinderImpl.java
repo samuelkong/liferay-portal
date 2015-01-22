@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -42,6 +43,7 @@ import com.liferay.portal.util.comparator.GroupNameComparator;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -305,7 +307,11 @@ public class GroupFinderImpl
 						andOperator));
 			}
 
-			return groupIds.size();
+			List<Group> groups = filterByN_D(
+				groupIds, names, descriptions, andOperator, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+			return groups.size();
 		}
 		catch (Exception e) {
 			throw new SystemException(e);
@@ -848,15 +854,10 @@ public class GroupFinderImpl
 			}
 
 			List<Long> groupIds = (List<Long>)QueryUtil.list(
-				q, getDialect(), start, end);
+				q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-			List<Group> groups = new ArrayList<>(groupIds.size());
-
-			for (Long groupId : groupIds) {
-				Group group = GroupUtil.findByPrimaryKey(groupId);
-
-				groups.add(group);
-			}
+			List<Group> groups = filterByN_D(
+				groupIds, names, descriptions, andOperator, start, end);
 
 			return groups;
 		}
@@ -947,6 +948,49 @@ public class GroupFinderImpl
 		qPos.add(descriptions, 2);
 
 		return q.list(true);
+	}
+
+	protected List<Group> filterByN_D(
+		Collection<Long> groupIds, String[] names, String[] descriptions,
+		boolean andOperator, int start, int end) throws NoSuchGroupException {
+
+		List<Group> groups = new ArrayList<>(groupIds.size());
+
+		for (Long groupId : groupIds) {
+			Group group = GroupUtil.findByPrimaryKey(groupId);
+
+			boolean containsName = matches(group.getNameCurrentValue(), names);
+			boolean containsDescription = matches(
+				group.getDescriptionCurrentValue(), descriptions);
+
+			if ((andOperator && (!containsName || !containsDescription)) ||
+				(!andOperator && !containsName && !containsDescription)) {
+
+				continue;
+			}
+
+			groups.add(group);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS)) {
+			return groups;
+		}
+		else {
+			if (start < 0) {
+				start = 0;
+			}
+
+			if (end < start) {
+				end = start;
+			}
+
+			if (start == end) {
+				return new ArrayList<>();
+			}
+
+			return groups.subList(
+				start, ((end > groups.size()) ? groups.size() : end));
+		}
 	}
 
 	protected String getJoin(LinkedHashMap<String, Object> params) {
@@ -1075,6 +1119,25 @@ public class GroupFinderImpl
 		}
 
 		return sb.toString();
+	}
+
+	protected boolean matches(String s, String[] keywords) {
+		if ((keywords == null) ||
+			((keywords.length == 1) && (keywords[0] == null))) {
+
+			return true;
+		}
+
+		for (String keyword : keywords) {
+			if (StringUtil.wildcardMatches(
+					s, keyword, CharPool.UNDERLINE, CharPool.PERCENT,
+					CharPool.BACK_SLASH, false)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected String replaceJoinAndWhere(
