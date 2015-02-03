@@ -14,8 +14,11 @@
 
 package com.liferay.portal.util;
 
+import com.google.common.net.InternetDomainName;
+
 import com.liferay.portal.kernel.io.Deserializer;
 import com.liferay.portal.kernel.io.Serializer;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -107,6 +110,56 @@ public class CookieImpl implements com.liferay.portal.kernel.util.Cookie {
 		}
 
 		return true;
+	}
+
+	@Override
+	public String getDomain(String host) {
+
+		// See LEP-4602 and LEP-4645.
+
+		if (host == null) {
+			return null;
+		}
+
+		// See LEP-5595.
+
+		if (Validator.isIPAddress(host)) {
+			return host;
+		}
+
+		InternetDomainName internetDomainName = InternetDomainName.from(host);
+
+		String domain = null;
+
+		if (internetDomainName.hasPublicSuffix()) {
+			domain = internetDomainName.topPrivateDomain().toString();
+
+			return domain;
+		}
+		else {
+			int x = host.lastIndexOf(CharPool.PERIOD);
+
+			if (x <= 0) {
+				return null;
+			}
+
+			int y = host.lastIndexOf(CharPool.PERIOD, x - 1);
+
+			if (y <= 0) {
+				return StringPool.PERIOD + host;
+			}
+
+			int z = host.lastIndexOf(CharPool.PERIOD, y - 1);
+
+			if (z <= 0) {
+				domain = host.substring(y);
+			}
+			else {
+				domain = host.substring(z);
+			}
+
+			return domain;
+		}
 	}
 
 	@Override
