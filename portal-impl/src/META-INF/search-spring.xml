@@ -197,6 +197,7 @@
 				<entry key="layoutUuid" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="license" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
 				<entry key="middleName" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
+				<entry key="name" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
 				<!--<entry key="path">
 					<bean id="org.apache.lucene.analysis.miscellaneous.PatternAnalyzer" class="org.apache.lucene.analysis.miscellaneous.PatternAnalyzer">
 						<constructor-arg ref="org.apache.lucene.util.Version" />
