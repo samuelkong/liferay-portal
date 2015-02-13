@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.util.CookieImpl;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,11 +43,20 @@ import javax.servlet.http.Cookie;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.mockito.Matchers;
+
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * @author Shuyang Zhou
  */
-public class MetaInfoCacheServletResponseTest {
+@PrepareForTest({CookieUtil.class})
+@RunWith(PowerMockRunner.class)
+public class MetaInfoCacheServletResponseTest extends PowerMockito {
 
 	@ClassRule
 	public static final CodeCoverageAssertor codeCoverageAssertor =
@@ -56,6 +64,8 @@ public class MetaInfoCacheServletResponseTest {
 
 	@Test
 	public void testAddCookie() {
+		mockStatic(CookieUtil.class);
+
 		final List<Cookie> cookies = new ArrayList<>();
 
 		StubHttpServletResponse stubHttpServletResponse =
@@ -108,9 +118,11 @@ public class MetaInfoCacheServletResponseTest {
 		Assert.assertEquals(1, cookies.size());
 		Assert.assertEquals(cookie1, cookies.get(0));
 
-		CookieUtil cookieUtil = new CookieUtil();
-
-		cookieUtil.setCookie(new CookieImpl());
+		when(
+			CookieUtil.toString(Matchers.eq(cookie1))
+		).thenReturn(
+			toString(cookie1)
+		);
 
 		setCookieHeaders = metaInfoCacheServletResponse.getHeaders(
 			HttpHeaders.SET_COOKIE);
@@ -125,6 +137,12 @@ public class MetaInfoCacheServletResponseTest {
 		// Second add
 
 		Cookie cookie2 = new Cookie("testCookieName2", "testCookieValue2");
+
+		when(
+			CookieUtil.toString(Matchers.eq(cookie2))
+		).thenReturn(
+			toString(cookie2)
+		);
 
 		metaInfoCacheServletResponse.addCookie(cookie2);
 
@@ -1644,6 +1662,32 @@ public class MetaInfoCacheServletResponseTest {
 
 		Assert.assertEquals(
 			sb.toString(), metaInfoCacheServletResponse.toString());
+	}
+
+	protected String toString(Cookie cookie) {
+		StringBundler sb = new StringBundler(19);
+
+		sb.append("{comment=");
+		sb.append(cookie.getComment());
+		sb.append(", domain=");
+		sb.append(cookie.getDomain());
+		sb.append(", httpOnly=");
+		sb.append(cookie.isHttpOnly());
+		sb.append(", maxAge=");
+		sb.append(cookie.getMaxAge());
+		sb.append(", name=");
+		sb.append(cookie.getName());
+		sb.append(", path=");
+		sb.append(cookie.getPath());
+		sb.append(", secure=");
+		sb.append(cookie.getSecure());
+		sb.append(", value=");
+		sb.append(cookie.getValue());
+		sb.append(", version=");
+		sb.append(cookie.getVersion());
+		sb.append("}");
+
+		return sb.toString();
 	}
 
 }
