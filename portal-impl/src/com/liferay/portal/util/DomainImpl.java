@@ -14,10 +14,52 @@
 
 package com.liferay.portal.util;
 
+import com.google.common.net.InternetDomainName;
+
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.Domain;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Yuxing Wu
  */
 public class DomainImpl implements Domain {
+
+	@Override
+	public String getDomain(String host) {
+
+		// See LEP-4602 and LEP-4645.
+
+		if (host == null) {
+			return null;
+		}
+
+		// See LEP-5595.
+
+		if (Validator.isIPAddress(host)) {
+			return host;
+		}
+
+		InternetDomainName internetDomainName = InternetDomainName.from(host);
+
+		if (internetDomainName.isPublicSuffix()) {
+			return null;
+		}
+
+		if (internetDomainName.isTopPrivateDomain()) {
+			String domain = internetDomainName.toString();
+
+			return StringPool.PERIOD + domain;
+		}
+
+		int x = host.indexOf(CharPool.PERIOD);
+
+		if (x <= 0) {
+			return null;
+		}
+
+		return host.substring(x);
+	}
+
 }

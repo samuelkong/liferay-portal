@@ -18,4 +18,7 @@ package com.liferay.portal.kernel.util;
  * @author Yuxing Wu
  */
 public interface Domain {
+
+	public String getDomain(String host);
+
 }
