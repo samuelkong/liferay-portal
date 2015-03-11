@@ -33,7 +33,8 @@ page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.KeyValuePair" %><%@
 page import="com.liferay.portal.kernel.util.KeyValuePairComparator" %><%@
 page import="com.liferay.portal.kernel.util.ListUtil" %><%@
-page import="com.liferay.portal.kernel.util.ParamUtil" %>
+page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
+page import="com.liferay.portal.kernel.util.Validator" %>
 
 <%@ page import="java.text.NumberFormat" %>
 
@@ -54,7 +55,7 @@ WindowState windowState = liferayPortletRequest.getWindowState();
 
 CurrencyConverterConfiguration currencyConverterConfiguration = (CurrencyConverterConfiguration)request.getAttribute(CurrencyConverterConfiguration.class.getName());
 
-String[] symbols = portletPreferences.getValues("symbols", currencyConverterConfiguration.symbols());
+String[] symbols = portletPreferences.getValues("symbols", (Validator.isNull(currencyConverterConfiguration) ? new String[0] : currencyConverterConfiguration.symbols()));
 
 Map<String, String> allSymbols = CurrencyConverterUtil.getAllSymbols(request);
 %>

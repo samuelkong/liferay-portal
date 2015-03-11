@@ -67,6 +67,18 @@ import org.osgi.service.component.annotations.Reference;
 public class CurrencyConverterPortlet extends MVCPortlet {
 
 	@Override
+	public void doEdit(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		renderRequest.setAttribute(
+			CurrencyConverterConfiguration.class.getName(),
+			_currencyConverterConfiguration);
+
+		super.doEdit(renderRequest, renderResponse);
+	}
+
+	@Override
 	public void doView(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
