@@ -1535,35 +1535,51 @@ public class DDMStructureLocalServiceImpl
 
 		indexer.reindexDDMStructures(ddmStructureIds);
 
+		// Cache
+
+		List<DDMStructure> structures = new ArrayList<>();
+
+		List<DDMStructure> childrenStructures = getChildrenStructures(
+			structures, structure.getGroupId(), structure.getStructureId());
+
+		ddmStructurePersistence.clearCache(childrenStructures);
+
 		return structure;
-	}
-
-	protected void getChildrenStructureIds(
-			List<Long> structureIds, long groupId, long parentStructureId)
-		throws PortalException {
-
-		List<DDMStructure> structures = ddmStructurePersistence.findByG_P(
-			groupId, parentStructureId);
-
-		for (DDMStructure structure : structures) {
-			structureIds.add(structure.getStructureId());
-
-			getChildrenStructureIds(
-				structureIds, structure.getGroupId(),
-				structure.getStructureId());
-		}
 	}
 
 	protected List<Long> getChildrenStructureIds(long groupId, long structureId)
 		throws PortalException {
 
+		List<DDMStructure> structures = new ArrayList<>();
+
+		getChildrenStructures(structures, groupId, structureId);
+
 		List<Long> structureIds = new ArrayList<>();
 
-		getChildrenStructureIds(structureIds, groupId, structureId);
+		for (DDMStructure structure : structures) {
+			structureIds.add(structure.getStructureId());
+		}
 
 		structureIds.add(0, structureId);
 
 		return structureIds;
+	}
+
+	protected List<DDMStructure> getChildrenStructures(
+		List<DDMStructure> structures, long groupId, long parentStructureId) {
+
+		List<DDMStructure> childrenStructures =
+			ddmStructurePersistence.findByG_P(groupId, parentStructureId);
+
+		for (DDMStructure childrenStructure : childrenStructures) {
+			structures.add(childrenStructure);
+
+			getChildrenStructures(
+				structures, childrenStructure.getGroupId(),
+				childrenStructure.getStructureId());
+		}
+
+		return structures;
 	}
 
 	protected Set<String> getDDMFormFieldsNames(DDMForm ddmForm) {
