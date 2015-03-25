@@ -1535,6 +1535,20 @@ public class DDMStructureLocalServiceImpl
 
 		indexer.reindexDDMStructures(ddmStructureIds);
 
+		// Cache
+
+		List<Long> childStructureIds = getChildrenStructureIds(
+			structure.getGroupId(), structure.getStructureId());
+
+		List<DDMStructure> childStructures = new ArrayList<>(
+			childStructureIds.size());
+
+		for (long childStructureId : childStructureIds) {
+			childStructures.add(fetchDDMStructure(childStructureId));
+		}
+
+		ddmStructurePersistence.clearCache(childStructures);
+
 		return structure;
 	}
 
