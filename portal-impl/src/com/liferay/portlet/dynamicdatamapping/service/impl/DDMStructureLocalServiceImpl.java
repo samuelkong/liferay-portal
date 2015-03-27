@@ -1535,35 +1535,56 @@ public class DDMStructureLocalServiceImpl
 
 		indexer.reindexDDMStructures(ddmStructureIds);
 
+		// Cache
+
+		List<DDMStructure> childrenStructures = getChildrenStructures(
+			structure.getGroupId(), structure.getStructureId());
+
+		ddmStructurePersistence.clearCache(childrenStructures);
+
 		return structure;
-	}
-
-	protected void getChildrenStructureIds(
-			List<Long> structureIds, long groupId, long parentStructureId)
-		throws PortalException {
-
-		List<DDMStructure> structures = ddmStructurePersistence.findByG_P(
-			groupId, parentStructureId);
-
-		for (DDMStructure structure : structures) {
-			structureIds.add(structure.getStructureId());
-
-			getChildrenStructureIds(
-				structureIds, structure.getGroupId(),
-				structure.getStructureId());
-		}
 	}
 
 	protected List<Long> getChildrenStructureIds(long groupId, long structureId)
 		throws PortalException {
 
+		List<DDMStructure> structures = getChildrenStructures(
+			groupId, structureId);
+
 		List<Long> structureIds = new ArrayList<>();
 
-		getChildrenStructureIds(structureIds, groupId, structureId);
-
-		structureIds.add(0, structureId);
+		for (DDMStructure structure : structures) {
+			structureIds.add(structure.getStructureId());
+		}
 
 		return structureIds;
+	}
+
+	protected void getChildrenStructures(
+		List<DDMStructure> structures, long groupId, long parentStructureId) {
+
+		List<DDMStructure> childrenStructures =
+			ddmStructurePersistence.findByG_P(groupId, parentStructureId);
+
+		for (DDMStructure childrenStructure : childrenStructures) {
+			structures.add(childrenStructure);
+
+			getChildrenStructures(
+				structures, childrenStructure.getGroupId(),
+				childrenStructure.getStructureId());
+		}
+	}
+
+	protected List<DDMStructure> getChildrenStructures(
+		long groupId, long parentStructureId) {
+
+		List<DDMStructure> structures = new ArrayList<>();
+
+		getChildrenStructures(structures, groupId, parentStructureId);
+
+		structures.add(0, fetchDDMStructure(parentStructureId));
+
+		return structures;
 	}
 
 	protected Set<String> getDDMFormFieldsNames(DDMForm ddmForm) {
