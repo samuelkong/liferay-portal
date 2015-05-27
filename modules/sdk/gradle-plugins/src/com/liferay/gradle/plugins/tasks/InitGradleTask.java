@@ -558,8 +558,8 @@ public class InitGradleTask extends DefaultTask {
 				"1.3");
 			_put("slf4j-api.jar", "org.slf4j", "slf4j-api", "1.7.2");
 			_put(
-				"struts.jar", "com.liferay", "org.apache.struts",
-				"1.2.9.LIFERAY-PATCHED-1");
+				"struts-core.jar", "com.liferay", "org.apache.struts",
+				"1.3.10.LIFERAY-PATCHED-1");
 			_put(
 				"util-slf4j.jar", "com.liferay.portal", "util-slf4j",
 				"default");
