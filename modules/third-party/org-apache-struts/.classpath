@@ -24,7 +24,10 @@
 	<classpathentry kind="lib" path="lib/commons-fileupload.jar" />
 	<classpathentry kind="lib" path="lib/commons-validator.jar" />
 	<classpathentry kind="lib" path="lib/oro.jar" />
-	<classpathentry kind="lib" path="lib/struts.jar" />
+	<classpathentry kind="lib" path="lib/struts-core.jar" />
+	<classpathentry kind="lib" path="lib/struts-extras.jar />
+	<classpathentry kind="lib" path="lib/portal/struts-taglib.jar" />
+	<classpathentry kind="lib" path="lib/struts-tiles.jar" />
 	<classpathentry kind="lib" path="lib/xalan.jar" />
 	<classpathentry kind="lib" path="lib/xml-apis.jar" />
 	<classpathentry kind="output" path="bin" />
