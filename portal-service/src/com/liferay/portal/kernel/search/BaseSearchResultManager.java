@@ -32,9 +32,7 @@ import javax.portlet.PortletResponse;
 public abstract class BaseSearchResultManager implements SearchResultManager {
 
 	@Override
-	public SearchResult createSearchResult(Document document)
-		throws PortalException {
-
+	public SearchResult createSearchResult(Document document) {
 		long classNameId = GetterUtil.getLong(
 			document.get(Field.CLASS_NAME_ID));
 		long classPK = GetterUtil.getLong(document.get(Field.CLASS_PK));
@@ -134,6 +132,9 @@ public abstract class BaseSearchResultManager implements SearchResultManager {
 		return summary;
 	}
 
+	/**
+	 * @throws PortalException
+	 */
 	protected void addRelatedModel(
 			SearchResult searchResult, Document document, Locale locale,
 			PortletRequest portletRequest, PortletResponse portletResponse)
