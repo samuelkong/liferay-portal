@@ -125,9 +125,7 @@ public class SearchResultManagerUtil {
 		extends BaseSearchResultManager {
 
 		@Override
-		public SearchResult createSearchResult(Document document)
-			throws PortalException {
-
+		public SearchResult createSearchResult(Document document) {
 			String entryClassName = GetterUtil.getString(
 				document.get(Field.ENTRY_CLASS_NAME));
 			long entryClassPK = GetterUtil.getLong(
