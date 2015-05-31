@@ -556,7 +556,7 @@ public class PoshiRunnerContext {
 		Method[] methods = LiferaySelenium.class.getMethods();
 
 		for (Method method : methods) {
-			Class[] parameterTypes = method.getParameterTypes();
+			Class<?>[] parameterTypes = method.getParameterTypes();
 
 			_seleniumParameterCounts.put(
 				method.getName(), parameterTypes.length);

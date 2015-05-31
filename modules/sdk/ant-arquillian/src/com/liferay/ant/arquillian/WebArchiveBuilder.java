@@ -14,12 +14,9 @@
 
 package com.liferay.ant.arquillian;
 
-import com.liferay.portal.kernel.process.ProcessUtil;
-import com.liferay.portal.kernel.util.ObjectValuePair;
-
+import java.io.BufferedReader;
 import java.io.File;
-
-import java.util.concurrent.Future;
+import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.Project;
@@ -38,12 +35,25 @@ public class WebArchiveBuilder {
 		File tempDir = new File(System.getProperty("java.io.tmpdir"));
 
 		try {
-			Future<ObjectValuePair<Void, Void>> future = ProcessUtil.execute(
-				ProcessUtil.LOGGING_OUTPUT_PROCESSOR, "ant", "direct-deploy",
+			ProcessBuilder processBuilder = new ProcessBuilder(
+				"ant", "direct-deploy",
 				"-Dapp.server.deploy.dir=" + tempDir.getAbsolutePath(),
 				"-Dauto.deploy.unpack.war=false");
 
-			future.get();
+			Process process = processBuilder.start();
+
+			process.waitFor();
+
+			BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(process.getInputStream()));
+
+			String line = bufferedReader.readLine();
+
+			while (line != null) {
+				_logger.debug(line);
+
+				line = bufferedReader.readLine();
+			}
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
