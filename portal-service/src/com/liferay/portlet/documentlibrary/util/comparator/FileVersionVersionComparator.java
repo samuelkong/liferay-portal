@@ -14,85 +14,33 @@
 
 package com.liferay.portlet.documentlibrary.util.comparator;
 
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portlet.documentlibrary.model.DLFileEntryConstants;
-import com.liferay.portlet.documentlibrary.model.DLFileVersion;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 
 import java.util.Comparator;
 
 /**
- * @author Bruno Farache
+ * @author Iván Zaera
  */
-public class FileVersionVersionComparator implements Comparator<DLFileVersion> {
+public class FileVersionVersionComparator implements Comparator<FileVersion> {
 
 	public FileVersionVersionComparator() {
 		this(false);
 	}
 
 	public FileVersionVersionComparator(boolean ascending) {
-		_ascending = ascending;
+		_versionNumberComparator = new VersionNumberComparator(ascending);
 	}
 
 	@Override
-	public int compare(
-		DLFileVersion dlFileVersion1, DLFileVersion dlFileVersion2) {
-
-		int value = 0;
-
-		String version1 = dlFileVersion1.getVersion();
-
-		if (version1.equals(
-				DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION)) {
-
-			return -1;
-		}
-
-		String version2 = dlFileVersion2.getVersion();
-
-		if (version2.equals(
-				DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION)) {
-
-			return 1;
-		}
-
-		int[] versionParts1 = StringUtil.split(version1, StringPool.PERIOD, 0);
-		int[] versionParts2 = StringUtil.split(version2, StringPool.PERIOD, 0);
-
-		if ((versionParts1.length != 2) && (versionParts2.length != 2)) {
-			value = 0;
-		}
-		else if (versionParts1.length != 2) {
-			value = -1;
-		}
-		else if (versionParts2.length != 2) {
-			value = 1;
-		}
-		else if (versionParts1[0] > versionParts2[0]) {
-			value = 1;
-		}
-		else if (versionParts1[0] < versionParts2[0]) {
-			value = -1;
-		}
-		else if (versionParts1[1] > versionParts2[1]) {
-			value = 1;
-		}
-		else if (versionParts1[1] < versionParts2[1]) {
-			value = -1;
-		}
-
-		if (_ascending) {
-			return value;
-		}
-		else {
-			return -value;
-		}
+	public int compare(FileVersion fileVersion1, FileVersion fileVersion2) {
+		return _versionNumberComparator.compare(
+			fileVersion1.getVersion(), fileVersion2.getVersion());
 	}
 
 	public boolean isAscending() {
-		return _ascending;
+		return _versionNumberComparator.isAscending();
 	}
 
-	private final boolean _ascending;
+	private final VersionNumberComparator _versionNumberComparator;
 
 }

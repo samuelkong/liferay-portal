@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;
+import com.liferay.portal.kernel.servlet.PortalWebResources;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ColorSchemeFactoryUtil;
@@ -823,17 +824,25 @@ public class ServicePreAction extends Action {
 		themeDisplay.setPathApplet(contextPath.concat("/applets"));
 		themeDisplay.setPathCms(contextPath.concat("/cms"));
 		themeDisplay.setPathContext(contextPath);
+
+		PortalWebResources portalWebResources =
+			PortalWebResourcesUtil.getPortalWebResources(
+				PortalWebResourceConstants.RESOURCE_TYPE_EDITORS);
+
+		if (portalWebResources != null) {
+
+			// Temporary workaround for LPS-56017
+
+			themeDisplay.setPathEditors(
+				portalWebResources.getContextPath() + "/html");
+		}
+
 		themeDisplay.setPathFlash(contextPath.concat("/flash"));
 		themeDisplay.setPathFriendlyURLPrivateGroup(
 			friendlyURLPrivateGroupPath);
 		themeDisplay.setPathFriendlyURLPrivateUser(friendlyURLPrivateUserPath);
 		themeDisplay.setPathFriendlyURLPublic(friendlyURLPublicPath);
 		themeDisplay.setPathImage(imagePath);
-
-		String editorsPath = PortalWebResourcesUtil.getContextPath(
-			PortalWebResourceConstants.RESOURCE_TYPE_EDITORS);
-
-		themeDisplay.setPathEditors(editorsPath.concat("/html"));
 
 		String javaScriptPath = PortalWebResourcesUtil.getContextPath(
 			PortalWebResourceConstants.RESOURCE_TYPE_JS);

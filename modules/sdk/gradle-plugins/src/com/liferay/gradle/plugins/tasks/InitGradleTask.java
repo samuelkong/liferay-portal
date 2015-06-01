@@ -14,9 +14,9 @@
 
 package com.liferay.gradle.plugins.tasks;
 
-import com.liferay.gradle.plugins.LiferayJavaPlugin;
 import com.liferay.gradle.plugins.LiferayPlugin;
 import com.liferay.gradle.plugins.extensions.LiferayExtension;
+import com.liferay.gradle.plugins.extensions.LiferayOSGiExtension;
 import com.liferay.gradle.plugins.extensions.LiferayThemeExtension;
 import com.liferay.gradle.util.FileUtil;
 import com.liferay.gradle.util.GradleUtil;
@@ -36,6 +36,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import nebula.plugin.extraconfigurations.OptionalBasePlugin;
+import nebula.plugin.extraconfigurations.ProvidedBasePlugin;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -116,15 +119,33 @@ public class InitGradleTask extends DefaultTask {
 
 				String conf = (String)dependencyNode.attribute("conf");
 
-				if (Validator.isNotNull(conf) && !conf.equals("default")) {
+				if (Validator.isNotNull(conf) && !conf.startsWith("default") &&
+					!conf.startsWith("internal")) {
+
 					continue;
 				}
 
 				String group = (String)dependencyNode.attribute("org");
 				String name = (String)dependencyNode.attribute("name");
+
+				boolean optional = false;
+				boolean transitive = true;
+
+				if (Validator.isNotNull(conf)) {
+					if (conf.equals("default->master")) {
+						transitive = false;
+					}
+					else if (conf.equals("internal->master")) {
+						optional = true;
+					}
+				}
+
 				String version = (String)dependencyNode.attribute("rev");
 
-				contents.add(wrapDependency(group, name, version));
+				contents.add(
+					wrapDependency(
+						JavaPlugin.COMPILE_CONFIGURATION_NAME, group, name,
+						optional, transitive, version));
 			}
 		}
 
@@ -141,7 +162,10 @@ public class InitGradleTask extends DefaultTask {
 					deploymentContext);
 
 				if (FileUtil.exists(_project, serviceJarFileName)) {
-					contents.add(wrapServiceJarDependency(serviceJarFileName));
+					contents.add(
+						wrapServiceJarDependency(
+							JavaPlugin.COMPILE_CONFIGURATION_NAME,
+							serviceJarFileName));
 				}
 			}
 		}
@@ -158,6 +182,10 @@ public class InitGradleTask extends DefaultTask {
 			File parentDir = projectDir.getParentFile();
 
 			for (Project project : rootProject.getSubprojects()) {
+				File dir = project.getProjectDir();
+
+				projectFileNamePathMap.put(dir.getName(), project.getPath());
+
 				String projectFileName = FileUtil.relativize(
 					project.getProjectDir(), parentDir);
 
@@ -177,12 +205,15 @@ public class InitGradleTask extends DefaultTask {
 						"Unable to find project dependency " + projectFileName);
 				}
 
-				contents.add(wrapProjectDependency(projectPath));
+				contents.add(
+					wrapProjectDependency(
+						JavaPlugin.COMPILE_CONFIGURATION_NAME, projectPath));
 			}
 		}
 
-		return wrapContents(
-			contents, 1, "(", JavaPlugin.COMPILE_CONFIGURATION_NAME, ")", true);
+		Collections.sort(contents);
+
+		return contents;
 	}
 
 	protected List<String> getBuildDependenciesProvided() {
@@ -196,7 +227,7 @@ public class InitGradleTask extends DefaultTask {
 
 				String conf = (String)dependencyNode.attribute("conf");
 
-				if (Validator.isNull(conf) || !conf.contains("provided")) {
+				if (Validator.isNull(conf) || !conf.startsWith("provided")) {
 					continue;
 				}
 
@@ -204,13 +235,16 @@ public class InitGradleTask extends DefaultTask {
 				String name = (String)dependencyNode.attribute("name");
 				String version = (String)dependencyNode.attribute("rev");
 
-				contents.add(wrapDependency(group, name, version));
+				contents.add(
+					wrapDependency(
+						ProvidedBasePlugin.getPROVIDED_CONFIGURATION_NAME(),
+						group, name, false, version));
 			}
 		}
 
-		return wrapContents(
-			contents, 1, "(", LiferayJavaPlugin.PROVIDED_CONFIGURATION_NAME,
-			")", true);
+		Collections.sort(contents);
+
+		return contents;
 	}
 
 	protected List<String> getBuildDependenciesProvidedCompile() {
@@ -222,6 +256,14 @@ public class InitGradleTask extends DefaultTask {
 		if (Validator.isNotNull(portalDependencyJars)) {
 			String[] portalDependencyJarsArray = portalDependencyJars.split(
 				",");
+
+			String configurationName =
+				WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME;
+
+			if (FileUtil.exists(_project, "bnd.bnd")) {
+				configurationName =
+					ProvidedBasePlugin.getPROVIDED_CONFIGURATION_NAME();
+			}
 
 			for (String fileName : portalDependencyJarsArray) {
 				String[] portalDependencyNotation =
@@ -236,14 +278,16 @@ public class InitGradleTask extends DefaultTask {
 					String name = portalDependencyNotation[1];
 					String version = portalDependencyNotation[2];
 
-					contents.add(wrapDependency(group, name, version));
+					contents.add(
+						wrapDependency(
+							configurationName, group, name, false, version));
 				}
 			}
 		}
 
-		return wrapContents(
-			contents, 1, "(", WarPlugin.PROVIDED_COMPILE_CONFIGURATION_NAME,
-			")", true);
+		Collections.sort(contents);
+
+		return contents;
 	}
 
 	protected List<String> getBuildDependenciesTestCompile() {
@@ -265,13 +309,16 @@ public class InitGradleTask extends DefaultTask {
 				String name = (String)dependencyNode.attribute("name");
 				String version = (String)dependencyNode.attribute("rev");
 
-				contents.add(wrapDependency(group, name, version));
+				contents.add(
+					wrapDependency(
+						JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME, group, name,
+						true, version));
 			}
 		}
 
-		return wrapContents(
-			contents, 1, "(", JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME, ")",
-			true);
+		Collections.sort(contents);
+
+		return contents;
 	}
 
 	protected List<String> getBuildGradleDependencies() {
@@ -296,16 +343,25 @@ public class InitGradleTask extends DefaultTask {
 			contents.add(wrapPropertyFile("deployDir", autoDeployDirName));
 		}
 
+		if (_liferayExtension instanceof LiferayOSGiExtension) {
+			String autoUpdateXml = getBuildXmlProperty("osgi.auto.update.xml");
+
+			if (Validator.isNotNull(autoUpdateXml)) {
+				contents.add(
+					wrapProperty(1, "autoUpdateXml", false, autoUpdateXml));
+			}
+		}
+
 		if (_liferayExtension instanceof LiferayThemeExtension) {
 			String themeParent = getBuildXmlProperty("theme.parent");
 
 			if (Validator.isNotNull(themeParent)) {
-				contents.add(wrapProperty("themeParent", themeParent));
+				contents.add(wrapProperty(1, "themeParent", themeParent));
 			}
 
 			String themeType = getBuildXmlProperty("theme.type", "vm");
 
-			contents.add(wrapProperty("themeType", themeType));
+			contents.add(wrapProperty(1, "themeType", themeType));
 		}
 
 		if (!contents.isEmpty()) {
@@ -319,10 +375,26 @@ public class InitGradleTask extends DefaultTask {
 	protected List<String> getBuildGradleProperties() {
 		List<String> contents = new ArrayList<>();
 
+		String javacSource = getBuildXmlProperty("javac.source");
+
+		if (Validator.isNotNull(javacSource)) {
+			contents.add(wrapProperty(0, "sourceCompatibility", javacSource));
+		}
+
+		String javacTarget = getBuildXmlProperty("javac.target");
+
+		if (Validator.isNotNull(javacSource)) {
+			contents.add(wrapProperty(0, "targetCompatibility", javacTarget));
+		}
+
 		String pluginVersion = getBuildXmlProperty("plugin.version");
 
 		if (Validator.isNotNull(pluginVersion)) {
-			contents.add("version = \"" + pluginVersion + "\"");
+			if (!contents.isEmpty()) {
+				contents.add("");
+			}
+
+			contents.add(wrapProperty(0, "version", pluginVersion));
 		}
 
 		return contents;
@@ -429,34 +501,85 @@ public class InitGradleTask extends DefaultTask {
 		return contents;
 	}
 
-	protected String wrapDependency(String group, String name, String version) {
-		StringBuilder sb = new StringBuilder();
+	protected String wrapDependency(
+		String configurationName, String group, String name, boolean optional,
+		boolean transitive, String version) {
 
-		sb.append("\t\t[group: \"");
-		sb.append(group);
-		sb.append("\", name: \"");
-		sb.append(name);
-		sb.append("\", version: \"");
-		sb.append(version);
-		sb.append("\"],");
-
-		return sb.toString();
-	}
-
-	protected String wrapProjectDependency(String projectPath) {
-		return "\t\tproject(\"" + projectPath + "\"),";
-	}
-
-	protected String wrapProperty(String name, String value) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append('\t');
+		sb.append(configurationName);
+		sb.append(" group: \"");
+		sb.append(group);
+		sb.append("\", name: \"");
 		sb.append(name);
-		sb.append(" = \"");
-		sb.append(value);
-		sb.append("\"");
+		sb.append('\"');
+
+		if (optional) {
+			sb.append(", ");
+			sb.append(OptionalBasePlugin.getOPTIONAL_IDENTIFIER());
+		}
+
+		if (!transitive) {
+			sb.append(", transitive: false");
+		}
+
+		sb.append(", version: \"");
+		sb.append(version);
+		sb.append('\"');
 
 		return sb.toString();
+	}
+
+	protected String wrapDependency(
+		String configurationName, String group, String name, boolean transitive,
+		String version) {
+
+		return wrapDependency(
+			configurationName, group, name, false, transitive, version);
+	}
+
+	protected String wrapProjectDependency(
+		String configurationName, String projectPath) {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append('\t');
+		sb.append(configurationName);
+		sb.append(" project(\"");
+		sb.append(projectPath);
+		sb.append("\")");
+
+		return sb.toString();
+	}
+
+	protected String wrapProperty(
+		int indentCount, String name, boolean quoteValue, String value) {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < indentCount; i++) {
+			sb.append('\t');
+		}
+
+		sb.append(name);
+		sb.append(" = ");
+
+		if (quoteValue) {
+			sb.append('\"');
+		}
+
+		sb.append(value);
+
+		if (quoteValue) {
+			sb.append('\"');
+		}
+
+		return sb.toString();
+	}
+
+	protected String wrapProperty(int indentCount, String name, String value) {
+		return wrapProperty(indentCount, name, true, value);
 	}
 
 	protected String wrapPropertyFile(String name, String value) {
@@ -471,8 +594,18 @@ public class InitGradleTask extends DefaultTask {
 		return sb.toString();
 	}
 
-	protected String wrapServiceJarDependency(String serviceJarFileName) {
-		return "\t\tfiles(\"" + serviceJarFileName + "\"),";
+	protected String wrapServiceJarDependency(
+		String configurationName, String serviceJarFileName) {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append('\t');
+		sb.append(configurationName);
+		sb.append(" files(\"");
+		sb.append(serviceJarFileName);
+		sb.append("\")");
+
+		return sb.toString();
 	}
 
 	private static final PortalDependencyNotations _portalDependencyNotations =
@@ -558,8 +691,8 @@ public class InitGradleTask extends DefaultTask {
 				"1.3");
 			_put("slf4j-api.jar", "org.slf4j", "slf4j-api", "1.7.2");
 			_put(
-				"struts.jar", "com.liferay", "org.apache.struts",
-				"1.2.9.LIFERAY-PATCHED-1");
+				"struts-core.jar", "com.liferay", "org.apache.struts",
+				"1.3.10.LIFERAY-PATCHED-1");
 			_put(
 				"util-slf4j.jar", "com.liferay.portal", "util-slf4j",
 				"default");
