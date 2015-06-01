@@ -16,6 +16,7 @@ package com.liferay.portal.kernel.search.generic;
 
 import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.util.StringBundler;
 
 /**
  * @author Michael C. Han
@@ -45,6 +46,19 @@ public class BooleanClauseImpl<T> implements BooleanClause<T> {
 	@Override
 	public T getQuery() {
 		return getClause();
+	}
+
+	@Override
+	public String toString() {
+		StringBundler sb = new StringBundler(5);
+
+		sb.append("{");
+		sb.append(_booleanClauseOccur);
+		sb.append("(");
+		sb.append(_t);
+		sb.append(")}");
+
+		return sb.toString();
 	}
 
 	private final BooleanClauseOccur _booleanClauseOccur;
