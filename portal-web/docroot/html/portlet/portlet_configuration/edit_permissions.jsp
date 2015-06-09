@@ -363,6 +363,9 @@ definePermissionsURL.setRefererPlid(plid);
 						if (Validator.isNotNull(preselectedMsg)) {
 							dataMessage = HtmlUtil.escapeAttribute(LanguageUtil.format(request, preselectedMsg, new Object[] {role.getTitle(locale), ResourceActionsUtil.getAction(request, action), Validator.isNull(modelResource) ? selResourceDescription : ResourceActionsUtil.getModelResource(locale, resource.getName()), HtmlUtil.escape(group.getDescriptiveName(locale))}, false));
 						}
+						else {
+							dataMessage = HtmlUtil.escapeAttribute(ResourceActionsUtil.getAction(request, action));
+						}
 
 						String actionSeparator = Validator.isNotNull(preselectedMsg) ? ActionUtil.PRESELECTED : ActionUtil.ACTION;
 						%>
@@ -371,7 +374,7 @@ definePermissionsURL.setRefererPlid(plid);
 							<input name="<%= renderResponse.getNamespace() + role.getRoleId() + actionSeparator + action %>" type="hidden" value="<%= true %>" />
 						</c:if>
 
-						<input <%= checked ? "checked" : StringPool.BLANK %> class="<%= Validator.isNotNull(preselectedMsg) ? "lfr-checkbox-preselected" : StringPool.BLANK %>" data-message="<%= dataMessage %>" <%= disabled ? "disabled" : StringPool.BLANK %> id="<%= FriendlyURLNormalizerUtil.normalize(role.getName()) + actionSeparator + action %>" name="<%= renderResponse.getNamespace() + role.getRoleId() + actionSeparator + action %>" onclick="<%= Validator.isNotNull(preselectedMsg) ? "return false;" : StringPool.BLANK %>" type="checkbox" />
+						<input <%= checked ? "checked" : StringPool.BLANK %> class="lfr-checkbox <%= Validator.isNotNull(preselectedMsg) ? "lfr-checkbox-preselected" : StringPool.BLANK %>" data-message="<%= dataMessage %>" <%= disabled ? "disabled" : StringPool.BLANK %> id="<%= FriendlyURLNormalizerUtil.normalize(role.getName()) + actionSeparator + action %>" name="<%= renderResponse.getNamespace() + role.getRoleId() + actionSeparator + action %>" onclick="<%= Validator.isNotNull(preselectedMsg) ? "return false;" : StringPool.BLANK %>" type="checkbox" />
 					</liferay-ui:search-container-column-text>
 
 				<%
@@ -392,7 +395,7 @@ definePermissionsURL.setRefererPlid(plid);
 <aui:script sandbox="<%= true %>">
 	$('#<portlet:namespace />fm').on(
 		'mouseover',
-		'.lfr-checkbox-preselected',
+		'.lfr-checkbox',
 		function(event) {
 			var currentTarget = $(event.currentTarget);
 
