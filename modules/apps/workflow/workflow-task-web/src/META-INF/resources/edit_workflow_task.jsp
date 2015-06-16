@@ -48,7 +48,7 @@ boolean showEditURL = workflowTaskDisplayContext.showEditURL(workflowTask);
 <liferay-ui:header
 	backURL="<%= backURL.toString() %>"
 	localizeTitle="<%= false %>"
-	title="<%= headerTitle %>"
+	title="<%= HtmlUtil.extractText(headerTitle) %>"
 />
 
 <aui:row>
@@ -173,7 +173,7 @@ boolean showEditURL = workflowTaskDisplayContext.showEditURL(workflowTask);
 						<liferay-ui:icon
 							iconCssClass="<%= workflowHandler.getIconCssClass() %>"
 							label="<%= true %>"
-							message="<%= workflowTaskDisplayContext.getTaskContentTitle(workflowTask) %>"
+							message="<%= HtmlUtil.extractText(workflowTaskDisplayContext.getTaskContentTitle(workflowTask)) %>"
 						/>
 					</h3>
 

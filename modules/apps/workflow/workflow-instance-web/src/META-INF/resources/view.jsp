@@ -74,7 +74,7 @@ try {
 			<liferay-ui:search-container-column-text
 				href="<%= rowURL %>"
 				name="asset-title"
-				value="<%= workflowInstanceViewDisplayContext.getAssetTitle(workflowInstance) %>"
+				value="<%= HtmlUtil.extractText(workflowInstanceViewDisplayContext.getAssetTitle(workflowInstance)) %>"
 			/>
 
 			<liferay-ui:search-container-column-text

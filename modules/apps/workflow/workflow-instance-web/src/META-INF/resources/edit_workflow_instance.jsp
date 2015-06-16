@@ -84,7 +84,7 @@ else {
 						<liferay-ui:icon
 							iconCssClass="<%= workflowInstanceEditDisplayContext.getIconCssClass() %>"
 							label="<%= true %>"
-							message="<%= workflowInstanceEditDisplayContext.getTaskContentTitleMessage() %>"
+							message="<%= HtmlUtil.extractText(workflowInstanceEditDisplayContext.getTaskContentTitleMessage()) %>"
 						/>
 					</h3>
 

@@ -48,7 +48,7 @@
 		<liferay-ui:search-container-column-text
 			href="<%= rowURL %>"
 			name="asset-title"
-			value="<%= workflowTaskDisplayContext.getAssetTitle(workflowTask) %>"
+			value="<%= HtmlUtil.extractText(workflowTaskDisplayContext.getAssetTitle(workflowTask)) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
