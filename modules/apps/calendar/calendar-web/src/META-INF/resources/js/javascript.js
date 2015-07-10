@@ -49,7 +49,7 @@ AUI.add(
 			'</div>';
 
 		var TPL_ICON_PERMISSIONS_NODE = '<div class="btn-group">' +
-				'<button class="btn btn-primary calendar-permissions-btn" type="button">' +
+				'<button class="btn calendar-permissions-btn" type="button">' +
 					Liferay.Language.get('permissions') +
 				'</button>' +
 			'</div>';
@@ -1393,7 +1393,6 @@ AUI.add(
 						instance.navDateNode.replaceClass('hidden-xs', 'hidden');
 						instance.viewDateNode.removeClass('visible-xs');
 
-						var showAddEventBtn = instance.get('showAddEventBtn');
 						var showPermissionsBtn = instance.get('showPermissionsBtn');
 
 						if (showPermissionsBtn) {
@@ -1403,6 +1402,8 @@ AUI.add(
 
 							instance[ICON_PERMISSIONS_NODE].on('click', instance._onClickPermissions, instance);
 						}
+
+						var showAddEventBtn = instance.get('showAddEventBtn');
 
 						if (showAddEventBtn) {
 							instance[ICON_ADD_EVENT_NODE] = instance.get(ICON_ADD_EVENT_NODE);
@@ -1646,22 +1647,22 @@ AUI.add(
 						var permissionsURL = decodeURIComponent(recorder.get('permissionsURL'));
 
 						Liferay.Util.openWindow(
-								{
-									dialog: {
-										after: {
-											destroy: function(event) {
-												instance.load();
-											}
-										},
-										destroyOnHide: true,
-										modal: true
+							{
+								dialog: {
+									after: {
+										destroy: function(event) {
+											instance.load();
+										}
 									},
-									title: Liferay.Language.get('permissions'),
-									uri: Lang.sub(
-										permissionsURL
-									)
-								}
-							);
+									destroyOnHide: true,
+									modal: true
+								},
+								title: Liferay.Language.get('permissions'),
+								uri: Lang.sub(
+									permissionsURL
+								)
+							}
+						);
 					},
 
 					_onDeleteEvent: function(event) {
