@@ -32,6 +32,8 @@ AUI.add(
 
 		var ICON_ADD_EVENT_NODE = 'iconAddEventNode';
 
+		var ICON_PERMISSIONS_NODE = 'iconPermissionsNode';
+
 		var STR_BLANK = '';
 
 		var STR_COMMA_SPACE = ', ';
@@ -43,6 +45,12 @@ AUI.add(
 		var TPL_ICON_ADD_EVENT_NODE = '<div class="btn-group">' +
 				'<button class="btn btn-primary calendar-add-event-btn" type="button">' +
 					Liferay.Language.get('add-calendar-booking') +
+				'</button>' +
+			'</div>';
+
+		var TPL_ICON_PERMISSIONS_NODE = '<div class="btn-group">' +
+				'<button class="btn calendar-permissions-btn" type="button">' +
+					Liferay.Language.get('permissions') +
 				'</button>' +
 			'</div>';
 
@@ -1339,6 +1347,12 @@ AUI.add(
 						}
 					},
 
+					iconPermissionsNode: {
+						valueFn: function() {
+							return A.Node.create(TPL_ICON_PERMISSIONS_NODE);
+						}
+					},
+
 					portletNamespace: {
 						setter: String,
 						validator: isValue,
@@ -1351,6 +1365,11 @@ AUI.add(
 					},
 
 					showAddEventBtn: {
+						validator: isBoolean,
+						value: true
+					},
+
+					showPermissionsBtn: {
 						validator: isBoolean,
 						value: true
 					}
@@ -1373,6 +1392,16 @@ AUI.add(
 
 						instance.navDateNode.replaceClass('hidden-xs', 'hidden');
 						instance.viewDateNode.removeClass('visible-xs');
+
+						var showPermissionsBtn = instance.get('showPermissionsBtn');
+
+						if (showPermissionsBtn) {
+							instance[ICON_PERMISSIONS_NODE] = instance.get(ICON_PERMISSIONS_NODE);
+
+							instance[CONTROLS_NODE].prepend(instance[ICON_PERMISSIONS_NODE]);
+
+							instance[ICON_PERMISSIONS_NODE].on('click', instance._onClickPermissions, instance);
+						}
 
 						var showAddEventBtn = instance.get('showAddEventBtn');
 
@@ -1612,6 +1641,32 @@ AUI.add(
 						);
 					},
 
+					_onClickPermissions: function(event) {
+						var instance = this;
+
+						var recorder = instance.get('eventRecorder');
+
+						var permissionsURL = decodeURIComponent(recorder.get('permissionsURL'));
+
+						Liferay.Util.openWindow(
+							{
+								dialog: {
+									after: {
+										destroy: function(event) {
+											instance.load();
+										}
+									},
+									destroyOnHide: true,
+									modal: true
+								},
+								title: Liferay.Language.get('permissions'),
+								uri: Lang.sub(
+									permissionsURL
+								)
+							}
+						);
+					},
+
 					_onDeleteEvent: function(event) {
 						var instance = this;
 
@@ -1773,6 +1828,12 @@ AUI.add(
 					},
 
 					permissionsCalendarBookingURL: {
+						setter: String,
+						validator: isValue,
+						value: STR_BLANK
+					},
+
+					permissionsURL: {
 						setter: String,
 						validator: isValue,
 						value: STR_BLANK
