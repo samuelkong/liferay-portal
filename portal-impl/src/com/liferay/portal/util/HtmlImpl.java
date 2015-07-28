@@ -819,6 +819,8 @@ public class HtmlImpl implements Html {
 		_unescapeMap.put("#061", "=");
 		_unescapeMap.put("#043", "+");
 		_unescapeMap.put("#045", "-");
+		_unescapeMap.put("#x2013", "\u2013");
+		_unescapeMap.put("#x2014", "\u2014");
 	}
 
 	private final Pattern _pattern = Pattern.compile("([\\s<&]|$)");
