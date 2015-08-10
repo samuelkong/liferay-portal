@@ -48,6 +48,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2196,8 +2197,18 @@ public class MDRRuleGroupPersistenceImpl extends BasePersistenceImpl<MDRRuleGrou
 	@Override
 	public List<MDRRuleGroup> filterFindByGroupId(long[] groupIds, int start,
 		int end, OrderByComparator<MDRRuleGroup> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
+		List<MDRRuleGroup> list = new ArrayList<MDRRuleGroup>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				groupIds = ArrayUtil.remove(groupIds, groupId);
+
+				list.addAll(findByGroupId(groupId, start, end, orderByComparator));
+			}
+		}
+
+		if (groupIds.length == 0) {
+			return list;
 		}
 
 		if (groupIds == null) {
@@ -2272,8 +2283,12 @@ public class MDRRuleGroupPersistenceImpl extends BasePersistenceImpl<MDRRuleGrou
 				q.addEntity(_FILTER_ENTITY_TABLE, MDRRuleGroupImpl.class);
 			}
 
-			return (List<MDRRuleGroup>)QueryUtil.list(q, getDialect(), start,
-				end);
+			List<MDRRuleGroup> result = (List<MDRRuleGroup>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);

@@ -53,6 +53,7 @@ import com.liferay.portlet.asset.service.persistence.AssetTagPersistence;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2198,8 +2199,18 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 	@Override
 	public List<AssetTag> filterFindByGroupId(long[] groupIds, int start,
 		int end, OrderByComparator<AssetTag> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
+		List<AssetTag> list = new ArrayList<AssetTag>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				groupIds = ArrayUtil.remove(groupIds, groupId);
+
+				list.addAll(findByGroupId(groupId, start, end, orderByComparator));
+			}
+		}
+
+		if (groupIds.length == 0) {
+			return list;
 		}
 
 		if (groupIds == null) {
@@ -2274,7 +2285,12 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 				q.addEntity(_FILTER_ENTITY_TABLE, AssetTagImpl.class);
 			}
 
-			return (List<AssetTag>)QueryUtil.list(q, getDialect(), start, end);
+			List<AssetTag> result = (List<AssetTag>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);
@@ -3796,8 +3812,19 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 	@Override
 	public List<AssetTag> filterFindByG_LikeN(long[] groupIds, String name,
 		int start, int end, OrderByComparator<AssetTag> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_LikeN(groupIds, name, start, end, orderByComparator);
+		List<AssetTag> list = new ArrayList<AssetTag>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				groupIds = ArrayUtil.remove(groupIds, groupId);
+
+				list.addAll(findByG_LikeN(groupId, name, start, end,
+						orderByComparator));
+			}
+		}
+
+		if (groupIds.length == 0) {
+			return list;
 		}
 
 		if (groupIds == null) {
@@ -3894,7 +3921,12 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 				qPos.add(name);
 			}
 
-			return (List<AssetTag>)QueryUtil.list(q, getDialect(), start, end);
+			List<AssetTag> result = (List<AssetTag>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);
