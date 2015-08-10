@@ -1141,27 +1141,83 @@ that may or may not be enforced with a unique index at the database level. Case
 			</#list>
 
 			int start, int end, OrderByComparator<${entity.name}> orderByComparator) {
-				if (!InlineSQLHelperUtil.isEnabled(
-					<#if finder.hasColumn("groupId")>
-						<#if finder.getColumn("groupId").hasArrayableOperator()>
-							groupIds
-						<#else>
-							groupId
-						</#if>
-					</#if>)) {
-
-					return findBy${finder.name}(
+				<#if finder.hasColumn("groupId") && finder.getColumn("groupId").hasArrayableOperator()>
 
 					<#list finderColsList as finderCol>
-						<#if finderCol.hasArrayableOperator()>
-							${finderCol.names},
-						<#else>
-							${finderCol.name},
+						<#if finderCol.name == "groupId">
+
+							List<Long> enabledGroupIdsList = new ArrayList<Long>();
+							List<Long> notEnabledGroupIdsList = new ArrayList<Long>();
+
+							for (${finderCol.type} ${finderCol.name} : ${finderCol.names}) {
+								if (!InlineSQLHelperUtil.isEnabled(${finderCol.name})) {
+									notEnabledGroupIdsList.add(${finderCol.name});
+								}
+								else {
+									enabledGroupIdsList.add(${finderCol.name});
+								}
+							}
+
+							List<${entity.name}> list = new ArrayList<${entity.name}>();
+
+							if (notEnabledGroupIdsList.size() > 0) {
+
+								Long[] notEnabledGroupIdsArray = notEnabledGroupIdsList.toArray(new Long[notEnabledGroupIdsList.size()]);
+
+								${finderCol.names} = ArrayUtil.toArray(notEnabledGroupIdsArray);
+
+								if (enabledGroupIdsList.size() == 0) {
+									return findBy${finder.name}(
+
+									<#list finderColsList as finderCol>
+										<#if finderCol.hasArrayableOperator()>
+											${finderCol.names},
+										<#else>
+											${finderCol.name},
+										</#if>
+									</#list>
+
+									start, end, orderByComparator);
+								}
+
+								list.addAll(findBy${finder.name}(
+
+								<#list finderColsList as finderCol>
+									<#if finderCol.hasArrayableOperator()>
+										${finderCol.names},
+									<#else>
+										${finderCol.name},
+									</#if>
+								</#list>
+
+								start, end, orderByComparator));
+
+								Long[] enabledGroupIdsArray = enabledGroupIdsList.toArray(new Long[enabledGroupIdsList.size()]);
+
+								${finderCol.names} = ArrayUtil.toArray(enabledGroupIdsArray);
+							}
+
 						</#if>
 					</#list>
+				<#else>
+					if (!InlineSQLHelperUtil.isEnabled(
+						<#if finder.hasColumn("groupId")>
+							groupId
+						</#if>)) {
 
-					start, end, orderByComparator);
-				}
+						return findBy${finder.name}(
+
+						<#list finderColsList as finderCol>
+							<#if finderCol.hasArrayableOperator()>
+								${finderCol.names},
+							<#else>
+								${finderCol.name},
+							</#if>
+						</#list>
+
+						start, end, orderByComparator);
+					}
+				</#if>
 
 				<#list finderColsList as finderCol>
 					<#if finderCol.hasArrayableOperator()>
@@ -1207,7 +1263,21 @@ that may or may not be enforced with a unique index at the database level. Case
 							_arrayable=true
 						/>
 
-						return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+						<#if finder.hasColumn("groupId") && finder.getColumn("groupId").hasArrayableOperator()>
+							if (notEnabledGroupIdsList.size() > 0) {
+
+								List<${entity.name}> result = (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+
+								list.addAll(result);
+
+								return list;
+							}
+							else {
+								return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+							}
+						<#else>
+							return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+						</#if>
 					}
 					catch (Exception e) {
 						throw processException(e);
@@ -1284,7 +1354,20 @@ that may or may not be enforced with a unique index at the database level. Case
 							_arrayable=true
 						/>
 
-						return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+						<#if finder.hasColumn("groupId") && finder.getColumn("groupId").hasArrayableOperator()>
+							if (notEnabledGroupIdsList.size() > 0) {
+								List<${entity.name}> result = (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+
+								list.addAll(result);
+
+								return list;
+							}
+							else {
+								return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+							}
+						<#else>
+							return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+						</#if>
 					}
 					catch (Exception e) {
 						throw processException(e);
