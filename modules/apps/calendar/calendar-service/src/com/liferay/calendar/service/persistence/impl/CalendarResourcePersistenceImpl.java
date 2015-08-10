@@ -48,6 +48,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -4014,8 +4015,19 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	public List<CalendarResource> filterFindByG_C(long[] groupIds, String code,
 		int start, int end,
 		OrderByComparator<CalendarResource> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_C(groupIds, code, start, end, orderByComparator);
+		List<CalendarResource> list = new ArrayList<CalendarResource>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				groupIds = ArrayUtil.remove(groupIds, groupId);
+
+				list.addAll(findByG_C(groupId, code, start, end,
+						orderByComparator));
+			}
+		}
+
+		if (groupIds.length == 0) {
+			return list;
 		}
 
 		if (groupIds == null) {

@@ -49,6 +49,7 @@ import com.liferay.portlet.asset.service.persistence.AssetVocabularyPersistence;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2213,8 +2214,18 @@ public class AssetVocabularyPersistenceImpl extends BasePersistenceImpl<AssetVoc
 	@Override
 	public List<AssetVocabulary> filterFindByGroupId(long[] groupIds,
 		int start, int end, OrderByComparator<AssetVocabulary> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
+		List<AssetVocabulary> list = new ArrayList<AssetVocabulary>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				groupIds = ArrayUtil.remove(groupIds, groupId);
+
+				list.addAll(findByGroupId(groupId, start, end, orderByComparator));
+			}
+		}
+
+		if (groupIds.length == 0) {
+			return list;
 		}
 
 		if (groupIds == null) {
@@ -2289,8 +2300,12 @@ public class AssetVocabularyPersistenceImpl extends BasePersistenceImpl<AssetVoc
 				q.addEntity(_FILTER_ENTITY_TABLE, AssetVocabularyImpl.class);
 			}
 
-			return (List<AssetVocabulary>)QueryUtil.list(q, getDialect(),
-				start, end);
+			List<AssetVocabulary> result = (List<AssetVocabulary>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);

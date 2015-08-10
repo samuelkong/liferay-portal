@@ -52,6 +52,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFolderPersisten
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2213,8 +2214,18 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	@Override
 	public List<DLFileEntryType> filterFindByGroupId(long[] groupIds,
 		int start, int end, OrderByComparator<DLFileEntryType> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
+		List<DLFileEntryType> list = new ArrayList<DLFileEntryType>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				groupIds = ArrayUtil.remove(groupIds, groupId);
+
+				list.addAll(findByGroupId(groupId, start, end, orderByComparator));
+			}
+		}
+
+		if (groupIds.length == 0) {
+			return list;
 		}
 
 		if (groupIds == null) {
@@ -2289,8 +2300,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 				q.addEntity(_FILTER_ENTITY_TABLE, DLFileEntryTypeImpl.class);
 			}
 
-			return (List<DLFileEntryType>)QueryUtil.list(q, getDialect(),
-				start, end);
+			List<DLFileEntryType> result = (List<DLFileEntryType>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);
