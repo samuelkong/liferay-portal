@@ -52,6 +52,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFolderPersisten
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2213,16 +2214,36 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	@Override
 	public List<DLFileEntryType> filterFindByGroupId(long[] groupIds,
 		int start, int end, OrderByComparator<DLFileEntryType> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
 		}
+
+		long[] isNotEnabledGroupIds = new long[0];
+		long[] isEnabledGroupIds = groupIds;
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				isNotEnabledGroupIds = ArrayUtil.append(isNotEnabledGroupIds,
+						groupId);
+
+				isEnabledGroupIds = ArrayUtil.remove(isEnabledGroupIds, groupId);
+			}
+		}
+
+		if (isEnabledGroupIds.length == 0) {
+			groupIds = isNotEnabledGroupIds;
+
+			return findByGroupId(groupIds, start, end, orderByComparator);
+		}
+
+		groupIds = isEnabledGroupIds;
+
+		List<DLFileEntryType> list = new ArrayList<DLFileEntryType>();
+
+		list.addAll(findByGroupId(groupIds, start, end, orderByComparator));
 
 		StringBundler query = new StringBundler();
 
@@ -2289,8 +2310,12 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 				q.addEntity(_FILTER_ENTITY_TABLE, DLFileEntryTypeImpl.class);
 			}
 
-			return (List<DLFileEntryType>)QueryUtil.list(q, getDialect(),
-				start, end);
+			List<DLFileEntryType> result = (List<DLFileEntryType>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);
