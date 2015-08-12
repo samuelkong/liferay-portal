@@ -1141,6 +1141,22 @@ that may or may not be enforced with a unique index at the database level. Case
 			</#list>
 
 			int start, int end, OrderByComparator<${entity.name}> orderByComparator) {
+				<#list finderColsList as finderCol>
+					<#if finderCol.hasArrayableOperator()>
+						if (${finderCol.names} == null) {
+							${finderCol.names} = new ${finderCol.type}[0];
+						}
+						else {
+							${finderCol.names} =
+								<#if finderCol.type == "String">
+									ArrayUtil.distinct(${finderCol.names}, NULL_SAFE_STRING_COMPARATOR);
+								<#else>
+									ArrayUtil.unique(${finderCol.names});
+								</#if>
+						}
+					</#if>
+				</#list>
+
 				<#if finder.hasColumn("groupId") && finder.getColumn("groupId").hasArrayableOperator()>
 
 					<#list finderColsList as finderCol>
@@ -1215,22 +1231,6 @@ that may or may not be enforced with a unique index at the database level. Case
 						start, end, orderByComparator);
 					}
 				</#if>
-
-				<#list finderColsList as finderCol>
-					<#if finderCol.hasArrayableOperator()>
-						if (${finderCol.names} == null) {
-							${finderCol.names} = new ${finderCol.type}[0];
-						}
-						else {
-							${finderCol.names} =
-								<#if finderCol.type == "String">
-									ArrayUtil.distinct(${finderCol.names}, NULL_SAFE_STRING_COMPARATOR);
-								<#else>
-									ArrayUtil.unique(${finderCol.names});
-								</#if>
-						}
-					</#if>
-				</#list>
 
 				<#if entity.isPermissionedModel()>
 					<#include "persistence_impl_find_by_arrayable_query.ftl">
