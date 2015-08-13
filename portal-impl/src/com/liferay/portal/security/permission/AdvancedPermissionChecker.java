@@ -1136,6 +1136,12 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		Group group = GroupLocalServiceUtil.getGroup(groupId);
 
+		if (group.isStagingGroup()) {
+			group = group.getLiveGroup();
+
+			groupId = group.getGroupId();
+		}
+
 		if (isCompanyAdmin(group.getCompanyId())) {
 			return true;
 		}
