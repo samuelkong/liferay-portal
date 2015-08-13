@@ -20,7 +20,9 @@
 String tabs2 = ParamUtil.getString(request, "tabs2");
 %>
 
-<liferay-portlet:actionURL portletConfiguration="<%= true %>" var="configurationActionURL" />
+<liferay-portlet:actionURL portletConfiguration="<%= true %>" var="configurationActionURL">
+	<portlet:param name="settingsScope" value="portletInstance" />
+</liferay-portlet:actionURL>
 
 <liferay-portlet:renderURL portletConfiguration="<%= true %>" var="configurationRenderURL" />
 
