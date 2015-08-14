@@ -48,6 +48,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -4014,16 +4015,36 @@ public class CalendarResourcePersistenceImpl extends BasePersistenceImpl<Calenda
 	public List<CalendarResource> filterFindByG_C(long[] groupIds, String code,
 		int start, int end,
 		OrderByComparator<CalendarResource> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_C(groupIds, code, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
 		}
+
+		long[] isNotEnabledGroupIds = new long[0];
+		long[] isEnabledGroupIds = groupIds;
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				isNotEnabledGroupIds = ArrayUtil.append(isNotEnabledGroupIds,
+						groupId);
+
+				isEnabledGroupIds = ArrayUtil.remove(isEnabledGroupIds, groupId);
+			}
+		}
+
+		if (isEnabledGroupIds.length == 0) {
+			groupIds = isNotEnabledGroupIds;
+
+			return findByG_C(groupIds, code, start, end, orderByComparator);
+		}
+
+		groupIds = isEnabledGroupIds;
+
+		List<CalendarResource> list = new ArrayList<CalendarResource>();
+
+		list.addAll(findByG_C(groupIds, code, start, end, orderByComparator));
 
 		StringBundler query = new StringBundler();
 

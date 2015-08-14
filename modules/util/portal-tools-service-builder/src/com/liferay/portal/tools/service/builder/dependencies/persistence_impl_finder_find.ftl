@@ -1141,28 +1141,6 @@ that may or may not be enforced with a unique index at the database level. Case
 			</#list>
 
 			int start, int end, OrderByComparator<${entity.name}> orderByComparator) {
-				if (!InlineSQLHelperUtil.isEnabled(
-					<#if finder.hasColumn("groupId")>
-						<#if finder.getColumn("groupId").hasArrayableOperator()>
-							groupIds
-						<#else>
-							groupId
-						</#if>
-					</#if>)) {
-
-					return findBy${finder.name}(
-
-					<#list finderColsList as finderCol>
-						<#if finderCol.hasArrayableOperator()>
-							${finderCol.names},
-						<#else>
-							${finderCol.name},
-						</#if>
-					</#list>
-
-					start, end, orderByComparator);
-				}
-
 				<#list finderColsList as finderCol>
 					<#if finderCol.hasArrayableOperator()>
 						if (${finderCol.names} == null) {
@@ -1178,6 +1156,76 @@ that may or may not be enforced with a unique index at the database level. Case
 						}
 					</#if>
 				</#list>
+
+				<#if finder.hasColumn("groupId") && finder.getColumn("groupId").hasArrayableOperator()>
+
+					<#list finderColsList as finderCol>
+						<#if finderCol.name == "groupId">
+
+							${finderCol.type}[] isNotEnabledGroupIds = new ${finderCol.type}[0];
+							${finderCol.type}[] isEnabledGroupIds = ${finderCol.names};
+
+							for (${finderCol.type} ${finderCol.name} : ${finderCol.names}) {
+								if (!InlineSQLHelperUtil.isEnabled(${finderCol.name})) {
+									isNotEnabledGroupIds = ArrayUtil.append(isNotEnabledGroupIds, ${finderCol.name});
+
+									isEnabledGroupIds = ArrayUtil.remove(isEnabledGroupIds, ${finderCol.name});
+								}
+							}
+
+							if (isEnabledGroupIds.length == 0) {
+								${finderCol.names} = isNotEnabledGroupIds;
+
+								return findBy${finder.name}(
+
+								<#list finderColsList as finderCol>
+									<#if finderCol.hasArrayableOperator()>
+										${finderCol.names},
+									<#else>
+										${finderCol.name},
+									</#if>
+								</#list>
+
+								start, end, orderByComparator);
+							}
+
+							${finderCol.names} = isEnabledGroupIds;
+
+							List<${entity.name}> list = new ArrayList<${entity.name}>();
+
+							list.addAll(findBy${finder.name}(
+
+								<#list finderColsList as finderCol>
+									<#if finderCol.hasArrayableOperator()>
+										${finderCol.names},
+									<#else>
+										${finderCol.name},
+									</#if>
+								</#list>
+
+							start, end, orderByComparator));
+
+						</#if>
+					</#list>
+				<#else>
+					if (!InlineSQLHelperUtil.isEnabled(
+						<#if finder.hasColumn("groupId")>
+							groupId
+						</#if>)) {
+
+						return findBy${finder.name}(
+
+						<#list finderColsList as finderCol>
+							<#if finderCol.hasArrayableOperator()>
+								${finderCol.names},
+							<#else>
+								${finderCol.name},
+							</#if>
+						</#list>
+
+						start, end, orderByComparator);
+					}
+				</#if>
 
 				<#if entity.isPermissionedModel()>
 					<#include "persistence_impl_find_by_arrayable_query.ftl">
@@ -1284,7 +1332,15 @@ that may or may not be enforced with a unique index at the database level. Case
 							_arrayable=true
 						/>
 
-						return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+						<#if finder.hasColumn("groupId") && finder.getColumn("groupId").hasArrayableOperator()>
+							List<${entity.name}> result = (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+
+							list.addAll(result);
+
+							return list;
+						<#else>
+							return (List<${entity.name}>)QueryUtil.list(q, getDialect(), start, end);
+						</#if>
 					}
 					catch (Exception e) {
 						throw processException(e);
