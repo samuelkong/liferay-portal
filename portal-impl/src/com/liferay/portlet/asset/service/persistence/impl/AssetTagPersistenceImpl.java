@@ -53,6 +53,7 @@ import com.liferay.portlet.asset.service.persistence.AssetTagPersistence;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2198,16 +2199,36 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 	@Override
 	public List<AssetTag> filterFindByGroupId(long[] groupIds, int start,
 		int end, OrderByComparator<AssetTag> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
 		}
+
+		List<Long> enabledGroupIds = new ArrayList<Long>();
+		List<Long> notEnabledGroupIds = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIds.add(groupId);
+			}
+			else {
+				enabledGroupIds.add(groupId);
+			}
+		}
+
+		if (enabledGroupIds.size() == 0) {
+			groupIds = com.google.common.primitives.Longs.toArray(notEnabledGroupIds);
+
+			return findByGroupId(groupIds, start, end, orderByComparator);
+		}
+
+		groupIds = com.google.common.primitives.Longs.toArray(enabledGroupIds);
+
+		List<AssetTag> list = new ArrayList<AssetTag>();
+
+		list.addAll(findByGroupId(groupIds, start, end, orderByComparator));
 
 		StringBundler query = new StringBundler();
 
@@ -2274,7 +2295,12 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 				q.addEntity(_FILTER_ENTITY_TABLE, AssetTagImpl.class);
 			}
 
-			return (List<AssetTag>)QueryUtil.list(q, getDialect(), start, end);
+			List<AssetTag> result = (List<AssetTag>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);
@@ -3796,16 +3822,36 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 	@Override
 	public List<AssetTag> filterFindByG_LikeN(long[] groupIds, String name,
 		int start, int end, OrderByComparator<AssetTag> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_LikeN(groupIds, name, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
 		}
+
+		List<Long> enabledGroupIds = new ArrayList<Long>();
+		List<Long> notEnabledGroupIds = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIds.add(groupId);
+			}
+			else {
+				enabledGroupIds.add(groupId);
+			}
+		}
+
+		if (enabledGroupIds.size() == 0) {
+			groupIds = com.google.common.primitives.Longs.toArray(notEnabledGroupIds);
+
+			return findByG_LikeN(groupIds, name, start, end, orderByComparator);
+		}
+
+		groupIds = com.google.common.primitives.Longs.toArray(enabledGroupIds);
+
+		List<AssetTag> list = new ArrayList<AssetTag>();
+
+		list.addAll(findByG_LikeN(groupIds, name, start, end, orderByComparator));
 
 		StringBundler query = new StringBundler();
 
@@ -3894,7 +3940,12 @@ public class AssetTagPersistenceImpl extends BasePersistenceImpl<AssetTag>
 				qPos.add(name);
 			}
 
-			return (List<AssetTag>)QueryUtil.list(q, getDialect(), start, end);
+			List<AssetTag> result = (List<AssetTag>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);

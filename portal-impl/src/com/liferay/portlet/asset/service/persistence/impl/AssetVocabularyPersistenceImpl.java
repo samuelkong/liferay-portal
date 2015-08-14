@@ -49,6 +49,7 @@ import com.liferay.portlet.asset.service.persistence.AssetVocabularyPersistence;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2213,16 +2214,36 @@ public class AssetVocabularyPersistenceImpl extends BasePersistenceImpl<AssetVoc
 	@Override
 	public List<AssetVocabulary> filterFindByGroupId(long[] groupIds,
 		int start, int end, OrderByComparator<AssetVocabulary> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
 		}
+
+		List<Long> enabledGroupIds = new ArrayList<Long>();
+		List<Long> notEnabledGroupIds = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIds.add(groupId);
+			}
+			else {
+				enabledGroupIds.add(groupId);
+			}
+		}
+
+		if (enabledGroupIds.size() == 0) {
+			groupIds = com.google.common.primitives.Longs.toArray(notEnabledGroupIds);
+
+			return findByGroupId(groupIds, start, end, orderByComparator);
+		}
+
+		groupIds = com.google.common.primitives.Longs.toArray(enabledGroupIds);
+
+		List<AssetVocabulary> list = new ArrayList<AssetVocabulary>();
+
+		list.addAll(findByGroupId(groupIds, start, end, orderByComparator));
 
 		StringBundler query = new StringBundler();
 
@@ -2289,8 +2310,12 @@ public class AssetVocabularyPersistenceImpl extends BasePersistenceImpl<AssetVoc
 				q.addEntity(_FILTER_ENTITY_TABLE, AssetVocabularyImpl.class);
 			}
 
-			return (List<AssetVocabulary>)QueryUtil.list(q, getDialect(),
-				start, end);
+			List<AssetVocabulary> result = (List<AssetVocabulary>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);

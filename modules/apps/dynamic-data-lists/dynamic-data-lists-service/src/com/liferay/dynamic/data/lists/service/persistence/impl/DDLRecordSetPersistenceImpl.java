@@ -48,6 +48,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2196,16 +2197,36 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 	@Override
 	public List<DDLRecordSet> filterFindByGroupId(long[] groupIds, int start,
 		int end, OrderByComparator<DDLRecordSet> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
 		}
+
+		List<Long> enabledGroupIds = new ArrayList<Long>();
+		List<Long> notEnabledGroupIds = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIds.add(groupId);
+			}
+			else {
+				enabledGroupIds.add(groupId);
+			}
+		}
+
+		if (enabledGroupIds.size() == 0) {
+			groupIds = com.google.common.primitives.Longs.toArray(notEnabledGroupIds);
+
+			return findByGroupId(groupIds, start, end, orderByComparator);
+		}
+
+		groupIds = com.google.common.primitives.Longs.toArray(enabledGroupIds);
+
+		List<DDLRecordSet> list = new ArrayList<DDLRecordSet>();
+
+		list.addAll(findByGroupId(groupIds, start, end, orderByComparator));
 
 		StringBundler query = new StringBundler();
 
@@ -2272,8 +2293,12 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 				q.addEntity(_FILTER_ENTITY_TABLE, DDLRecordSetImpl.class);
 			}
 
-			return (List<DDLRecordSet>)QueryUtil.list(q, getDialect(), start,
-				end);
+			List<DDLRecordSet> result = (List<DDLRecordSet>)QueryUtil.list(q,
+					getDialect(), start, end);
+
+			list.addAll(result);
+
+			return list;
 		}
 		catch (Exception e) {
 			throw processException(e);
