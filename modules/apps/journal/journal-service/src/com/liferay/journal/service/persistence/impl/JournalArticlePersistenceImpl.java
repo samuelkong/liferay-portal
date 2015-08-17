@@ -8633,15 +8633,15 @@ public class JournalArticlePersistenceImpl extends BasePersistenceImpl<JournalAr
 	@Override
 	public List<JournalArticle> filterFindByG_F(long groupId, long[] folderIds,
 		int start, int end, OrderByComparator<JournalArticle> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_F(groupId, folderIds, start, end, orderByComparator);
-		}
-
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
 		else {
 			folderIds = ArrayUtil.unique(folderIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_F(groupId, folderIds, start, end, orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -20302,16 +20302,16 @@ public class JournalArticlePersistenceImpl extends BasePersistenceImpl<JournalAr
 	public List<JournalArticle> filterFindByG_F_ST(long groupId, long folderId,
 		int[] statuses, int start, int end,
 		OrderByComparator<JournalArticle> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_F_ST(groupId, folderId, statuses, start, end,
-				orderByComparator);
-		}
-
 		if (statuses == null) {
 			statuses = new int[0];
 		}
 		else {
 			statuses = ArrayUtil.unique(statuses);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_F_ST(groupId, folderId, statuses, start, end,
+				orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -25456,16 +25456,16 @@ public class JournalArticlePersistenceImpl extends BasePersistenceImpl<JournalAr
 	public List<JournalArticle> filterFindByG_A_ST(long groupId,
 		String articleId, int[] statuses, int start, int end,
 		OrderByComparator<JournalArticle> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_A_ST(groupId, articleId, statuses, start, end,
-				orderByComparator);
-		}
-
 		if (statuses == null) {
 			statuses = new int[0];
 		}
 		else {
 			statuses = ArrayUtil.unique(statuses);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_A_ST(groupId, articleId, statuses, start, end,
+				orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
