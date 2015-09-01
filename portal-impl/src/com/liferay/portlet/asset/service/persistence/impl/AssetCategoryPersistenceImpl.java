@@ -4106,16 +4106,16 @@ public class AssetCategoryPersistenceImpl extends BasePersistenceImpl<AssetCateg
 	public List<AssetCategory> filterFindByG_V(long groupId,
 		long[] vocabularyIds, int start, int end,
 		OrderByComparator<AssetCategory> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_V(groupId, vocabularyIds, start, end,
-				orderByComparator);
-		}
-
 		if (vocabularyIds == null) {
 			vocabularyIds = new long[0];
 		}
 		else {
 			vocabularyIds = ArrayUtil.unique(vocabularyIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_V(groupId, vocabularyIds, start, end,
+				orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -8166,16 +8166,16 @@ public class AssetCategoryPersistenceImpl extends BasePersistenceImpl<AssetCateg
 	public List<AssetCategory> filterFindByG_LikeN_V(long groupId, String name,
 		long[] vocabularyIds, int start, int end,
 		OrderByComparator<AssetCategory> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_LikeN_V(groupId, name, vocabularyIds, start, end,
-				orderByComparator);
-		}
-
 		if (vocabularyIds == null) {
 			vocabularyIds = new long[0];
 		}
 		else {
 			vocabularyIds = ArrayUtil.unique(vocabularyIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_LikeN_V(groupId, name, vocabularyIds, start, end,
+				orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();

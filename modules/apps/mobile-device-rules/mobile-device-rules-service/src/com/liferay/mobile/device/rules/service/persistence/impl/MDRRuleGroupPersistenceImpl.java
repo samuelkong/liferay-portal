@@ -48,6 +48,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2196,15 +2197,41 @@ public class MDRRuleGroupPersistenceImpl extends BasePersistenceImpl<MDRRuleGrou
 	@Override
 	public List<MDRRuleGroup> filterFindByGroupId(long[] groupIds, int start,
 		int end, OrderByComparator<MDRRuleGroup> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByGroupId(groupIds, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
+		}
+
+		List<Long> enabledGroupIdsList = new ArrayList<Long>();
+		List<Long> notEnabledGroupIdsList = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIdsList.add(groupId);
+			}
+			else {
+				enabledGroupIdsList.add(groupId);
+			}
+		}
+
+		List<MDRRuleGroup> list = new ArrayList<MDRRuleGroup>();
+
+		if (notEnabledGroupIdsList.size() > 0) {
+			Long[] notEnabledGroupIdsArray = notEnabledGroupIdsList.toArray(new Long[notEnabledGroupIdsList.size()]);
+
+			groupIds = ArrayUtil.toArray(notEnabledGroupIdsArray);
+
+			if (enabledGroupIdsList.size() == 0) {
+				return findByGroupId(groupIds, start, end, orderByComparator);
+			}
+
+			list.addAll(findByGroupId(groupIds, start, end, orderByComparator));
+
+			Long[] enabledGroupIdsArray = enabledGroupIdsList.toArray(new Long[enabledGroupIdsList.size()]);
+
+			groupIds = ArrayUtil.toArray(enabledGroupIdsArray);
 		}
 
 		StringBundler query = new StringBundler();
@@ -2272,8 +2299,18 @@ public class MDRRuleGroupPersistenceImpl extends BasePersistenceImpl<MDRRuleGrou
 				q.addEntity(_FILTER_ENTITY_TABLE, MDRRuleGroupImpl.class);
 			}
 
-			return (List<MDRRuleGroup>)QueryUtil.list(q, getDialect(), start,
-				end);
+			if (notEnabledGroupIdsList.size() > 0) {
+				List<MDRRuleGroup> result = (List<MDRRuleGroup>)QueryUtil.list(q,
+						getDialect(), start, end);
+
+				list.addAll(result);
+
+				return list;
+			}
+			else {
+				return (List<MDRRuleGroup>)QueryUtil.list(q, getDialect(),
+					start, end);
+			}
 		}
 		catch (Exception e) {
 			throw processException(e);

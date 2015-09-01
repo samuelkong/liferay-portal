@@ -3173,15 +3173,15 @@ public class BookmarksEntryPersistenceImpl extends BasePersistenceImpl<Bookmarks
 	@Override
 	public List<BookmarksEntry> filterFindByG_F(long groupId, long[] folderIds,
 		int start, int end, OrderByComparator<BookmarksEntry> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_F(groupId, folderIds, start, end, orderByComparator);
-		}
-
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
 		else {
 			folderIds = ArrayUtil.unique(folderIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_F(groupId, folderIds, start, end, orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -8420,16 +8420,16 @@ public class BookmarksEntryPersistenceImpl extends BasePersistenceImpl<Bookmarks
 	public List<BookmarksEntry> filterFindByG_F_S(long groupId,
 		long[] folderIds, int status, int start, int end,
 		OrderByComparator<BookmarksEntry> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_F_S(groupId, folderIds, status, start, end,
-				orderByComparator);
-		}
-
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
 		else {
 			folderIds = ArrayUtil.unique(folderIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_F_S(groupId, folderIds, status, start, end,
+				orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -9770,16 +9770,16 @@ public class BookmarksEntryPersistenceImpl extends BasePersistenceImpl<Bookmarks
 	public List<BookmarksEntry> filterFindByG_F_NotS(long groupId,
 		long[] folderIds, int status, int start, int end,
 		OrderByComparator<BookmarksEntry> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_F_NotS(groupId, folderIds, status, start, end,
-				orderByComparator);
-		}
-
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
 		else {
 			folderIds = ArrayUtil.unique(folderIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_F_NotS(groupId, folderIds, status, start, end,
+				orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -11194,16 +11194,16 @@ public class BookmarksEntryPersistenceImpl extends BasePersistenceImpl<Bookmarks
 	public List<BookmarksEntry> filterFindByG_U_F_S(long groupId, long userId,
 		long[] folderIds, int status, int start, int end,
 		OrderByComparator<BookmarksEntry> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_U_F_S(groupId, userId, folderIds, status, start,
-				end, orderByComparator);
-		}
-
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
 		else {
 			folderIds = ArrayUtil.unique(folderIds);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_U_F_S(groupId, userId, folderIds, status, start,
+				end, orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();

@@ -48,6 +48,7 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -6216,15 +6217,43 @@ public class DDMTemplatePersistenceImpl extends BasePersistenceImpl<DDMTemplate>
 	@Override
 	public List<DDMTemplate> filterFindByG_CPK(long[] groupIds, long classPK,
 		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_CPK(groupIds, classPK, start, end, orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
+		}
+
+		List<Long> enabledGroupIdsList = new ArrayList<Long>();
+		List<Long> notEnabledGroupIdsList = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIdsList.add(groupId);
+			}
+			else {
+				enabledGroupIdsList.add(groupId);
+			}
+		}
+
+		List<DDMTemplate> list = new ArrayList<DDMTemplate>();
+
+		if (notEnabledGroupIdsList.size() > 0) {
+			Long[] notEnabledGroupIdsArray = notEnabledGroupIdsList.toArray(new Long[notEnabledGroupIdsList.size()]);
+
+			groupIds = ArrayUtil.toArray(notEnabledGroupIdsArray);
+
+			if (enabledGroupIdsList.size() == 0) {
+				return findByG_CPK(groupIds, classPK, start, end,
+					orderByComparator);
+			}
+
+			list.addAll(findByG_CPK(groupIds, classPK, start, end,
+					orderByComparator));
+
+			Long[] enabledGroupIdsArray = enabledGroupIdsList.toArray(new Long[enabledGroupIdsList.size()]);
+
+			groupIds = ArrayUtil.toArray(enabledGroupIdsArray);
 		}
 
 		StringBundler query = new StringBundler();
@@ -6300,7 +6329,18 @@ public class DDMTemplatePersistenceImpl extends BasePersistenceImpl<DDMTemplate>
 
 			qPos.add(classPK);
 
-			return (List<DDMTemplate>)QueryUtil.list(q, getDialect(), start, end);
+			if (notEnabledGroupIdsList.size() > 0) {
+				List<DDMTemplate> result = (List<DDMTemplate>)QueryUtil.list(q,
+						getDialect(), start, end);
+
+				list.addAll(result);
+
+				return list;
+			}
+			else {
+				return (List<DDMTemplate>)QueryUtil.list(q, getDialect(),
+					start, end);
+			}
 		}
 		catch (Exception e) {
 			throw processException(e);
@@ -7630,16 +7670,43 @@ public class DDMTemplatePersistenceImpl extends BasePersistenceImpl<DDMTemplate>
 	public List<DDMTemplate> filterFindByG_C_C(long[] groupIds,
 		long classNameId, long classPK, int start, int end,
 		OrderByComparator<DDMTemplate> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
-			return findByG_C_C(groupIds, classNameId, classPK, start, end,
-				orderByComparator);
-		}
-
 		if (groupIds == null) {
 			groupIds = new long[0];
 		}
 		else {
 			groupIds = ArrayUtil.unique(groupIds);
+		}
+
+		List<Long> enabledGroupIdsList = new ArrayList<Long>();
+		List<Long> notEnabledGroupIdsList = new ArrayList<Long>();
+
+		for (long groupId : groupIds) {
+			if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+				notEnabledGroupIdsList.add(groupId);
+			}
+			else {
+				enabledGroupIdsList.add(groupId);
+			}
+		}
+
+		List<DDMTemplate> list = new ArrayList<DDMTemplate>();
+
+		if (notEnabledGroupIdsList.size() > 0) {
+			Long[] notEnabledGroupIdsArray = notEnabledGroupIdsList.toArray(new Long[notEnabledGroupIdsList.size()]);
+
+			groupIds = ArrayUtil.toArray(notEnabledGroupIdsArray);
+
+			if (enabledGroupIdsList.size() == 0) {
+				return findByG_C_C(groupIds, classNameId, classPK, start, end,
+					orderByComparator);
+			}
+
+			list.addAll(findByG_C_C(groupIds, classNameId, classPK, start, end,
+					orderByComparator));
+
+			Long[] enabledGroupIdsArray = enabledGroupIdsList.toArray(new Long[enabledGroupIdsList.size()]);
+
+			groupIds = ArrayUtil.toArray(enabledGroupIdsArray);
 		}
 
 		StringBundler query = new StringBundler();
@@ -7719,7 +7786,18 @@ public class DDMTemplatePersistenceImpl extends BasePersistenceImpl<DDMTemplate>
 
 			qPos.add(classPK);
 
-			return (List<DDMTemplate>)QueryUtil.list(q, getDialect(), start, end);
+			if (notEnabledGroupIdsList.size() > 0) {
+				List<DDMTemplate> result = (List<DDMTemplate>)QueryUtil.list(q,
+						getDialect(), start, end);
+
+				list.addAll(result);
+
+				return list;
+			}
+			else {
+				return (List<DDMTemplate>)QueryUtil.list(q, getDialect(),
+					start, end);
+			}
 		}
 		catch (Exception e) {
 			throw processException(e);

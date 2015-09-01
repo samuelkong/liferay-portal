@@ -3515,16 +3515,16 @@ public class MicroblogsEntryPersistenceImpl extends BasePersistenceImpl<Microblo
 	public List<MicroblogsEntry> filterFindByCCNI_CCPK(
 		long creatorClassNameId, long[] creatorClassPKs, int start, int end,
 		OrderByComparator<MicroblogsEntry> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled()) {
-			return findByCCNI_CCPK(creatorClassNameId, creatorClassPKs, start,
-				end, orderByComparator);
-		}
-
 		if (creatorClassPKs == null) {
 			creatorClassPKs = new long[0];
 		}
 		else {
 			creatorClassPKs = ArrayUtil.unique(creatorClassPKs);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByCCNI_CCPK(creatorClassNameId, creatorClassPKs, start,
+				end, orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
@@ -6767,16 +6767,16 @@ public class MicroblogsEntryPersistenceImpl extends BasePersistenceImpl<Microblo
 	public List<MicroblogsEntry> filterFindByCCNI_CCPK_T(
 		long creatorClassNameId, long[] creatorClassPKs, int type, int start,
 		int end, OrderByComparator<MicroblogsEntry> orderByComparator) {
-		if (!InlineSQLHelperUtil.isEnabled()) {
-			return findByCCNI_CCPK_T(creatorClassNameId, creatorClassPKs, type,
-				start, end, orderByComparator);
-		}
-
 		if (creatorClassPKs == null) {
 			creatorClassPKs = new long[0];
 		}
 		else {
 			creatorClassPKs = ArrayUtil.unique(creatorClassPKs);
+		}
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByCCNI_CCPK_T(creatorClassNameId, creatorClassPKs, type,
+				start, end, orderByComparator);
 		}
 
 		StringBundler query = new StringBundler();
