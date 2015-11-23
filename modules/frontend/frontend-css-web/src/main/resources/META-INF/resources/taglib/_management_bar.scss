@@ -2,6 +2,8 @@
 	position: relative;
 
 	.management-bar {
+		padding: 0 23px;
+
 		&.management-bar-no-collapse {
 			height: 0;
 			left: 0;
@@ -26,6 +28,10 @@
 
 		.form-group {
 			margin-bottom: 0;
+
+			input[type="checkbox"] {
+				margin-left: 0;
+			}
 		}
 
 		.input-select-wrapper {
