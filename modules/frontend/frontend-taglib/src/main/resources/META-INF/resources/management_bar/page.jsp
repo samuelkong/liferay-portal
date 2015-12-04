@@ -16,9 +16,9 @@
 
 <%@ include file="/management_bar/init.jsp" %>
 
-<div class="management-bar-container" id="<%= namespace %>managementBarContainerId">
+<div class="container-fluid-1280 management-bar-container sidenav-container" id="<%= namespace %>managementBarContainerId">
 	<div class="management-bar management-bar-default">
-		<div class="container-fluid-1280">
+		<div>
 			<div class="management-bar-header">
 				<c:if test="<%= includeCheckBox %>">
 					<div class="checkbox">
@@ -49,7 +49,7 @@
 
 	<c:if test="<%= Validator.isNotNull(actionButtons) || includeCheckBox %>">
 		<div class="management-bar management-bar-default management-bar-no-collapse" id="<%= namespace %>actionButtons">
-			<div class="container-fluid-1280">
+			<div>
 				<div class="management-bar-header">
 					<c:if test="<%= includeCheckBox %>">
 						<div class="checkbox">

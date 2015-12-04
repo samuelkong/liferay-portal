@@ -2,6 +2,8 @@
 	position: relative;
 
 	.management-bar {
+		padding: 0 8px;
+
 		&.management-bar-no-collapse {
 			height: 0;
 			left: 0;
@@ -15,6 +17,7 @@
 			&.on {
 				height: 48px;
 				min-height: 48px;
+				padding: 0 23px;
 				top: 0;
 
 				@include md() {
@@ -22,10 +25,20 @@
 					min-height: 60px;
 				}
 			}
+
+			@media screen and (min-width: 1300px) {
+				&.on {
+					padding: 0 8px;
+				}
+			}
 		}
 
 		.form-group {
 			margin-bottom: 0;
+
+			input[type="checkbox"] {
+				margin-left: 0;
+			}
 		}
 
 		.input-select-wrapper {
