@@ -22,19 +22,33 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public interface MBCategoryFinder {
-	public int countByS_G_U_P(long groupId, long userId,
+	public int countC_ByS_G_U_P(long groupId, long userId,
 		long[] parentCategoryIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.messageboards.model.MBCategory> queryDefinition);
 
-	public int filterCountByS_G_U_P(long groupId, long userId,
-		long[] parentCategoryIds,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.messageboards.model.MBCategory> queryDefinition);
+	public int countC_T_ByG_C(long groupId, long categoryId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
-	public java.util.List<com.liferay.portlet.messageboards.model.MBCategory> filterFindByS_G_U_P(
+	public java.util.List<com.liferay.portlet.messageboards.model.MBCategory> filterFindC_ByS_G_U_P(
 		long groupId, long userId, long[] parentCategoryIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.messageboards.model.MBCategory> queryDefinition);
 
-	public java.util.List<com.liferay.portlet.messageboards.model.MBCategory> findByS_G_U_P(
+	public java.util.List<java.lang.Object> filterFindC_T_ByG_C(long groupId,
+		long categoryId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
+
+	public java.util.List<java.lang.Object> findC_T_ByG_C(long groupId,
+		long categoryId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
+
+	public int filterCountC_ByS_G_U_P(long groupId, long userId,
+		long[] parentCategoryIds,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.messageboards.model.MBCategory> queryDefinition);
+
+	public int filterCountC_T_ByG_C(long groupId, long categoryId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
+
+	public java.util.List<com.liferay.portlet.messageboards.model.MBCategory> findC_ByS_G_U_P(
 		long groupId, long userId, long[] parentCategoryIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.messageboards.model.MBCategory> queryDefinition);
 }

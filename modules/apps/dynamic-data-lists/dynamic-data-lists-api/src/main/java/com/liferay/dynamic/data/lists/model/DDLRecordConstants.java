@@ -23,7 +23,11 @@ public class DDLRecordConstants {
 
 	public static final String VERSION_DEFAULT = "1.0";
 
-	public static String getClassName() {
+	public static String getClassName(int scope) {
+		if (scope == DDLRecordSetConstants.SCOPE_FORMS) {
+			return DDLFormRecord.class.getName();
+		}
+
 		return DDLRecord.class.getName();
 	}
 

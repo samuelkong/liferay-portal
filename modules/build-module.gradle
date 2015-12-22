@@ -146,7 +146,7 @@ dependencies {
 	portalTest group: "com.liferay.portal", name: "portal-test", version: liferay.portalVersion
 	portalTest group: "com.liferay.portal", name: "portal-test-internal", version: liferay.portalVersion
 
-	sourceFormatter group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.100"
+	sourceFormatter group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.101"
 
 	testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.1"
 	testCompile group: "org.powermock", name: "powermock-core", version: "1.6.1"
