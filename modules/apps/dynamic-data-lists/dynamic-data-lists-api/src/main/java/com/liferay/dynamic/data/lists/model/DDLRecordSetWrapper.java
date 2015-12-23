@@ -959,14 +959,6 @@ public class DDLRecordSetWrapper implements DDLRecordSet,
 		return _ddlRecordSet.getStagedModelType();
 	}
 
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedModel}
-	 */
-	@Deprecated
-	public DDLRecordSet getWrappedDDLRecordSet() {
-		return _ddlRecordSet;
-	}
-
 	@Override
 	public DDLRecordSet getWrappedModel() {
 		return _ddlRecordSet;
