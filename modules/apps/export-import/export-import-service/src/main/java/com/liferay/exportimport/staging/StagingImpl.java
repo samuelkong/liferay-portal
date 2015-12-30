@@ -490,62 +490,6 @@ public class StagingImpl implements Staging {
 
 	/**
 	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             StagingLocalService#disableStaging(Group, ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public void disableStaging(
-			Group scopeGroup, Group liveGroup, ServiceContext serviceContext)
-		throws Exception {
-
-		disableStaging((PortletRequest)null, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             StagingLocalService#disableStaging(Group, ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public void disableStaging(Group liveGroup, ServiceContext serviceContext)
-		throws Exception {
-
-		disableStaging((PortletRequest)null, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             StagingLocalService#disableStaging(PortletRequest, Group,
-	 *             ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public void disableStaging(
-			PortletRequest portletRequest, Group scopeGroup, Group liveGroup,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		disableStaging(portletRequest, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             StagingLocalService#disableStaging(PortletRequest, Group,
-	 *             ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public void disableStaging(
-			PortletRequest portletRequest, Group liveGroup,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		_stagingLocalService.disableStaging(
-			portletRequest, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
 	 *             StagingLocalService#enableLocalStaging(long, Group, boolean,
 	 *             boolean, ServiceContext)}
 	 */

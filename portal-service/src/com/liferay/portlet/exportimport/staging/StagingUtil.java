@@ -206,61 +206,6 @@ public class StagingUtil {
 
 	/**
 	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             com.liferay.portlet.exportimport.service.StagingLocalService#disableStaging(
-	 *             Group, ServiceContext)}
-	 */
-	@Deprecated
-	public static void disableStaging(
-			Group scopeGroup, Group liveGroup, ServiceContext serviceContext)
-		throws Exception {
-
-		_staging.disableStaging(scopeGroup, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             com.liferay.portlet.exportimport.service.StagingLocalService#disableStaging(
-	 *             Group, ServiceContext)}
-	 */
-	@Deprecated
-	public static void disableStaging(
-			Group liveGroup, ServiceContext serviceContext)
-		throws Exception {
-
-		_staging.disableStaging(liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             com.liferay.portlet.exportimport.service.StagingLocalService#disableStaging(
-	 *             PortletRequest, Group, ServiceContext)}
-	 */
-	@Deprecated
-	public static void disableStaging(
-			PortletRequest portletRequest, Group scopeGroup, Group liveGroup,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		_staging.disableStaging(
-			portletRequest, scopeGroup, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             com.liferay.portlet.exportimport.service.StagingLocalService#disableStaging(
-	 *             PortletRequest, Group, ServiceContext)}
-	 */
-	@Deprecated
-	public static void disableStaging(
-			PortletRequest portletRequest, Group liveGroup,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		_staging.disableStaging(portletRequest, liveGroup, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
 	 *             com.liferay.portlet.exportimport.service.StagingLocalService#enableLocalStaging(
 	 *             long, Group, boolean, boolean, ServiceContext)}
 	 */
