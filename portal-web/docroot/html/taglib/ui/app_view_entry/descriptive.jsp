@@ -144,7 +144,7 @@
 					</c:choose>
 
 					<dd class="entry-author">
-						<liferay-ui:message arguments="<%= new String[] {LanguageUtil.getTimeDescription(locale, System.currentTimeMillis() - modifiedDate.getTime(), true), HtmlUtil.escape(author)} %>" key="x-ago-by-x" translateArguments="<%= false %>" />
+						<liferay-ui:message arguments="<%= new String[] {LanguageUtil.getTimeDescription(locale, System.currentTimeMillis() - modifiedDate.getTime(), true), author} %>" key="x-ago-by-x" translateArguments="<%= false %>" />
 					</dd>
 				</c:if>
 
