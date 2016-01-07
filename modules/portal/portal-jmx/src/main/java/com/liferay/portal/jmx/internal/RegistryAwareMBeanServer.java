@@ -16,8 +16,6 @@ package com.liferay.portal.jmx.internal;
 
 import com.liferay.portal.jmx.MBeanRegistry;
 
-import java.io.ObjectInputStream;
-
 import java.util.Set;
 
 import javax.management.Attribute;
@@ -37,7 +35,6 @@ import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
-import javax.management.OperationsException;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
 import javax.management.loading.ClassLoaderRepository;
@@ -116,42 +113,6 @@ public class RegistryAwareMBeanServer implements MBeanServer {
 
 		return _mBeanServer.createMBean(
 			className, objectName, loaderObjectName, params, signature);
-	}
-
-	/**
-	 * @deprecated As of 6.1.0
-	 */
-	@Deprecated
-	@Override
-	public ObjectInputStream deserialize(ObjectName objectName, byte[] data)
-		throws OperationsException {
-
-		ObjectName platformObjectName = getPlatformObjectName(objectName);
-
-		return _mBeanServer.deserialize(platformObjectName, data);
-	}
-
-	/**
-	 * @deprecated As of 6.1.0
-	 */
-	@Deprecated
-	@Override
-	public ObjectInputStream deserialize(String className, byte[] data)
-		throws OperationsException, ReflectionException {
-
-		return _mBeanServer.deserialize(className, data);
-	}
-
-	/**
-	 * @deprecated As of 6.1.0
-	 */
-	@Deprecated
-	@Override
-	public ObjectInputStream deserialize(
-			String className, ObjectName loaderObjectName, byte[] data)
-		throws OperationsException, ReflectionException {
-
-		return _mBeanServer.deserialize(className, loaderObjectName, data);
 	}
 
 	@Override
