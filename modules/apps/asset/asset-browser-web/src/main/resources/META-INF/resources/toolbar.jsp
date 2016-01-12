@@ -47,7 +47,7 @@ AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.
 			addPortletURLString = HttpUtil.addParameter(addPortletURLString, "refererPlid", plid);
 			%>
 
-			<aui:nav-item href="<%= addPortletURLString %>" label='<%= LanguageUtil.format(request, "add-x", assetRendererFactory.getTypeName(locale, subtypeSelectionId)) %>' />
+			<aui:nav-item href="<%= addPortletURLString %>" label='<%= LanguageUtil.format(request, "add-x", HtmlUtil.escape(assetRendererFactory.getTypeName(locale, subtypeSelectionId))) %>' />
 		</c:if>
 	</c:when>
 	<c:otherwise>
@@ -66,7 +66,7 @@ AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.
 			addPortletURLString = HttpUtil.addParameter(addPortletURLString, "refererPlid", plid);
 			%>
 
-			<aui:nav-item href="<%= addPortletURLString %>" label='<%= LanguageUtil.format(request, "add-x", assetRendererFactory.getTypeName(locale), false) %>' />
+			<aui:nav-item href="<%= addPortletURLString %>" label='<%= LanguageUtil.format(request, "add-x", HtmlUtil.escape(assetRendererFactory.getTypeName(locale)), false) %>' />
 		</c:if>
 	</c:otherwise>
 </c:choose>
