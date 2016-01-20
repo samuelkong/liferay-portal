@@ -33,35 +33,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ResourceActionsUtil {
 
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getActionNamePrefix}
-	 */
-	@Deprecated
-	public static final String ACTION_NAME_PREFIX =
-		ResourceActions.ACTION_NAME_PREFIX;
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getModelResourceNamePrefix}
-	 */
-	@Deprecated
-	public static final String MODEL_RESOURCE_NAME_PREFIX =
-		ResourceActions.MODEL_RESOURCE_NAME_PREFIX;
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link
-	 *             #getOrganizationModelResources}
-	 */
-	@Deprecated
-	public static final String[] ORGANIZATION_MODEL_RESOURCES =
-		ResourceActions.ORGANIZATION_MODEL_RESOURCES;
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getPortalModelResources}
-	 */
-	@Deprecated
-	public static final String[] PORTAL_MODEL_RESOURCES =
-		ResourceActions.PORTAL_MODEL_RESOURCES;
-
 	public static void checkAction(String name, String actionId)
 		throws NoSuchResourceActionException {
 
@@ -243,17 +214,6 @@ public class ResourceActionsUtil {
 
 		return getResourceActions().getResourceGuestUnsupportedActions(
 			portletResource, modelResource);
-	}
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getRoles(long, Group,
-	 *             String, int[])}
-	 */
-	@Deprecated
-	public static List<Role> getRoles(
-		long companyId, Group group, String modelResource) {
-
-		return getResourceActions().getRoles(companyId, group, modelResource);
 	}
 
 	public static List<Role> getRoles(
