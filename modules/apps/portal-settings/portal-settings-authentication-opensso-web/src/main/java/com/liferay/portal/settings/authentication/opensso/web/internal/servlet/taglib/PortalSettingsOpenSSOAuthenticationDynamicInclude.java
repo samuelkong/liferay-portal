@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.security.sso.opensso.internal.servlet.taglib;
+package com.liferay.portal.settings.authentication.opensso.web.internal.servlet.taglib;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -50,7 +50,7 @@ public class PortalSettingsOpenSSOAuthenticationDynamicInclude
 
 	@Override
 	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.portal.security.sso.opensso)",
+		target = "(osgi.web.symbolicname=com.liferay.portal.settings.authentication.opensso.web)",
 		unbind = "-"
 
 	)

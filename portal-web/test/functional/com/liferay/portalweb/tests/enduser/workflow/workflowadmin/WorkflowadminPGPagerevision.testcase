@@ -7,14 +7,7 @@
 	<var name="workflowAssetType" value="Page Revision" />
 
 	<set-up>
-		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
-
-		<if>
-			<equals arg1="${testPortalInstance}" arg2="true" />
-			<then>
-				<execute macro="SignIn#signInPortalInstanceSetUp" />
-			</then>
-		</if>
+		<execute macro="TestCase#setUpPortalInstance" />
 
 		<execute macro="User#firstLoginPG" />
 
@@ -86,14 +79,14 @@
 	<command name="ApprovePageRevisionPG" priority="5">
 		<property name="portal.acceptance" value="true" />
 
+		<var name="pageName" value="Page Revision Page" />
+
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Site Page Name" />
 			<var name="pageStaging" value="true" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
-
-		<var name="pageName" value="Page Revision Page" />
 
 		<execute macro="Page#add">
 			<var name="pageName" value="${pageName}" />
@@ -196,13 +189,19 @@
 	</command>
 
 	<command name="RejectPageRevisionPG" priority="4">
+		<property name="portal.acceptance" value="true" />
+
 		<var name="pageName" value="Page Revision Page" />
+
+		<execute macro="Page#gotoPG">
+			<var name="pageName" value="Site Page Name" />
+			<var name="pageStaging" value="true" />
+			<var name="siteName" value="Site Name" />
+			<var name="siteURL" value="true" />
+		</execute>
 
 		<execute macro="Page#add">
 			<var name="pageName" value="${pageName}" />
-			<var name="pageStaging" value="true" />
-			<var name="siteName" value="${siteName}" />
-			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Page#gotoPG">

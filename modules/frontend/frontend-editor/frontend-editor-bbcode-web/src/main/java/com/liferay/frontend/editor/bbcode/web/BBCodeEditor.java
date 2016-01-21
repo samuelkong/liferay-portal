@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Component;
 public class BBCodeEditor implements Editor {
 
 	@Override
+	public String[] getJavaScriptModules() {
+		return new String[] {"liferay-bbcode-editor"};
+	}
+
+	@Override
 	public String getJspPath() {
 		return "/bbcode.jsp";
 	}

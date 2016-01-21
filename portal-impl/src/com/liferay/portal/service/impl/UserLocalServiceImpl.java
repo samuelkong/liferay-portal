@@ -4737,7 +4737,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		try {
-			userPersistence.update(user);
+			user = userPersistence.update(user);
 		}
 		catch (ModelListenerException mle) {
 			String msg = GetterUtil.getString(mle.getCause().getMessage());

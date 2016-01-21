@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Component;
 public class SimpleEditor implements Editor {
 
 	@Override
+	public String[] getJavaScriptModules() {
+		return new String[0];
+	}
+
+	@Override
 	public String getJspPath() {
 		return "/simple.jsp";
 	}

@@ -19,6 +19,8 @@ package com.liferay.portal.kernel.editor;
  */
 public interface Editor {
 
+	public String[] getJavaScriptModules();
+
 	public String getJspPath();
 
 	public String getName();

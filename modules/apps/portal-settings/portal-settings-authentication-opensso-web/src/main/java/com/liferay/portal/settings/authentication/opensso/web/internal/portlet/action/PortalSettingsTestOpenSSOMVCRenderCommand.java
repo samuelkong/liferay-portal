@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.security.sso.opensso.internal.portlet.action;
+package com.liferay.portal.settings.authentication.opensso.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -72,7 +72,7 @@ public class PortalSettingsTestOpenSSOMVCRenderCommand
 	}
 
 	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.portal.security.sso.opensso)",
+		target = "(osgi.web.symbolicname=com.liferay.portal.settings.authentication.opensso.web)",
 		unbind = "-"
 	)
 	protected void setServletContext(ServletContext servletContext) {
