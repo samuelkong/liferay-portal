@@ -108,9 +108,9 @@ public class LegacyAlgorithmAwarePasswordEncryptorTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testEncryptCrypt() throws Exception {
-		testEncrypt(PasswordEncryptorUtil.TYPE_CRYPT, "SNbUMVY9kKQpY");
+		testEncrypt(PasswordEncryptorUtil.TYPE_UFC_CRYPT, "SNbUMVY9kKQpY");
 
-		testEncryptDisabled(PasswordEncryptorUtil.TYPE_CRYPT);
+		testEncryptDisabled(PasswordEncryptorUtil.TYPE_UFC_CRYPT);
 	}
 
 	@Test
