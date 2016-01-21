@@ -50,7 +50,7 @@ public class ScriptingLanguagesTaskAssignmentSelector
 
 		Map<String, Object> results = ScriptingUtil.eval(
 			null, inputObjects, _outputNames, assigneeScriptingLanguage,
-			assigneeScript, classLoaders);
+			assigneeScript, ScriptingUtil.getServletContextNames(classLoaders));
 
 		Map<String, Serializable> resultsWorkflowContext =
 			(Map<String, Serializable>)results.get(

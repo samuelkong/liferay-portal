@@ -44,7 +44,7 @@ public class ScriptingConditionEvaluator implements ConditionEvaluator {
 		Map<String, Object> results = ScriptingUtil.eval(
 			null, inputObjects, _outputNames,
 			kaleoCondition.getScriptLanguage(), kaleoCondition.getScript(),
-			classLoaders);
+			ScriptingUtil.getServletContextNames(classLoaders));
 
 		Map<String, Serializable> resultsWorkflowContext =
 			(Map<String, Serializable>)results.get(
