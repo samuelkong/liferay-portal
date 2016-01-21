@@ -227,13 +227,6 @@ public class ResourceActionsUtil {
 		return getResourceActions().hasModelResourceActions(name);
 	}
 
-	/**
-	 * @deprecated As of 6.1.0
-	 */
-	@Deprecated
-	public static void init() {
-	}
-
 	public static boolean isOrganizationModelResource(String modelResource) {
 		return getResourceActions().isOrganizationModelResource(modelResource);
 	}
