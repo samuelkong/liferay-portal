@@ -20,8 +20,6 @@ import com.liferay.portal.model.User;
 
 import java.util.List;
 
-import javax.portlet.PortletRequest;
-
 /**
  * @author Brian Wing Shun Chan
  */
@@ -176,18 +174,6 @@ public interface PermissionChecker extends Cloneable {
 	public boolean isCheckGuest();
 
 	/**
-	 * @deprecated As of 6.1.0, renamed to {@link #isGroupAdmin(long)}
-	 */
-	@Deprecated
-	public boolean isCommunityAdmin(long groupId);
-
-	/**
-	 * @deprecated As of 6.1.0, renamed to {@link #isGroupOwner(long)}
-	 */
-	@Deprecated
-	public boolean isCommunityOwner(long groupId);
-
-	/**
 	 * Returns <code>true</code> if the user is an administrator of their
 	 * company.
 	 *
@@ -279,17 +265,5 @@ public interface PermissionChecker extends Cloneable {
 	 *         otherwise
 	 */
 	public boolean isSignedIn();
-
-	/**
-	 * @deprecated As of 6.2.0, does nothing
-	 */
-	@Deprecated
-	public void resetValues();
-
-	/**
-	 * @deprecated As of 6.2.0, does nothing
-	 */
-	@Deprecated
-	public void setValues(PortletRequest portletRequest);
 
 }

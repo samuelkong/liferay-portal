@@ -925,24 +925,26 @@ public class OrganizationLocalServiceImpl
 			return userPersistence.containsOrganization(userId, organizationId);
 		}
 
-		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
-
 		List<Organization> organizationsTree = new ArrayList<>();
 
 		Organization organization = organizationPersistence.findByPrimaryKey(
 			organizationId);
 
-		if (!includeSpecifiedOrganization) {
+		if (includeSpecifiedOrganization) {
 			organizationsTree.add(organization);
 		}
 		else {
-			organizationsTree.add(organization.getParentOrganization());
+			organizationsTree.addAll(organization.getSuborganizations());
 		}
 
-		params.put("usersOrgsTree", organizationsTree);
+		if (!ListUtil.isEmpty(organizationsTree)) {
+			LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
-		if (userFinder.countByUser(userId, params) > 0) {
-			return true;
+			params.put("usersOrgsTree", organizationsTree);
+
+			if (userFinder.countByUser(userId, params) > 0) {
+				return true;
+			}
 		}
 
 		return false;
@@ -1815,7 +1817,7 @@ public class OrganizationLocalServiceImpl
 	 *             attributes for the organization.
 	 * @return     the organization
 	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
-	 *             long, long, String, String, long, long, int, String, boolean,
+	 *             long, long, String, String, long, long, long, String, boolean,
 	 *             byte[], boolean, ServiceContext)}
 	 */
 	@Deprecated

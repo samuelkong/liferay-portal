@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.permission.ModelPermissions;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.List;
@@ -44,6 +45,8 @@ public class DDMDataProviderInstanceLocalServiceImpl
 			Map<Locale, String> descriptionMap, DDMFormValues ddmFormValues,
 			String type, ServiceContext serviceContext)
 		throws PortalException {
+
+		// Data provider instance
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
@@ -66,6 +69,20 @@ public class DDMDataProviderInstanceLocalServiceImpl
 		dataProviderInstance.setType(type);
 
 		ddmDataProviderInstancePersistence.update(dataProviderInstance);
+
+		// Resources
+
+		if (serviceContext.isAddGroupPermissions() ||
+			serviceContext.isAddGuestPermissions()) {
+
+			addDataProviderInstanceResources(
+				dataProviderInstance, serviceContext.isAddGroupPermissions(),
+				serviceContext.isAddGuestPermissions());
+		}
+		else {
+			addDataProviderInstanceResources(
+				dataProviderInstance, serviceContext.getModelPermissions());
+		}
 
 		return dataProviderInstance;
 	}
@@ -173,6 +190,31 @@ public class DDMDataProviderInstanceLocalServiceImpl
 		ddmDataProviderInstancePersistence.update(dataProviderInstance);
 
 		return dataProviderInstance;
+	}
+
+	protected void addDataProviderInstanceResources(
+			DDMDataProviderInstance dataProviderInstance,
+			boolean addGroupPermissions, boolean addGuestPermissions)
+		throws PortalException {
+
+		resourceLocalService.addResources(
+			dataProviderInstance.getCompanyId(),
+			dataProviderInstance.getGroupId(), dataProviderInstance.getUserId(),
+			DDMDataProviderInstance.class.getName(),
+			dataProviderInstance.getDataProviderInstanceId(), false,
+			addGroupPermissions, addGuestPermissions);
+	}
+
+	protected void addDataProviderInstanceResources(
+			DDMDataProviderInstance dataProviderInstance,
+			ModelPermissions modelPermissions)
+		throws PortalException {
+
+		resourceLocalService.addModelResources(
+			dataProviderInstance.getCompanyId(),
+			dataProviderInstance.getGroupId(), dataProviderInstance.getUserId(),
+			DDMDataProviderInstance.class.getName(),
+			dataProviderInstance.getDataProviderInstanceId(), modelPermissions);
 	}
 
 	protected void validate(

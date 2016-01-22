@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * @author Michael C. Han
@@ -35,6 +36,8 @@ public class UpgradeKaleoNotificationRecipient extends UpgradeProcess {
 						"recipientClassName = ''");
 
 			ps.executeUpdate();
+		}
+		catch (SQLException sqle) {
 		}
 		finally {
 			DataAccess.cleanUp(ps);

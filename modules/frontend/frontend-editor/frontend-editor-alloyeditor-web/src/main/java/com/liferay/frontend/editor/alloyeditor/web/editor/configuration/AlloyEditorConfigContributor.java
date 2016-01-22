@@ -53,6 +53,17 @@ public class AlloyEditorConfigContributor
 			jsonObject, inputEditorTaglibAttributes, themeDisplay,
 			requestBackedPortletURLFactory);
 
+		String extraPlugins = jsonObject.getString("extraPlugins");
+
+		if (Validator.isNotNull(extraPlugins)) {
+			extraPlugins += ",itemselector,media";
+		}
+		else {
+			extraPlugins = "itemselector,media";
+		}
+
+		jsonObject.put("extraPlugins", extraPlugins);
+
 		jsonObject.put(
 			"toolbars", getToolbarsJSONObject(themeDisplay.getLocale()));
 	}

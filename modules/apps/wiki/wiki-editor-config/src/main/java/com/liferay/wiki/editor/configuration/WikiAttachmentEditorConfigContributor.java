@@ -22,6 +22,8 @@ import com.liferay.item.selector.criteria.UploadableFileReturnType;
 import com.liferay.item.selector.criteria.upload.criterion.UploadItemSelectorCriterion;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -31,6 +33,7 @@ import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.item.selector.criterion.WikiAttachmentItemSelectorCriterion;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +85,8 @@ public class WikiAttachmentEditorConfigContributor
 		}
 
 		if (wikiPageResourcePrimKey == 0) {
+			removeImageButton(jsonObject);
+
 			return;
 		}
 
@@ -147,6 +152,40 @@ public class WikiAttachmentEditorConfigContributor
 	@Reference(unbind = "-")
 	public void setItemSelector(ItemSelector itemSelector) {
 		_itemSelector = itemSelector;
+	}
+
+	protected void removeImageButton(JSONObject jsonObject) {
+		JSONObject toolbarsJSONObject = jsonObject.getJSONObject("toolbars");
+
+		if (toolbarsJSONObject == null) {
+			return;
+		}
+
+		JSONObject addJSONObject = toolbarsJSONObject.getJSONObject("add");
+
+		if (addJSONObject == null) {
+			return;
+		}
+
+		JSONArray buttonsJSONArray = addJSONObject.getJSONArray("buttons");
+
+		if (buttonsJSONArray == null) {
+			return;
+		}
+
+		JSONArray newButtonsJSONArray = JSONFactoryUtil.createJSONArray();
+
+		Iterator iterator = buttonsJSONArray.iterator();
+
+		while (iterator.hasNext()) {
+			String button = (String)iterator.next();
+
+			if (!button.equals("image")) {
+				newButtonsJSONArray.put(button);
+			}
+		}
+
+		addJSONObject.put("buttons", newButtonsJSONArray);
 	}
 
 	private ItemSelector _itemSelector;
