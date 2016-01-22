@@ -21,8 +21,6 @@ import com.liferay.portlet.exportimport.staging.StagingUtil;
 
 import java.util.List;
 
-import javax.portlet.PortletRequest;
-
 /**
  * @author Tomas Polesovsky
  */

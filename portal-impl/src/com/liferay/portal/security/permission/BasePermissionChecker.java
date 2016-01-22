@@ -27,8 +27,6 @@ import com.liferay.portlet.admin.util.OmniadminUtil;
 import java.util.Collections;
 import java.util.List;
 
-import javax.portlet.PortletRequest;
-
 /**
  * @author Brian Wing Shun Chan
  */
