@@ -39,22 +39,6 @@ public class ScriptingUtil {
 			language, executeInSeparateThread);
 	}
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #eval(Set, Map, Set, String,
-	 *             String, String...)}
-	 */
-	@Deprecated
-	public static Map<String, Object> eval(
-			Set<String> allowedClasses, Map<String, Object> inputObjects,
-			Set<String> outputNames, String language, String script,
-			ClassLoader... classLoaders)
-		throws ScriptingException {
-
-		return getScripting().eval(
-			allowedClasses, inputObjects, outputNames, language, script,
-			_getServletContextNames(classLoaders));
-	}
-
 	public static Map<String, Object> eval(
 			Set<String> allowedClasses, Map<String, Object> inputObjects,
 			Set<String> outputNames, String language, String script,
@@ -64,21 +48,6 @@ public class ScriptingUtil {
 		return getScripting().eval(
 			allowedClasses, inputObjects, outputNames, language, script,
 			servletContextNames);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #exec(Set, Map, String,
-	 *             String, String...)}
-	 */
-	@Deprecated
-	public static void exec(
-			Set<String> allowedClasses, Map<String, Object> inputObjects,
-			String language, String script, ClassLoader... classLoaders)
-		throws ScriptingException {
-
-		getScripting().exec(
-			allowedClasses, inputObjects, language, script,
-			_getServletContextNames(classLoaders));
 	}
 
 	public static void exec(
@@ -97,13 +66,7 @@ public class ScriptingUtil {
 		return _scripting;
 	}
 
-	public static Set<String> getSupportedLanguages() {
-		return getScripting().getSupportedLanguages();
-	}
-
-	private static String[] _getServletContextNames(
-		ClassLoader[] classLoaders) {
-
+	public static String[] getServletContextNames(ClassLoader[] classLoaders) {
 		String[] servletContextNames = new String[classLoaders.length];
 
 		for (int i = 0; i < classLoaders.length; i++) {
@@ -112,6 +75,10 @@ public class ScriptingUtil {
 		}
 
 		return servletContextNames;
+	}
+
+	public static Set<String> getSupportedLanguages() {
+		return getScripting().getSupportedLanguages();
 	}
 
 	private static final Scripting _scripting =
