@@ -14,7 +14,6 @@
 
 package com.liferay.portlet.expando.util;
 
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermission;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 
