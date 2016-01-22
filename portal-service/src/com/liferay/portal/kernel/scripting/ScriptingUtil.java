@@ -66,13 +66,7 @@ public class ScriptingUtil {
 		return _scripting;
 	}
 
-	public static Set<String> getSupportedLanguages() {
-		return getScripting().getSupportedLanguages();
-	}
-
-	public static String[] getServletContextNames(
-		ClassLoader[] classLoaders) {
-
+	public static String[] getServletContextNames(ClassLoader[] classLoaders) {
 		String[] servletContextNames = new String[classLoaders.length];
 
 		for (int i = 0; i < classLoaders.length; i++) {
@@ -81,6 +75,10 @@ public class ScriptingUtil {
 		}
 
 		return servletContextNames;
+	}
+
+	public static Set<String> getSupportedLanguages() {
+		return getScripting().getSupportedLanguages();
 	}
 
 	private static final Scripting _scripting =
