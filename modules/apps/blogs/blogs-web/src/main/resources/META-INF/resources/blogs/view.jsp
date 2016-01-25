@@ -23,6 +23,8 @@ String assetTagName = ParamUtil.getString(request, "tag");
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("mvcRenderCommandName", "/blogs/view");
+
+System.out.println("It is just a test!");
 %>
 
 <portlet:actionURL name="/blogs/edit_entry" var="restoreTrashEntriesURL">
