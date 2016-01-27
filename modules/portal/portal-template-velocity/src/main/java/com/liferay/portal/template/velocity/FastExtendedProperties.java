@@ -36,7 +36,18 @@ public class FastExtendedProperties extends ExtendedProperties {
 	public FastExtendedProperties(ExtendedProperties extendedProperties)
 		throws IOException {
 
-		putAll(extendedProperties);
+		// Do not call putAll. See LPS-61927.
+
+		//putAll(extendedProperties);
+
+		Enumeration keys = extendedProperties.keys();
+
+		while (keys.hasMoreElements()) {
+			String key = (String)keys.nextElement();
+			Object value = extendedProperties.get(key);
+
+			addProperty(key, value);
+		}
 	}
 
 	@Override

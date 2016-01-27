@@ -16,13 +16,20 @@
 
 <%@ include file="/management_bar_button/init.jsp" %>
 
+<%
+String taglibOnmouseover = "Liferay.Portal.ToolTip.show(this, '" + LanguageUtil.get(request, label) + "')";
+%>
+
 <c:choose>
 	<c:when test="<%= Validator.isNotNull(icon) %>">
-		<aui:a cssClass="<%= cssClass %>" data="<%= data %>" href="<%= href %>" id="<%= id %>" title="<%= label %>">
+		<aui:a cssClass="<%= cssClass %>" data="<%= data %>" href="<%= href %>" id="<%= id %>" onmouseover="<%= taglibOnmouseover %>">
 			<aui:icon cssClass="icon-monospaced" image="<%= icon %>" markupView="lexicon" />
+			<span class="sr-only"><%= label %></span>
 		</aui:a>
 	</c:when>
 	<c:when test="<%= Validator.isNotNull(iconCssClass) %>">
-		<aui:a cssClass="<%= cssClass %>" data="<%= data %>" href="<%= href %>" iconCssClass="<%= iconCssClass %>" id="<%= id %>" title="<%= label %>" />
+		<aui:a cssClass="<%= cssClass %>" data="<%= data %>" href="<%= href %>" iconCssClass="<%= iconCssClass %>" id="<%= id %>" onmouseover="<%= taglibOnmouseover %>">
+			<span class="sr-only"><%= label %></span>
+		</aui:a>
 	</c:when>
 </c:choose>

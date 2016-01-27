@@ -66,6 +66,7 @@ import com.liferay.portal.kernel.security.auth.FullNameDefinitionFactory;
 import com.liferay.portal.kernel.security.auth.FullNameGenerator;
 import com.liferay.portal.kernel.security.auth.FullNameGeneratorFactory;
 import com.liferay.portal.kernel.security.auth.FullNameValidator;
+import com.liferay.portal.kernel.security.auth.PasswordModificationThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.auth.ScreenNameGenerator;
@@ -4735,6 +4736,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		if (!silentUpdate) {
 			user.setPasswordModified(true);
 		}
+
+		PasswordModificationThreadLocal.setPasswordModified(
+			user.getPasswordModified());
+		PasswordModificationThreadLocal.setPasswordUnencrypted(
+			user.getPasswordUnencrypted());
 
 		try {
 			user = userPersistence.update(user);

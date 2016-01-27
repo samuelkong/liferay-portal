@@ -54,13 +54,15 @@
 		<if>
 			<equals arg1="${dmFolder}" arg2="Duplicate" />
 			<then>
-				<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+				<execute macro="Alert#viewRequestFailedToComplete" />
+
 				<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="Please enter a unique folder name." />
 			</then>
 			<elseif>
 				<equals arg1="${dmFolder}" arg2="Invalid" />
 				<then>
-					<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+					<execute macro="Alert#viewRequestFailedToComplete" />
+
 					<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_2" value1="The Folder Name cannot contain the following invalid characters: \ // : * ? &quot; &lt; &gt; | ../ /..." />
 				</then>
 			</elseif>
@@ -112,13 +114,15 @@
 		<if>
 			<equals arg1="${dmSubFolder}" arg2="Duplicate" />
 			<then>
-				<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+				<execute macro="Alert#viewRequestFailedToComplete" />
+
 				<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="Please enter a unique folder name." />
 			</then>
 			<elseif>
 				<equals arg1="${dmSubFolder}" arg2="Invalid" />
 				<then>
-					<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+					<execute macro="Alert#viewRequestFailedToComplete" />
+
 					<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="Please enter a valid name." />
 				</then>
 			</elseif>
@@ -149,13 +153,15 @@
 		<if>
 			<equals arg1="${dmSubFolder}" arg2="Duplicate" />
 			<then>
-				<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+				<execute macro="Alert#viewRequestFailedToComplete" />
+
 				<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="Please enter a unique folder name." />
 			</then>
 			<elseif>
 				<equals arg1="${dmSubFolder}" arg2="Invalid" />
 				<then>
-					<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+					<execute macro="Alert#viewRequestFailedToComplete" />
+
 					<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="Please enter a valid name." />
 				</then>
 			</elseif>
@@ -370,7 +376,7 @@
 
 		<execute function="AssertClick" locator1="DocumentsAndMediaSelectFolder#CHOOSE_BUTTON" value1="Choose" />
 		<execute function="SelectFrame" locator1="relative=top" />
-		<execute function="AssertTextEquals" locator1="CPDocumentsandmediaMovefolder#NEW_FOLDER" value1="${dmFolderName1}" />
+		<execute function="AssertTextEquals" locator1="DocumentsAndMediaEditDocument#FOLDER" value1="${dmFolderName1}" />
 		<execute function="AssertClick" locator1="Button#MOVE" value1="Move" />
 
 		<var name="key_dmFolderName" value="${dmFolderName2}" />
@@ -385,35 +391,6 @@
 		<var name="key_dmFolderName" value="${dmFolderName2}" />
 
 		<execute function="AssertElementPresent" locator1="DocumentsAndMedia#ICON_FOLDER_THUMBNAIL" value1="${dmFolderName2}" />
-	</command>
-
-	<command name="moveToFolderPG">
-		<var name="key_dmFolderName" value="${dmFolderName}" />
-
-		<execute function="Check" locator1="PGDocumentsandmediaFolder#ENTRY_ICON_FOLDER_CHECKBOX" />
-		<execute function="AssertClick#waitForDMHomeAssertTextEqualsClick" locator1="PGDocumentsandmediaFolder#TOOLBAR_ACTIONS" value1="Actions" />
-		<execute function="AssertClick" locator1="PGDocumentsandmediaFolder#ACTIONS_MENULIST_MOVE" value1="Move" />
-
-		<execute function="AssertClick" locator1="Button#SELECT" value1="Select" />
-		<execute function="SelectFrame" locator1="IFrame#SELECT_FOLDER" />
-
-		<var name="key_dmFolderName2" value="${dmFolderName2}" />
-
-		<execute function="AssertTextEquals" locator1="DocumentsAndMediaSelectFolder#FOLDER" value1="${dmFolderName2}" />
-		<execute function="AssertClick" locator1="DocumentsAndMediaSelectFolder#CHOOSE_BUTTON" value1="Choose" />
-		<execute function="SelectFrameTop" />
-		<execute function="AssertClick" locator1="Button#MOVE" value1="Move" />
-
-		<if>
-			<isset var="dmDuplicateFolder" />
-			<then>
-				<execute function="AssertTextEquals" locator1="Message#ERROR" value1="Your request failed to complete." />
-				<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="The folder you selected already has an entry with this name. Please select a different folder." />
-			</then>
-			<else>
-				<execute function="AssertTextEquals#assertPartialText" locator1="Message#SUCCESS" value1="Your request completed successfully." />
-			</else>
-		</if>
 	</command>
 
 	<command name="moveToRecycleBinCP">

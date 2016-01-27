@@ -33,7 +33,6 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -625,10 +624,17 @@ public class XMLSourceProcessor extends BaseSourceProcessor {
 			fileName, document.getRootElement(), "target", null,
 			new ElementComparator());
 
-		int i1 = content.lastIndexOf("</macrodef>");
-		int i2 = content.indexOf("</target>");
+		int x = content.lastIndexOf("</macrodef>");
+		int y = content.indexOf("<process-ivy");
 
-		if ((i2 != -1) && (i1 > i2)) {
+		if ((y != -1) && (x > y)) {
+			processErrorMessage(
+				fileName, "macrodefs go before process-ivy: " + fileName);
+		}
+
+		int z = content.indexOf("</target>");
+
+		if ((z != -1) && (x > z)) {
 			processErrorMessage(
 				fileName, "macrodefs go before targets: " + fileName);
 		}

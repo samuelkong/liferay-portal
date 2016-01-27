@@ -22,6 +22,49 @@
 		<hint name="year-nullable">true</hint>
 		<hint name="show-time">false</hint>
 	</hint-collection>
+	<model name="com.liferay.announcements.kernel.model.AnnouncementsDelivery">
+		<field name="deliveryId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="type" type="String" />
+		<field name="email" type="boolean" />
+		<field name="sms" type="boolean" />
+		<field name="website" type="boolean" />
+	</model>
+	<model name="com.liferay.announcements.kernel.model.AnnouncementsEntry">
+		<field name="uuid" type="String" />
+		<field name="entryId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="classNameId" type="long" />
+		<field name="classPK" type="long" />
+		<field name="title" type="String" />
+		<field name="content" type="String">
+			<hint-collection name="CLOB" />
+			<sanitize content-type="text/html" modes="ALL" />
+		</field>
+		<field name="url" type="String">
+			<hint-collection name="URL" />
+		</field>
+		<field name="type" type="String" />
+		<field name="displayDate" type="Date" />
+		<field name="expirationDate" type="Date">
+			<hint name="default-month-delta">1</hint>
+		</field>
+		<field name="priority" type="int" />
+		<field name="alert" type="boolean" />
+	</model>
+	<model name="com.liferay.announcements.kernel.model.AnnouncementsFlag">
+		<field name="flagId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="entryId" type="long" />
+		<field name="value" type="int" />
+	</model>
 	<model name="com.liferay.counter.model.Counter">
 		<field name="name" type="String" />
 		<field name="currentId" type="long" />
@@ -1179,49 +1222,6 @@
 		<field name="classNameId" type="long" />
 		<field name="classPK" type="long" />
 		<field name="workflowInstanceId" type="long" />
-	</model>
-	<model name="com.liferay.portlet.announcements.model.AnnouncementsDelivery">
-		<field name="deliveryId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="userId" type="long" />
-		<field name="type" type="String" />
-		<field name="email" type="boolean" />
-		<field name="sms" type="boolean" />
-		<field name="website" type="boolean" />
-	</model>
-	<model name="com.liferay.portlet.announcements.model.AnnouncementsEntry">
-		<field name="uuid" type="String" />
-		<field name="entryId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="classNameId" type="long" />
-		<field name="classPK" type="long" />
-		<field name="title" type="String" />
-		<field name="content" type="String">
-			<hint-collection name="CLOB" />
-			<sanitize content-type="text/html" modes="ALL" />
-		</field>
-		<field name="url" type="String">
-			<hint-collection name="URL" />
-		</field>
-		<field name="type" type="String" />
-		<field name="displayDate" type="Date" />
-		<field name="expirationDate" type="Date">
-			<hint name="default-month-delta">1</hint>
-		</field>
-		<field name="priority" type="int" />
-		<field name="alert" type="boolean" />
-	</model>
-	<model name="com.liferay.portlet.announcements.model.AnnouncementsFlag">
-		<field name="flagId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="userId" type="long" />
-		<field name="createDate" type="Date" />
-		<field name="entryId" type="long" />
-		<field name="value" type="int" />
 	</model>
 	<model name="com.liferay.portlet.asset.model.AssetCategory">
 		<field name="uuid" type="String" />

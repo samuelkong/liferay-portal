@@ -2,6 +2,9 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false" auto-import="false">
+	<import class="com.liferay.announcements.kernel.model.AnnouncementsDelivery" />
+	<import class="com.liferay.announcements.kernel.model.AnnouncementsEntry" />
+	<import class="com.liferay.announcements.kernel.model.AnnouncementsFlag" />
 	<import class="com.liferay.counter.model.Counter" />
 	<import class="com.liferay.portal.model.Account" />
 	<import class="com.liferay.portal.model.Address" />
@@ -73,9 +76,6 @@
 	<import class="com.liferay.portal.model.Website" />
 	<import class="com.liferay.portal.model.WorkflowDefinitionLink" />
 	<import class="com.liferay.portal.model.WorkflowInstanceLink" />
-	<import class="com.liferay.portlet.announcements.model.AnnouncementsDelivery" />
-	<import class="com.liferay.portlet.announcements.model.AnnouncementsEntry" />
-	<import class="com.liferay.portlet.announcements.model.AnnouncementsFlag" />
 	<import class="com.liferay.portlet.asset.model.AssetCategory" />
 	<import class="com.liferay.portlet.asset.model.AssetCategoryProperty" />
 	<import class="com.liferay.portlet.asset.model.AssetEntry" />

@@ -40,7 +40,7 @@ List<ExportImportConfiguration> exportImportConfigurations = ExportImportConfigu
 		<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
 	</portlet:renderURL>
 
-	<liferay-frontend:add-menu-item title="<%= HtmlUtil.escape(exportImportConfiguration.getName()) %>" url="<%= addNewProcessURL %>" />
+	<liferay-frontend:add-menu-item title="<%= exportImportConfiguration.getName() %>" url="<%= addNewProcessURL %>" />
 
 	<%
 	}
@@ -49,6 +49,7 @@ List<ExportImportConfiguration> exportImportConfigurations = ExportImportConfigu
 	<portlet:renderURL var="addNewCustomProcessURL">
 		<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
 		<portlet:param name="<%= Constants.CMD %>" value="<%= (localPublishing) ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
+		<portlet:param name="privateLayout" value="<%= Boolean.FALSE.toString() %>" />
 	</portlet:renderURL>
 
 	<liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, "custom-publication") %>' url="<%= addNewCustomProcessURL %>" />

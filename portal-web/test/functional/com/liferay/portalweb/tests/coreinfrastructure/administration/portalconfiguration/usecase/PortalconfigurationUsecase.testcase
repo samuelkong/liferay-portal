@@ -54,10 +54,14 @@
 			<var name="portlet" value="Sites" />
 		</execute>
 
+		<execute macro="TestCase#getDefaultSiteName">
+			<return from="defaultSiteName" name="defaultSiteName" />
+		</execute>
+
 		<execute macro="Page#add">
 			<var name="page" value="Public Pages" />
 			<var name="pageName" value="landing" />
-			<var name="siteName" value="Liferay" />
+			<var name="siteName" value="${defaultSiteName}" />
 		</execute>
 
 		<execute macro="User#logoutPG" />
@@ -145,7 +149,8 @@
 			<var name="virtualHostsURL" value="${otherInstanceAccessAttempt}" />
 		</execute>
 
-		<execute function="AssertTextEquals" locator1="Message#ERROR_1" value1="Your request failed to complete." />
+		<execute macro="Alert#viewRequestFailedToComplete" />
+
 		<execute function="AssertTextEquals" locator1="Message#ERROR_2" value1="You do not have the required permissions." />
 	</command>
 

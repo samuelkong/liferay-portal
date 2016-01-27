@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.IOException;
@@ -38,6 +39,61 @@ import java.util.List;
  * @author Ganesh Ram
  */
 public class PostgreSQLDB extends BaseDB {
+
+	public static String getCreateRulesSQL(
+		String tableName, String columnName) {
+
+		StringBundler sb = new StringBundler(45);
+
+		sb.append("create or replace rule delete_");
+		sb.append(tableName);
+		sb.append(StringPool.UNDERLINE);
+		sb.append(columnName);
+		sb.append(" as on delete to ");
+		sb.append(tableName);
+		sb.append(" do also select case when exists(select 1 from ");
+		sb.append("pg_catalog.pg_largeobject where (loid = old.");
+		sb.append(columnName);
+		sb.append(")) then lo_unlink(old.");
+		sb.append(columnName);
+		sb.append(") end from ");
+		sb.append(tableName);
+		sb.append(" where ");
+		sb.append(tableName);
+		sb.append(StringPool.PERIOD);
+		sb.append(columnName);
+		sb.append(" = old.");
+		sb.append(columnName);
+
+		sb.append(";\ncreate or replace rule update_");
+		sb.append(tableName);
+		sb.append(StringPool.UNDERLINE);
+		sb.append(columnName);
+		sb.append(" as on update to ");
+		sb.append(tableName);
+		sb.append(" where old.");
+		sb.append(columnName);
+		sb.append(" is distinct from new.");
+		sb.append(columnName);
+		sb.append(" and old.");
+		sb.append(columnName);
+		sb.append(" is not null do also select case when exists(select 1 ");
+		sb.append("from pg_catalog.pg_largeobject where (loid = old.");
+		sb.append(columnName);
+		sb.append(")) then lo_unlink(old.");
+		sb.append(columnName);
+		sb.append(") end from ");
+		sb.append(tableName);
+		sb.append(" where ");
+		sb.append(tableName);
+		sb.append(StringPool.PERIOD);
+		sb.append(columnName);
+		sb.append(" = old.");
+		sb.append(columnName);
+		sb.append(StringPool.SEMICOLON);
+
+		return sb.toString();
+	}
 
 	public PostgreSQLDB(int majorVersion, int minorVersion) {
 		super(DBType.POSTGRESQL, majorVersion, minorVersion);
@@ -147,7 +203,9 @@ public class PostgreSQLDB extends BaseDB {
 
 			StringBundler sb = new StringBundler();
 
+			StringBundler createRulesSQLSB = new StringBundler();
 			String line = null;
+			String tableName = null;
 
 			while ((line = unsyncBufferedReader.readLine()) != null) {
 				if (line.startsWith(ALTER_COLUMN_NAME)) {
@@ -173,6 +231,11 @@ public class PostgreSQLDB extends BaseDB {
 						"alter table @old-table@ rename to @new-table@;",
 						RENAME_TABLE_TEMPLATE, template);
 				}
+				else if (line.startsWith(CREATE_TABLE)) {
+					String[] tokens = StringUtil.split(line, ' ');
+
+					tableName = tokens[2];
+				}
 				else if (line.contains(DROP_INDEX)) {
 					String[] tokens = StringUtil.split(line, ' ');
 
@@ -186,6 +249,13 @@ public class PostgreSQLDB extends BaseDB {
 						"alter table @table@ drop constraint @table@_pkey;",
 						"@table@", tokens[2]);
 				}
+				else if (line.contains(getTemplateBlob())) {
+					String[] tokens = StringUtil.split(line, ' ');
+
+					createRulesSQLSB.append(StringPool.NEW_LINE);
+					createRulesSQLSB.append(
+						getCreateRulesSQL(tableName, tokens[0]));
+				}
 				else if (line.contains("\\\'")) {
 					line = StringUtil.replace(line, "\\\'", "\'\'");
 				}
@@ -193,6 +263,8 @@ public class PostgreSQLDB extends BaseDB {
 				sb.append(line);
 				sb.append("\n");
 			}
+
+			sb.append(createRulesSQLSB.toString());
 
 			return sb.toString();
 		}

@@ -17,8 +17,6 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String cmd = ParamUtil.getString(request, Constants.CMD);
-
 groupId = ParamUtil.getLong(request, "groupId");
 
 group = null;
@@ -31,6 +29,8 @@ long layoutSetBranchId = ParamUtil.getLong(request, "layoutSetBranchId");
 
 privateLayout = ParamUtil.getBoolean(request, "privateLayout");
 String selectedLayoutIds = ParamUtil.getString(request, "selectedLayoutIds");
+
+boolean disableInputs = ParamUtil.getBoolean(request, "disableInputs");
 %>
 
 <aui:input name="layoutIds" type="hidden" value="<%= ExportImportHelperUtil.getSelectedLayoutsJSON(groupId, privateLayout, selectedLayoutIds) %>" />
@@ -38,63 +38,61 @@ String selectedLayoutIds = ParamUtil.getString(request, "selectedLayoutIds");
 <ul class="flex-container layout-selector" id="<portlet:namespace />pages">
 	<li class="layout-selector-options">
 		<aui:fieldset label="pages-options">
-			<c:if test="<%= cmd.equals(Constants.PUBLISH) %>">
-				<c:choose>
-					<c:when test="<%= privateLayout %>">
-						<li>
-							<liferay-portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="changeToPublicLayoutsURL">
-								<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
-								<portlet:param name="privateLayout" value="<%= String.valueOf(false) %>" />
-							</liferay-portlet:renderURL>
+			<c:choose>
+				<c:when test="<%= privateLayout %>">
+					<li>
+						<liferay-portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="changeToPublicLayoutsURL">
+							<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+							<portlet:param name="privateLayout" value="<%= String.valueOf(false) %>" />
+						</liferay-portlet:renderURL>
 
-							<aui:button href="<%= changeToPublicLayoutsURL %>" value="change-to-public-pages" />
-						</li>
-					</c:when>
-					<c:otherwise>
-						<li>
-							<liferay-portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="changeToPrivateLayoutsURL">
-								<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
-								<portlet:param name="privateLayout" value="<%= String.valueOf(true) %>" />
-							</liferay-portlet:renderURL>
+						<aui:button disabled="<%= disableInputs %>" href="<%= changeToPublicLayoutsURL %>" value="change-to-public-pages" />
+					</li>
+				</c:when>
+				<c:otherwise>
+					<li>
+						<liferay-portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="changeToPrivateLayoutsURL">
+							<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+							<portlet:param name="privateLayout" value="<%= String.valueOf(true) %>" />
+						</liferay-portlet:renderURL>
 
-							<aui:button href="<%= changeToPrivateLayoutsURL %>" value="change-to-private-pages" />
-						</li>
-					</c:otherwise>
-				</c:choose>
+						<aui:button disabled="<%= disableInputs %>" href="<%= changeToPrivateLayoutsURL %>" value="change-to-private-pages" />
+					</li>
+				</c:otherwise>
+			</c:choose>
 
-				<c:choose>
-					<c:when test="<%= layoutSetBranchId > 0 %>">
-						<aui:input name="layoutSetBranchId" type="hidden" value="<%= layoutSetBranchId %>" />
-					</c:when>
-					<c:otherwise>
-						<c:if test="<%= LayoutStagingUtil.isBranchingLayoutSet(group, privateLayout) %>">
+			<c:choose>
+				<c:when test="<%= layoutSetBranchId > 0 %>">
+					<aui:input name="layoutSetBranchId" type="hidden" value="<%= layoutSetBranchId %>" />
+				</c:when>
+				<c:otherwise>
+					<c:if test="<%= LayoutStagingUtil.isBranchingLayoutSet(group, privateLayout) %>">
+
+						<%
+						List<LayoutSetBranch> layoutSetBranches = LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(group.getGroupId(), privateLayout);
+						%>
+
+						<aui:select label="site-pages-variation" name="layoutSetBranchId">
 
 							<%
-							List<LayoutSetBranch> layoutSetBranches = LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(group.getGroupId(), privateLayout);
+							for (LayoutSetBranch layoutSetBranch : layoutSetBranches) {
+								boolean selected = false;
+
+								if (layoutSetBranch.isMaster()) {
+									selected = true;
+								}
 							%>
 
-							<aui:select label="site-pages-variation" name="layoutSetBranchId">
+							<aui:option label="<%= HtmlUtil.escape(layoutSetBranch.getName()) %>" selected="<%= selected %>" value="<%= layoutSetBranch.getLayoutSetBranchId() %>" />
 
-								<%
-								for (LayoutSetBranch layoutSetBranch : layoutSetBranches) {
-									boolean selected = false;
+							<%
+							}
+							%>
 
-									if (layoutSetBranch.isMaster()) {
-										selected = true;
-									}
-								%>
-
-								<aui:option label="<%= HtmlUtil.escape(layoutSetBranch.getName()) %>" selected="<%= selected %>" value="<%= layoutSetBranch.getLayoutSetBranchId() %>" />
-
-								<%
-								}
-								%>
-
-							</aui:select>
-						</c:if>
-					</c:otherwise>
-				</c:choose>
-			</c:if>
+						</aui:select>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
 		</aui:fieldset>
 	</li>
 
@@ -102,8 +100,8 @@ String selectedLayoutIds = ParamUtil.getString(request, "selectedLayoutIds");
 		<aui:fieldset label="pages-to-export">
 
 			<%
-			String treeId = ParamUtil.getString(request, "treeId");
 			long selPlid = ParamUtil.getLong(request, "selPlid", LayoutConstants.DEFAULT_PLID);
+			String treeId = ParamUtil.getString(request, "treeId");
 			%>
 
 			<div class="pages-selector">
@@ -126,13 +124,13 @@ String selectedLayoutIds = ParamUtil.getString(request, "selectedLayoutIds");
 
 	<li class="layout-selector-options">
 		<aui:fieldset label="look-and-feel">
-			<aui:input helpMessage="export-import-theme-settings-help" label="theme-settings" name="<%= PortletDataHandlerKeys.THEME_REFERENCE %>" type="checkbox" value="<%= true %>" />
+			<aui:input disabled="<%= disableInputs %>" helpMessage="export-import-theme-settings-help" label="theme-settings" name="<%= PortletDataHandlerKeys.THEME_REFERENCE %>" type="checkbox" value="<%= true %>" />
 
-			<aui:input label="logo" name="<%= PortletDataHandlerKeys.LOGO %>" type="checkbox" value="<%= true %>" />
+			<aui:input disabled="<%= disableInputs %>" label="logo" name="<%= PortletDataHandlerKeys.LOGO %>" type="checkbox" value="<%= true %>" />
 
-			<aui:input label="site-pages-settings" name="<%= PortletDataHandlerKeys.LAYOUT_SET_SETTINGS %>" type="checkbox" value="<%= true %>" />
+			<aui:input disabled="<%= disableInputs %>" label="site-pages-settings" name="<%= PortletDataHandlerKeys.LAYOUT_SET_SETTINGS %>" type="checkbox" value="<%= true %>" />
 
-			<aui:input helpMessage="delete-missing-layouts-staging-help" label="delete-missing-layouts" name="<%= PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS %>" type="checkbox" />
+			<aui:input disabled="<%= disableInputs %>" helpMessage="delete-missing-layouts-staging-help" label="delete-missing-layouts" name="<%= PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS %>" type="checkbox" />
 		</aui:fieldset>
 	</li>
 </ul>

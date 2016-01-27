@@ -15,6 +15,19 @@
 		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
 	</command>
 
+	<command name="_gotoAddPGViaWCD">
+		<execute function="Click#makeVisibleClickAt" locator1="WCD#ADD_WEB_CONTENT" />
+
+		<execute function="AssertClick" locator1="WCD#ADD_BASIC_WEB_CONTENT" value1="Basic Web Content" />
+
+		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="${webContentContent}" />
+			<var name="webContentTitle" value="${webContentTitle}" />
+		</execute>
+	</command>
+
 	<command name="addAbstractSummary">
 		<execute function="Type" locator1="TextArea#SUMMARY" value1="${abstractSummary}" />
 	</command>
@@ -116,7 +129,7 @@
 
 		<execute function="AssertElementPresent" locator1="Icon#ASTERISK" />
 
-		<execute function="AssertTextEquals" locator1="Message#ERROR" value1="Your request failed to complete." />
+		<execute macro="Alert#viewRequestFailedToComplete" />
 
 		<execute macro="Panel#expandPanel">
 			<var name="panelHeading" value="Metadata" />
@@ -202,13 +215,7 @@
 	</command>
 
 	<command name="addPGViaWCD">
-		<execute function="Click#makeVisibleClickAt" locator1="WCD#ADD_WEB_CONTENT" />
-
-		<execute function="AssertClick" locator1="WCD#ADD_BASIC_WEB_CONTENT" value1="Basic Web Content" />
-
-		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
-
-		<execute macro="WebContent#addCP">
+		<execute macro="WebContent#_gotoAddPGViaWCD">
 			<var name="webContentContent" value="${webContentContent}" />
 			<var name="webContentTitle" value="${webContentTitle}" />
 		</execute>
@@ -396,6 +403,12 @@
 		<execute function="AssertClick#pauseAssertTextClickAt" locator1="Button#PUBLISH" value1="Publish" />
 
 		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="addViaCKEditor">
+		<execute function="Type#mouseOverFocusType" locator1="TextInput#TITLE" value1="${webContentTitle}" />
+
+		<execute function="Type#typeCKEditorWaitForCKEditor" locator1="CKEditor#BODY_FIELD" value1="${webContentContent}" />
 	</command>
 
 	<command name="addWithCategoryCP">
@@ -705,23 +718,7 @@
 	</command>
 
 	<command name="addWithWorkflowPGViaWCD">
-		<execute function="Click#makeVisibleClickAt" locator1="WCD#ADD_WEB_CONTENT" />
-
-		<if>
-			<isset var="selectStructureName" />
-			<then>
-				<var name="key_selectStructureName" value="${selectStructureName}" />
-
-				<execute function="AssertClick" locator1="WCD#ADD_MENU_WEB_CONTENT_STRUCTURE" value1="${selectStructureName}" />
-			</then>
-			<else>
-				<execute function="Click" locator1="WCD#ADD_BASIC_WEB_CONTENT" />
-			</else>
-		</if>
-
-		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
-
-		<execute macro="WebContent#addCP">
+		<execute macro="WebContent#_gotoAddPGViaWCD">
 			<var name="webContentContent" value="${webContentContent}" />
 			<var name="webContentTitle" value="${webContentTitle}" />
 		</execute>
@@ -845,7 +842,7 @@
 	<command name="editDisplayPagePGViaAP">
 		<var name="key_assetTitle" value="${assetTitle}" />
 
-		<execute function="Click" locator1="APAsset#ASSET_PENCIL" />
+		<execute function="Click" locator1="Icon#EDIT" />
 
 		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
 
@@ -1194,8 +1191,16 @@
 
 	<command name="uploadAudio">
 		<execute function="Click#pauseClickAt" locator1="WCEditWebContent#AUDIO_BUTTON" />
-		<execute function="Type" locator1="CKEditor#CONTENT_AUDIO_LINK_URL_FIELD" value1="${dmDocumentURL}" />
-		<execute function="AssertClick" locator1="WCEditWebContent#AUDIO_OK_BUTTON" value1="OK" />
+
+		<execute macro="ItemSelector#addFromURL">
+			<var name="imageSourceURL" value="${dmDocumentURL}" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="CKEditor#BODY_FIELD_IFRAME" />
+
+		<execute function="AssertElementPresent" locator1="CKEditor#CONTENT_AUDIO_LINK_IMAGE" />
+
+		<execute macro="IFrame#selectTopFrame" />
 	</command>
 
 	<command name="viewApprovedStatus">
@@ -1353,7 +1358,7 @@
 	<command name="viewDisplayPagePGViaAP">
 		<var name="key_assetTitle" value="${assetTitle}" />
 
-		<execute function="AssertClick#assertPartialTextClickAtAndWait" locator1="Icon#EDIT" value1="Edit" />
+		<execute function="Click" locator1="Icon#EDIT" />
 
 		<execute function="SelectFrame" locator1="IFrame#EDIT_ASSET" />
 

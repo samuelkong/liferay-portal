@@ -148,7 +148,7 @@ renderResponse.setTitle((exportImportConfiguration == null) ? LanguageUtil.get(r
 								request.setAttribute("select_pages.jsp-parameterMap", parameterMap);
 								%>
 
-								<liferay-util:include page="/select_pages.jsp" portletId="<%= PortletKeys.EXPORT_IMPORT %>">
+								<liferay-util:include page="/publish_templates/select_pages.jsp" servletContext="<%= application %>">
 									<liferay-util:param name="<%= Constants.CMD %>" value="<%= cmd %>" />
 									<liferay-util:param name="groupId" value="<%= String.valueOf(stagingGroupId) %>" />
 									<liferay-util:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />
@@ -163,9 +163,7 @@ renderResponse.setTitle((exportImportConfiguration == null) ? LanguageUtil.get(r
 
 						<liferay-staging:deletions cmd="<%= cmd %>" />
 
-						<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" cssClass="options-group" label="permissions">
-							<aui:input helpMessage='<%= group.isCompany() ? "publish-global-permissions-help" : "export-import-permissions-help" %>' label="permissions" name="<%= PortletDataHandlerKeys.PERMISSIONS %>" type="toggle-switch" />
-						</aui:fieldset>
+						<liferay-staging:permissions global="<%= group.isCompany() %>" parameterMap="<%= parameterMap %>" />
 
 						<c:if test="<%= stagingGroup.isStagedRemotely() %>">
 							<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" cssClass="options-group" label="remote-live-connection-settings">
