@@ -16,13 +16,8 @@ package com.liferay.portal.kernel.security.permission;
 
 import com.liferay.portal.exception.NoSuchResourceActionException;
 import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.PasswordPolicy;
 import com.liferay.portal.model.Portlet;
 import com.liferay.portal.model.Role;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroup;
-import com.liferay.portlet.expando.model.ExpandoColumn;
 
 import java.io.InputStream;
 
@@ -36,38 +31,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daeyoung Song
  */
 public interface ResourceActions {
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #getActionNamePrefix}
-	 */
-	@Deprecated
-	public static final String ACTION_NAME_PREFIX = "action.";
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #getModelResourceNamePrefix}
-	 */
-	@Deprecated
-	public static final String MODEL_RESOURCE_NAME_PREFIX = "model.resource.";
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             #getOrganizationModelResources}
-	 */
-	@Deprecated
-	public static final String[] ORGANIZATION_MODEL_RESOURCES = {
-		Organization.class.getName(), PasswordPolicy.class.getName(),
-		User.class.getName()
-	};
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #getPortalModelResources}
-	 */
-	@Deprecated
-	public static final String[] PORTAL_MODEL_RESOURCES = {
-		ExpandoColumn.class.getName(), Organization.class.getName(),
-		PasswordPolicy.class.getName(), Role.class.getName(),
-		User.class.getName(), UserGroup.class.getName()
-	};
 
 	public void checkAction(String name, String actionId)
 		throws NoSuchResourceActionException;
@@ -149,14 +112,6 @@ public interface ResourceActions {
 
 	public List<String> getResourceGuestUnsupportedActions(
 		String portletResource, String modelResource);
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getRoles(long, Group,
-	 *             String, int[])}
-	 */
-	@Deprecated
-	public List<Role> getRoles(
-		long companyId, Group group, String modelResource);
 
 	public List<Role> getRoles(
 		long companyId, Group group, String modelResource, int[] roleTypes);
