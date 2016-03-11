@@ -58,11 +58,17 @@ public class MessageTag extends TagSupport {
 				if (!_localizeKey) {
 					value = _key;
 				}
-				else if (_escape) {
+				else if (_escape &&
+						 !LanguageUtil.isValidLanguageKey(
+							 resourceBundle.getLocale(), _key)) {
+
 					value = HtmlUtil.escape(
 						LanguageUtil.get(resourceBundle, _key));
 				}
-				else if (_escapeAttribute) {
+				else if (_escapeAttribute &&
+						 !LanguageUtil.isValidLanguageKey(
+							 resourceBundle.getLocale(), _key)) {
+
 					value = HtmlUtil.escapeAttribute(
 						LanguageUtil.get(resourceBundle, _key));
 				}
