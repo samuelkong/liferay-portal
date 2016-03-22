@@ -747,6 +747,7 @@ AUI.add(
 							A.io.request(
 								instance._processesResourceURL,
 								{
+									method: 'GET',
 									on: {
 										failure: function() {
 											new Liferay.Notice(
