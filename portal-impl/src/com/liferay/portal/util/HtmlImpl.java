@@ -143,7 +143,7 @@ public class HtmlImpl implements Html {
 				replacement = "&#x2014;";
 			}
 			else if (c == '\u2028') {
-				replacement = "&#x8232;";
+				replacement = "&#x2028;";
 			}
 			else if (!_isValidXmlCharacter(c) ||
 					 _isUnicodeCompatibilityCharacter(c)) {
