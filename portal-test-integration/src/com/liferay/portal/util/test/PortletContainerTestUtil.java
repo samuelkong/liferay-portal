@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.FileItem;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ProgressTracker;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -52,14 +51,15 @@ import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.StatusLine;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
@@ -212,35 +212,36 @@ public class PortletContainerTestUtil {
 			throw new IllegalStateException("Cookie is null");
 		}
 
-		HttpClient httpClient = new HttpClient();
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 
-		PostMethod postMethod = new PostMethod(url);
+		HttpClient httpClient = httpClientBuilder.build();
+
+		HttpPost httpPost = new HttpPost(url);
 
 		for (String cookie : cookies) {
-			postMethod.addRequestHeader(new Header("Cookie", cookie));
+			httpPost.addHeader(new BasicHeader("Cookie", cookie));
 		}
 
-		byte[] bytes = FileUtil.getBytes(
-			mockMultipartHttpServletRequest.getInputStream());
+		MultipartEntityBuilder multipartEntityBuilder =
+			MultipartEntityBuilder.create();
 
-		Part[] parts = {
-			new FilePart(
-				fileNameParameter,
-				new ByteArrayPartSource(fileNameParameter, bytes))
-		};
+		InputStreamBody inputStreamBody = new InputStreamBody(
+			mockMultipartHttpServletRequest.getInputStream(),
+			fileNameParameter);
 
-		MultipartRequestEntity multipartRequestEntity =
-			new MultipartRequestEntity(parts, postMethod.getParams());
+		multipartEntityBuilder.addPart(fileNameParameter, inputStreamBody);
 
-		postMethod.setRequestEntity(multipartRequestEntity);
+		httpPost.setEntity(multipartEntityBuilder.build());
 
-		httpClient.executeMethod(postMethod);
+		HttpResponse httpResponse = httpClient.execute(httpPost);
 
-		StatusLine statusLine = postMethod.getStatusLine();
+		StatusLine statusLine = httpResponse.getStatusLine();
 
-		return new Response(
-			statusLine.getStatusCode(), postMethod.getResponseBodyAsString(),
-			null);
+		HttpEntity httpEntity = httpResponse.getEntity();
+
+		String responseString = StringUtil.read(httpEntity.getContent());
+
+		return new Response(statusLine.getStatusCode(), responseString, null);
 	}
 
 	public static Response request(String url) throws IOException {
