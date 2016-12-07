@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -68,10 +69,6 @@ public class ModulesStructureTest {
 			classLoader,
 			"com/liferay/portal/modules/dependencies" +
 				"/git_repo_gitattributes.tmpl");
-		final String gitRepoGradlePropertiesTemplate = StringUtil.read(
-			classLoader,
-			"com/liferay/portal/modules/dependencies" +
-				"/git_repo_gradle_properties.tmpl");
 		final String gitRepoSettingsGradleTemplate = StringUtil.read(
 			classLoader,
 			"com/liferay/portal/modules/dependencies" +
@@ -103,7 +100,6 @@ public class ModulesStructureTest {
 						_testGitRepoBuildScripts(
 							dirPath, gitRepoBuildGradleTemplate,
 							gitRepoGitAttributesTemplate,
-							gitRepoGradlePropertiesTemplate,
 							gitRepoSettingsGradleTemplate);
 					}
 					else if (Files.exists(dirPath.resolve("app.bnd"))) {
@@ -481,9 +477,7 @@ public class ModulesStructureTest {
 			buildGradleTemplate, "[$BUILDSCRIPT_DEPENDENCIES$]", sb.toString());
 	}
 
-	private String _getGitRepoGradleProperties(
-		Path dirPath, String gradlePropertiesTemplate) {
-
+	private String _getProjectPathPrefix(Path dirPath) {
 		String projectPathPrefix = String.valueOf(
 			_modulesDirPath.relativize(dirPath));
 
@@ -492,8 +486,7 @@ public class ModulesStructureTest {
 				StringUtil.replace(
 					projectPathPrefix, File.separatorChar, CharPool.COLON);
 
-		return gradlePropertiesTemplate.replace(
-			"[$PROJECT_PATH_PREFIX$]", projectPathPrefix);
+		return projectPathPrefix;
 	}
 
 	private boolean _isInGitRepo(Path dirPath) {
@@ -509,6 +502,8 @@ public class ModulesStructureTest {
 	}
 
 	private String _read(Path path) throws IOException {
+		Assert.assertTrue("Missing " + path, Files.exists(path));
+
 		String s = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
 
 		return StringUtil.replace(
@@ -532,9 +527,6 @@ public class ModulesStructureTest {
 	private void _testAppBuildScripts(Path dirPath) throws IOException {
 		Path buildGradlePath = dirPath.resolve("build.gradle");
 
-		Assert.assertTrue(
-			"Missing " + buildGradlePath, Files.exists(buildGradlePath));
-
 		String buildGradle = _read(buildGradlePath);
 
 		Assert.assertEquals(
@@ -543,8 +535,6 @@ public class ModulesStructureTest {
 
 	private void _testEquals(Path path, String expected) throws IOException {
 		if (Validator.isNotNull(expected)) {
-			Assert.assertTrue("Missing " + path, Files.exists(path));
-
 			String actual = _read(path);
 
 			Assert.assertEquals("Incorrect " + path, expected, actual);
@@ -586,19 +576,12 @@ public class ModulesStructureTest {
 
 	private void _testGitRepoBuildScripts(
 			Path dirPath, String buildGradleTemplate,
-			String gitAttributesTemplate, String gradlePropertiesTemplate,
-			String settingsGradleTemplate)
+			String gitAttributesTemplate, String settingsGradleTemplate)
 		throws IOException {
 
 		Path buildGradlePath = dirPath.resolve("build.gradle");
 		Path gradlePropertiesPath = dirPath.resolve("gradle.properties");
 		Path settingsGradlePath = dirPath.resolve("settings.gradle");
-
-		boolean buildGradleExists = Files.exists(buildGradlePath);
-		boolean gradlePropertiesExists = Files.exists(gradlePropertiesPath);
-		boolean settingsGradleExists = Files.exists(settingsGradlePath);
-
-		Assert.assertTrue("Missing " + buildGradlePath, buildGradleExists);
 
 		String buildGradle = _read(buildGradlePath);
 
@@ -606,18 +589,55 @@ public class ModulesStructureTest {
 			"Incorrect " + buildGradlePath,
 			_getGitRepoBuildGradle(dirPath, buildGradleTemplate), buildGradle);
 
-		Assert.assertTrue(
-			"Missing " + gradlePropertiesPath, gradlePropertiesExists);
-
 		String gradleProperties = _read(gradlePropertiesPath);
 
 		Assert.assertEquals(
-			"Incorrect " + gradlePropertiesPath,
-			_getGitRepoGradleProperties(dirPath, gradlePropertiesTemplate),
-			gradleProperties);
+			"Forbidden leading or trailing whitespaces in " +
+				gradlePropertiesPath,
+			gradleProperties.trim(), gradleProperties);
 
-		Assert.assertTrue(
-			"Missing " + settingsGradlePath, settingsGradleExists);
+		String previousKey = null;
+		String projectPathPrefix = null;
+
+		for (String line : StringUtil.split(
+				gradleProperties, CharPool.NEW_LINE)) {
+
+			Assert.assertFalse(
+				"Forbbiden empty line in " + gradlePropertiesPath,
+				Validator.isNull(line));
+
+			int pos = line.indexOf(CharPool.EQUAL);
+
+			Assert.assertTrue(
+				"Incorrect line \"" + line + "\" in " +
+					gradlePropertiesPath,
+				pos != -1);
+
+			String key = line.substring(0, pos);
+
+			Assert.assertTrue(
+				gradlePropertiesPath +
+					" contains duplicate lines or is not sorted",
+				(previousKey == null) || (key.compareTo(previousKey) > 0));
+
+			if (key.equals(_GIT_REPO_GRADLE_PROJECT_PATH_PREFIX_KEY)) {
+				projectPathPrefix = line.substring(pos + 1);
+			}
+			else {
+				Assert.assertTrue(
+					"Incorrect key \"" + key + "\" in " +
+						gradlePropertiesPath,
+					_gitRepoGradlePropertiesKeys.contains(key));
+			}
+
+			previousKey = key;
+		}
+
+		Assert.assertEquals(
+			"Incorrect \"" + _GIT_REPO_GRADLE_PROJECT_PATH_PREFIX_KEY +
+				"\" in " +
+					gradlePropertiesPath,
+			_getProjectPathPrefix(dirPath), projectPathPrefix);
 
 		String settingsGradle = _read(settingsGradlePath);
 
@@ -643,9 +663,6 @@ public class ModulesStructureTest {
 		throws IOException {
 
 		Path gitIgnorePath = dirPath.resolve(".gitignore");
-
-		Assert.assertTrue(
-			"Missing " + gitIgnorePath, Files.exists(gitIgnorePath));
 
 		String gitIgnore = _read(gitIgnorePath);
 
@@ -683,9 +700,6 @@ public class ModulesStructureTest {
 
 		Path gitIgnorePath = dirPath.resolve(".gitignore");
 
-		Assert.assertTrue(
-			"Missing " + gitIgnorePath, Files.exists(gitIgnorePath));
-
 		String gitIgnore = _read(gitIgnorePath);
 
 		Assert.assertEquals(
@@ -695,9 +709,14 @@ public class ModulesStructureTest {
 	private static final String _APP_BUILD_GRADLE =
 		"apply plugin: \"com.liferay.app.defaults.plugin\"";
 
+	private static final String _GIT_REPO_GRADLE_PROJECT_PATH_PREFIX_KEY =
+		"project.path.prefix";
+
 	private static final String _SOURCE_FORMATTER_IGNORE_FILE_NAME =
 		"source_formatter.ignore";
 
+	private static final Set<String> _gitRepoGradlePropertiesKeys =
+		Collections.singleton("com.liferay.source.formatter.version");
 	private static Path _modulesDirPath;
 
 }

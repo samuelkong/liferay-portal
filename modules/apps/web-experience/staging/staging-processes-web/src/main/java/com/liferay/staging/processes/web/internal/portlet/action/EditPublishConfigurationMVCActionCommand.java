@@ -139,6 +139,9 @@ public class EditPublishConfigurationMVCActionCommand
 
 				updatePublishConfiguration(actionRequest);
 			}
+			else if (cmd.equals(Constants.DELETE)) {
+				deleteExportImportConfiguration(actionRequest, false);
+			}
 			else if (cmd.equals(Constants.MOVE_TO_TRASH)) {
 				deleteExportImportConfiguration(actionRequest, true);
 			}

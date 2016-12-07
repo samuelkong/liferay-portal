@@ -1561,11 +1561,29 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 				additionalConfigurations=\
 					cluster.routing.allocation.disk.threshold_enabled: false\n\
 					cluster.service.slow_task_logging_threshold: 600s\n\
+					httpEnabled: false\n\
 					index.indexing.slowlog.threshold.index.warn: 600s\n\
 					index.search.slowlog.threshold.fetch.warn: 600s\n\
 					index.search.slowlog.threshold.query.warn: 600s\n\
 					monitor.jvm.gc.old.warn: 600s\n\
-					monitor.jvm.gc.young.warn: 600s
+					monitor.jvm.gc.young.warn: 600s\n\
+					threadpool.bulk.size: 1\n\
+					threadpool.fetch_shard_started.size: 1\n\
+					threadpool.fetch_shard_store.size: 1\n\
+					threadpool.flush.size: 1\n\
+					threadpool.force_merge.size: 1\n\
+					threadpool.generic.size: 1\n\
+					threadpool.get.size: 1\n\
+					threadpool.index.size: 1\n\
+					threadpool.listener.size: 1\n\
+					threadpool.management.size: 1\n\
+					threadpool.percolate.size: 1\n\
+					threadpool.refresh.size: 1\n\
+					threadpool.search.size: 1\n\
+					threadpool.snapshot.size: 1\n\
+					threadpool.suggest.size: 1\n\
+					threadpool.warmer.size: 1\n\
+					transport.local.workers: 1
 				logExceptionsOnly=false
 			</echo>
 		</sequential>
@@ -7212,14 +7230,11 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		<get-testcase-property property.name="theme.file.name" />
 
 		<if>
-			<and>
-				<available file="${liferay.home}/deploy/${theme.file.name}" />
-				<isset property="theme.file.name" />
-			</and>
+			<isset property="theme.file.name" />
 			<then>
 				<if>
 					<resourcecount count="0" when="greater">
-						<zipfileset src="${liferay.home}/deploy/${theme.file.name}">
+						<zipfileset src="${liferay.home}/osgi/war/${theme.file.name}">
 							<patternset>
 								<include name="**/private.lar" />
 							</patternset>
@@ -8918,7 +8933,11 @@ jdbc.default.password=${database.mysql.password}</echo>
 
 						<delete dir="${liferay.home}/tmp" failonerror="false" />
 
-						<sleep seconds="60" />
+						<waitfor checkevery="5" maxwait="300" maxwaitunit="second" timeoutproperty="theme.not.deployed">
+							<available file="${liferay.home}/osgi/war/${theme.file.name}" />
+						</waitfor>
+
+						<fail if="theme.not.deployed" message="${theme.file.name} has failed to deploy." />
 					</then>
 				</if>
 			</then>

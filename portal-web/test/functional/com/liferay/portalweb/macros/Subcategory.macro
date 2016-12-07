@@ -4,11 +4,13 @@
 		<var name="key_vocabularyName" value="${vocabularyName}" />
 
 		<execute function="AssertClick" locator1="Categories#VOCABULARY_ENTRY_LINK" value1="${vocabularyName}" />
+
 		<execute function="Pause" locator1="1000" />
 
 		<var name="key_rowEntry" value="${categoryName}" />
 
 		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
 		<execute function="AssertClick" locator1="MenuItem#ADD_SUBCATEGORY" value1="Add Subcategory" />
 
 		<var name="key_subcategoryName" value="${subCategoryName}" />
@@ -34,9 +36,11 @@
 		<var name="key_rowEntry" value="${categoryName}" />
 
 		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
 		<execute function="AssertClick" locator1="MenuItem#ADD_SUBCATEGORY" value1="Add Subcategory" />
 
 		<execute function="Type" locator1="TextInput#TITLE" value1="${subcategoryName}" />
+
 		<execute macro="Button#clickSave" />
 
 		<execute macro="Alert#viewRequestFailedToComplete" />
@@ -52,6 +56,7 @@
 		<var name="key_rowEntry" value="${categoryName}" />
 
 		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
 		<execute function="AssertClick" locator1="MenuItem#ADD_SUBCATEGORY" value1="Add Subcategory" />
 
 		<var name="key_subcategoryName" value="${subCategoryName}" />
@@ -80,8 +85,11 @@
 		<var name="key_subcategoryName" value="${subcategoryName}" />
 
 		<execute function="Check" locator1="Categories#SUBCATEGORY_CHECKBOX" />
+
 		<execute function="ClickNoError" locator1="Icon#DELETE" />
+
 		<execute function="Confirm" value1="Are you sure you want to delete this? It will be deleted immediately." />
+
 		<execute macro="Alert#viewSuccessMessage" />
 		<execute function="AssertTextNotPresent" value1="${subcategoryName}" />
 	</command>
@@ -98,8 +106,11 @@
 		<var name="key_rowEntry" value="${subcategoryName}" />
 
 		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
 		<execute function="AssertClickNoError" locator1="MenuItem#DELETE" value1="Delete" />
+
 		<execute function="Confirm" value1="Are you sure you want to delete this? It will be deleted immediately." />
+
 		<execute macro="Alert#viewSuccessMessage" />
 		<execute function="AssertTextNotPresent" value1="${subcategoryName}" />
 	</command>
@@ -116,40 +127,31 @@
 		<var name="key_rowEntry" value="${subcategoryName}" />
 
 		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
 		<execute function="AssertClick" locator1="MenuItem#EDIT" value1="Edit" />
 
 		<execute function="Type" locator1="TextInput#TITLE" value1="${subcategoryNameEdit}" />
+
 		<execute macro="PortletEntry#save" />
 	</command>
 
 	<command name="moveCP">
-		<var name="key_vocabularyName" value="${vocabularyName}" />
+		<execute function="AssertClick" locator1="ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK" value1="${vocabularyName}">
+			<var name="key_rowEntry" value="${vocabularyName}" />
+		</execute>
 
-		<execute function="AssertClick" locator1="Categories#VOCABULARY_ENTRY_LINK" value1="${vocabularyName}" />
+		<execute function="AssertClick" locator1="ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK" value1="${categoryName}">
+			<var name="key_rowEntry" value="${categoryName}" />
+		</execute>
 
-		<var name="key_categoryName" value="${categoryName}" />
+		<execute macro="LexiconEntry#gotoEntryMenuItem">
+			<var name="menuItem" value="Move" />
+			<var name="rowEntry" value="${subcategoryName}" />
+		</execute>
 
-		<execute function="AssertClick" locator1="Categories#CATEGORY_ENTRY_LINK" value1="${categoryName}" />
-
-		<var name="key_rowEntry" value="${subcategoryName}" />
-
-		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#MOVE" value1="Move" />
-
-		<execute function="Click" locator1="CategoriesEditSubcategory#CATEGORY_SELECT_BUTTON" />
-
-		<var name="key_categoryName" value="${categoryNameMove}" />
-
-		<execute function="Click" locator1="CategoriesEditSubcategory#MOVE_CATEGORIES_CATEGORY_CHECK_ICON" />
-
-		<execute function="MouseOver" locator1="CategoriesEditSubcategory#MOVE_CATEGORIES_CATEGORY_CLOSE_BUTTON" />
-
-		<execute function="Click#clickAt" locator1="CategoriesEditSubcategory#MOVE_CATEGORIES_CATEGORY_CLOSE_BUTTON" />
-
-		<execute function="AssertClick" locator1="Button#MOVE" value1="Move" />
-
-		<execute macro="Alert#viewSuccessMessage" />
+		<execute macro="AssetCategorization#selectCategory">
+			<var name="categoryName" value="${categoryNameMove}" />
+		</execute>
 	</command>
 
 	<command name="searchCP">
@@ -157,11 +159,13 @@
 		<var name="key_vocabularyName" value="${vocabularyName}" />
 
 		<execute function="AssertClick" locator1="Categories#VOCABULARY_ENTRY_LINK" value1="${vocabularyName}" />
+
 		<execute function="Click" locator1="Categories#CATEGORY_ENTRY_LINK" />
 
 		<var name="key_subcategoryName" value="${subcategoryName}" />
 
 		<execute function="Type" locator1="TextInput#SEARCH" value1="${subcategorySearchEntry}" />
+
 		<execute function="Click" locator1="Icon#BASIC_SEARCH" />
 	</command>
 
@@ -177,6 +181,7 @@
 		<var name="key_rowEntry" value="${subcategoryName}" />
 
 		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
 		<execute function="AssertClick" locator1="MenuItem#EDIT" value1="Edit" />
 
 		<execute macro="Panel#expandPanel">
@@ -192,6 +197,7 @@
 		<var name="key_vocabularyName" value="${vocabularyName}" />
 
 		<execute function="AssertClick" locator1="Categories#VOCABULARY_ENTRY_LINK" value1="${vocabularyName}" />
+
 		<execute function="AssertClick" locator1="Categories#CATEGORY_ENTRY_LINK" value1="${categoryName}" />
 
 		<var name="key_subcategoryName" value="${subcategoryName}" />
