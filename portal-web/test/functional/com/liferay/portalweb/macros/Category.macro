@@ -99,6 +99,7 @@
 		</execute>
 
 		<execute function="Select" locator1="CategoriesEditCategory#PERMISSIONS_VIEWABLE_BY_SELECT" value1="${viewableBy}" />
+
 		<execute macro="PortletEntry#save" />
 	</command>
 
@@ -263,6 +264,7 @@
 
 		<execute function="Type" locator1="CategoriesEditCategory#PROPERTIES_KEY_FIELD_1" value1="${propertiesKeyFieldEdit}" />
 		<execute function="Type" locator1="CategoriesEditCategory#PROPERTIES_VALUE_FIELD_1" value1="${propertiesValueFieldEdit}" />
+
 		<execute macro="PortletEntry#save" />
 	</command>
 
@@ -284,22 +286,18 @@
 	</command>
 
 	<command name="moveViaEditCP">
-		<var name="key_categoryName" value="${categoryName}" />
-		<var name="key_vocabularyName" value="${vocabularyName}" />
+		<execute function="AssertClick" locator1="ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK" value1="${vocabularyName}">
+			<var name="key_rowEntry" value="${vocabularyName}" />
+		</execute>
 
-		<execute function="AssertClick" locator1="Categories#VOCABULARY_ENTRY_LINK" value1="${vocabularyName}" />
+		<execute macro="LexiconEntry#gotoEntryMenuItem">
+			<var name="menuItem" value="Move" />
+			<var name="rowEntry" value="${categoryName}" />
+		</execute>
 
-		<var name="key_rowEntry" value="${categoryName}" />
-
-		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#MOVE" value1="Move" />
-
-		<execute function="Select" locator1="CategoriesEditCategory#VOCABULARY_SELECT" value1="${vocabularyName2}" />
-
-		<execute function="AssertClick" locator1="Button#MOVE" value1="Move" />
-
-		<execute macro="Alert#viewSuccessMessage" />
+		<execute macro="AssetCategorization#selectCategory">
+			<var name="categoryName" value="${vocabularyName2}" />
+		</execute>
 	</command>
 
 	<command name="searchCP">
@@ -362,6 +360,7 @@
 		<var name="key_vocabularyName" value="${vocabularyName}" />
 
 		<execute function="AssertClick" locator1="Categories#VOCABULARY_ENTRY_LINK" value1="${vocabularyName}" />
+
 		<execute function="AssertClick" locator1="Categories#VOCABULARY_CATEGORY" value1="${categoryName}" />
 	</command>
 
