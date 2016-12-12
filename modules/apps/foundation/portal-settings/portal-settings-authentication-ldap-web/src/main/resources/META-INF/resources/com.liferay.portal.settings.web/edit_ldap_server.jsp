@@ -165,20 +165,17 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 		</aui:fieldset>
 
 		<aui:fieldset>
-			<h3><liferay-ui:message key="default-values" /></h3>
+			<h3><liferay-ui:message key="populate-with-a-default-server-configuration" /></h3>
 
 			<aui:field-wrapper>
-				<aui:input label="Apache Directory Server" name="defaultLdap" type="radio" value="apache" />
-				<aui:input label="Fedora Directory Server" name="defaultLdap" type="radio" value="fedora" />
-				<aui:input label="Microsoft Active Directory Server" name="defaultLdap" type="radio" value="microsoft" />
-				<aui:input label="Novell eDirectory" name="defaultLdap" type="radio" value="novell" />
-				<aui:input label="OpenLDAP" name="defaultLdap" type="radio" value="open" />
-				<aui:input label="other-directory-server" name="defaultLdap" type="radio" value="other" />
+				<aui:input label="Apache Directory Server" name="defaultLdap" type="radio" value="apache" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap('apache');" %>' />
+				<aui:input label="Fedora Directory Server" name="defaultLdap" type="radio" value="fedora" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap('fedora');" %>' />
+				<aui:input label="Microsoft Active Directory Server" name="defaultLdap" type="radio" value="microsoft" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap('microsoft');" %>' />
+				<aui:input label="Novell eDirectory" name="defaultLdap" type="radio" value="novell" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap('novell');" %>' />
+				<aui:input label="OpenLDAP" name="defaultLdap" type="radio" value="open" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap('open');" %>' />
+				<aui:input label="other-directory-server" name="defaultLdap" type="radio" value="other" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap('other');" %>' />
 			</aui:field-wrapper>
 
-			<aui:button-row>
-				<aui:button cssClass="btn-lg" onClick='<%= renderResponse.getNamespace() + "updateDefaultLdap();" %>' value="reset-values" />
-			</aui:button-row>
 		</aui:fieldset>
 
 		<aui:fieldset>
@@ -333,7 +330,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 		submitForm(form);
 	}
 
-	function <portlet:namespace />updateDefaultLdap() {
+	function <portlet:namespace />updateDefaultLdap(ldapType) {
 		var baseProviderURL = '';
 		var baseDN = '';
 		var principal = '';
@@ -360,8 +357,6 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 		var exportMappingGroupDefaultObjectClass = '';
 
 		var form = AUI.$(document.<portlet:namespace />fm);
-
-		var ldapType = form.fm('defaultLdap').filter(':checked').val();
 
 		if (ldapType == 'apache') {
 			baseProviderURL = 'ldap://localhost:10389';
