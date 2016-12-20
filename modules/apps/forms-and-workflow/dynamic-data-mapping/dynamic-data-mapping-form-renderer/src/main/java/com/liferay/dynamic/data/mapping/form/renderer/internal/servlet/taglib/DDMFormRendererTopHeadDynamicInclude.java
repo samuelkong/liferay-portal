@@ -17,8 +17,7 @@ package com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.taglib;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -28,6 +27,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -36,6 +36,21 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = DynamicInclude.class)
 public class DDMFormRendererTopHeadDynamicInclude extends BaseDynamicInclude {
+
+	@Activate
+	public void activate() {
+		_postfix = _portal.getPathProxy();
+
+		if (_postfix.isEmpty()) {
+			_postfix = _servletContext.getContextPath();
+		}
+		else {
+			_postfix = _postfix.concat(_servletContext.getContextPath());
+		}
+
+		_postfix = _postfix.concat(
+			"/css/main.css\" rel=\"stylesheet\" type = \"text/css\" />");
+	}
 
 	@Override
 	public void include(
@@ -48,21 +63,20 @@ public class DDMFormRendererTopHeadDynamicInclude extends BaseDynamicInclude {
 
 		PrintWriter printWriter = response.getWriter();
 
-		StringBundler sb = new StringBundler(5);
+		String content = "<link href=\"".concat(themeDisplay.getPortalURL());
 
-		sb.append("<link href=\"");
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(PortalUtil.getPathProxy());
-		sb.append(_servletContext.getContextPath());
-		sb.append("/css/main.css\" rel=\"stylesheet\" type = \"text/css\" />");
-
-		printWriter.println(sb.toString());
+		printWriter.println(content.concat(_postfix));
 	}
 
 	@Override
 	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
 		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
+
+	@Reference
+	private Portal _portal;
+
+	private String _postfix;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.dynamic.data.mapping.form.renderer)"

@@ -95,7 +95,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "details
 			<liferay-ui:message key="last-changed-by" />
 		</th>
 		<td class="table-cell">
-			<%= HtmlUtil.escape(wikiPage.getUserName()) %> (<%= dateFormatDateTime.format(wikiPage.getCreateDate()) %>)
+			<%= HtmlUtil.escape(wikiPage.getUserName()) %> (<%= dateFormatDateTime.format(wikiPage.getModifiedDate()) %>)
 		</td>
 	</tr>
 	<tr>

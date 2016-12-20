@@ -1192,6 +1192,8 @@
 			<var name="portlet" value="Tags" />
 		</execute>
 
+		<var name="tagNameList" value="tag1,tag2" />
+
 		<for list="${tagNameList}" param="tagName">
 			<execute macro="Tag#addCP">
 				<var name="tagName" value="${tagName}" />
@@ -1241,7 +1243,7 @@
 
 		<execute function="AssertTextEquals" locator1="AssetCategorization#CATEGORY" value1="Category Name" />
 
-		<for list="tag1,tag2" param="tagName">
+		<for list="${tagNameList}" param="tagName">
 			<var name="key_tagName" value="${tagName}" />
 
 			<execute function="AssertTextEquals" locator1="AssetCategorization#TAG" value1="${tagName}" />

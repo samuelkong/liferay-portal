@@ -17,8 +17,7 @@ package com.liferay.frontend.editor.alloyeditor.accessibility.web.internal.servl
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -28,6 +27,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -36,6 +36,21 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = DynamicInclude.class)
 public class AlloyEditorAccessibilityDynamicInclude extends BaseDynamicInclude {
+
+	@Activate
+	public void activate() {
+		_postfix = _portal.getPathProxy();
+
+		if (_postfix.isEmpty()) {
+			_postfix = _servletContext.getContextPath();
+		}
+		else {
+			_postfix = _postfix.concat(_servletContext.getContextPath());
+		}
+
+		_postfix = _postfix.concat(
+			"/js/buttons.js\" type=\"text/javascript\"></script>");
+	}
 
 	@Override
 	public void include(
@@ -48,17 +63,9 @@ public class AlloyEditorAccessibilityDynamicInclude extends BaseDynamicInclude {
 
 		PrintWriter printWriter = response.getWriter();
 
-		StringBundler sb = new StringBundler(7);
+		String content = "<script src=\"".concat(themeDisplay.getPortalURL());
 
-		sb.append("<script src=\"");
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(PortalUtil.getPathProxy());
-		sb.append(_servletContext.getContextPath());
-		sb.append("/js/buttons.js");
-		sb.append("\" ");
-		sb.append("type=\"text/javascript\"></script>");
-
-		printWriter.println(sb.toString());
+		printWriter.println(content.concat(_postfix));
 	}
 
 	@Override
@@ -67,6 +74,11 @@ public class AlloyEditorAccessibilityDynamicInclude extends BaseDynamicInclude {
 			"com.liferay.frontend.editor.alloyeditor.web#alloyeditor#" +
 				"additionalResources");
 	}
+
+	@Reference
+	private Portal _portal;
+
+	private String _postfix;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.frontend.editor.alloyeditor.accessibility.web)"

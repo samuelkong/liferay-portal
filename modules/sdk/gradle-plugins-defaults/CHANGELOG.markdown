@@ -762,14 +762,12 @@ found.
 ## 2.2.4 - 2016-12-14
 
 ### Changed
+- [LPS-66853]: Update the [Liferay Gradle Plugins] dependency to version 3.0.51.
 - [LPS-67694]: Disable the `install` and `uploadArchives` tasks for `*-test`
 OSGi projects, Ant plugins and themes if the `-PsnapshotIfStale` argument is
 provided.
 
-## 2.2.5 - 2016-12-14
-
 ### Changed
-- [LPS-66853]: Update the [Liferay Gradle Plugins] dependency to version 3.0.51.
 
 ## 2.3.0 - 2016-12-15
 
@@ -777,6 +775,41 @@ provided.
 - [LPS-69606]: Fix artifact publish commands for the "WSDD" commit in older
 versions of Git.
 - [LPS-69606]: Fix artifact URL generation in the `artifact.properties` files.
+
+## 2.3.1 - 2016-12-18
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.52.
+
+## 2.3.2 - 2016-12-18
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.53.
+
+## 2.3.3 - 2016-12-18
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.54.
+
+## 2.3.4 - 2016-12-18
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.55.
+
+## 2.3.5 - 2016-12-19
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.56.
+
+## 2.3.6 - 2016-12-19
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.57.
+
+## 2.3.7 - 2016-12-19
+
+### Changed
+- [LPS-69730]: Update the [Liferay Gradle Plugins] dependency to version 3.0.58.
 
 [Liferay CDN]: https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public
 [Liferay Gradle Plugins]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins
@@ -850,6 +883,7 @@ versions of Git.
 [LPS-69606]: https://issues.liferay.com/browse/LPS-69606
 [LPS-69618]: https://issues.liferay.com/browse/LPS-69618
 [LPS-69677]: https://issues.liferay.com/browse/LPS-69677
+[LPS-69730]: https://issues.liferay.com/browse/LPS-69730
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
 [LRDOCS-2981]: https://issues.liferay.com/browse/LRDOCS-2981

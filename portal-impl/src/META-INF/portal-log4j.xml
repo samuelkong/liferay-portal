@@ -1036,10 +1036,6 @@
 		<priority value="INFO" />
 	</category>
 
-	<category name="com.liferay.taglib.util.IncludeTag">
-		<priority value="WARN" />
-	</category>
-
 	<category name="com.liferay.testhook">
 		<priority value="INFO" />
 	</category>

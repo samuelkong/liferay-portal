@@ -736,7 +736,13 @@ public class GetSyncDLObjectUpdateHandler extends BaseSyncDLObjectHandler {
 				}
 			}
 			else if (event.equals(SyncFile.EVENT_RESTORE)) {
-				if (sourceSyncFile != null) {
+				if (Validator.isBlank(targetSyncFile.getName())) {
+
+					// Workaround for SYNC-1690
+
+					return;
+				}
+				else if (sourceSyncFile != null) {
 					updateFile(sourceSyncFile, targetSyncFile, filePathName);
 				}
 				else if (isParentUnsynced(targetSyncFile)) {

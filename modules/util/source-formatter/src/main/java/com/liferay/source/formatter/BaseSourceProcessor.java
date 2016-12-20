@@ -576,6 +576,13 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 
 				BNDSettings bndSettings = getBNDSettings(fileName);
 
+				if (bndSettings == null) {
+					processMessage(
+						fileName, "Missing language key '" + languageKey + "'");
+
+					continue;
+				}
+
 				Properties bndFileLanguageProperties =
 					bndSettings.getLanguageProperties();
 
@@ -1923,7 +1930,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 		else if (groupCount == 2) {
 			String languageKey = matcher.group(2);
 
-			languageKey = TextFormatter.format(languageKey, TextFormatter.P);
+			languageKey = TextFormatter.format(languageKey, TextFormatter.K);
 
 			return new String[] {languageKey};
 		}
@@ -2114,6 +2121,10 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 		}
 		else {
 			BNDSettings bndSettings = getBNDSettings(fileName);
+
+			if (bndSettings == null) {
+				return null;
+			}
 
 			releaseVersion = bndSettings.getReleaseVersion();
 
@@ -2544,6 +2555,10 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 
 	protected boolean isExcludedPath(
 		String property, String path, int lineCount, String javaTermName) {
+
+		if (property == null) {
+			return false;
+		}
 
 		List<String> excludes = _exclusionPropertiesMap.get(property);
 
