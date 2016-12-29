@@ -103,6 +103,7 @@ String organizationRoleSyncEntitiesEventName = liferayPortletResponse.getNamespa
 	/>
 
 	<aui:script>
+		
 		AUI.$('#<portlet:namespace />selectRegularRoleLink').on(
 			'click',
 			function(event) {
