@@ -1,0 +1,211 @@
+<definition component-name="portal-breadcrumb">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Navigation" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Page#tearDownPG" />
+
+				<execute macro="Site#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="BreadcrumbConfiguration" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Parent Page Name" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#addChild">
+			<var name="page" value="Public Pages" />
+			<var name="pageName" value="Parent Page Name" />
+			<var name="siteChildPageName" value="Child Page Name" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#gotoChildPagePG">
+			<var name="childPageName" value="Child Page Name" />
+			<var name="pageName" value="Parent Page Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Breadcrumb" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewConfigurationPreview">
+			<var name="breadcrumbListVisible" value="Site Name,Parent Page Name,Child Page Name" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewConfigurationCheckboxes">
+			<var name="checkSetupName" value="Show Current Site,Show Page,Show Parent Sites,Show Application Breadcrumb" />
+			<var name="uncheckSetupName" value="Show Guest Site" />
+		</execute>
+
+		<execute macro="Breadcrumb#configureBreadcrumb">
+			<var name="checkSetupName" value="Show Guest Site,Show Application Breadcrumb" />
+			<var name="uncheckSetupName" value="Show Current Site,Show Page,Show Parent Sites" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewConfigurationPreview">
+			<var name="breadcrumbListNotVisible" value="Site Name,Parent Page Name,Child Page Name" />
+			<var name="breadcrumbListVisible" value="Liferay" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#gotoChildPagePG">
+			<var name="childPageName" value="Child Page Name" />
+			<var name="pageName" value="Parent Page Name" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewPG">
+			<var name="breadcrumbListNotVisible" value="Site Name,Parent Page Name,Child Page Name" />
+			<var name="breadcrumbListVisible" value="Liferay" />
+			<var name="pathLocator" value="PAGE" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute macro="Breadcrumb#configureBreadcrumb">
+			<var name="checkSetupName" value="Show Current Site,Show Application Breadcrumb" />
+			<var name="uncheckSetupName" value="Show Guest Site,Show Page,Show Parent Sites" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewConfigurationPreview">
+			<var name="breadcrumbListNotVisible" value="Parent Page Name,Child Page Name" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#gotoChildPagePG">
+			<var name="childPageName" value="Child Page Name" />
+			<var name="pageName" value="Parent Page Name" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewPG">
+			<var name="breadcrumbListNotVisible" value="Parent Page Name,Child Page Name" />
+			<var name="pathLocator" value="PAGE" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute macro="Breadcrumb#configureBreadcrumb">
+			<var name="checkSetupName" value="Show Current Site,Show Application Breadcrumb,Show Guest Site,Show Page" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewConfigurationPreview">
+			<var name="breadcrumbListVisible" value="Liferay,Site Name,Parent Page Name,Child Page Name" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#gotoChildPagePG">
+			<var name="childPageName" value="Child Page Name" />
+			<var name="pageName" value="Parent Page Name" />
+		</execute>
+
+		<execute macro="Breadcrumb#viewPG">
+			<var name="breadcrumbListVisible" value="Liferay,Site Name,Parent Page Name,Child Page Name" />
+			<var name="pathLocator" value="PAGE" />
+		</execute>
+	</command>
+
+	<command name="BreadcrumbLinkPointsToLocalhost" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page Name" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page Name" />
+			<var name="url" value="http://localhost:8080/web/site-name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Breadcrumb" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute macro="Breadcrumb#configureBreadcrumb">
+			<var name="checkSetupName" value="Show Guest Site" />
+		</execute>
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page Name" />
+			<var name="url" value="http://127.0.0.1:8080/web/site-name" />
+		</execute>
+
+		<execute function="AssertLocation" value1="http://127.0.0.1:8080/web/site-name/site-page-name" />
+
+		<execute macro="Breadcrumb#viewPG">
+			<var name="breadcrumbListVisible" value="Liferay,Site Name,Site Page Name" />
+			<var name="pathLocator" value="PAGE" />
+		</execute>
+
+		<var name="key_URL" value="http://localhost:8080" />
+		<execute function="AssertElementNotPresent" locator1="BreadcrumbPortlet#BREADCRUMB_PAGE_LINK" />
+
+		<var name="key_URL" value="/web/guest" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="BreadcrumbPortlet#BREADCRUMB_PAGE_LINK" value1="LIFERAY" />
+	</command>
+</definition>

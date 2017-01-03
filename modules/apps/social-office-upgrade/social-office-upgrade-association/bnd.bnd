@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Social Office Upgrade Association
+Bundle-SymbolicName: com.liferay.social.office.upgrade.association
+Bundle-Version: 1.0.4
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Social Office Upgrade

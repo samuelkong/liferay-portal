@@ -1,0 +1,23 @@
+.form-builder-field-settings-sidebar {
+	&.loading-data {
+		.lfr-ddm-form-container {
+			visibility: hidden;
+		}
+
+		.loading-icon {
+			display: block;
+		}
+	}
+
+	.loading-icon {
+		display: none;
+		left: 50%;
+		margin-left: -32px;
+		position: absolute;
+		top: 200px;
+	}
+
+	.required-warning {
+		display: none;
+	}
+}

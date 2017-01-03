@@ -14,38 +14,56 @@
 
 package com.liferay.portal.service;
 
-import com.liferay.portal.NoSuchUserException;
-import com.liferay.portal.ReservedUserEmailAddressException;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.UserEmailAddressException;
+import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroupRole;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserServiceUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.ReflectionUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.test.Sync;
-import com.liferay.portal.test.SynchronousMailExecutionTestListener;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.listeners.ResetDatabaseExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.portal.util.PrefsPropsUtil;
-import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.test.GroupTestUtil;
+import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.test.MailServiceTestUtil;
-import com.liferay.portal.util.test.OrganizationTestUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portal.util.test.UserTestUtil;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -57,48 +75,125 @@ import org.junit.runner.RunWith;
 @RunWith(Enclosed.class)
 public class UserServiceTest {
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
+	public static class WhenAddingUserWithDefaultSitesEnabled {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
+
+		@Before
+		public void setUp() throws Exception {
+			_group = GroupTestUtil.addGroup();
+
+			UnicodeProperties properties = new UnicodeProperties();
+
+			properties.put(
+				PropsKeys.ADMIN_DEFAULT_GROUP_NAMES,
+				_group.getDescriptiveName());
+
+			_organization = OrganizationTestUtil.addOrganization(true);
+
+			Group organizationGroup = _organization.getGroup();
+
+			properties.put(
+				PropsKeys.ADMIN_DEFAULT_ORGANIZATION_GROUP_NAMES,
+				organizationGroup.getDescriptiveName());
+
+			CompanyLocalServiceUtil.updatePreferences(
+				_group.getCompanyId(), properties);
+
+			UnicodeProperties typeSettingsProperties =
+				_group.getTypeSettingsProperties();
+
+			_siteRole = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+
+			typeSettingsProperties.put(
+				"defaultSiteRoleIds", String.valueOf(_siteRole.getRoleId()));
+
+			GroupLocalServiceUtil.updateGroup(
+				_group.getGroupId(), typeSettingsProperties.toString());
+
+			_user = UserTestUtil.addUser();
+		}
+
+		@Test
+		public void shouldInheritDefaultOrganizationSiteMembership() {
+			Group organizationGroup = _organization.getGroup();
+
+			long organizationGroupId = organizationGroup.getGroupId();
+
+			Assert.assertTrue(
+				ArrayUtil.contains(_user.getGroupIds(), organizationGroupId));
+		}
+
+		@Test
+		public void shouldInheritDefaultSiteRolesFromDefaultSite()
+			throws Exception {
+
+			long groupId = _group.getGroupId();
+
+			Assert.assertTrue(ArrayUtil.contains(_user.getGroupIds(), groupId));
+
+			List<UserGroupRole> userGroupRoles =
+				UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+					_user.getUserId(), groupId);
+
+			Assert.assertEquals(1, userGroupRoles.size());
+
+			UserGroupRole userGroupRole = userGroupRoles.get(0);
+
+			Assert.assertEquals(
+				_siteRole.getRoleId(), userGroupRole.getRoleId());
+		}
+
+		@DeleteAfterTestRun
+		private Group _group;
+
+		@DeleteAfterTestRun
+		private Organization _organization;
+
+		@DeleteAfterTestRun
+		private Role _siteRole;
+
+		@DeleteAfterTestRun
+		private User _user;
+
+	}
+
 	public static class WhenCompanySecurityStrangersWithMXDisabled {
 
-		@Test(expected = ReservedUserEmailAddressException.class)
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
+
+		@Test(expected = UserEmailAddressException.MustNotUseCompanyMx.class)
 		public void shouldNotAddUser() throws Exception {
-			Field field = ReflectionUtil.getDeclaredField(
-				PropsValues.class, "COMPANY_SECURITY_STRANGERS_WITH_MX");
-
-			Object value = field.get(null);
-
 			String name = PrincipalThreadLocal.getName();
 
 			try {
-				field.set(null, Boolean.FALSE);
+				PropsUtil.set(
+					PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
+					Boolean.FALSE.toString());
 
 				PrincipalThreadLocal.setName(0);
 
 				UserTestUtil.addUser(true);
 			}
 			finally {
-				field.set(null, value);
-
 				PrincipalThreadLocal.setName(name);
 			}
 		}
 
-		@Test(expected = ReservedUserEmailAddressException.class)
+		@Test(expected = UserEmailAddressException.MustNotUseCompanyMx.class)
 		public void shouldNotUpdateEmailAddress() throws Exception {
-			Field field = ReflectionUtil.getDeclaredField(
-				PropsValues.class, "COMPANY_SECURITY_STRANGERS_WITH_MX");
-
-			Object value = field.get(null);
-
 			String name = PrincipalThreadLocal.getName();
 
 			try {
-				field.set(null, Boolean.FALSE);
+				PropsUtil.set(
+					PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
+					Boolean.FALSE.toString());
 
 				User user = UserTestUtil.addUser(false);
 
@@ -113,46 +208,40 @@ public class UserServiceTest {
 					emailAddress, new ServiceContext());
 			}
 			finally {
-				field.set(null, value);
-
 				PrincipalThreadLocal.setName(name);
 			}
 		}
 
-		@Test(expected = ReservedUserEmailAddressException.class)
+		@Test(expected = UserEmailAddressException.MustNotUseCompanyMx.class)
 		public void shouldNotUpdateUser() throws Exception {
-			Field field = ReflectionUtil.getDeclaredField(
-				PropsValues.class, "COMPANY_SECURITY_STRANGERS_WITH_MX");
-
-			Object value = field.get(null);
-
 			String name = PrincipalThreadLocal.getName();
 
-			try {
-				field.set(null, Boolean.FALSE);
+			User user = UserTestUtil.addUser(false);
 
-				User user = UserTestUtil.addUser(false);
+			try {
+				PropsUtil.set(
+					PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
+					Boolean.FALSE.toString());
 
 				PrincipalThreadLocal.setName(user.getUserId());
 
 				UserTestUtil.updateUser(user);
 			}
 			finally {
-				field.set(null, value);
-
 				PrincipalThreadLocal.setName(name);
+
+				UserLocalServiceUtil.deleteUser(user);
 			}
 		}
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenGettingUserByEmailAddress {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Test(expected = NoSuchUserException.class)
 		public void shouldFailIfUserDeleted() throws Exception {
@@ -168,21 +257,25 @@ public class UserServiceTest {
 		public void shouldReturnUserIfPresent() throws Exception {
 			User user = UserTestUtil.addUser(true);
 
-			User retrievedUser = UserServiceUtil.getUserByEmailAddress(
-				TestPropsValues.getCompanyId(), user.getEmailAddress());
+			try {
+				User retrievedUser = UserServiceUtil.getUserByEmailAddress(
+					TestPropsValues.getCompanyId(), user.getEmailAddress());
 
-			Assert.assertEquals(user, retrievedUser);
+				Assert.assertEquals(user, retrievedUser);
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(user);
+			}
 		}
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenGroupAdminUnsetsGroupUsers {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Before
 		public void setUp() throws Exception {
@@ -197,24 +290,34 @@ public class UserServiceTest {
 		public void shouldUnsetGroupAdmin() throws Exception {
 			User groupAdminUser = UserTestUtil.addGroupAdminUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _groupAdminUser, groupAdminUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _groupAdminUser, groupAdminUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupAdminUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupAdminUser);
+			}
 		}
 
 		@Test
 		public void shouldUnsetGroupOwner() throws Exception {
 			User groupOwnerUser = UserTestUtil.addGroupOwnerUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _groupAdminUser, groupOwnerUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _groupAdminUser, groupOwnerUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupOwnerUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupOwnerUser);
+			}
 		}
 
 		@Test
@@ -222,14 +325,19 @@ public class UserServiceTest {
 			User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
 				_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _groupAdminUser,
-				organizationAdminUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _groupAdminUser,
+					organizationAdminUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					organizationAdminUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						organizationAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(organizationAdminUser);
+			}
 		}
 
 		@Test
@@ -237,29 +345,38 @@ public class UserServiceTest {
 			User organizationOwnerUser = UserTestUtil.addOrganizationOwnerUser(
 				_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _groupAdminUser,
-				organizationOwnerUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _groupAdminUser,
+					organizationOwnerUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					organizationOwnerUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						organizationOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(organizationOwnerUser);
+			}
 		}
 
+		@DeleteAfterTestRun
 		private Group _group;
+
+		@DeleteAfterTestRun
 		private User _groupAdminUser;
+
+		@DeleteAfterTestRun
 		private Organization _organization;
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenGroupOwnerUnsetsGroupUsers {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Before
 		public void setUp() throws Exception {
@@ -277,24 +394,34 @@ public class UserServiceTest {
 		public void shouldUnsetGroupAdmin() throws Exception {
 			User groupAdminUser = UserTestUtil.addGroupAdminUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _groupOwnerUser, groupAdminUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _groupOwnerUser, groupAdminUser);
 
-			Assert.assertFalse(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupAdminUser.getUserId()));
+				Assert.assertFalse(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupAdminUser);
+			}
 		}
 
 		@Test
 		public void shouldUnsetGroupOwner() throws Exception {
 			User groupOwnerUser = UserTestUtil.addGroupOwnerUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _groupOwnerUser, groupOwnerUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _groupOwnerUser, groupOwnerUser);
 
-			Assert.assertFalse(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupOwnerUser.getUserId()));
+				Assert.assertFalse(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupOwnerUser);
+			}
 		}
 
 		@Test
@@ -302,14 +429,19 @@ public class UserServiceTest {
 			User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
 				_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _organizationGroupUser,
-				organizationAdminUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _organizationGroupUser,
+					organizationAdminUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					organizationAdminUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						organizationAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(organizationAdminUser);
+			}
 		}
 
 		@Test
@@ -317,30 +449,41 @@ public class UserServiceTest {
 			User organizationOwnerUser = UserTestUtil.addOrganizationOwnerUser(
 				_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _organizationGroupUser,
-				organizationOwnerUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _organizationGroupUser,
+					organizationOwnerUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					organizationOwnerUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						organizationOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(organizationOwnerUser);
+			}
 		}
 
+		@DeleteAfterTestRun
 		private Group _group;
+
+		@DeleteAfterTestRun
 		private User _groupOwnerUser;
+
+		@DeleteAfterTestRun
 		private Organization _organization;
+
+		@DeleteAfterTestRun
 		private User _organizationGroupUser;
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenOrganizationAdminUnsetsUsersForNonSiteOrganization {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Before
 		public void setUp() throws Exception {
@@ -358,14 +501,19 @@ public class UserServiceTest {
 			User otherOrganizationAdminUser =
 				UserTestUtil.addOrganizationAdminUser(_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _organizationAdminUser,
-				otherOrganizationAdminUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _organizationAdminUser,
+					otherOrganizationAdminUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					otherOrganizationAdminUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						otherOrganizationAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(otherOrganizationAdminUser);
+			}
 		}
 
 		@Test
@@ -380,67 +528,86 @@ public class UserServiceTest {
 					_organizationOwnerUser.getUserId()));
 		}
 
+		@DeleteAfterTestRun
 		private Organization _organization;
+
+		@DeleteAfterTestRun
 		private User _organizationAdminUser;
+
+		@DeleteAfterTestRun
 		private User _organizationOwnerUser;
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenOrganizationAdminUnsetsUsersForSiteOrganization {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Before
 		public void setUp() throws Exception {
-			Organization organization = OrganizationTestUtil.addOrganization(
-				true);
+			_organization = OrganizationTestUtil.addOrganization(true);
 
-			_group = organization.getGroup();
+			_group = _organization.getGroup();
 
 			_organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
-				organization);
+				_organization);
 		}
 
 		@Test
 		public void shouldUnsetSiteAdmin() throws Exception {
 			User groupAdminUser = UserTestUtil.addGroupAdminUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _organizationAdminUser, groupAdminUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _organizationAdminUser,
+					groupAdminUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupAdminUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupAdminUser);
+			}
 		}
 
 		@Test
 		public void shouldUnsetSiteOwner() throws Exception {
 			User groupOwnerUser = UserTestUtil.addGroupOwnerUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _organizationAdminUser, groupOwnerUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _organizationAdminUser,
+					groupOwnerUser);
 
-			Assert.assertTrue(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupOwnerUser.getUserId()));
+				Assert.assertTrue(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupOwnerUser);
+			}
 		}
 
 		private Group _group;
+
+		@DeleteAfterTestRun
+		private Organization _organization;
+
+		@DeleteAfterTestRun
 		private User _organizationAdminUser;
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenOrganizationOwnerUnsetsUsersForNonSiteOrganization {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Before
 		public void setUp() throws Exception {
@@ -455,14 +622,19 @@ public class UserServiceTest {
 			User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
 				_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _organizationOwnerUser,
-				organizationAdminUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _organizationOwnerUser,
+					organizationAdminUser);
 
-			Assert.assertFalse(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					organizationAdminUser.getUserId()));
+				Assert.assertFalse(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						organizationAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(organizationAdminUser);
+			}
 		}
 
 		@Test
@@ -470,78 +642,101 @@ public class UserServiceTest {
 			User otherOrganizationOwnerUser =
 				UserTestUtil.addOrganizationOwnerUser(_organization);
 
-			_unsetOrganizationUsers(
-				_organization.getOrganizationId(), _organizationOwnerUser,
-				otherOrganizationOwnerUser);
+			try {
+				_unsetOrganizationUsers(
+					_organization.getOrganizationId(), _organizationOwnerUser,
+					otherOrganizationOwnerUser);
 
-			Assert.assertFalse(
-				UserLocalServiceUtil.hasOrganizationUser(
-					_organization.getOrganizationId(),
-					otherOrganizationOwnerUser.getUserId()));
+				Assert.assertFalse(
+					UserLocalServiceUtil.hasOrganizationUser(
+						_organization.getOrganizationId(),
+						otherOrganizationOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(otherOrganizationOwnerUser);
+			}
 		}
 
+		@DeleteAfterTestRun
 		private Organization _organization;
+
+		@DeleteAfterTestRun
 		private User _organizationOwnerUser;
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	public static class WhenOrganizationOwnerUnsetsUsersForSiteOrganization {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
 
 		@Before
 		public void setUp() throws Exception {
-			Organization organization = OrganizationTestUtil.addOrganization(
-				true);
+			_organization = OrganizationTestUtil.addOrganization(true);
 
-			_group = organization.getGroup();
+			_group = _organization.getGroup();
 
 			_organizationOwnerUser = UserTestUtil.addOrganizationOwnerUser(
-				organization);
+				_organization);
 		}
 
 		@Test
 		public void shouldUnsetSiteAdmin() throws Exception {
 			User groupAdminUser = UserTestUtil.addGroupAdminUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _organizationOwnerUser, groupAdminUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _organizationOwnerUser,
+					groupAdminUser);
 
-			Assert.assertFalse(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupAdminUser.getUserId()));
+				Assert.assertFalse(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupAdminUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupAdminUser);
+			}
 		}
 
 		@Test
 		public void shouldUnsetSiteOwner() throws Exception {
 			User groupOwnerUser = UserTestUtil.addGroupOwnerUser(_group);
 
-			_unsetGroupUsers(
-				_group.getGroupId(), _organizationOwnerUser, groupOwnerUser);
+			try {
+				_unsetGroupUsers(
+					_group.getGroupId(), _organizationOwnerUser,
+					groupOwnerUser);
 
-			Assert.assertFalse(
-				UserLocalServiceUtil.hasGroupUser(
-					_group.getGroupId(), groupOwnerUser.getUserId()));
+				Assert.assertFalse(
+					UserLocalServiceUtil.hasGroupUser(
+						_group.getGroupId(), groupOwnerUser.getUserId()));
+			}
+			finally {
+				UserLocalServiceUtil.deleteUser(groupOwnerUser);
+			}
 		}
 
 		private Group _group;
+
+		@DeleteAfterTestRun
+		private Organization _organization;
+
+		@DeleteAfterTestRun
 		private User _organizationOwnerUser;
 
 	}
 
-	@ExecutionTestListeners(
-		listeners = {
-			MainServletExecutionTestListener.class,
-			ResetDatabaseExecutionTestListener.class,
-			SynchronousMailExecutionTestListener.class
-		})
-	@RunWith(LiferayIntegrationJUnitTestRunner.class)
 	@Sync
 	public static class WhenPortalSendsPasswordEmail {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new AggregateTestRule(
+				new LiferayIntegrationTestRule(),
+				SynchronousMailTestRule.INSTANCE);
 
 		@Before
 		public void setUp() throws Exception {
@@ -552,111 +747,153 @@ public class UserServiceTest {
 		public void shouldSendNewPasswordEmailByEmailAddress()
 			throws Exception {
 
-			givenThatCompanySendsNewPassword();
+			PortletPreferences portletPreferences =
+				givenThatCompanySendsNewPassword();
 
-			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+			try {
+				int initialInboxSize = MailServiceTestUtil.getInboxSize();
 
-			boolean sentPassword =
-				UserServiceUtil.sendPasswordByEmailAddress(
-					_user.getCompanyId(), _user.getEmailAddress());
+				boolean sentPassword =
+					UserServiceUtil.sendPasswordByEmailAddress(
+						_user.getCompanyId(), _user.getEmailAddress());
 
-			Assert.assertTrue(sentPassword);
-			Assert.assertEquals(
-				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
-			Assert.assertTrue(
-				MailServiceTestUtil.lastMailMessageContains(
-					"email_password_sent_body.tmpl"));
+				Assert.assertTrue(sentPassword);
+
+				Assert.assertEquals(
+					initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+				Assert.assertTrue(
+					MailServiceTestUtil.lastMailMessageContains(
+						"email_password_sent_body.tmpl"));
+			}
+			finally {
+				restorePortletPreferences(portletPreferences);
+			}
 		}
 
 		@Test
 		public void shouldSendNewPasswordEmailByScreenName() throws Exception {
-			givenThatCompanySendsNewPassword();
+			PortletPreferences portletPreferences =
+				givenThatCompanySendsNewPassword();
 
-			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+			try {
+				int initialInboxSize = MailServiceTestUtil.getInboxSize();
 
-			boolean sentPassword =
-				UserServiceUtil.sendPasswordByScreenName(
+				boolean sentPassword = UserServiceUtil.sendPasswordByScreenName(
 					_user.getCompanyId(), _user.getScreenName());
 
-			Assert.assertTrue(sentPassword);
-			Assert.assertEquals(
-				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
-			Assert.assertTrue(
-				MailServiceTestUtil.lastMailMessageContains(
-					"email_password_sent_body.tmpl"));
+				Assert.assertTrue(sentPassword);
+
+				Assert.assertEquals(
+					initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+				Assert.assertTrue(
+					MailServiceTestUtil.lastMailMessageContains(
+						"email_password_sent_body.tmpl"));
+			}
+			finally {
+				restorePortletPreferences(portletPreferences);
+			}
 		}
 
 		@Test
 		public void shouldSendNewPasswordEmailByUserId() throws Exception {
-			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+			PortletPreferences portletPreferences =
+				givenThatCompanySendsNewPassword();
 
-			givenThatCompanySendsNewPassword();
+			try {
+				int initialInboxSize = MailServiceTestUtil.getInboxSize();
 
-			boolean sentPassword = UserServiceUtil.sendPasswordByUserId(
-				_user.getUserId());
+				boolean sentPassword = UserServiceUtil.sendPasswordByUserId(
+					_user.getUserId());
 
-			Assert.assertTrue(sentPassword);
-			Assert.assertEquals(
-				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
-			Assert.assertTrue(
-				MailServiceTestUtil.lastMailMessageContains(
-					"email_password_sent_body.tmpl"));
+				Assert.assertTrue(sentPassword);
+
+				Assert.assertEquals(
+					initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+				Assert.assertTrue(
+					MailServiceTestUtil.lastMailMessageContains(
+						"email_password_sent_body.tmpl"));
+			}
+			finally {
+				restorePortletPreferences(portletPreferences);
+			}
 		}
 
 		@Test
 		public void shouldSendResetLinkEmailByEmailAddress() throws Exception {
-			givenThatCompanySendsResetPasswordLink();
+			PortletPreferences portletPreferences =
+				givenThatCompanySendsResetPasswordLink();
 
-			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+			try {
+				int initialInboxSize = MailServiceTestUtil.getInboxSize();
 
-			boolean sentPassword =
-				UserServiceUtil.sendPasswordByEmailAddress(
-					_user.getCompanyId(), _user.getEmailAddress());
+				boolean sentPassword =
+					UserServiceUtil.sendPasswordByEmailAddress(
+						_user.getCompanyId(), _user.getEmailAddress());
 
-			Assert.assertFalse(sentPassword);
-			Assert.assertEquals(
-				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
-			Assert.assertTrue(
-				MailServiceTestUtil.lastMailMessageContains(
-					"email_password_reset_body.tmpl"));
+				Assert.assertFalse(sentPassword);
+
+				Assert.assertEquals(
+					initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+				Assert.assertTrue(
+					MailServiceTestUtil.lastMailMessageContains(
+						"email_password_reset_body.tmpl"));
+			}
+			finally {
+				restorePortletPreferences(portletPreferences);
+			}
 		}
 
 		@Test
 		public void shouldSendResetLinkEmailByScreenName() throws Exception {
-			givenThatCompanySendsResetPasswordLink();
+			PortletPreferences portletPreferences =
+				givenThatCompanySendsResetPasswordLink();
 
-			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+			try {
+				int initialInboxSize = MailServiceTestUtil.getInboxSize();
 
-			boolean sentPassword =
-				UserServiceUtil.sendPasswordByScreenName(
+				boolean sentPassword = UserServiceUtil.sendPasswordByScreenName(
 					_user.getCompanyId(), _user.getScreenName());
 
-			Assert.assertFalse(sentPassword);
-			Assert.assertEquals(
-				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
-			Assert.assertTrue(
-				MailServiceTestUtil.lastMailMessageContains(
-					"email_password_reset_body.tmpl"));
+				Assert.assertFalse(sentPassword);
+
+				Assert.assertEquals(
+					initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+				Assert.assertTrue(
+					MailServiceTestUtil.lastMailMessageContains(
+						"email_password_reset_body.tmpl"));
+			}
+			finally {
+				restorePortletPreferences(portletPreferences);
+			}
 		}
 
 		@Test
 		public void shouldSendResetLinkEmailByUserId() throws Exception {
-			givenThatCompanySendsResetPasswordLink();
+			PortletPreferences portletPreferences =
+				givenThatCompanySendsResetPasswordLink();
 
-			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+			try {
+				int initialInboxSize = MailServiceTestUtil.getInboxSize();
 
-			boolean sentPassword = UserServiceUtil.sendPasswordByUserId(
-				_user.getUserId());
+				boolean sentPassword = UserServiceUtil.sendPasswordByUserId(
+					_user.getUserId());
 
-			Assert.assertFalse(sentPassword);
-			Assert.assertEquals(
-				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
-			Assert.assertTrue(
-				MailServiceTestUtil.lastMailMessageContains(
-					"email_password_reset_body.tmpl"));
+				Assert.assertFalse(sentPassword);
+
+				Assert.assertEquals(
+					initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+				Assert.assertTrue(
+					MailServiceTestUtil.lastMailMessageContains(
+						"email_password_reset_body.tmpl"));
+			}
+			finally {
+				restorePortletPreferences(portletPreferences);
+			}
 		}
 
-		protected void givenThatCompanySendsNewPassword() throws Exception {
+		protected PortletPreferences givenThatCompanySendsNewPassword()
+			throws Exception {
+
 			PortletPreferences portletPreferences =
 				PrefsPropsUtil.getPreferences(_user.getCompanyId(), false);
 
@@ -669,9 +906,11 @@ public class UserServiceTest {
 				Boolean.FALSE.toString());
 
 			portletPreferences.store();
+
+			return portletPreferences;
 		}
 
-		protected void givenThatCompanySendsResetPasswordLink()
+		protected PortletPreferences givenThatCompanySendsResetPasswordLink()
 			throws Exception {
 
 			PortletPreferences portletPreferences =
@@ -685,9 +924,93 @@ public class UserServiceTest {
 				Boolean.TRUE.toString());
 
 			portletPreferences.store();
+
+			return portletPreferences;
 		}
 
+		protected void restorePortletPreferences(
+				PortletPreferences portletPreferences)
+			throws Exception {
+
+			portletPreferences.reset(PropsKeys.COMPANY_SECURITY_SEND_PASSWORD);
+			portletPreferences.reset(
+				PropsKeys.COMPANY_SECURITY_SEND_PASSWORD_RESET_LINK);
+
+			portletPreferences.store();
+		}
+
+		@DeleteAfterTestRun
 		private User _user;
+
+	}
+
+	public static class WhenUpdatingUser {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
+
+		@Test
+		public void shouldNotRemoveChildGroupAssociation() throws Exception {
+			User user = UserTestUtil.addUser(true);
+
+			List<Group> groups = new ArrayList<>();
+
+			Group parentGroup = GroupTestUtil.addGroup();
+
+			groups.add(parentGroup);
+
+			Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
+
+			childGroup.setMembershipRestriction(
+				GroupConstants.MEMBERSHIP_RESTRICTION_TO_PARENT_SITE_MEMBERS);
+
+			GroupLocalServiceUtil.updateGroup(childGroup);
+
+			groups.add(childGroup);
+
+			GroupLocalServiceUtil.addUserGroups(user.getUserId(), groups);
+
+			user = _updateUser(user);
+
+			Assert.assertEquals(groups, user.getGroups());
+		}
+
+		private User _updateUser(User user) throws Exception {
+			Contact contact = user.getContact();
+
+			Calendar birthdayCal = CalendarFactoryUtil.getCalendar();
+
+			birthdayCal.setTime(contact.getBirthday());
+
+			int birthdayMonth = birthdayCal.get(Calendar.MONTH);
+			int birthdayDay = birthdayCal.get(Calendar.DATE);
+			int birthdayYear = birthdayCal.get(Calendar.YEAR);
+
+			long[] groupIds = null;
+			long[] organizationIds = null;
+			long[] roleIds = null;
+			List<UserGroupRole> userGroupRoles = null;
+			long[] userGroupIds = null;
+			ServiceContext serviceContext = new ServiceContext();
+
+			return UserServiceUtil.updateUser(
+				user.getUserId(), user.getPassword(), StringPool.BLANK,
+				StringPool.BLANK, user.isPasswordReset(),
+				user.getReminderQueryQuestion(), user.getReminderQueryAnswer(),
+				user.getScreenName(), user.getEmailAddress(),
+				user.getFacebookId(), user.getOpenId(), user.getLanguageId(),
+				user.getTimeZoneId(), user.getGreeting(), user.getComments(),
+				contact.getFirstName(), contact.getMiddleName(),
+				contact.getLastName(), contact.getPrefixId(),
+				contact.getSuffixId(), contact.isMale(), birthdayMonth,
+				birthdayDay, birthdayYear, contact.getSmsSn(),
+				contact.getFacebookSn(), contact.getJabberSn(),
+				contact.getSkypeSn(), contact.getTwitterSn(),
+				contact.getJobTitle(), groupIds, organizationIds, roleIds,
+				userGroupRoles, userGroupIds, serviceContext);
+		}
 
 	}
 

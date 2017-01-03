@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="portal-test-websphere" basedir="." default="test" xmlns:antelope="antlib:ise.antelope.tasks">
+<project basedir="." default="test" name="portal-test-websphere" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build-test.xml" />
 
 	<target name="run-selenium-websphere">
@@ -19,26 +19,18 @@
 			</then>
 		</if>
 
-		<antcall target="revert-test-properties" />
-
-		<ant dir="portal-impl" target="build-selenium-new-test-case" />
+		<antcall target="record-test-generated-properties" />
 
 		<antcall target="prepare-selenium">
-			<param name="test.class" value="${test.name}" />
+			<param name="test.class" value="${test.class}" />
 		</antcall>
 
-		<antcall target="start-selenium" />
-
-		<antcall target="run-websphere" inheritAll="false">
-			<param name="test.class" value="${test.name}" />
+		<antcall inheritAll="false" target="run-websphere">
+			<param name="test.class" value="${test.class}" />
 		</antcall>
-
-		<antcall target="stop-selenium" />
 	</target>
 
 	<target name="run-websphere">
 		<antcall target="run-simple-server" />
-
-		<antcall target="evaluate-logs" />
 	</target>
 </project>

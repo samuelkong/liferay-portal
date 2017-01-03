@@ -16,32 +16,31 @@ package com.liferay.portal.util;
 
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.shard.ShardUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.PortletCategory;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.VirtualHost;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.LayoutSet;
-import com.liferay.portal.model.PortletCategory;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.VirtualHost;
-import com.liferay.portal.security.auth.CompanyThreadLocal;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.LayoutSetLocalServiceUtil;
-import com.liferay.portal.service.PortletLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.service.VirtualHostLocalServiceUtil;
-import com.liferay.portlet.journal.service.JournalContentSearchLocalServiceUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -209,7 +208,7 @@ public class PortalInstances {
 			_log.debug("Set company id " + companyId);
 		}
 
-		request.setAttribute(WebKeys.COMPANY_ID, new Long(companyId));
+		request.setAttribute(WebKeys.COMPANY_ID, Long.valueOf(companyId));
 
 		CompanyThreadLocal.setCompanyId(companyId);
 
@@ -256,17 +255,8 @@ public class PortalInstances {
 			}
 
 			if (virtualHost.getLayoutSetId() != 0) {
-				LayoutSet layoutSet = null;
-
-				try {
-					ShardUtil.pushCompanyService(virtualHost.getCompanyId());
-
-					layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
-						virtualHost.getLayoutSetId());
-				}
-				finally {
-					ShardUtil.popCompanyService();
-				}
+				LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+					virtualHost.getLayoutSetId());
 
 				if (_log.isDebugEnabled()) {
 					_log.debug(
@@ -293,14 +283,7 @@ public class PortalInstances {
 	}
 
 	private long[] _getCompanyIdsBySQL() throws SQLException {
-		List<Long> companyIds = new ArrayList<Long>();
-
-		String currentShardName = ShardUtil.setTargetSource(
-			PropsValues.SHARD_DEFAULT_NAME);
-
-		if (Validator.isNotNull(currentShardName)) {
-			ShardUtil.pushCompanyService(PropsValues.SHARD_DEFAULT_NAME);
-		}
+		List<Long> companyIds = new ArrayList<>();
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -311,13 +294,6 @@ public class PortalInstances {
 
 			ps = con.prepareStatement(_GET_COMPANY_IDS);
 
-			if (Validator.isNotNull(currentShardName)) {
-				ps.setString(1, currentShardName);
-			}
-			else {
-				ps.setString(1, PropsValues.SHARD_DEFAULT_NAME);
-			}
-
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -327,12 +303,6 @@ public class PortalInstances {
 			}
 		}
 		finally {
-			if (Validator.isNotNull(currentShardName)) {
-				ShardUtil.popCompanyService();
-
-				ShardUtil.setTargetSource(currentShardName);
-			}
-
 			DataAccess.cleanUp(con, ps, rs);
 		}
 
@@ -357,7 +327,7 @@ public class PortalInstances {
 			List<Company> companies = CompanyLocalServiceUtil.getCompanies(
 				false);
 
-			List<String> webIdsList = new ArrayList<String>(companies.size());
+			List<String> webIdsList = new ArrayList<>(companies.size());
 
 			for (Company company : companies) {
 				String webId = company.getWebId();
@@ -411,15 +381,14 @@ public class PortalInstances {
 
 			String principalName = null;
 
-			try {
-				User user = UserLocalServiceUtil.getUser(
-					PrincipalThreadLocal.getUserId());
+			long userId = PrincipalThreadLocal.getUserId();
 
-				if (user.getCompanyId() == companyId) {
+			if (userId > 0) {
+				User user = UserLocalServiceUtil.fetchUser(userId);
+
+				if ((user != null) && (user.getCompanyId() == companyId)) {
 					principalName = currentThreadPrincipalName;
 				}
-			}
-			catch (Exception e) {
 			}
 
 			PrincipalThreadLocal.setName(principalName);
@@ -434,8 +403,9 @@ public class PortalInstances {
 				String xml = HttpUtil.URLtoString(
 					servletContext.getResource("/WEB-INF/liferay-display.xml"));
 
-				PortletCategory portletCategory = (PortletCategory)
-					WebAppPool.get(companyId, WebKeys.PORTLET_CATEGORY);
+				PortletCategory portletCategory =
+					(PortletCategory)WebAppPool.get(
+						companyId, WebKeys.PORTLET_CATEGORY);
 
 				if (portletCategory == null) {
 					portletCategory = new PortletCategory();
@@ -463,25 +433,6 @@ public class PortalInstances {
 			}
 			catch (Exception e) {
 				_log.error(e, e);
-			}
-
-			// Check journal content search
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Check journal content search");
-			}
-
-			if (GetterUtil.getBoolean(
-					PropsUtil.get(
-						PropsKeys.JOURNAL_SYNC_CONTENT_SEARCH_ON_STARTUP))) {
-
-				try {
-					JournalContentSearchLocalServiceUtil.checkContentSearches(
-						companyId);
-				}
-				catch (Exception e) {
-					_log.error(e, e);
-				}
 			}
 
 			// Process application startup events
@@ -563,29 +514,37 @@ public class PortalInstances {
 	}
 
 	private void _removeCompanyId(long companyId) {
+		try {
+			EventsProcessorUtil.process(
+				PropsKeys.APPLICATION_SHUTDOWN_EVENTS,
+				PropsValues.APPLICATION_SHUTDOWN_EVENTS,
+				new String[] {String.valueOf(companyId)});
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+		}
+
 		_companyIds = ArrayUtil.remove(_companyIds, companyId);
 		_webIds = null;
 
 		_getWebIds();
 
-		SearchEngineUtil.removeCompany(companyId);
-
 		WebAppPool.remove(companyId, WebKeys.PORTLET_CATEGORY);
 	}
 
 	private static final String _GET_COMPANY_IDS =
-		"select companyId from Company, Shard where Company.companyId = " +
-			"Shard.classPK and Shard.name = ?";
+		"select companyId from Company";
 
-	private static Log _log = LogFactoryUtil.getLog(PortalInstances.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortalInstances.class);
 
-	private static PortalInstances _instance = new PortalInstances();
+	private static final PortalInstances _instance = new PortalInstances();
 
-	private Set<String> _autoLoginIgnoreHosts;
-	private Set<String> _autoLoginIgnorePaths;
+	private final Set<String> _autoLoginIgnoreHosts;
+	private final Set<String> _autoLoginIgnorePaths;
 	private long[] _companyIds;
-	private Set<String> _virtualHostsIgnoreHosts;
-	private Set<String> _virtualHostsIgnorePaths;
+	private final Set<String> _virtualHostsIgnoreHosts;
+	private final Set<String> _virtualHostsIgnorePaths;
 	private String[] _webIds;
 
 }

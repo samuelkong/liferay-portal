@@ -14,28 +14,29 @@
 
 package com.liferay.portlet.documentlibrary.service.permission;
 
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
+import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.BaseModelPermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
-import com.liferay.portal.kernel.staging.permission.StagingPermissionUtil;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.BaseModelPermissionChecker;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.documentlibrary.NoSuchFolderException;
-import com.liferay.portlet.documentlibrary.model.DLFolder;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 
 /**
  * @author Brian Wing Shun Chan
  */
 @OSGiBeanProperties(
 	property = {
-		"model.class.name=com.liferay.portlet.documentlibrary.model.DLFolder"
+		"model.class.name=com.liferay.document.library.kernel.model.DLFolder"
 	}
 )
 public class DLFolderPermission implements BaseModelPermissionChecker {
@@ -46,7 +47,9 @@ public class DLFolderPermission implements BaseModelPermissionChecker {
 		throws PortalException {
 
 		if (!contains(permissionChecker, dlFolder, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, DLFolder.class.getName(),
+				dlFolder.getFolderId(), actionId);
 		}
 	}
 
@@ -55,7 +58,9 @@ public class DLFolderPermission implements BaseModelPermissionChecker {
 		throws PortalException {
 
 		if (!folder.containsPermission(permissionChecker, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Folder.class.getName(), folder.getFolderId(),
+				actionId);
 		}
 	}
 
@@ -65,7 +70,8 @@ public class DLFolderPermission implements BaseModelPermissionChecker {
 		throws PortalException {
 
 		if (!contains(permissionChecker, groupId, folderId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Folder.class.getName(), folderId, actionId);
 		}
 	}
 
@@ -78,9 +84,12 @@ public class DLFolderPermission implements BaseModelPermissionChecker {
 			actionId = ActionKeys.ADD_SUBFOLDER;
 		}
 
+		String portletId = PortletProviderUtil.getPortletId(
+			Folder.class.getName(), PortletProvider.Action.EDIT);
+
 		Boolean hasPermission = StagingPermissionUtil.hasPermission(
 			permissionChecker, dlFolder.getGroupId(), DLFolder.class.getName(),
-			dlFolder.getFolderId(), PortletKeys.DOCUMENT_LIBRARY, actionId);
+			dlFolder.getFolderId(), portletId, actionId);
 
 		if (hasPermission != null) {
 			return hasPermission.booleanValue();

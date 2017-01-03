@@ -16,10 +16,10 @@ package com.liferay.portal.xuggler;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.ProgressTracker;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.xuggler.Xuggler;
+import com.liferay.portal.kernel.xuggler.XugglerInstallException;
 import com.liferay.portal.util.JarUtil;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
@@ -28,25 +28,24 @@ import com.liferay.util.log4j.Log4JUtil;
 import com.xuggle.ferry.JNILibraryLoader;
 import com.xuggle.xuggler.IContainer;
 
+import java.net.URL;
+
 /**
  * @author Alexander Chow
  */
 public class XugglerImpl implements Xuggler {
 
 	@Override
-	public void installNativeLibraries(
-			String name, ProgressTracker progressTracker)
-		throws Exception {
-
+	public void installNativeLibraries(String name) throws Exception {
 		try {
-			String url = PropsValues.XUGGLER_JAR_URL + name;
+			JarUtil.downloadAndInstallJar(
+				new URL(PropsValues.XUGGLER_JAR_URL + name),
+				PropsValues.LIFERAY_LIB_PORTAL_DIR, name);
 
-			JarUtil.downloadAndInstallJar(false, url, name, progressTracker);
+			_nativeLibraryCopied = true;
 		}
 		catch (Exception e) {
-			_log.error("Unable to install jar " + name, e);
-
-			throw e;
+			throw new XugglerInstallException.MustInstallJar(name, e);
 		}
 	}
 
@@ -78,6 +77,11 @@ public class XugglerImpl implements Xuggler {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean isNativeLibraryCopied() {
+		return _nativeLibraryCopied;
 	}
 
 	@Override
@@ -134,6 +138,7 @@ public class XugglerImpl implements Xuggler {
 	private static final Log _log = LogFactoryUtil.getLog(XugglerImpl.class);
 
 	private static boolean _informAdministrator = true;
+	private static boolean _nativeLibraryCopied;
 	private static boolean _nativeLibraryInstalled;
 
 }

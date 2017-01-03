@@ -24,8 +24,10 @@ import javax.portlet.PortletURL;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class UserSearchTag extends IncludeTag {
 
 	public void setPortletURL(PortletURL portletURL) {

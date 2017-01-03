@@ -23,22 +23,14 @@ String baseType = GetterUtil.getString((String)request.getAttribute("aui:input:b
 String forLabel = namespace + GetterUtil.getString((String)request.getAttribute("aui:input:forLabel"));
 
 if (Validator.isNull(label) && changesContext) {
-	StringBundler sb = new StringBundler(5);
-
-	sb.append(LanguageUtil.get(request, title));
-	sb.append(StringPool.SPACE);
-	sb.append(StringPool.OPEN_PARENTHESIS);
-	sb.append(LanguageUtil.get(request, "changing-the-value-of-this-field-will-reload-the-page"));
-	sb.append(StringPool.CLOSE_PARENTHESIS);
-
-	title = sb.toString();
+	title = StringUtil.appendParentheticalSuffix(LanguageUtil.get(resourceBundle, title), LanguageUtil.get(resourceBundle, "changing-the-value-of-this-field-reloads-the-page"));
 }
 else if (Validator.isNotNull(title)) {
-	title = LanguageUtil.get(request, title);
+	title = LanguageUtil.get(resourceBundle, title);
 }
 
 boolean checkboxField = baseType.equals("checkbox") || baseType.equals("boolean");
-boolean choiceField = checkboxField || baseType.equals("radio");
+boolean radioField = baseType.equals("radio");
 
 boolean showForLabel = true;
 
@@ -46,7 +38,7 @@ if (type.equals("assetCategories") || baseType.equals(Date.class.getName())) {
 	showForLabel = false;
 }
 
-if (choiceField && Validator.isNull(inlineLabel)) {
+if ((radioField || checkboxField) && Validator.isNull(inlineLabel)) {
 	inlineLabel = "right";
 }
 
@@ -65,11 +57,19 @@ if (baseType.equals("email") || baseType.equals("password") || baseType.equals("
 	fieldCssClass += " form-control";
 }
 
+if (type.equals("toggle-card")) {
+	fieldCssClass += " toggle-card";
+}
+
+if (type.equals("toggle-switch")) {
+	fieldCssClass += " toggle-switch";
+}
+
 boolean useInputWrapper = true;
 
 String inputWrapperClass = controlGroupCssClass;
 
-if (choiceField) {
+if (radioField) {
 	inputWrapperClass = baseTypeCssClass;
 
 	if (Validator.isNull(label)) {

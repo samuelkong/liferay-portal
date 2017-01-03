@@ -14,23 +14,17 @@
 
 package com.liferay.taglib.util;
 
-import com.liferay.portal.kernel.template.Template;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.Portlet;
-import com.liferay.taglib.aui.ColumnTag;
-import com.liferay.taglib.aui.LayoutTag;
 import com.liferay.taglib.ui.AssetCategoriesSummaryTag;
 import com.liferay.taglib.ui.AssetLinksTag;
 import com.liferay.taglib.ui.AssetTagsSummaryTag;
 import com.liferay.taglib.ui.BreadcrumbTag;
 import com.liferay.taglib.ui.DiscussionTag;
-import com.liferay.taglib.ui.FlagsTag;
 import com.liferay.taglib.ui.IconTag;
 import com.liferay.taglib.ui.JournalArticleTag;
-import com.liferay.taglib.ui.MySitesTag;
-import com.liferay.taglib.ui.PngImageTag;
-import com.liferay.taglib.ui.QuickAccessTag;
 import com.liferay.taglib.ui.RatingsTag;
 
 import javax.portlet.PortletURL;
@@ -45,184 +39,131 @@ import javax.servlet.jsp.PageContext;
 public class DummyVelocityTaglib implements VelocityTaglib {
 
 	@Override
-	public String actionURL(long plid, String portletName, String queryString)
-		throws Exception {
-
+	public String actionURL(long plid, String portletName, String queryString) {
 		return null;
 	}
 
 	@Override
-	public String actionURL(String portletName, String queryString)
-		throws Exception {
-
+	public String actionURL(String portletName, String queryString) {
 		return null;
 	}
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #actionURL(String, String,
-	 *             Boolean, Boolean, Boolean, String, long, long, String,
-	 *             Boolean, Boolean, long, long, Boolean, String)}
-	 */
-	@Deprecated
 	@Override
 	public String actionURL(
-			String windowState, String portletMode, Boolean secure,
-			Boolean copyCurrentRenderParameters, Boolean escapeXml, String name,
-			long plid, long refererPlid, String portletName, Boolean anchor,
-			Boolean encrypt, long doAsUserId, Boolean portletConfiguration,
-			String queryString)
-		throws Exception {
+		String windowState, String portletMode, Boolean secure,
+		Boolean copyCurrentRenderParameters, Boolean escapeXml, String name,
+		long plid, long refererPlid, String portletName, Boolean anchor,
+		Boolean encrypt, long doAsGroupId, long doAsUserId,
+		Boolean portletConfiguration, String queryString) {
 
 		return null;
 	}
 
 	@Override
 	public String actionURL(
-			String windowState, String portletMode, Boolean secure,
-			Boolean copyCurrentRenderParameters, Boolean escapeXml, String name,
-			long plid, long refererPlid, String portletName, Boolean anchor,
-			Boolean encrypt, long doAsGroupId, long doAsUserId,
-			Boolean portletConfiguration, String queryString)
-		throws Exception {
+		String windowState, String portletMode, long plid, String portletName,
+		String queryString) {
 
 		return null;
 	}
 
 	@Override
 	public String actionURL(
-			String windowState, String portletMode, long plid,
-			String portletName, String queryString)
-		throws Exception {
-
-		return null;
-	}
-
-	@Override
-	public String actionURL(
-			String windowState, String portletMode, String portletName,
-			String queryString)
-		throws Exception {
+		String windowState, String portletMode, String portletName,
+		String queryString) {
 
 		return null;
 	}
 
 	@Override
 	public void assetCategoriesSummary(
-			String className, long classPK, String message,
-			PortletURL portletURL)
-		throws Exception {
+		String className, long classPK, String message, PortletURL portletURL) {
 	}
 
 	@Override
-	public void assetLinks(long assetEntryId, String className, long classPK)
-		throws Exception {
+	public void assetLinks(long assetEntryId, String className, long classPK) {
 	}
 
 	@Override
 	public void assetTagsSummary(
-			String className, long classPK, String message,
-			String assetTagNames, PortletURL portletURL)
-		throws Exception {
+		String className, long classPK, String message, String assetTagNames,
+		PortletURL portletURL) {
 	}
 
 	@Override
-	public void breadcrumb() throws Exception {
+	public void breadcrumb() {
 	}
 
 	@Override
 	public void breadcrumb(
-			String displayStyle, boolean showGuestGroup,
-			boolean showParentGroups, boolean showLayout,
-			boolean showPortletBreadcrumb)
-		throws Exception {
-	}
-
-	@Override
-	public void discussion(
-			String className, long classPK, String formAction, String formName,
-			boolean hideControls, boolean ratingsEnabled, String redirect,
-			long userId)
-		throws Exception {
+		long ddmTemplateGroupId, String ddmTemplateKey, boolean showGuestGroup,
+		boolean showParentGroups, boolean showLayout,
+		boolean showPortletBreadcrumb) {
 	}
 
 	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #discussion(String, long,
-	 *             String, String, boolean, boolean, String, long)})}
+	 * @deprecated As of 7.0.0, replaced by {@link #breadcrumb(long, String,
+	 *             boolean, boolean, boolean, boolean)}}
 	 */
 	@Deprecated
 	@Override
+	public void breadcrumb(
+		String ddmTemplateKey, boolean showGuestGroup, boolean showParentGroups,
+		boolean showLayout, boolean showPortletBreadcrumb) {
+	}
+
+	@Override
 	public void discussion(
-			String className, long classPK, String formAction, String formName,
-			boolean hideControls, boolean ratingsEnabled, String redirect,
-			String subject, long userId)
-		throws Exception {
+		String className, long classPK, String formAction, String formName,
+		boolean hideControls, boolean ratingsEnabled, String redirect,
+		long userId) {
 	}
 
 	@Override
-	public void doAsURL(long doAsUserId) throws Exception {
+	public void doAsURL(long doAsUserId) {
 	}
 
 	@Override
-	public void flags(
-			String className, long classPK, String contentTitle, boolean label,
-			String message, long reportedUserId)
-		throws Exception {
-	}
-
-	@Override
-	public AssetCategoriesSummaryTag getAssetCategoriesSummaryTag()
-		throws Exception {
-
+	public AssetCategoriesSummaryTag<?> getAssetCategoriesSummaryTag() {
 		return null;
 	}
 
 	@Override
-	public AssetLinksTag getAssetLinksTag() throws Exception {
+	public AssetLinksTag getAssetLinksTag() {
 		return null;
 	}
 
 	@Override
-	public AssetTagsSummaryTag getAssetTagsSummaryTag() throws Exception {
+	public AssetTagsSummaryTag<?> getAssetTagsSummaryTag() {
 		return null;
 	}
 
 	@Override
-	public BreadcrumbTag getBreadcrumbTag() throws Exception {
+	public BreadcrumbTag getBreadcrumbTag() {
 		return null;
 	}
 
 	@Override
-	public ColumnTag getColumnTag() throws Exception {
+	public DiscussionTag getDiscussionTag() {
 		return null;
 	}
 
 	@Override
-	public DiscussionTag getDiscussionTag() throws Exception {
+	public IconTag getIconTag() {
 		return null;
 	}
 
 	@Override
-	public FlagsTag getFlagsTag() throws Exception {
+	public JournalArticleTag getJournalArticleTag() {
 		return null;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
-	public IconTag getIconTag() throws Exception {
-		return null;
-	}
-
-	@Override
-	public JournalArticleTag getJournalArticleTag() throws Exception {
-		return null;
-	}
-
-	@Override
-	public LayoutTag getLayoutTag() throws Exception {
-		return null;
-	}
-
-	@Override
-	public MySitesTag getMySitesTag() throws Exception {
+	public com.liferay.taglib.ui.MySitesTag getMySitesTag() {
 		return null;
 	}
 
@@ -231,18 +172,17 @@ public class DummyVelocityTaglib implements VelocityTaglib {
 		return null;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
-	public PngImageTag getPngImageTag() throws Exception {
+	public com.liferay.taglib.ui.PngImageTag getPngImageTag() {
 		return null;
 	}
 
 	@Override
-	public QuickAccessTag getQuickAccessTag() throws Exception {
-		return null;
-	}
-
-	@Override
-	public RatingsTag getRatingsTag() throws Exception {
+	public RatingsTag getRatingsTag() {
 		return null;
 	}
 
@@ -257,422 +197,192 @@ public class DummyVelocityTaglib implements VelocityTaglib {
 	}
 
 	@Override
-	public void icon(String image, boolean label, String message, String url)
-		throws Exception {
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #iconBack}
-	 */
-	@Deprecated
-	@Override
-	public void iconBack() throws Exception {
-		portletIconBack();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconClose}
-	 */
-	@Deprecated
-	@Override
-	public void iconClose() throws Exception {
-		portletIconClose();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconConfiguration}
-	 */
-	@Deprecated
-	@Override
-	public void iconConfiguration() throws Exception {
-		portletIconConfiguration();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconEdit}
-	 */
-	@Deprecated
-	@Override
-	public void iconEdit() throws Exception {
-		portletIconEdit();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconEditDefaults}
-	 */
-	@Deprecated
-	@Override
-	public void iconEditDefaults() throws Exception {
-		portletIconEditDefaults();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconEditGuest}
-	 */
-	@Deprecated
-	@Override
-	public void iconEditGuest() throws Exception {
-		portletIconEditGuest();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconHelp}
-	 */
-	@Deprecated
-	@Override
-	public void iconHelp() throws Exception {
-		portletIconHelp();
+	public void icon(String image, boolean label, String message, String url) {
 	}
 
 	@Override
-	public void iconHelp(String message) throws Exception {
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconMaximize}
-	 */
-	@Deprecated
-	@Override
-	public void iconMaximize() throws Exception {
-		portletIconMaximize();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconMinimize}
-	 */
-	@Deprecated
-	@Override
-	public void iconMinimize() throws Exception {
-		portletIconMinimize();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconOptions}
-	 */
-	@Deprecated
-	@Override
-	public void iconOptions() throws Exception {
-		portletIconOptions();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconPortlet}
-	 */
-	@Deprecated
-	@Override
-	public void iconPortlet() throws Exception {
-		portletIconPortlet();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconPortlet(Portlet)}
-	 */
-	@Deprecated
-	@Override
-	public void iconPortlet(Portlet portlet) throws Exception {
-		portletIconPortlet();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconPortletCss}
-	 */
-	@Deprecated
-	@Override
-	public void iconPortletCss() throws Exception {
-		portletIconPortletCss();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconPrint}
-	 */
-	@Deprecated
-	@Override
-	public void iconPrint() throws Exception {
-		portletIconPrint();
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #portletIconRefresh}
-	 */
-	@Deprecated
-	@Override
-	public void iconRefresh() throws Exception {
-		portletIconRefresh();
+	public void iconHelp(String message) {
 	}
 
 	@Override
-	public void include(ServletContext servletContext, String page)
-		throws Exception {
+	public void include(ServletContext servletContext, String page) {
 	}
 
 	@Override
-	public void include(String page) throws Exception {
+	public void include(String page) {
 	}
 
 	@Override
 	public void journalArticle(
-			String articleId, long groupId, String templateId)
-		throws Exception {
+		String articleId, long groupId, String ddmTemplateKey) {
 	}
 
 	@Override
-	public void journalContentSearch() throws Exception {
+	public void journalContentSearch() {
 	}
 
 	@Override
 	public void journalContentSearch(
-			boolean showListed, String targetPortletId, String type)
-		throws Exception {
+		boolean showListed, String targetPortletId) {
 	}
 
 	@Override
-	public void language() throws Exception {
-	}
-
-	@Override
-	public void language(
-			String formName, String formAction, String name,
-			String displayStyle)
-		throws Exception {
+	public void language() {
 	}
 
 	@Override
 	public void language(
-			String formName, String formAction, String name,
-			String[] languageIds, String displayStyle)
-		throws Exception {
+		String formName, String formAction, String name, String displayStyle) {
 	}
 
 	@Override
-	public void layoutIcon(Layout layout) throws Exception {
+	public void language(
+		String formName, String formAction, String name, String[] languageIds,
+		String displayStyle) {
 	}
 
 	@Override
-	public void metaTags() throws Exception {
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #mySites}
-	 */
-	@Deprecated
-	@Override
-	public void myPlaces() throws Exception {
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #mySites(int)}
-	 */
-	@Deprecated
-	@Override
-	public void myPlaces(int max) throws Exception {
+	public void layoutIcon(Layout layout) {
 	}
 
 	@Override
-	public void mySites() throws Exception {
+	public void metaTags() {
 	}
 
 	@Override
-	public void mySites(int max) throws Exception {
+	public void mySites() {
+	}
+
+	@Override
+	public void mySites(int max) {
 	}
 
 	@Override
 	public String permissionsURL(
-			String redirect, String modelResource,
-			String modelResourceDescription, Object resourceGroupId,
-			String resourcePrimKey, String windowState, int[] roleTypes)
-		throws Exception {
-
-		return null;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #permissionsURL(String,
-	 *             String, String, Object, String, String, int[])}
-	 */
-	@Deprecated
-	@Override
-	public String permissionsURL(
-			String redirect, String modelResource,
-			String modelResourceDescription, String resourcePrimKey,
-			String windowState, int[] roleTypes)
-		throws Exception {
+		String redirect, String modelResource, String modelResourceDescription,
+		Object resourceGroupId, String resourcePrimKey, String windowState,
+		int[] roleTypes) {
 
 		return null;
 	}
 
 	@Override
-	public void portletIconBack() throws Exception {
+	public void portletIconBack() {
 	}
 
 	@Override
-	public void portletIconClose() throws Exception {
+	public void portletIconOptions() {
 	}
 
 	@Override
-	public void portletIconConfiguration() throws Exception {
+	public void portletIconOptions(String direction, String markupView) {
 	}
 
 	@Override
-	public void portletIconEdit() throws Exception {
+	public void portletIconPortlet() {
 	}
 
 	@Override
-	public void portletIconEditDefaults() throws Exception {
-	}
-
-	@Override
-	public void portletIconEditGuest() throws Exception {
-	}
-
-	@Override
-	public void portletIconHelp() throws Exception {
-	}
-
-	@Override
-	public void portletIconMaximize() throws Exception {
-	}
-
-	@Override
-	public void portletIconMinimize() throws Exception {
-	}
-
-	@Override
-	public void portletIconOptions() throws Exception {
-	}
-
-	@Override
-	public void portletIconPortlet() throws Exception {
-	}
-
-	@Override
-	public void portletIconPortlet(Portlet portlet) throws Exception {
-	}
-
-	@Override
-	public void portletIconPortletCss() throws Exception {
-	}
-
-	@Override
-	public void portletIconPrint() throws Exception {
-	}
-
-	@Override
-	public void portletIconRefresh() throws Exception {
-	}
-
-	@Override
-	public void quickAccess() throws Exception {
-	}
-
-	@Override
-	public void quickAccess(String contentId) throws Exception {
+	public void portletIconPortlet(Portlet portlet) {
 	}
 
 	@Override
 	public void ratings(
-			String className, long classPK, int numberOfStars, String type,
-			String url)
-		throws Exception {
+		String className, long classPK, int numberOfStars, String type,
+		String url) {
 	}
 
 	@Override
-	public String renderURL(long plid, String portletName, String queryString)
-		throws Exception {
-
+	public String renderURL(long plid, String portletName, String queryString) {
 		return null;
 	}
 
 	@Override
-	public String renderURL(String portletName, String queryString)
-		throws Exception {
+	public String renderURL(String portletName, String queryString) {
+		return null;
+	}
+
+	@Override
+	public String renderURL(
+		String windowState, String portletMode, Boolean secure,
+		Boolean copyCurrentRenderParameters, Boolean escapeXml, long plid,
+		long refererPlid, String portletName, Boolean anchor, Boolean encrypt,
+		long doAsGroupId, long doAsUserId, Boolean portletConfiguration,
+		String queryString) {
 
 		return null;
 	}
 
 	@Override
 	public String renderURL(
-			String windowState, String portletMode, Boolean secure,
-			Boolean copyCurrentRenderParameters, Boolean escapeXml, long plid,
-			long refererPlid, String portletName, Boolean anchor,
-			Boolean encrypt, long doAsGroupId, long doAsUserId,
-			Boolean portletConfiguration, String queryString)
-		throws Exception {
-
-		return null;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #renderURL(String, String,
-	 *             Boolean, Boolean, Boolean, long, long, String, Boolean,
-	 *             Boolean, long, long, Boolean, String)}
-	 */
-	@Deprecated
-	@Override
-	public String renderURL(
-			String windowState, String portletMode, Boolean secure,
-			Boolean copyCurrentRenderParameters, Boolean escapeXml, long plid,
-			String portletName, Boolean anchor, Boolean encrypt,
-			long doAsUserId, Boolean portletConfiguration, String queryString)
-		throws Exception {
+		String windowState, String portletMode, long plid, String portletName,
+		String queryString) {
 
 		return null;
 	}
 
 	@Override
 	public String renderURL(
-			String windowState, String portletMode, long plid,
-			String portletName, String queryString)
-		throws Exception {
+		String windowState, String portletMode, String portletName,
+		String queryString) {
 
 		return null;
 	}
 
 	@Override
-	public String renderURL(
-			String windowState, String portletMode, String portletName,
-			String queryString)
-		throws Exception {
-
-		return null;
-	}
-
-	@Override
-	public void runtime(String portletName) throws Exception {
-	}
-
-	@Override
-	public void runtime(String portletName, String queryString)
-		throws Exception {
+	public void runtime(String portletName) {
 	}
 
 	@Override
 	public void runtime(
-			String portletName, String queryString, String defaultPreferences)
-		throws Exception {
+		String portletProviderClassName,
+		PortletProvider.Action portletProviderAction) {
 	}
 
 	@Override
-	public void search() throws Exception {
+	public void runtime(
+		String portletProviderClassName,
+		PortletProvider.Action portletProviderAction, String instanceId) {
 	}
 
 	@Override
-	public void setTemplate(Template template) {
+	public void runtime(
+		String portletProviderClassName,
+		PortletProvider.Action portletProviderAction, String instanceId,
+		String defaultPreferences) {
 	}
 
 	@Override
-	public void sitesDirectory() throws Exception {
+	public void runtime(String portletName, String queryString) {
 	}
 
 	@Override
-	public void sitesDirectory(String displayStyle, String sites)
-		throws Exception {
+	public void runtime(
+		String portletName, String queryString, String defaultPreferences) {
+	}
+
+	@Override
+	public void runtime(
+		String portletName, String instanceId, String queryString,
+		String defaultPreferences) {
+	}
+
+	@Override
+	public void search() {
+	}
+
+	@Override
+	public void sitesDirectory() {
+	}
+
+	@Override
+	public void sitesDirectory(String displayStyle, String sites) {
 	}
 
 	@Override
 	public void socialBookmarks(
-			String displayStyle, String target, String types, String title,
-			String url)
-		throws Exception {
+		String displayStyle, String target, String types, String title,
+		String url) {
 	}
 
 	/**
@@ -680,20 +390,17 @@ public class DummyVelocityTaglib implements VelocityTaglib {
 	 */
 	@Deprecated
 	@Override
-	public void staging() throws Exception {
+	public void staging() {
 	}
 
 	@Override
 	public void toggle(
-			String id, String showImage, String hideImage, String showMessage,
-			String hideMessage, boolean defaultShowContent)
-		throws Exception {
+		String id, String showImage, String hideImage, String showMessage,
+		String hideMessage, boolean defaultShowContent) {
 	}
 
 	@Override
-	public String wrapPortlet(String wrapPage, String portletPage)
-		throws Exception {
-
+	public String wrapPortlet(String wrapPage, String portletPage) {
 		return StringPool.BLANK;
 	}
 

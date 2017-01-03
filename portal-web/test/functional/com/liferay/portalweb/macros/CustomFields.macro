@@ -1,0 +1,81 @@
+<definition>
+	<command name="addCP">
+		<var name="key_resourceName" value="${resourceName}" />
+
+		<execute function="AssertClick" locator1="CustomFields#RESOURCE_TABLE_RESOURCE_LINK" value1="${resourceName}" />
+
+		<execute function="Click" locator1="Button#PLUS" />
+
+		<var method="StringUtil#lowerCase('${customFieldName}')" name="customFieldKey" />
+
+		<execute function="Type" locator1="TextInput#NAME" value1="${customFieldKey}" />
+
+		<execute function="Select" locator1="Select#TYPE" value1="${customFieldType}" />
+
+		<execute macro="Button#clickSave" />
+
+		<var name="key_customFieldName" value="${customFieldName}" />
+
+		<execute function="AssertTextEquals" locator1="CustomFieldsEditResource#CUSTOM_FIELDS_TABLE_NAME" value1="${customFieldName}" />
+	</command>
+
+	<command name="editCP">
+		<var name="key_resourceName" value="${resourceName}" />
+
+		<execute function="AssertClick" locator1="CustomFields#RESOURCE_TABLE_RESOURCE_LINK" value1="${resourceName}" />
+
+		<var name="key_customFieldName" value="${customFieldName}" />
+
+		<execute function="AssertVisible" locator1="CustomFieldsEditResource#CUSTOM_FIELDS_TABLE_NAME" />
+
+		<execute function="Pause" locator1="3000" />
+
+		<execute function="Click" locator1="CustomFieldsEditResource#CUSTOM_FIELDS_TABLE_ACTIONS" />
+
+		<execute function="AssertClick" locator1="MenuItem#EDIT" value1="Edit" />
+
+		<if>
+			<isset var="defaultValue" />
+			<then>
+				<if>
+					<equals arg1="${customFieldType}" arg2="True/False" />
+					<then>
+						<execute function="Select" locator1="Select#DEFAULT_VALUE_SELECT" value1="${defaultValue}" />
+					</then>
+				</if>
+			</then>
+		</if>
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
+	<command name="tearDownCP">
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<while>
+			<condition function="IsElementPresent" locator1="CustomFields#RESOURCE_TABLE_CUSTOM_FIELDS_LINK_GENERIC" />
+			<then>
+				<execute function="Click" locator1="CustomFields#RESOURCE_TABLE_CUSTOM_FIELDS_LINK_GENERIC" />
+
+				<while>
+					<condition function="IsElementPresent" locator1="CustomFieldsEditResource#CUSTOM_FIELDS_TABLE_ACTIONS_GENERIC" />
+					<then>
+						<execute function="AssertClick" locator1="CustomFieldsEditResource#CUSTOM_FIELDS_TABLE_ACTIONS_GENERIC" value1="Actions" />
+
+						<execute function="AssertClickNoError" locator1="MenuItem#DELETE" value1="Delete" />
+
+						<execute function="Confirm" value1="Are you sure you want to delete this? It will be deleted immediately." />
+
+						<execute macro="Alert#viewSuccessMessage" />
+					</then>
+				</while>
+
+				<execute macro="ProductMenu#gotoControlPanelConfiguration">
+					<var name="portlet" value="Custom Fields" />
+				</execute>
+			</then>
+		</while>
+	</command>
+</definition>

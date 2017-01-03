@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.Portlet;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,33 @@ import java.io.ObjectOutput;
 @ProviderType
 public class PortletCacheModel implements CacheModel<Portlet>, Externalizable,
 	MVCCModel {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof PortletCacheModel)) {
+			return false;
+		}
+
+		PortletCacheModel portletCacheModel = (PortletCacheModel)obj;
+
+		if ((id == portletCacheModel.id) &&
+				(mvccVersion == portletCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, id);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
 	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
@@ -100,10 +128,13 @@ public class PortletCacheModel implements CacheModel<Portlet>, Externalizable,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		id = objectInput.readLong();
+
 		companyId = objectInput.readLong();
 		portletId = objectInput.readUTF();
 		roles = objectInput.readUTF();
+
 		active = objectInput.readBoolean();
 	}
 
@@ -111,7 +142,9 @@ public class PortletCacheModel implements CacheModel<Portlet>, Externalizable,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(id);
+
 		objectOutput.writeLong(companyId);
 
 		if (portletId == null) {

@@ -14,30 +14,29 @@
 
 package com.liferay.portlet.messageboards.service.impl;
 
+import com.liferay.message.boards.kernel.exception.MailingListEmailAddressException;
+import com.liferay.message.boards.kernel.exception.MailingListInServerNameException;
+import com.liferay.message.boards.kernel.exception.MailingListInUserNameException;
+import com.liferay.message.boards.kernel.exception.MailingListOutEmailAddressException;
+import com.liferay.message.boards.kernel.exception.MailingListOutServerNameException;
+import com.liferay.message.boards.kernel.exception.MailingListOutUserNameException;
+import com.liferay.message.boards.kernel.model.MBMailingList;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.messaging.DestinationNames;
-import com.liferay.portal.kernel.scheduler.CronText;
-import com.liferay.portal.kernel.scheduler.CronTrigger;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portlet.messageboards.MailingListEmailAddressException;
-import com.liferay.portlet.messageboards.MailingListInServerNameException;
-import com.liferay.portlet.messageboards.MailingListInUserNameException;
-import com.liferay.portlet.messageboards.MailingListOutEmailAddressException;
-import com.liferay.portlet.messageboards.MailingListOutServerNameException;
-import com.liferay.portlet.messageboards.MailingListOutUserNameException;
 import com.liferay.portlet.messageboards.messaging.MailingListRequest;
-import com.liferay.portlet.messageboards.model.MBMailingList;
 import com.liferay.portlet.messageboards.service.base.MBMailingListLocalServiceBaseImpl;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Thiago Moreira
@@ -59,7 +58,6 @@ public class MBMailingListLocalServiceImpl
 		// Mailing list
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		Date now = new Date();
 
 		validate(
 			emailAddress, inServerName, inUserName, outEmailAddress, outCustom,
@@ -75,8 +73,6 @@ public class MBMailingListLocalServiceImpl
 		mailingList.setCompanyId(user.getCompanyId());
 		mailingList.setUserId(user.getUserId());
 		mailingList.setUserName(user.getFullName());
-		mailingList.setCreateDate(serviceContext.getCreateDate(now));
-		mailingList.setModifiedDate(serviceContext.getModifiedDate(now));
 		mailingList.setCategoryId(categoryId);
 		mailingList.setEmailAddress(emailAddress);
 		mailingList.setInProtocol(inUseSSL ? inProtocol + "s" : inProtocol);
@@ -135,6 +131,13 @@ public class MBMailingListLocalServiceImpl
 	}
 
 	@Override
+	public MBMailingList fetchCategoryMailingList(
+		long groupId, long categoryId) {
+
+		return mbMailingListPersistence.fetchByG_C(groupId, categoryId);
+	}
+
+	@Override
 	public MBMailingList getCategoryMailingList(long groupId, long categoryId)
 		throws PortalException {
 
@@ -161,7 +164,6 @@ public class MBMailingListLocalServiceImpl
 		MBMailingList mailingList = mbMailingListPersistence.findByPrimaryKey(
 			mailingListId);
 
-		mailingList.setModifiedDate(serviceContext.getModifiedDate(null));
 		mailingList.setEmailAddress(emailAddress);
 		mailingList.setInProtocol(inUseSSL ? inProtocol + "s" : inProtocol);
 		mailingList.setInServerName(inServerName);
@@ -204,13 +206,9 @@ public class MBMailingListLocalServiceImpl
 
 		Calendar startDate = CalendarFactoryUtil.getCalendar();
 
-		CronText cronText = new CronText(
-			startDate, CronText.MINUTELY_FREQUENCY,
-			mailingList.getInReadInterval());
-
-		Trigger trigger = new CronTrigger(
-			groupName, groupName, startDate.getTime(), null,
-			cronText.toString());
+		Trigger trigger = TriggerFactoryUtil.createTrigger(
+			groupName, groupName, startDate.getTime(),
+			mailingList.getInReadInterval(), TimeUnit.MINUTE);
 
 		MailingListRequest mailingListRequest = new MailingListRequest();
 
@@ -251,23 +249,27 @@ public class MBMailingListLocalServiceImpl
 		}
 
 		if (!Validator.isEmailAddress(emailAddress)) {
-			throw new MailingListEmailAddressException();
+			throw new MailingListEmailAddressException(emailAddress);
 		}
 		else if (Validator.isNull(inServerName)) {
-			throw new MailingListInServerNameException();
+			throw new MailingListInServerNameException(
+				"In server name is null");
 		}
 		else if (Validator.isNull(inUserName)) {
-			throw new MailingListInUserNameException();
+			throw new MailingListInUserNameException("In user name is null");
 		}
 		else if (Validator.isNull(outEmailAddress)) {
-			throw new MailingListOutEmailAddressException();
+			throw new MailingListOutEmailAddressException(
+				"Out email address is null");
 		}
 		else if (outCustom) {
 			if (Validator.isNull(outServerName)) {
-				throw new MailingListOutServerNameException();
+				throw new MailingListOutServerNameException(
+					"Out server name is null");
 			}
 			else if (Validator.isNull(outUserName)) {
-				throw new MailingListOutUserNameException();
+				throw new MailingListOutUserNameException(
+					"Out user name is null");
 			}
 		}
 	}

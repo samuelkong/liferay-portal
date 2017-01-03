@@ -19,17 +19,18 @@ import com.liferay.portal.kernel.image.ImageMagick;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.kernel.util.OSDetector;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.ClassLoaderUtil;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsUtil;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
@@ -201,21 +202,23 @@ public class ImageMagickImpl implements ImageMagick {
 	}
 
 	protected LinkedList<String> getResourceLimits() {
-		LinkedList<String> resourceLimits = new LinkedList<String>();
+		LinkedList<String> resourceLimits = new LinkedList<>();
 
 		if (_resourceLimitsProperties == null) {
 			return resourceLimits;
 		}
 
-		for (Object key : _resourceLimitsProperties.keySet()) {
-			String value = (String)_resourceLimitsProperties.get(key);
+		for (Map.Entry<Object, Object> entry :
+				_resourceLimitsProperties.entrySet()) {
+
+			String value = (String)entry.getValue();
 
 			if (Validator.isNull(value)) {
 				continue;
 			}
 
 			resourceLimits.add("-limit");
-			resourceLimits.add((String)key);
+			resourceLimits.add((String)entry.getKey());
 			resourceLimits.add(value);
 		}
 

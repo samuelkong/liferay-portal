@@ -17,11 +17,13 @@ package com.liferay.portal.kernel.nio.intraband.welder.socket;
 import com.liferay.portal.kernel.nio.intraband.test.MockIntraband;
 import com.liferay.portal.kernel.nio.intraband.test.MockRegistrationReference;
 import com.liferay.portal.kernel.nio.intraband.welder.test.WelderTestUtil;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtilAdvice;
-import com.liferay.portal.test.AdviseWith;
-import com.liferay.portal.test.runners.AspectJMockingNewClassLoaderJUnitTestRunner;
+import com.liferay.portal.test.rule.AdviseWith;
+import com.liferay.portal.test.rule.AspectJNewEnvTestRule;
 
 import java.net.ServerSocket;
 
@@ -33,18 +35,20 @@ import java.util.concurrent.FutureTask;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Shuyang Zhou
  */
-@RunWith(AspectJMockingNewClassLoaderJUnitTestRunner.class)
+@NewEnv(type = NewEnv.Type.CLASSLOADER)
 public class SocketWelderTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			CodeCoverageAssertor.INSTANCE, AspectJNewEnvTestRule.INSTANCE);
 
 	@Before
 	public void setUp() {
@@ -121,6 +125,7 @@ public class SocketWelderTest {
 	@Test
 	public void testWeldSolingerOn() throws Exception {
 		final SocketWelder serverSocketWelder = new SocketWelder();
+
 		final SocketWelder clientSocketWelder = WelderTestUtil.transform(
 			serverSocketWelder);
 
@@ -133,6 +138,7 @@ public class SocketWelderTest {
 						return (MockRegistrationReference)
 							serverSocketWelder.weld(new MockIntraband());
 					}
+
 				});
 
 		Thread serverWeldingThread = new Thread(serverWeldingTask);
@@ -148,6 +154,7 @@ public class SocketWelderTest {
 						return (MockRegistrationReference)
 							clientSocketWelder.weld(new MockIntraband());
 					}
+
 				});
 
 		Thread clientWeldingThread = new Thread(clientWeldingTask);

@@ -16,8 +16,8 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.asset.model.AssetTagStats;
-import com.liferay.portlet.asset.service.AssetTagStatsLocalServiceUtil;
+import com.liferay.asset.kernel.model.AssetTagStats;
+import com.liferay.asset.kernel.service.AssetTagStatsLocalServiceUtil;
 
 /**
  * The extended model base implementation for the AssetTagStats service. Represents a row in the &quot;AssetTagStats&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.asset.service.AssetTagStatsLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see AssetTagStatsImpl
- * @see com.liferay.portlet.asset.model.AssetTagStats
+ * @see AssetTagStats
  * @generated
  */
 @ProviderType

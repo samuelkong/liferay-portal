@@ -14,6 +14,7 @@
 
 package com.liferay.portlet.asset.util;
 
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -22,7 +23,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portlet.asset.model.AssetCategoryConstants;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -39,8 +39,6 @@ public class AssetVocabularySettingsHelper {
 		{AssetCategoryConstants.ALL_CLASS_TYPE_PK};
 
 	public AssetVocabularySettingsHelper() {
-		super();
-
 		_properties = new UnicodeProperties(true);
 	}
 
@@ -99,8 +97,8 @@ public class AssetVocabularySettingsHelper {
 	public void setClassNameIdsAndClassTypePKs(
 		long[] classNameIds, long[] classTypePKs, boolean[] requireds) {
 
-		Set<String> requiredClassNameIds = new LinkedHashSet<String>();
-		Set<String> selectedClassNameIds = new LinkedHashSet<String>();
+		Set<String> requiredClassNameIds = new LinkedHashSet<>();
+		Set<String> selectedClassNameIds = new LinkedHashSet<>();
 
 		for (int i = 0; i < classNameIds.length; ++i) {
 			long classNameId = classNameIds[i];
@@ -277,6 +275,6 @@ public class AssetVocabularySettingsHelper {
 		_KEY_SELECTED_CLASS_NAME_IDS_AND_CLASS_TYPE_PKS =
 			"selectedClassNameIds";
 
-	private UnicodeProperties _properties;
+	private final UnicodeProperties _properties;
 
 }

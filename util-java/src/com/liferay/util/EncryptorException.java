@@ -16,11 +16,11 @@ package com.liferay.util;
 
 /**
  * @author Brian Wing Shun Chan
+ * @see    com.liferay.petra.encryptor.EncryptorException
  */
 public class EncryptorException extends Exception {
 
 	public EncryptorException() {
-		super();
 	}
 
 	public EncryptorException(String msg) {

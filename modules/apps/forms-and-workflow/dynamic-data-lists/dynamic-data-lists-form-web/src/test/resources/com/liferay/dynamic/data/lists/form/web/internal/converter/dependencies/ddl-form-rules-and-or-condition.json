@@ -1,0 +1,133 @@
+[
+	{
+		"actions": [
+			{
+				"action": "show",
+				"target": "Field2"
+			}
+		],
+		"conditions": [
+			{
+
+				"operands": [
+					{
+						"type": "field",
+						"value": "Field1"
+					},
+					{
+						"type": "constant",
+						"value": "Joe"
+					}
+				],
+				"operator": "not-equals-to"
+			},
+			{
+				"operands": [
+					{
+						"type": "field",
+						"value": "Field1"
+					},
+					{
+						"type": "constant",
+						"value": "Blogs"
+					}
+				],
+				"operator": "not-contains"
+			}
+		],
+		"logical-operator": "OR"
+	},
+	{
+		"actions": [
+			{
+				"action": "enable",
+				"target": "Field3"
+			}
+		],
+		"conditions": [
+			{
+
+				"operands": [
+					{
+						"type": "field",
+						"value": "Field1"
+					},
+					{
+						"type": "field",
+						"value": "Field2"
+					}
+				],
+				"operator": "contains"
+			},
+			{
+				"operands": [
+					{
+						"type": "field",
+						"value": "Field2"
+					},
+					{
+						"type": "constant",
+						"value": "4"
+					}
+				],
+				"operator": "contains"
+			}
+		],
+		"logical-operator": "AND"
+	},
+	{
+		"actions": [
+			{
+				"action": "enable",
+				"target": "Field3"
+			},
+			{
+				"action": "show",
+				"target": "Field4"
+			}
+		],
+		"conditions": [
+			{
+
+				"operands": [
+					{
+						"type": "field",
+						"value": "Field1"
+					},
+					{
+						"type": "field",
+						"value": "Field2"
+					}
+				],
+				"operator": "equals-to"
+			},
+			{
+				"operands": [
+					{
+						"type": "field",
+						"value": "Field2"
+					},
+					{
+						"type": "constant",
+						"value": "4"
+					}
+				],
+				"operator": "contains"
+			},
+			{
+				"operands": [
+					{
+						"type": "constant",
+						"value": "5"
+					},
+					{
+						"type": "constant",
+						"value": "3"
+					}
+				],
+				"operator": "equals-to"
+			}
+		],
+		"logical-operator": "OR"
+	}
+]

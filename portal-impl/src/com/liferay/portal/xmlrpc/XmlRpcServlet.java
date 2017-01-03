@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Tuple;
@@ -32,6 +33,7 @@ import com.liferay.portal.util.PortalInstances;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +43,17 @@ import javax.servlet.http.HttpServletResponse;
  * @author Brian Wing Shun Chan
  */
 public class XmlRpcServlet extends HttpServlet {
+
+	@Override
+	protected void doGet(
+			HttpServletRequest request, HttpServletResponse response)
+		throws IOException, ServletException {
+
+		PortalUtil.sendError(
+			HttpServletResponse.SC_NOT_FOUND,
+			new IllegalArgumentException("The GET method is not supported"),
+			request, response);
+	}
 
 	@Override
 	protected void doPost(
@@ -72,8 +85,8 @@ public class XmlRpcServlet extends HttpServlet {
 				_log.debug(ioe, ioe);
 			}
 		}
-		catch (XmlRpcException xmlrpce) {
-			_log.error(xmlrpce, xmlrpce);
+		catch (XmlRpcException xre) {
+			_log.error(xre, xre);
 		}
 
 		if (xmlRpcResponse == null) {

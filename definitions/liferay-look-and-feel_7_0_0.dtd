@@ -111,8 +111,8 @@ The theme element contains the declarative data of a theme.
 -->
 <!ELEMENT theme (root-path?, templates-path?, css-path?, images-path?,
 javascript-path?, virtual-path?, template-extension?, settings?,
-control-panel-theme?, page-theme?, wap-theme?, roles?, color-scheme*,
-layout-templates?)>
+control-panel-theme?, page-theme?, roles?, color-scheme*, layout-templates?,
+portlet-decorator*)>
 
 <!--
 The id attribute specifies the unique key for a theme. For convenience, the id
@@ -128,9 +128,9 @@ the user.
 
 <!--
 The root-path value sets the location of the root path for the theme. For
-example, the root path for the Classic theme is "/html/themes/classic". This
+example, the root path for the Classic theme is "/classic". This
 means you can find the files for the Classic theme in
-/docroot/html/themes/classic.
+/modules/frontend/frontend-theme-classic/src/META-INF/resources/classic.
 
 For convenience, the root-path attribute can be referenced in the rest of the
 theme element as ${root-path}.
@@ -141,9 +141,9 @@ The default value is "/".
 
 <!--
 The templates-path value sets the location of the templates path for the theme.
-For example, the templates path for the Classic theme is
-"/html/themes/classic/templates". This means you can find the JSP or VM
-templates for the Classic theme in /docroot/html/themes/classic/templates.
+For example, the templates path for the Classic theme is "/classic/templates".
+This means you can find the JSP or VM templates for the Classic theme in
+/modules/frontend/frontend-theme-classic/src/META-INF/resources/classic/templates.
 
 For convenience, the templates-path attribute can be referenced in the rest of
 the theme element as ${templates-path}.
@@ -154,8 +154,9 @@ The default value is "${root-path}/templates".
 
 <!--
 The css-path value sets the location of the css path for the theme. For example,
-the css path for the Classic theme is "/html/themes/classic/css". This means you
-can find css for the Classic theme in /docroot/html/themes/classic/css.
+the css path for the Classic theme is "/classic/css". This means you can find
+css for the Classic theme in
+/modules/frontend/frontend-theme-classic/src/META-INF/resources/classic/css.
 
 For convenience, the css-path attribute can be referenced in the rest of the
 theme element as ${css-path}.
@@ -166,9 +167,9 @@ The default value is "${root-path}/css".
 
 <!--
 The images-path value sets the location of the images path for the theme. For
-example, the images path for the Classic theme is "/html/themes/classic/images".
-This means you can find images for the Classic theme in
-/docroot/html/themes/classic/images.
+example, the images path for the Classic theme is "/classic/images". This means
+you can find images for the Classic theme in
+/modules/frontend/frontend-theme-classic/src/META-INF/resources/classic/images.
 
 For convenience, the images-path attribute can be referenced in the rest of the
 theme element as ${images-path}.
@@ -179,9 +180,9 @@ The default value is "${root-path}/images".
 
 <!--
 The javascript-path value sets the location of the JavaScript path for the
-theme. For example, the JavaScript path for the Classic theme is
-"/html/themes/classic/js". This means you can find JavaScript for the
-Classic theme in /docroot/html/themes/classic/js.
+theme. For example, the JavaScript path for the Classic theme is "/classic/js".
+This means you can find JavaScript for the Classic theme in
+/modules/frontend/frontend-theme-classic/src/META-INF/resources/classic/js.
 
 For convenience, the javascript-path attribute can be referenced in the rest of
 the theme element as ${javascript-path}.
@@ -209,13 +210,15 @@ The default value is "" which means this is not used.
 <!--
 The templates-extension value sets the file extension of the files located in
 the templates directory. If you specify the value "jsp", then the portal will
-look for files such as portal_nav.jsp in the templates directory. If you specify
-the value "vm", then the portal will look for files such as portal_nav.vm in the
-templates directory. Specifying "vm" means you can use Velocity to create your
-theme. New extensions will be supported in the future to allow for even more
-flexibility in the creation of themes.
+look for files such as portal_normal.jsp in the templates directory. If you
+specify the value "ftl", then the portal will look for files such as
+portal_normal.ftl in the templates directory. Specifying "ftl" means you can use
+FreeMarker to create your theme. New extensions will be supported in the future
+to allow for even more flexibility in the creation of themes. Support for
+Velocity is deprecated and will not be available in future releases of the
+portal.
 
-The default value is "vm".
+The default value is "ftl".
 -->
 <!ELEMENT template-extension (#PCDATA)>
 
@@ -275,12 +278,6 @@ Set the page-theme value to true if the theme is designed for regular pages. The
 default value is true.
 -->
 <!ELEMENT page-theme (#PCDATA)>
-
-<!--
-Set the wap-theme value to true if the theme is designed for cellular phones or
-other mobile devices. The default value is false.
--->
-<!ELEMENT wap-theme (#PCDATA)>
 
 <!--
 The roles element contains a list of role names. Users which have any of these
@@ -353,7 +350,7 @@ See liferay-layout-templates_7_0_0.dtd.
 <!--
 See liferay-layout-templates_7_0_0.dtd.
 -->
-<!ELEMENT layout-template (template-path, wap-template-path, thumbnail-path?)>
+<!ELEMENT layout-template (template-path, thumbnail-path?)>
 
 <!--
 See liferay-layout-templates_7_0_0.dtd.
@@ -371,14 +368,55 @@ See liferay-layout-templates_7_0_0.dtd.
 <!--
 See liferay-layout-templates_7_0_0.dtd.
 -->
-<!ELEMENT wap-template-path (#PCDATA)>
-
-<!--
-See liferay-layout-templates_7_0_0.dtd.
--->
 <!ELEMENT thumbnail-path (#PCDATA)>
 
 <!--
 See liferay-layout-templates_7_0_0.dtd.
 -->
 <!ELEMENT custom (layout-template*)>
+
+<!--
+A theme can have many portlet decorators. A portlet decorator defines the style
+of the portlet borders.
+-->
+<!ELEMENT portlet-decorator (default-portlet-decorator?,
+	portlet-decorator-css-class,
+	portlet-decorator-thumbnail-path?)>
+
+<!--
+The id attribute specifies the key for a portlet decorator that is unique for
+its parent theme. For convenience, the id attribute can be referenced in the
+rest of the portlet decorator element as ${portlet-decorator-id}.
+
+The name attribute specifies the friendly name of a portlet decorator that is
+displayed to the user.
+-->
+<!ATTLIST portlet-decorator
+	id CDATA #REQUIRED
+	name CDATA #REQUIRED
+>
+
+<!--
+Set the default-portlet-decorator value to true if this is the default portlet
+decorator. The default value is false.
+-->
+<!ELEMENT default-portlet-decorator (#PCDATA)>
+
+<!--
+The portlet-decorator-css-class value is a css class name that represents the
+portlet-decorator.
+
+For convenience, the portlet-decorator-css-class attribute can be referenced in
+the rest of the portlet-decorator-css-class element as
+${portlet-decorator-css-class}.
+-->
+<!ELEMENT portlet-decorator-css-class (#PCDATA)>
+
+<!--
+The portlet-decorator-thumbnail-path value sets the location of the thumbnail
+path for the portlet-decorator.
+
+The default value is
+"${root-path}/images/portlet_decorators/${portlet-decorator-css-class}".
+-->
+<!ELEMENT portlet-decorator-thumbnail-path (#PCDATA)>

@@ -1,0 +1,52 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the date field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'date'"}
+	{call .date data="all" /}
+{/deltemplate}
+
+/**
+ * Prints the DDM form date field.
+ *
+ * @param? childElementsHTML
+ * @param displayValue
+ * @param label
+ * @param name
+ * @param readOnly
+ * @param required
+ * @param showLabel
+ * @param tip
+ * @param value
+ * @param visible
+ */
+{template .date autoescape="deprecated-contextual"}
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-date" data-fieldname="{$name}">
+		{if $showLabel}
+			<label class="control-label" for="{$name}">
+				{$label}
+
+				{if $required}
+					<span class="icon-asterisk text-warning"></span>
+				{/if}
+			</label>
+
+			{if $tip}
+				<p class="liferay-ddm-form-field-tip">{$tip}</p>
+			{/if}
+		{/if}
+
+		<div class="input-group input-group-container">
+			<input aria-label="{$label}" class="form-control trigger{if $readOnly}-readonly{/if}" {if $readOnly}readonly{/if} type="text" value="{$displayValue}" />
+
+			<input name="{$name}" type="hidden" value="{$value}" />
+
+			<span class="input-group-addon"><span class="icon-calendar"></span></span>
+		</div>
+
+		{if $childElementsHTML}
+			{$childElementsHTML|noAutoescape}
+		{/if}
+	</div>
+{/template}

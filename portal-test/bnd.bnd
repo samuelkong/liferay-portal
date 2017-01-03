@@ -1,6 +1,35 @@
-Bundle-Version: 6.2.0
+Bundle-Name: ${manifest.bundle.name}
+Bundle-SymbolicName: ${manifest.bundle.symbolic.name}
+Bundle-Version: 1.0.1
 Export-Package:\
-	*
+	com.liferay.portal.kernel.test,\
+	com.liferay.portal.kernel.test.context,\
+	com.liferay.portal.kernel.test.junit,\
+	com.liferay.portal.kernel.test.randomizerbumpers,\
+	com.liferay.portal.kernel.test.rule,\
+	com.liferay.portal.kernel.test.rule.callback,\
+	com.liferay.portal.kernel.test.search,\
+	com.liferay.portal.kernel.test.util,\
+	com.liferay.portlet.asset.service.persistence.test,\
+	com.liferay.portlet.dynamicdatamapping.util.test,\
+	com.liferay.portlet.expando.util.test,\
+	com.liferay.portlet.messageboards.util.test,\
+	com.liferay.portlet.ratings.test,\
+	com.liferay.portlet.ratings.util.test,\
+	\
+	junit.*,\
+	\
+	org.hamcrest.*,\
+	\
+	org.junit.runner.*,\
+	org.junit.*,\
+	\
+	org.springframework.mock.web,\
+	org.springframework.mock.web.portlet
+Import-Package: *;resolution:=optional
 Include-Resource:\
 	classes,\
-	@${project.dir}/../lib/development/dumbster.jar
+	@${project.dir}/../lib/development/hamcrest-core.jar,\
+	@${project.dir}/../lib/development/junit.jar,\
+	@${project.dir}/../lib/development/spring-test.jar,\
+	@${project.dir}/../lib/portal/aspectj-rt.jar

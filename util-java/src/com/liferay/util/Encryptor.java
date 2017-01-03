@@ -37,10 +37,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Shuyang Zhou
+ * @see    com.liferay.petra.encryptor.Encryptor
  */
 public class Encryptor {
 
@@ -114,6 +116,12 @@ public class Encryptor {
 		catch (Exception e) {
 			throw new EncryptorException(e);
 		}
+	}
+
+	public static Key deserializeKey(String base64String) {
+		byte[] bytes = Base64.decode(base64String);
+
+		return new SecretKeySpec(bytes, Encryptor.KEY_ALGORITHM);
 	}
 
 	public static String digest(String text) {
@@ -244,11 +252,15 @@ public class Encryptor {
 		return (Provider)providerClass.newInstance();
 	}
 
+	public static String serializeKey(Key key) {
+		return Base64.encode(key.getEncoded());
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(Encryptor.class);
 
 	private static final Map<String, Cipher> _decryptCipherMap =
-		new ConcurrentHashMap<String, Cipher>(1, 1f, 1);
+		new ConcurrentHashMap<>(1, 1f, 1);
 	private static final Map<String, Cipher> _encryptCipherMap =
-		new ConcurrentHashMap<String, Cipher>(1, 1f, 1);
+		new ConcurrentHashMap<>(1, 1f, 1);
 
 }

@@ -18,11 +18,11 @@ import org.apache.commons.lang.exception.NestableException;
 
 /**
  * @author Alexander Chow
+ * @see    com.liferay.petra.mail.MailServerException
  */
 public class MailServerException extends NestableException {
 
 	public MailServerException() {
-		super();
 	}
 
 	public MailServerException(String msg) {

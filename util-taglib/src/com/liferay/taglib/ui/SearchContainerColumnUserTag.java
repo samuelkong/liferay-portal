@@ -17,7 +17,9 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.search.ResultRow;
 import com.liferay.portal.kernel.dao.search.SearchEntry;
+import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.search.UserSearchEntry;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 import javax.portlet.PortletURL;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -80,7 +83,13 @@ public class SearchContainerColumnUserTag<R> extends SearchContainerColumnTag {
 				(HttpServletRequest)pageContext.getRequest());
 			userSearchEntry.setResponse(
 				(HttpServletResponse)pageContext.getResponse());
-			userSearchEntry.setServletContext(pageContext.getServletContext());
+
+			ServletContext servletContext = ServletContextPool.get(
+				PortalUtil.getServletContextName());
+
+			userSearchEntry.setServletContext(servletContext);
+
+			userSearchEntry.setShowDetails(isShowDetails());
 			userSearchEntry.setUserId(_userId);
 			userSearchEntry.setValign(getValign());
 
@@ -102,6 +111,7 @@ public class SearchContainerColumnUserTag<R> extends SearchContainerColumnTag {
 				_orderable = false;
 				_orderableProperty = null;
 				_property = null;
+				_showDetails = true;
 				valign = SearchEntry.DEFAULT_VALIGN;
 			}
 		}
@@ -180,6 +190,10 @@ public class SearchContainerColumnUserTag<R> extends SearchContainerColumnTag {
 		return _orderable;
 	}
 
+	public boolean isShowDetails() {
+		return _showDetails;
+	}
+
 	public void setDate(Date date) {
 		_date = date;
 	}
@@ -200,6 +214,10 @@ public class SearchContainerColumnUserTag<R> extends SearchContainerColumnTag {
 		_property = property;
 	}
 
+	public void setShowDetails(boolean showDetails) {
+		_showDetails = showDetails;
+	}
+
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
@@ -209,6 +227,7 @@ public class SearchContainerColumnUserTag<R> extends SearchContainerColumnTag {
 	private boolean _orderable;
 	private String _orderableProperty;
 	private String _property;
+	private boolean _showDetails = true;
 	private long _userId;
 
 }

@@ -1,0 +1,36 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%
+if (Validator.isNull(body)) {
+	if (quote && (curParentMessage != null)) {
+		body = MBUtil.getHtmlQuoteBody(request, curParentMessage);
+	}
+	else if (splitThread) {
+		body = MBUtil.getHtmlSplitThreadBody(request);
+	}
+}
+
+String editorName = PropsUtil.get("editor.wysiwyg.portal-web.docroot.html.portlet.message_boards.edit_message.html.jsp");
+%>
+
+<liferay-ui:input-editor allowBrowseDocuments="<%= false %>" contents="<%= body %>" cssClass='<%= editorName.startsWith("alloyeditor") ? "form-control" : StringPool.BLANK %>' editorName="<%= editorName %>" name="bodyEditor" />
+
+<aui:script>
+	function <portlet:namespace />getHTML() {
+		return window.<portlet:namespace />bodyEditor.getHTML();
+	}
+</aui:script>

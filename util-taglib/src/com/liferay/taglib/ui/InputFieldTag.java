@@ -26,6 +26,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class InputFieldTag extends IncludeTag {
 
+	public void setAutoComplete(boolean autoComplete) {
+		_autoComplete = autoComplete;
+	}
+
 	public void setAutoFocus(boolean autoFocus) {
 		_autoFocus = autoFocus;
 	}
@@ -96,6 +100,7 @@ public class InputFieldTag extends IncludeTag {
 
 	@Override
 	protected void cleanUp() {
+		_autoComplete = true;
 		_autoFocus = false;
 		_autoSize = false;
 		_bean = null;
@@ -135,6 +140,9 @@ public class InputFieldTag extends IncludeTag {
 		}
 
 		request.setAttribute(
+			"liferay-ui:input-field:autoComplete",
+			String.valueOf(_autoComplete));
+		request.setAttribute(
 			"liferay-ui:input-field:autoFocus", String.valueOf(_autoFocus));
 		request.setAttribute(
 			"liferay-ui:input-field:autoSize", String.valueOf(_autoSize));
@@ -149,11 +157,13 @@ public class InputFieldTag extends IncludeTag {
 			"liferay-ui:input-field:defaultValue", _defaultValue);
 		request.setAttribute(
 			"liferay-ui:input-field:disabled", String.valueOf(_disabled));
+		request.setAttribute(
+			"liferay-ui:input-field:dynamicAttributes", getDynamicAttributes());
 		request.setAttribute("liferay-ui:input-field:field", _field);
 		request.setAttribute("liferay-ui:input-field:fieldParam", fieldParam);
-		request.setAttribute("liferay-ui:input-field:id", id);
 		request.setAttribute("liferay-ui:input-field:format", _format);
 		request.setAttribute("liferay-ui:input-field:formName", _formName);
+		request.setAttribute("liferay-ui:input-field:id", id);
 		request.setAttribute(
 			"liferay-ui:input-field:ignoreRequestValue",
 			String.valueOf(_ignoreRequestValue));
@@ -165,6 +175,7 @@ public class InputFieldTag extends IncludeTag {
 
 	private static final String _PAGE = "/html/taglib/ui/input_field/page.jsp";
 
+	private boolean _autoComplete = true;
 	private boolean _autoFocus;
 	private boolean _autoSize;
 	private Object _bean;

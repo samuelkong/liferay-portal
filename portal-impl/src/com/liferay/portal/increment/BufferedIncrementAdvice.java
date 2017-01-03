@@ -19,7 +19,9 @@ import com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil;
 import com.liferay.portal.kernel.increment.BufferedIncrement;
 import com.liferay.portal.kernel.increment.Increment;
 import com.liferay.portal.kernel.increment.IncrementFactory;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackRegistryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.aop.AnnotationChainableMethodAdvice;
 
@@ -100,27 +102,35 @@ public class BufferedIncrementAdvice
 
 		Serializable batchKey = cacheKeyGenerator.finish();
 
-		Increment<?> increment = IncrementFactory.createIncrement(
-			bufferedIncrement.incrementClass(), value);
+		try {
+			Increment<?> increment = IncrementFactory.createIncrement(
+				bufferedIncrement.incrementClass(), value);
 
-		final BufferedIncrementProcessor callbackBufferedIncrementProcessor =
-			bufferedIncrementProcessor;
+			final BufferedIncrementProcessor
+				callbackBufferedIncrementProcessor = bufferedIncrementProcessor;
 
-		final BufferedIncreasableEntry bufferedIncreasableEntry =
-			new BufferedIncreasableEntry(methodInvocation, batchKey, increment);
+			final BufferedIncreasableEntry bufferedIncreasableEntry =
+				new BufferedIncreasableEntry(
+					methodInvocation, batchKey, increment);
 
-		TransactionCommitCallbackRegistryUtil.registerCallback(
-			new Callable<Void>() {
+			TransactionCommitCallbackUtil.registerCallback(
+				new Callable<Void>() {
 
-				@Override
-				public Void call() throws Exception {
-					callbackBufferedIncrementProcessor.process(
-						bufferedIncreasableEntry);
+					@Override
+					public Void call() throws Exception {
+						callbackBufferedIncrementProcessor.process(
+							bufferedIncreasableEntry);
 
-					return null;
-				}
+						return null;
+					}
 
-			});
+				});
+		}
+		catch (Exception e) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to increment", e);
+			}
+		}
 
 		return nullResult;
 	}
@@ -138,7 +148,10 @@ public class BufferedIncrementAdvice
 		return _nullBufferedIncrement;
 	}
 
-	private static BufferedIncrement _nullBufferedIncrement =
+	private static final Log _log = LogFactoryUtil.getLog(
+		BufferedIncrementAdvice.class);
+
+	private static final BufferedIncrement _nullBufferedIncrement =
 		new BufferedIncrement() {
 
 			@Override
@@ -158,11 +171,9 @@ public class BufferedIncrementAdvice
 
 		};
 
-	private Map<String, BufferedIncrementConfiguration>
-		_bufferedIncrementConfigurations =
-			new ConcurrentHashMap<String, BufferedIncrementConfiguration>();
-	private ConcurrentMap<Method, BufferedIncrementProcessor>
-		_bufferedIncrementProcessors =
-			new ConcurrentHashMap<Method, BufferedIncrementProcessor>();
+	private final Map<String, BufferedIncrementConfiguration>
+		_bufferedIncrementConfigurations = new ConcurrentHashMap<>();
+	private final ConcurrentMap<Method, BufferedIncrementProcessor>
+		_bufferedIncrementProcessors = new ConcurrentHashMap<>();
 
 }

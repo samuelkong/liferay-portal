@@ -14,20 +14,16 @@
 
 package com.liferay.portal.upgrade.v6_2_0;
 
-import com.liferay.portal.upgrade.util.UpgradePortletId;
+import com.liferay.portal.kernel.upgrade.BaseUpgradePortletId;
 
 /**
  * @author Adam Brandizzi
  */
-public class UpgradeCalendar extends UpgradePortletId {
+public class UpgradeCalendar extends BaseUpgradePortletId {
 
 	@Override
 	protected String[][] getRenamePortletIdsArray() {
-		return new String[][] {
-			new String[] {
-				"8", "1_WAR_calendarportlet"
-			}
-		};
+		return new String[][] {new String[] {"8", "1_WAR_calendarportlet"}};
 	}
 
 }

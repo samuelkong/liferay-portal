@@ -14,11 +14,12 @@
 
 package com.liferay.portal.spring.transaction;
 
+import com.liferay.portal.kernel.transaction.TransactionLifecycleManager;
+
 import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.support.CallbackPreferringPlatformTransactionManager;
 import org.springframework.transaction.support.TransactionCallback;
 
@@ -27,12 +28,12 @@ import org.springframework.transaction.support.TransactionCallback;
  * @author Shuyang Zhou
  */
 public class CallbackPreferringTransactionExecutor
-	extends BaseTransactionExecutor {
+	implements TransactionExecutor {
 
 	@Override
 	public Object execute(
 			PlatformTransactionManager platformTransactionManager,
-			TransactionAttribute transactionAttribute,
+			TransactionAttributeAdapter transactionAttributeAdapter,
 			MethodInvocation methodInvocation)
 		throws Throwable {
 
@@ -44,9 +45,10 @@ public class CallbackPreferringTransactionExecutor
 		try {
 			Object result =
 				callbackPreferringPlatformTransactionManager.execute(
-					transactionAttribute,
+					transactionAttributeAdapter,
 					createTransactionCallback(
-						transactionAttribute, methodInvocation));
+						callbackPreferringPlatformTransactionManager,
+						transactionAttributeAdapter, methodInvocation));
 
 			if (result instanceof ThrowableHolder) {
 				ThrowableHolder throwableHolder = (ThrowableHolder)result;
@@ -62,11 +64,29 @@ public class CallbackPreferringTransactionExecutor
 	}
 
 	protected TransactionCallback<Object> createTransactionCallback(
-		TransactionAttribute transactionAttribute,
+		CallbackPreferringPlatformTransactionManager
+			callbackPreferringPlatformTransactionManager,
+		TransactionAttributeAdapter transactionAttributeAdapter,
 		MethodInvocation methodInvocation) {
 
 		return new CallbackPreferringTransactionCallback(
-			transactionAttribute, methodInvocation);
+			callbackPreferringPlatformTransactionManager,
+			transactionAttributeAdapter, methodInvocation);
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #createTransactionCallback(
+	 *             CallbackPreferringPlatformTransactionManager,
+	 *             TransactionAttributeAdapter, MethodInvocation)}
+	 */
+	@Deprecated
+	protected TransactionCallback<Object> createTransactionCallback(
+		TransactionAttributeAdapter transactionAttributeAdapter,
+		MethodInvocation methodInvocation) {
+
+		return new CallbackPreferringTransactionCallback(
+			null, transactionAttributeAdapter, methodInvocation);
 	}
 
 	protected static class ThrowableHolder {
@@ -96,12 +116,12 @@ public class CallbackPreferringTransactionExecutor
 
 		@Override
 		public Object doInTransaction(TransactionStatus transactionStatus) {
-			boolean newTransaction = transactionStatus.isNewTransaction();
+			TransactionStatusAdapter transactionStatusAdapter =
+				new TransactionStatusAdapter(
+					_platformTransactionManager, transactionStatus);
 
-			if (newTransaction) {
-				fireTransactionCreatedEvent(
-					_transactionAttribute, transactionStatus);
-			}
+			TransactionLifecycleManager.fireTransactionCreatedEvent(
+				_transactionAttributeAdapter, transactionStatusAdapter);
 
 			boolean rollback = false;
 
@@ -109,12 +129,12 @@ public class CallbackPreferringTransactionExecutor
 				return _methodInvocation.proceed();
 			}
 			catch (Throwable throwable) {
-				if (_transactionAttribute.rollbackOn(throwable)) {
-					if (newTransaction) {
-						fireTransactionRollbackedEvent(
-							_transactionAttribute, transactionStatus,
-							throwable);
+				if (_transactionAttributeAdapter.rollbackOn(throwable)) {
+					TransactionLifecycleManager.fireTransactionRollbackedEvent(
+						_transactionAttributeAdapter, transactionStatusAdapter,
+						throwable);
 
+					if (transactionStatus.isNewTransaction()) {
 						rollback = true;
 					}
 
@@ -130,23 +150,26 @@ public class CallbackPreferringTransactionExecutor
 				}
 			}
 			finally {
-				if (newTransaction && !rollback) {
-					fireTransactionCommittedEvent(
-						_transactionAttribute, transactionStatus);
+				if (!rollback) {
+					TransactionLifecycleManager.fireTransactionCommittedEvent(
+						_transactionAttributeAdapter, transactionStatusAdapter);
 				}
 			}
 		}
 
 		private CallbackPreferringTransactionCallback(
-			TransactionAttribute transactionAttribute,
+			PlatformTransactionManager platformTransactionManager,
+			TransactionAttributeAdapter transactionAttributeAdapter,
 			MethodInvocation methodInvocation) {
 
-			_transactionAttribute = transactionAttribute;
+			_platformTransactionManager = platformTransactionManager;
+			_transactionAttributeAdapter = transactionAttributeAdapter;
 			_methodInvocation = methodInvocation;
 		}
 
 		private final MethodInvocation _methodInvocation;
-		private final TransactionAttribute _transactionAttribute;
+		private final PlatformTransactionManager _platformTransactionManager;
+		private final TransactionAttributeAdapter _transactionAttributeAdapter;
 
 	}
 

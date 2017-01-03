@@ -14,6 +14,9 @@
 
 package com.liferay.portal.webdav;
 
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.webdav.BaseResourceImpl;
 import com.liferay.portal.kernel.webdav.BaseWebDAVStorageImpl;
@@ -21,9 +24,6 @@ import com.liferay.portal.kernel.webdav.Resource;
 import com.liferay.portal.kernel.webdav.WebDAVException;
 import com.liferay.portal.kernel.webdav.WebDAVRequest;
 import com.liferay.portal.kernel.webdav.WebDAVUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.UserLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class CompanyWebDAVStorageImpl extends BaseWebDAVStorageImpl {
 
 		List<Group> groups = WebDAVUtil.getGroups(user);
 
-		List<Resource> resources = new ArrayList<Resource>(groups.size());
+		List<Resource> resources = new ArrayList<>(groups.size());
 
 		for (Group group : groups) {
 			String parentPath = getRootPath();

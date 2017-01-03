@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Dynamic Data Mapping Type Paragraph
+Bundle-SymbolicName: com.liferay.dynamic.data.mapping.type.paragraph
+Bundle-Version: 2.0.7
+Liferay-JS-Config: /META-INF/resources/config.js
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Dynamic Data Mapping
+Web-ContextPath: /ddm-type-paragraph

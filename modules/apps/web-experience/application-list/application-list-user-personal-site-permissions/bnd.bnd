@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Application List User Personal Site Permissions
+Bundle-SymbolicName: com.liferay.application.list.user.personal.site.permissions
+Bundle-Version: 2.0.6
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Product Navigation

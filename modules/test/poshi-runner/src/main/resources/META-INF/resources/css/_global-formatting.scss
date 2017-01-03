@@ -1,0 +1,41 @@
+/* ---------- Global ---------- */
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: $body-bg-color;
+	font-family: $monospaced-font;
+	font-size: $body-font-size;
+	letter-spacing: $body-letter-spacing;
+	line-height: $body-line-height;
+	margin: 0;
+	overflow-x: hidden;
+	padding: 0;
+	word-wrap: break-word;
+}
+
+h3 {
+	font-size: 23px;
+	font-weight: 300;
+	margin: 0;
+	padding: 16px 16px 28px;
+}
+
+li {
+	display: block;
+	transition: background 0.2s ease-in-out;
+}
+
+.hidden {
+	display: none;
+}
+
+span {
+	display: inline;
+}
+
+.hidden {
+	display: none;
+}

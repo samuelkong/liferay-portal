@@ -16,16 +16,16 @@ package com.liferay.portlet.expando.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.expando.kernel.service.ExpandoColumnServiceUtil;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import com.liferay.portlet.expando.service.ExpandoColumnServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portlet.expando.service.ExpandoColumnServiceUtil} service utility. The
+ * {@link ExpandoColumnServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -33,10 +33,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portlet.expando.model.ExpandoColumnSoap}.
+ * is translated to an array of {@link com.liferay.expando.kernel.model.ExpandoColumnSoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portlet.expando.model.ExpandoColumn}, that is translated to a
- * {@link com.liferay.portlet.expando.model.ExpandoColumnSoap}. Methods that SOAP cannot
+ * {@link com.liferay.expando.kernel.model.ExpandoColumn}, that is translated to a
+ * {@link com.liferay.expando.kernel.model.ExpandoColumnSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -59,20 +59,20 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see ExpandoColumnServiceHttp
- * @see com.liferay.portlet.expando.model.ExpandoColumnSoap
- * @see com.liferay.portlet.expando.service.ExpandoColumnServiceUtil
+ * @see com.liferay.expando.kernel.model.ExpandoColumnSoap
+ * @see ExpandoColumnServiceUtil
  * @generated
  */
 @ProviderType
 public class ExpandoColumnServiceSoap {
-	public static com.liferay.portlet.expando.model.ExpandoColumnSoap addColumn(
+	public static com.liferay.expando.kernel.model.ExpandoColumnSoap addColumn(
 		long tableId, java.lang.String name, int type)
 		throws RemoteException {
 		try {
-			com.liferay.portlet.expando.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.addColumn(tableId,
+			com.liferay.expando.kernel.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.addColumn(tableId,
 					name, type);
 
-			return com.liferay.portlet.expando.model.ExpandoColumnSoap.toSoapModel(returnValue);
+			return com.liferay.expando.kernel.model.ExpandoColumnSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -81,14 +81,14 @@ public class ExpandoColumnServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.expando.model.ExpandoColumnSoap addColumn(
+	public static com.liferay.expando.kernel.model.ExpandoColumnSoap addColumn(
 		long tableId, java.lang.String name, int type,
 		java.lang.Object defaultData) throws RemoteException {
 		try {
-			com.liferay.portlet.expando.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.addColumn(tableId,
+			com.liferay.expando.kernel.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.addColumn(tableId,
 					name, type, defaultData);
 
-			return com.liferay.portlet.expando.model.ExpandoColumnSoap.toSoapModel(returnValue);
+			return com.liferay.expando.kernel.model.ExpandoColumnSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -108,14 +108,28 @@ public class ExpandoColumnServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.expando.model.ExpandoColumnSoap updateColumn(
+	public static com.liferay.expando.kernel.model.ExpandoColumnSoap fetchExpandoColumn(
+		long columnId) throws RemoteException {
+		try {
+			com.liferay.expando.kernel.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.fetchExpandoColumn(columnId);
+
+			return com.liferay.expando.kernel.model.ExpandoColumnSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.expando.kernel.model.ExpandoColumnSoap updateColumn(
 		long columnId, java.lang.String name, int type)
 		throws RemoteException {
 		try {
-			com.liferay.portlet.expando.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.updateColumn(columnId,
+			com.liferay.expando.kernel.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.updateColumn(columnId,
 					name, type);
 
-			return com.liferay.portlet.expando.model.ExpandoColumnSoap.toSoapModel(returnValue);
+			return com.liferay.expando.kernel.model.ExpandoColumnSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -124,14 +138,14 @@ public class ExpandoColumnServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.expando.model.ExpandoColumnSoap updateColumn(
+	public static com.liferay.expando.kernel.model.ExpandoColumnSoap updateColumn(
 		long columnId, java.lang.String name, int type,
 		java.lang.Object defaultData) throws RemoteException {
 		try {
-			com.liferay.portlet.expando.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.updateColumn(columnId,
+			com.liferay.expando.kernel.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.updateColumn(columnId,
 					name, type, defaultData);
 
-			return com.liferay.portlet.expando.model.ExpandoColumnSoap.toSoapModel(returnValue);
+			return com.liferay.expando.kernel.model.ExpandoColumnSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -140,13 +154,13 @@ public class ExpandoColumnServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.expando.model.ExpandoColumnSoap updateTypeSettings(
+	public static com.liferay.expando.kernel.model.ExpandoColumnSoap updateTypeSettings(
 		long columnId, java.lang.String typeSettings) throws RemoteException {
 		try {
-			com.liferay.portlet.expando.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.updateTypeSettings(columnId,
+			com.liferay.expando.kernel.model.ExpandoColumn returnValue = ExpandoColumnServiceUtil.updateTypeSettings(columnId,
 					typeSettings);
 
-			return com.liferay.portlet.expando.model.ExpandoColumnSoap.toSoapModel(returnValue);
+			return com.liferay.expando.kernel.model.ExpandoColumnSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

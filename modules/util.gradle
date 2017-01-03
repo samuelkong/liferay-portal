@@ -1,0 +1,195 @@
+import com.liferay.gradle.plugins.change.log.builder.BuildChangeLogTask
+import com.liferay.gradle.plugins.util.PortalTools
+import com.liferay.gradle.util.FileUtil
+import com.liferay.gradle.util.StringUtil
+import com.liferay.gradle.util.copy.RenameDependencyClosure
+
+import java.util.regex.Matcher
+
+buildscript {
+	apply from: file("build-buildscript.gradle"), to: buildscript
+}
+
+task buildFixPackChangeLog(type: BuildChangeLogTask)
+task cleanReleng
+task cleanVersionOverride
+task setUpPortalTools
+task wrapper(type: Wrapper)
+
+buildFixPackChangeLog {
+	changeLogHeader = {
+		File releaseInfoFile = file("../portal-kernel/src/com/liferay/portal/kernel/util/ReleaseInfo.java")
+
+		Matcher matcher = (releaseInfoFile.text =~ /private static final String _VERSION = "(.+)";/)
+
+		return matcher[0][1]
+	}
+
+	changeLogFile = "../.releng/fix-pack.changelog"
+	dirs = ["../portal-impl", "../portal-kernel", "../portal-web", "../util-bridges", "../util-java", "../util-slf4j", "../util-taglib"]
+
+	if (project.hasProperty("rangeStart")) {
+		rangeStart = project.rangeStart
+	}
+
+	ticketIdPrefixes "LRQA"
+}
+
+cleanReleng {
+	doLast {
+		File relengRootDir = file(".releng")
+
+		FileTree relengFileTree = fileTree(dir: relengRootDir, include: "**/artifact.properties")
+
+		relengFileTree.each {
+			File relengFile ->
+
+			File relengDir = relengFile.parentFile
+
+			File moduleDir = file(FileUtil.relativize(relengDir, relengRootDir))
+
+			if (!moduleDir.exists()) {
+				delete relengDir
+
+				println "Removed " + relativePath(relengDir)
+			}
+		}
+	}
+}
+
+cleanVersionOverride {
+	doLast {
+		String gitRepoPath = project.properties["gitRepoPath"]
+
+		if (!gitRepoPath) {
+			throw new GradleException("Please set the property \"-PgitRepoPath\".")
+		}
+
+		File gitRepoDir = file(gitRepoPath)
+
+		FileTree bndBndFileTree = fileTree(dir: gitRepoDir, include : "**/bnd.bnd")
+
+		delete bndBndFileTree.collect {
+			new File(gitRepoDir.parentFile, ".version-override-${it.parentFile.name}.properties")
+		}
+	}
+}
+
+repositories {
+	mavenLocal()
+
+	maven {
+		url System.properties["repository.url"] ?: "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+	}
+}
+
+wrapper {
+	File wrapperDir = projectDir.parentFile
+
+	distributionUrl = "../../tools/gradle-${gradle.gradleVersion}.LIFERAY-PATCHED-1-bin.zip"
+
+	doLast {
+		File gradlewFile = new File(wrapperDir, "gradlew")
+
+		ant.replace(
+			failOnNoReplacements: true,
+			file: gradlewFile,
+			token: '# Escape application args',
+			value: '''\
+# Escape application args
+DEFAULT_JVM_OPTS="$DEFAULT_JVM_OPTS \\\"-Dgradle.user.home=$APP_HOME/.gradle\\\""'''
+		)
+
+		ant.replace(
+			failOnNoReplacements: true,
+			file: gradlewFile,
+			token: 'org.gradle.wrapper.GradleWrapperMain "$APP_ARGS"',
+			value: 'org.gradle.wrapper.GradleWrapperMain "--init-script=$APP_HOME/modules/init.gradle" "$APP_ARGS"'
+		)
+
+		File gradlewBatFile = new File(wrapperDir, "gradlew.bat")
+
+		ant.replace(
+			failOnNoReplacements: true,
+			file: gradlewBatFile,
+			token: '@rem Setup the command line',
+			value: '''\
+@rem Setup the command line
+set DEFAULT_JVM_OPTS=%DEFAULT_JVM_OPTS% "-Dgradle.user.home=%APP_HOME%\\.gradle"'''
+		)
+
+		ant.replace(
+			failOnNoReplacements: true,
+			file: gradlewBatFile,
+			token: 'org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%',
+			value: 'org.gradle.wrapper.GradleWrapperMain "--init-script=%APP_HOME%\\modules\\init.gradle" %CMD_LINE_ARGS%'
+		)
+	}
+
+	jarFile = new File(wrapperDir, "gradle/wrapper/gradle-wrapper.jar")
+	scriptFile = new File(wrapperDir, "gradlew")
+}
+
+_createSetUpTasks()
+
+private void _createSetUpTasks() {
+	FileTree ivyXmlFileTree = fileTree(dir: "../tools/sdk", includes: ["ivy.xml", "dependencies/*/ivy.xml"])
+
+	XmlSlurper xmlSlurper = new XmlSlurper()
+
+	ivyXmlFileTree.each {
+		File ivyXmlFile ->
+
+		File portalToolDir = ivyXmlFile.parentFile
+
+		String portalToolSuffix = _getPortalToolSuffix(portalToolDir.name)
+
+		Configuration portalToolConfiguration = configurations.create("portalTools" + portalToolSuffix)
+
+		portalToolConfiguration.exclude group: "com.liferay.portal"
+
+		def ivyModuleNode = xmlSlurper.parse(ivyXmlFile)
+
+		def dependencyNodes = ivyModuleNode.dependencies.children()
+
+		dependencyNodes.each {
+			String dependencyConf = it.@conf
+
+			if (dependencyConf) {
+				return
+			}
+
+			String dependencyGroup = it.@org
+			String dependencyName = it.@name
+			String dependencyVersion = PortalTools.getVersion(project, dependencyName)
+
+			if (!dependencyVersion) {
+				dependencyVersion = it.@rev
+			}
+
+			dependencies.add portalToolConfiguration.name, "${dependencyGroup}:${dependencyName}:${dependencyVersion}"
+		}
+
+		Task portalToolTask = tasks.create(name: "setUp" + portalToolSuffix, type: Copy) {
+			doLast {
+				ant.checksum file: ivyXmlFile
+			}
+
+			from portalToolConfiguration
+			into new File(portalToolDir, "lib")
+			rename new RenameDependencyClosure(project, portalToolConfiguration.name)
+		}
+
+		setUpPortalTools.dependsOn portalToolTask
+	}
+}
+
+private String _getPortalToolSuffix(String name) {
+	String suffix = name.replaceAll(/\.(\w)/) {
+		String s = it[1]
+
+		s.toUpperCase()
+	}
+
+	return StringUtil.capitalize(suffix)
+}

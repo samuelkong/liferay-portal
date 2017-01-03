@@ -27,6 +27,14 @@ import java.util.Map;
  */
 public class RouterImpl implements Router {
 
+	public RouterImpl() {
+		_routes = new ArrayList<>();
+	}
+
+	public RouterImpl(int size) {
+		_routes = new ArrayList<>(size);
+	}
+
 	@Override
 	public Route addRoute(String pattern) {
 		Route route = new RouteImpl(pattern);
@@ -34,6 +42,11 @@ public class RouterImpl implements Router {
 		_routes.add(route);
 
 		return route;
+	}
+
+	@Override
+	public List<Route> getRoutes() {
+		return new ArrayList<>(_routes);
 	}
 
 	@Override
@@ -60,6 +73,6 @@ public class RouterImpl implements Router {
 		return false;
 	}
 
-	private final List<Route> _routes = new ArrayList<Route>();
+	private final List<Route> _routes;
 
 }

@@ -14,7 +14,8 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portlet.messageboards.model.MBMessage;
+import com.liferay.message.boards.kernel.model.MBMessage;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
 
 /**
  * @author Brian Wing Shun Chan
@@ -34,6 +35,11 @@ public class MBMessageVerifiableModel implements VerifiableResourcedModel {
 	@Override
 	public String getTableName() {
 		return "MBMessage";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

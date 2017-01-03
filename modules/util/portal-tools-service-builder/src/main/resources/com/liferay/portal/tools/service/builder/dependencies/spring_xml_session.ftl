@@ -1,0 +1,1 @@
+<bean class="${packagePath}.service.impl.${entity.name}${sessionType}ServiceImpl" id="${apiPackagePath}.service.${entity.name}${sessionType}Service" />

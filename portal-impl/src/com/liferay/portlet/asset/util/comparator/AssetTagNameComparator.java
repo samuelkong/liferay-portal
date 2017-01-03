@@ -14,17 +14,26 @@
 
 package com.liferay.portlet.asset.util.comparator;
 
-import com.liferay.portlet.asset.model.AssetTag;
-
-import java.util.Comparator;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.portal.kernel.util.OrderByComparator;
 
 /**
  * @author Juan Fernández
  */
-public class AssetTagNameComparator implements Comparator<AssetTag> {
+public class AssetTagNameComparator extends OrderByComparator<AssetTag> {
+
+	public static final String ORDER_BY_ASC = "AssetTag.name ASC";
+
+	public static final String ORDER_BY_DESC = "AssetTag.name DESC";
+
+	public static final String[] ORDER_BY_FIELDS = {"name"};
 
 	public AssetTagNameComparator() {
 		this(true, false);
+	}
+
+	public AssetTagNameComparator(boolean ascending) {
+		this(ascending, false);
 	}
 
 	public AssetTagNameComparator(boolean ascending, boolean caseSensitive) {
@@ -52,6 +61,26 @@ public class AssetTagNameComparator implements Comparator<AssetTag> {
 		else {
 			return -value;
 		}
+	}
+
+	@Override
+	public String getOrderBy() {
+		if (_ascending) {
+			return ORDER_BY_ASC;
+		}
+		else {
+			return ORDER_BY_DESC;
+		}
+	}
+
+	@Override
+	public String[] getOrderByFields() {
+		return ORDER_BY_FIELDS;
+	}
+
+	@Override
+	public boolean isAscending() {
+		return _ascending;
 	}
 
 	private final boolean _ascending;

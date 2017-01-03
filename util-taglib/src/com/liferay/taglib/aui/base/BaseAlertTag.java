@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseAlertTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseAlertTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -63,48 +63,36 @@ public class BaseAlertTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setAnimated(boolean animated) {
 		_animated = animated;
-
-		setScopedAttribute("animated", animated);
 	}
 
 	public void setCloseable(boolean closeable) {
 		_closeable = closeable;
-
-		setScopedAttribute("closeable", closeable);
 	}
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setDestroyOnHide(boolean destroyOnHide) {
 		_destroyOnHide = destroyOnHide;
-
-		setScopedAttribute("destroyOnHide", destroyOnHide);
 	}
 
 	public void setDuration(java.lang.Object duration) {
 		_duration = duration;
-
-		setScopedAttribute("duration", duration);
 	}
 
 	public void setId(java.lang.String id) {
 		_id = id;
-
-		setScopedAttribute("id", id);
 	}
 
 	public void setType(java.lang.String type) {
 		_type = type;
-
-		setScopedAttribute("type", type);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_animated = false;
 		_closeable = true;
 		_cssClass = null;

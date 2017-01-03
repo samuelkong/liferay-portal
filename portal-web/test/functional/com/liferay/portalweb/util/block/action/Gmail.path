@@ -9,9 +9,9 @@
 </thead>
 <tbody>
 <tr>
-	<td>PAGE_NAME</td>
+	<td>PAGE_TITLE</td>
+	<td>title=${key_pageTitle}</td>
 	<td></td>
-	<td>Gmail</td>
 </tr>
 <tr>
 	<td></td>
@@ -45,6 +45,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>LOGIN_NEXT_BUTTON</td>
+	<td>//input[@id='next']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>LOGIN_SIGN_IN_BUTTON</td>
 	<td>//input[@id='signIn']</td>
 	<td></td>
@@ -56,12 +61,12 @@
 </tr>
 <tr>
 	<td>EMAIL_PASSWORD</td>
-	<td>//tr[4]/td/div[@class='msg']</td>
+	<td>//tr[4]/td//div[@class='msg']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EMAIL_VERIFICATION_CODE</td>
-	<td>//tr[4]/td/div[@class='msg']</td>
+	<td>//tr[4]/td//div[@class='msg']</td>
 	<td></td>
 </tr>
 <tr>
@@ -71,7 +76,7 @@
 </tr>
 <tr>
 	<td>GMAIL_EMAIL_MESSAGE_TITLE</td>
-	<td>//tr/td[contains(.,'${key_gmailMessageTitle}')]/a/span</td>
+	<td>//tr/td[contains(.,'${key_gmailMessageTitle}')]//a/span</td>
 	<td></td>
 </tr>
 <tr>
@@ -86,7 +91,7 @@
 </tr>
 <tr>
 	<td>ADD_ACCOUNT_BUTTON</td>
-	<td>//div[contains(@class,'action-card')]//a[contains(@id,'add-account')]</td>
+	<td>//a[contains(@id,'add-account') and contains(.,'Add account')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -106,6 +111,11 @@
 	<td></td>
 </tr>
 <!--GMAIL_HTML_MODE-->
+<tr>
+	<td>GMAIL_HTML_MODE_CONFIRMATION</td>
+	<td>//input[@value="I'd like to use HTML Gmail"]</td>
+	<td></td>
+</tr>
 <tr>
 	<td>GMAIL_HTML_MODE_USER_SCREENNAME</td>
 	<td>//div[@id='guser']/nobr/b</td>
@@ -132,6 +142,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>GMAIL_HTML_MODE_BACK_TO_INBOX_LINK</td>
+	<td>//a[contains(.,'Back to Inbox')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -144,12 +159,12 @@
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MAIL_TABLE_CHECKBOX</td>
-	<td>//form[@method='POST']//table[2]/tbody/tr[contains(.,'${key_gmailAssetType}')]/td[1]/input[@type='checkbox']</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr[contains(.,'${key_gmailAssetType}')]/td[1]//input[@type='checkbox']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MAIL_TABLE_GENERIC</td>
-	<td>//form[@method='POST']//table[2]/tbody/tr/td[1]/input[@type='checkbox']</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr/td[1]//input[@type='checkbox']</td>
 	<td></td>
 </tr>
 <tr>
@@ -159,12 +174,27 @@
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MAIL_TABLE_MESSAGE_TITLE</td>
-	<td>//form[@method='POST']//table[2]/tbody/tr[contains(.,'${key_gmailAssetType}')]/td[3]/a/span</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr[contains(.,'${key_gmailAssetType}')]/td[3]//a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MAIL_TABLE_MESSAGE_TITLE_1</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr[1][contains(.,'${key_gmailAssetType}')]/td[3]//a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MAIL_TABLE_MESSAGE_TITLE_2</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr[2][contains(.,'${key_gmailAssetType}')]/td[3]//a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MAIL_TABLE_MESSAGE_TITLE_3</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr[3][contains(.,'${key_gmailAssetType}')]/td[3]//a/span</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MAIL_TABLE_MESSAGE_TITLE_SOCIAL_OFFICE_MESSAGE</td>
-	<td>//form[@method='POST']//table[2]/tbody/tr[contains(.,'sent you a message')]/td[3]/a/span</td>
+	<td>//form[@method='POST']//table[2]/tbody/tr[contains(.,'sent you a message')]/td[3]//a/span</td>
 	<td></td>
 </tr>
 <tr>
@@ -173,6 +203,11 @@
 	<td></td>
 </tr>
 <!--GMAIL_HTML_MODE_MESSAGE-->
+<tr>
+	<td>GMAIL_HTML_MODE_MESSAGE_SHOW_QUOTED_TEXT_LINK</td>
+	<td>//a[contains(.,'- Show quoted text -')]</td>
+	<td></td>
+</tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_FROM</td>
 	<td>//table[4]//table[1]//tr[1]/td[1]</td>
@@ -195,52 +230,77 @@
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_GREETING</td>
-	<td>//tr[contains(.,'${key_gmailAssetType}')]//td/div[@class='msg']</td>
+	<td>//tr[contains(.,'${key_gmailAssetType}')]//td//div[@class='msg']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY</td>
-	<td>//tr[contains(.,'${key_gmailAssetType}')]//td/div[@class='msg']</td>
+	<td>//tr[contains(.,'${key_gmailAssetType}')]//td//div[@class='msg']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MESSAGE_BODY_ARTICLE_DATE</td>
+	<td>//tr//td//div[contains(.,'${gmailKBArticleDate}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_SOCIAL_OFFICE_MESSAGE_SUMMARY</td>
-	<td>//tr[contains(.,'message')]//td/div[@class='msg']</td>
+	<td>//tr[contains(.,'message')]//td//div[@class='msg']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_SOCIAL_OFFICE_MESSAGE_SUBJECT</td>
-	<td>//tr[contains(.,'message')]//td/div[@class='msg']</td>
+	<td>//tr[contains(.,'message')]//td//div[@class='msg']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_SOCIAL_OFFICE_MESSAGE_BODY</td>
-	<td>//tr[contains(.,'message')]//td/div[@class='msg']</td>
+	<td>//tr[contains(.,'message')]//td//div[@class='msg']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_SOCIAL_OFFICE_MESSAGE_LINK</td>
-	<td>//tr[contains(.,'message')]//td/div[@class='msg']//a[contains(.,'messages')]</td>
+	<td>//tr[contains(.,'message')]//td//div[@class='msg']//a[contains(.,'messages')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_SOCIAL_OFFICE_SITE_INVITE_CONFIRMATION_LINK</td>
-	<td>//tr[contains(.,'members')]//td/div[@class='msg']//a[contains(.,'portal')]</td>
+	<td>//tr[contains(.,'invitation')]//td//div[@class='msg']//a[contains(.,'View Invitation')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_SOCIAL_OFFICE_SITE_INVITE_CREATE_ACCOUNT_LINK</td>
-	<td>//tr[contains(.,'members')]//td/div[@class='msg']//a[contains(.,'guest')]</td>
+	<td>//tr[contains(.,'invitation')]//td//div[@class='msg']//a[contains(.,'Create Account')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_LINK</td>
-	<td>//tr[contains(.,'${key_gmailAssetType}')]//td/div[@class='msg']/a[1]</td>
+	<td>//tr[contains(.,'${key_gmailAssetType}')]//td//div[@class='msg']/a[contains(.,'${key_pageNameURL}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MESSAGE_BODY_LINK_1</td>
+	<td>//tr[contains(.,'${key_gmailAssetType}')]//td//div[@class='msg']/a[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MESSAGE_BODY_CONTINUE_READING_BUTTON</td>
+	<td>//a[contains(.,'CONTINUE READING')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GMAIL_HTML_MODE_MESSAGE_BODY_CLOSING</td>
-	<td>//tr[contains(.,'${key_gmailAssetType}')]//td/div[@class='msg']</td>
+	<td>//tr[contains(.,'${key_gmailAssetType}')]//td//div[@class='msg']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MESSAGE_BODY_KB_URL</td>
+	<td>//a[contains(.,'Article Link')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GMAIL_HTML_MODE_MESSAGE_BODY_ATTACHMENT</td>
+	<td>//table[@class='att']//b[contains(.,'${key_gmailMessageAttachment}')]</td>
 	<td></td>
 </tr>
 <tr>

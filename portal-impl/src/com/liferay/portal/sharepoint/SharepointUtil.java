@@ -17,6 +17,7 @@ package com.liferay.portal.sharepoint;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.InstancePool;
@@ -26,7 +27,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webdav.WebDAVException;
 import com.liferay.portal.kernel.webdav.WebDAVUtil;
-import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.util.PropsUtil;
 
 import java.util.Collection;
@@ -51,9 +51,9 @@ public class SharepointUtil {
 		try {
 			groupId = WebDAVUtil.getGroupId(companyId, path);
 		}
-		catch (WebDAVException wde) {
+		catch (WebDAVException wdave) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to get groupId for path " + path);
+				_log.warn("Unable to get groupId for path " + path, wdave);
 			}
 		}
 
@@ -105,7 +105,7 @@ public class SharepointUtil {
 	}
 
 	public static String replaceBackSlashes(String value) {
-		return StringUtil.replace(value, "\\", StringPool.BLANK);
+		return StringUtil.replace(value, '\\', StringPool.BLANK);
 	}
 
 	public static String stripService(String url, boolean trailingSlash) {
@@ -113,7 +113,7 @@ public class SharepointUtil {
 	}
 
 	private SharepointUtil() {
-		_storageMap = new HashMap<String, String>();
+		_storageMap = new HashMap<>();
 
 		String[] tokens = PropsUtil.getArray(
 			PropsKeys.SHAREPOINT_STORAGE_TOKENS);

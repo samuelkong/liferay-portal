@@ -14,28 +14,38 @@
 
 package com.liferay.portal.zip;
 
+import com.liferay.portal.kernel.test.util.DependenciesTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.DependenciesTestUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Manuel de la Peña
  */
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class ZipWriterImplTest {
+
+	@ClassRule
+	@Rule
+	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
+		new LiferayIntegrationTestRule();
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -45,10 +55,14 @@ public class ZipWriterImplTest {
 	}
 
 	@Before
-	public void setUp() {
-		_tempZipFilePath =
-			SystemProperties.get(SystemProperties.TMP_DIR) +
-				File.separatorChar + System.currentTimeMillis() + "-file.zip";
+	public void setUp() throws IOException {
+		Path tempZipFilePath = Files.createTempFile(
+			Paths.get(SystemProperties.get(SystemProperties.TMP_DIR)), null,
+			"-file.zip");
+
+		Files.delete(tempZipFilePath);
+
+		_tempZipFilePath = tempZipFilePath.toString();
 	}
 
 	@Test
@@ -343,6 +357,13 @@ public class ZipWriterImplTest {
 		file.delete();
 	}
 
+	/**
+	 * Tests that {@link ZipWriter#finish()} can execute without error on a ZIP
+	 * writer that's been created by the default constructor and that has no
+	 * entries.
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void testFinishIfZipFileIsNotSet() throws Exception {
 		ZipWriter zipWriter = new ZipWriterImpl();
@@ -354,6 +375,13 @@ public class ZipWriterImplTest {
 		file.delete();
 	}
 
+	/**
+	 * Tests that {@link ZipWriter#finish()} can execute without error on a ZIP
+	 * writer that's been created for an existing ZIP file and that has no
+	 * entries.
+	 *
+	 * @throws Exception if an exception occurred
+	 */
 	@Test
 	public void testFinishIfZipFileIsSet() throws Exception {
 		File tempZipFile = new File(_tempZipFilePath);

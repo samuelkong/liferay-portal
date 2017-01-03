@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -91,90 +91,64 @@ public class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setData(java.lang.Object data) {
 		_data = data;
-
-		setScopedAttribute("data", data);
 	}
 
 	public void setDisabled(boolean disabled) {
 		_disabled = disabled;
-
-		setScopedAttribute("disabled", disabled);
 	}
 
 	public void setHref(java.lang.String href) {
 		_href = href;
-
-		setScopedAttribute("href", href);
 	}
 
 	public void setIcon(java.lang.String icon) {
 		_icon = icon;
-
-		setScopedAttribute("icon", icon);
 	}
 
 	public void setIconAlign(java.lang.String iconAlign) {
 		_iconAlign = iconAlign;
-
-		setScopedAttribute("iconAlign", iconAlign);
 	}
 
 	public void setId(java.lang.String id) {
 		_id = id;
-
-		setScopedAttribute("id", id);
 	}
 
 	public void setName(java.lang.String name) {
 		_name = name;
-
-		setScopedAttribute("name", name);
 	}
 
 	public void setOnClick(java.lang.String onClick) {
 		_onClick = onClick;
-
-		setScopedAttribute("onClick", onClick);
 	}
 
 	public void setPrimary(java.lang.Object primary) {
 		_primary = primary;
-
-		setScopedAttribute("primary", primary);
 	}
 
 	public void setType(java.lang.String type) {
 		_type = type;
-
-		setScopedAttribute("type", type);
 	}
 
 	public void setUseDialog(boolean useDialog) {
 		_useDialog = useDialog;
-
-		setScopedAttribute("useDialog", useDialog);
 	}
 
 	public void setUseNamespace(boolean useNamespace) {
 		_useNamespace = useNamespace;
-
-		setScopedAttribute("useNamespace", useNamespace);
 	}
 
 	public void setValue(java.lang.String value) {
 		_value = value;
-
-		setScopedAttribute("value", value);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_cssClass = null;
 		_data = null;
 		_disabled = false;
@@ -194,11 +168,6 @@ public class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 	@Override
 	protected String getEndPage() {
 		return _END_PAGE;
-	}
-
-	@Override
-	protected String getStartPage() {
-		return _START_PAGE;
 	}
 
 	@Override
@@ -223,9 +192,6 @@ public class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 
 	private static final String _END_PAGE =
 		"/html/taglib/aui/button/end.jsp";
-
-	private static final String _START_PAGE =
-		"/html/taglib/aui/button/start.jsp";
 
 	private java.lang.String _cssClass = null;
 	private java.lang.Object _data = null;

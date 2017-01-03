@@ -37,6 +37,7 @@ public abstract class BaseCacheKeyGeneratorTestCase extends TestCase {
 		StringBundler sb = new StringBundler(_KEYS);
 
 		Serializable hashCode1 = cacheKeyGenerator.getCacheKey(sb.toString());
+
 		Serializable hashCode2 = cacheKeyGenerator.getCacheKey(_KEYS);
 
 		assertEquals(hashCode1, hashCode2);
@@ -48,7 +49,7 @@ public abstract class BaseCacheKeyGeneratorTestCase extends TestCase {
 
 	@Test
 	public void testScan() {
-		Map<Serializable, String> map = new HashMap<Serializable, String>();
+		Map<Serializable, String> map = new HashMap<>();
 
 		for (int i = 0; i < 1000000; i++) {
 			String value = String.valueOf(i);
@@ -57,18 +58,15 @@ public abstract class BaseCacheKeyGeneratorTestCase extends TestCase {
 
 			String oldValue = map.put(key, value);
 
-			if (oldValue != null) {
-				fail(
-					oldValue + " and " + value + " generate the same key " +
-						key);
-			}
+			assertNull(
+				oldValue + " and " + value + " generate the same key " + key,
+				oldValue);
 		}
 	}
 
 	@Test
 	public void testSpecialCases() {
-		Map<Serializable, String> checkMap =
-			new HashMap<Serializable, String>();
+		Map<Serializable, String> checkMap = new HashMap<>();
 
 		for (String[] values : _SPECIAL_CASES) {
 			String value = Arrays.toString(values);
@@ -77,11 +75,9 @@ public abstract class BaseCacheKeyGeneratorTestCase extends TestCase {
 
 			String oldValue = checkMap.put(key, Arrays.toString(values));
 
-			if (oldValue != null) {
-				fail(
-					oldValue + " and " + value + " generate the same key " +
-						key);
-			}
+			assertNull(
+				oldValue + " and " + value + " generate the same key " + key,
+				oldValue);
 		}
 	}
 
@@ -90,10 +86,14 @@ public abstract class BaseCacheKeyGeneratorTestCase extends TestCase {
 	private static final String[] _KEYS = {"test1", "test2", "test3", "test4"};
 
 	private static final String[][] _SPECIAL_CASES = {
-		{"fetchByT_C_C_P_.java.lang.Long.java.lang.Long.java.lang.Long_A_", ".",
-			"10302", ".", "10303", ".", "13710"},
-		{"fetchByT_C_C_P_.java.lang.Long.java.lang.Long.java.lang.Long_A_", ".",
-			"10302", ".", "10305", ".", "13510"}
+		{
+			"fetchByT_C_C_P_.java.lang.Long.java.lang.Long.java.lang.Long_A_",
+			".", "10302", ".", "10303", ".", "13710"
+		},
+		{
+			"fetchByT_C_C_P_.java.lang.Long.java.lang.Long.java.lang.Long_A_",
+			".", "10302", ".", "10305", ".", "13510"
+		}
 	};
 
 }

@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>ConfigurationAdmin</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ConfigurationAdmin</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>CONFIGURATION_ADMIN_NAME_LINK</td>
+	<td>//table[contains(@class,'table-list')]//tbody/tr/td//a[contains(.,'${key_configurationAdminName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--XSL_CONTENT_CONFIGURATION-->
+<tr>
+	<td>XSL_CONTENT_CONFIGURATION_XML_DOCTYPE_DECLARATION_CHECKBOX</td>
+	<td>//input[contains(@id,'xml.doctype.declaration.allowed')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

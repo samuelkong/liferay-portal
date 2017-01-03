@@ -75,9 +75,13 @@ public class ZipReaderImpl implements ZipReader {
 
 	@Override
 	public List<String> getEntries() {
-		List<String> folderEntries = new ArrayList<String>();
+		List<String> folderEntries = new ArrayList<>();
 
 		File[] files = (File[])_zipFile.listFiles();
+
+		if (files == null) {
+			return null;
+		}
 
 		for (File file : files) {
 			if (!file.isDirectory()) {
@@ -162,7 +166,7 @@ public class ZipReaderImpl implements ZipReader {
 			return Collections.emptyList();
 		}
 
-		List<String> folderEntries = new ArrayList<String>();
+		List<String> folderEntries = new ArrayList<>();
 
 		File directory = new File(_zipFile.getPath() + StringPool.SLASH + path);
 
@@ -203,6 +207,8 @@ public class ZipReaderImpl implements ZipReader {
 			new DefaultArchiveDetector(
 				ArchiveDetector.ALL, "lar|" + ArchiveDetector.ALL.getSuffixes(),
 				new ZipDriver()));
+
+		TrueZIPHelperUtil.initialize();
 	}
 
 	private final File _zipFile;

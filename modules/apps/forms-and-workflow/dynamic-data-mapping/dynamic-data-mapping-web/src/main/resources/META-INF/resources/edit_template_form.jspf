@@ -1,0 +1,108 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%
+String namespace = renderResponse.getNamespace();
+
+if (Validator.isNotNull(portletResourceNamespace)) {
+	namespace = portletResourceNamespace;
+}
+
+if (Validator.isNull(script)) {
+	script = structure.getDefinition();
+}
+
+JSONArray fieldsJSONArray = _getFormTemplateFieldsJSONArray(structure, script);
+
+String fieldsJSONArrayString = fieldsJSONArray.toString();
+%>
+
+<aui:input name="language" type="hidden" value="json" />
+<aui:input name="scriptContent" type="hidden" />
+
+<aui:script>
+	function <portlet:namespace />attachValueChange(formBuilder) {
+		AUI.$('#<portlet:namespace />mode').on(
+			'change',
+			function(event) {
+				<portlet:namespace />toggleMode(formBuilder, AUI.$(event.currentTarget).val());
+			}
+		);
+	}
+
+	Liferay.on(
+		'<portlet:namespace />formBuilderLoaded',
+		function(event) {
+			var formBuilder = event.formBuilder;
+
+			<portlet:namespace />attachValueChange(formBuilder);
+
+			<portlet:namespace />toggleMode(formBuilder, '<%= HtmlUtil.escape(mode) %>');
+		}
+	);
+
+	function <portlet:namespace />setFieldsHiddenAttributes(formBuilder, mode, item, index) {
+		var hiddenAttributesMap = formBuilder.MAP_HIDDEN_FIELD_ATTRS;
+
+		var hiddenAttributes = hiddenAttributesMap[item.get('type')] || hiddenAttributesMap.DEFAULT;
+
+		if (mode === '<%= DDMTemplateConstants.TEMPLATE_MODE_EDIT %>') {
+			hiddenAttributes = AUI._.without(hiddenAttributes, 'readOnly');
+		}
+
+		item.set('hiddenAttributes', hiddenAttributes);
+	}
+
+	function <portlet:namespace />toggleMode(formBuilder, mode) {
+		var _ = AUI._;
+
+		var modeEdit = (mode === '<%= DDMTemplateConstants.TEMPLATE_MODE_EDIT %>');
+
+		formBuilder.set('allowRemoveRequiredFields', modeEdit);
+
+		var setFieldsHiddenAttributes = _.bindKey(window, '<portlet:namespace />setFieldsHiddenAttributes', formBuilder, mode);
+
+		_.forEach(formBuilder.get('fields')._items, setFieldsHiddenAttributes);
+
+		_.forEach(formBuilder.get('availableFields'), setFieldsHiddenAttributes);
+
+		var editingField = formBuilder.editingField;
+
+		if (editingField) {
+			formBuilder.propertyList.set('data', formBuilder.getFieldProperties(editingField, true));
+		}
+	}
+
+	window['<%= HtmlUtil.escapeJS(namespace) %>getAvailableFields'] = function(A, FormBuilder) {
+
+		<%
+		JSONArray structureJSONArray = _getFormTemplateFieldsJSONArray(structure, structure.getDefinition());
+		%>
+
+		var availableFields = <%= structureJSONArray.toString() %>;
+
+		AUI._.forEach(
+			availableFields,
+			function(item, index) {
+				item.iconClass = FormBuilder.DEFAULT_ICON_CLASS;
+			}
+		);
+
+		return availableFields.concat(FormBuilder.AVAILABLE_FIELDS.DDM_TEMPLATE);
+	};
+</aui:script>
+
+<%@ include file="/form_builder.jspf" %>

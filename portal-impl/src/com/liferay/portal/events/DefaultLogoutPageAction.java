@@ -18,12 +18,12 @@ import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PrefsPropsUtil;
-import com.liferay.portal.util.WebKeys;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,7 +68,7 @@ public class DefaultLogoutPageAction extends Action {
 		// for forwarding a user to his logout page. See the references to this
 		// class in portal.properties.
 
-		/*Map<String, String[]> params = new HashMap<String, String[]>();
+		/*Map<String, String[]> params = new HashMap<>();
 
 		params.put("p_l_id", new String[] {"1806"});
 

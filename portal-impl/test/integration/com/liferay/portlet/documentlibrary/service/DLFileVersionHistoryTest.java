@@ -14,30 +14,46 @@
 
 package com.liferay.portlet.documentlibrary.service;
 
+import com.liferay.document.library.kernel.exception.InvalidFileVersionException;
+import com.liferay.document.library.kernel.model.DLFileVersion;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portlet.documentlibrary.InvalidFileVersionException;
-import com.liferay.portlet.documentlibrary.model.DLFileVersion;
-import com.liferay.portlet.documentlibrary.util.test.DLAppTestUtil;
+import com.liferay.portal.test.randomizerbumpers.TikaSafeRandomizerBumper;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Alexander Chow
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
+@Sync
 public class DLFileVersionHistoryTest extends BaseDLAppTestCase {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			SynchronousDestinationTestRule.INSTANCE);
 
 	@Test
 	public void testDeleteOneVersion() throws Exception {
@@ -79,6 +95,20 @@ public class DLFileVersionHistoryTest extends BaseDLAppTestCase {
 		revertVersion(true, true);
 	}
 
+	protected FileEntry addFileEntry(long folderId, String sourceFileName)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId());
+
+		return DLAppLocalServiceUtil.addFileEntry(
+			TestPropsValues.getUserId(), group.getGroupId(), folderId,
+			sourceFileName, ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(TikaSafeRandomizerBumper.INSTANCE),
+			serviceContext);
+	}
+
 	protected void assertFileEntryTitle(String fileName)
 		throws PortalException {
 
@@ -118,22 +148,33 @@ public class DLFileVersionHistoryTest extends BaseDLAppTestCase {
 	protected void deleteVersion(boolean versioned, boolean leaveCheckedOut)
 		throws Exception {
 
-		_fileEntry = DLAppTestUtil.addFileEntry(
-			group.getGroupId(), parentFolder.getFolderId(), _VERSION_1_0);
+		_fileEntry = addFileEntry(parentFolder.getFolderId(), _VERSION_1_0);
 
 		long fileEntryId = _fileEntry.getFileEntryId();
 
 		if (versioned) {
-			DLAppTestUtil.updateFileEntry(
-				group.getGroupId(), fileEntryId, null, _VERSION_1_1);
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId());
+
+			DLAppServiceUtil.updateFileEntry(
+				fileEntryId, null, ContentTypes.TEXT_PLAIN, _VERSION_1_1,
+				StringPool.BLANK, StringPool.BLANK, false, (byte[])null,
+				serviceContext);
 		}
 
 		if (leaveCheckedOut) {
 			DLAppServiceUtil.checkOutFileEntry(
 				fileEntryId, new ServiceContext());
 
-			DLAppTestUtil.updateFileEntry(
-				group.getGroupId(), fileEntryId, null, _VERSION_PWC);
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId());
+
+			DLAppServiceUtil.updateFileEntry(
+				fileEntryId, null, ContentTypes.TEXT_PLAIN, _VERSION_PWC,
+				StringPool.BLANK, StringPool.BLANK, false, (byte[])null,
+				serviceContext);
 		}
 
 		if (versioned && leaveCheckedOut) {
@@ -215,22 +256,33 @@ public class DLFileVersionHistoryTest extends BaseDLAppTestCase {
 	protected void revertVersion(boolean versioned, boolean leaveCheckedOut)
 		throws Exception {
 
-		_fileEntry = DLAppTestUtil.addFileEntry(
-			group.getGroupId(), parentFolder.getFolderId(), _VERSION_1_0);
+		_fileEntry = addFileEntry(parentFolder.getFolderId(), _VERSION_1_0);
 
 		long fileEntryId = _fileEntry.getFileEntryId();
 
 		if (versioned) {
-			DLAppTestUtil.updateFileEntry(
-				group.getGroupId(), fileEntryId, null, _VERSION_1_1);
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId());
+
+			DLAppServiceUtil.updateFileEntry(
+				fileEntryId, null, ContentTypes.TEXT_PLAIN, _VERSION_1_1,
+				StringPool.BLANK, StringPool.BLANK, false, (byte[])null,
+				serviceContext);
 		}
 
 		if (leaveCheckedOut) {
 			DLAppServiceUtil.checkOutFileEntry(
 				fileEntryId, new ServiceContext());
 
-			DLAppTestUtil.updateFileEntry(
-				group.getGroupId(), fileEntryId, null, _VERSION_PWC);
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId());
+
+			DLAppServiceUtil.updateFileEntry(
+				fileEntryId, null, ContentTypes.TEXT_PLAIN, _VERSION_PWC,
+				StringPool.BLANK, StringPool.BLANK, false, (byte[])null,
+				serviceContext);
 		}
 
 		if (versioned && leaveCheckedOut) {

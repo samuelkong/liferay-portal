@@ -15,6 +15,7 @@
 package com.liferay.portal.repository.registry;
 
 import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermission;
+import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.repository.util.ExternalRepositoryFactory;
 
 import java.util.Collection;
@@ -24,23 +25,47 @@ import java.util.Collection;
  */
 public class RepositoryClassDefinitionCatalogUtil {
 
+	public static Iterable<RepositoryClassDefinition>
+		getExternalRepositoryClassDefinitions() {
+
+		return getRepositoryClassDefinitionCatalog().
+			getExternalRepositoryClassDefinitions();
+	}
+
 	public static Collection<String> getExternalRepositoryClassNames() {
-		return
-			_repositoryClassDefinitionCatalog.getExternalRepositoryClassNames();
+		return getRepositoryClassDefinitionCatalog().
+			getExternalRepositoryClassNames();
+	}
+
+	public static RepositoryClassDefinition getRepositoryClassDefinition(
+		String repositoryTypeKey) {
+
+		return getRepositoryClassDefinitionCatalog().
+			getRepositoryClassDefinition(repositoryTypeKey);
+	}
+
+	public static RepositoryClassDefinitionCatalog
+		getRepositoryClassDefinitionCatalog() {
+
+		PortalRuntimePermission.checkGetBeanProperty(
+			RepositoryClassDefinitionCatalogUtil.class);
+
+		return _repositoryClassDefinitionCatalog;
 	}
 
 	public static void registerLegacyExternalRepositoryFactory(
-		String className, ExternalRepositoryFactory externalRepositoryFactory) {
+		String className, ExternalRepositoryFactory externalRepositoryFactory,
+		ResourceBundleLoader resourceBundleLoader) {
 
-		_repositoryClassDefinitionCatalog.
+		getRepositoryClassDefinitionCatalog().
 			registerLegacyExternalRepositoryFactory(
-				className, externalRepositoryFactory);
+				className, externalRepositoryFactory, resourceBundleLoader);
 	}
 
 	public static void unregisterLegacyExternalRepositoryFactory(
 		String className) {
 
-		_repositoryClassDefinitionCatalog.
+		getRepositoryClassDefinitionCatalog().
 			unregisterLegacyExternalRepositoryFactory(className);
 	}
 

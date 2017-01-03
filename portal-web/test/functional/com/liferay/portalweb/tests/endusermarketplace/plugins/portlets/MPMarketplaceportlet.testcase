@@ -1,0 +1,19 @@
+<definition component-name="portal-plugins-deployment">
+	<property name="testray.main.component.name" value="Plugin Installer" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<command name="MarketplacePortletSmoke" priority="4">
+		<var name="appName" value="Marketplace" />
+
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="App Manager" />
+		</execute>
+
+		<execute macro="AppManager#viewAppCP">
+			<var name="appName" value="${appName}" />
+		</execute>
+	</command>
+</definition>

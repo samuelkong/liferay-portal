@@ -1,0 +1,57 @@
+<definition>
+	<var name="validationErrorMessage" value="This field is required." />
+
+	<command name="clickSubmit">
+		<execute function="AssertClick" locator1="Button#SUBMIT" value1="Submit" />
+	</command>
+
+	<command name="gotoFormPage">
+		<var name="key_formPageName" value="${formPageName}" />
+
+		<execute function="AssertClick" locator1="FormPortlet#FORM_PAGE" value1="${formPageName}" />
+	</command>
+
+	<command name="nextPage">
+		<execute function="AssertClick" locator1="Button#NEXT" value1="Next" />
+
+		<var name="key_formPageName" value="${formPageCurrent}" />
+
+		<execute function="AssertTextEquals" locator1="FormPortlet#FORM_PAGE_INACTIVE" value1="${formPageCurrent}" />
+
+		<var name="key_formPageName" value="${formPageNext}" />
+
+		<execute function="AssertTextEquals" locator1="FormPortlet#FORM_PAGE_ACTIVE" value1="${formPageNext}" />
+	</command>
+
+	<command name="submit">
+		<if>
+			<condition function="IsElementPresent" locator1="FormPortlet#PORTLET_CONTENT" />
+			<then>
+				<execute function="Click" locator1="FormPortlet#PORTLET_CONTENT" />
+			</then>
+			<else>
+				<execute function="Click" locator1="Form#PUBLISH_URL_FORM_PAGE" />
+			</else>
+		</if>
+
+		<execute macro="FormPortlet#clickSubmit" />
+	</command>
+
+	<command name="submitSuccessfully">
+		<execute macro="FormPortlet#submit" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="submitWithError">
+		<execute macro="FormPortlet#submit" />
+
+		<execute function="AssertTextEquals" locator1="Message#ERROR" value1="${errorMessage}" />
+	</command>
+
+	<command name="submitWithValidationError">
+		<execute macro="FormPortlet#submit" />
+
+		<execute function="AssertTextEquals" locator1="Message#ERROR_FORM_FIELD_REQUIRED" value1="${validationErrorMessage}" />
+	</command>
+</definition>

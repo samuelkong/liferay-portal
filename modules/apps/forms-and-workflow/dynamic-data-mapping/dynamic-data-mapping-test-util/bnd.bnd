@@ -1,0 +1,9 @@
+Bundle-Name: Liferay Dynamic Data Mapping Test Utilities
+Bundle-SymbolicName: com.liferay.dynamic.data.mapping.test.util
+Bundle-Version: 2.1.3
+Export-Package:\
+	com.liferay.dynamic.data.mapping.test.util,\
+	com.liferay.dynamic.data.mapping.test.util.search,\
+	com.liferay.dynamic.data.mapping.test.util.storage
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Dynamic Data Mapping

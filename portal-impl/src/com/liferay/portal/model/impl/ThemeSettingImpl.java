@@ -14,8 +14,8 @@
 
 package com.liferay.portal.model.impl;
 
+import com.liferay.portal.kernel.model.ThemeSetting;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.ThemeSetting;
 
 import java.io.Serializable;
 
@@ -71,7 +71,7 @@ public class ThemeSettingImpl implements Serializable, ThemeSetting {
 
 	@Override
 	public void setConfigurable(boolean configurable) {
-		this._configurable = configurable;
+		_configurable = configurable;
 	}
 
 	@Override

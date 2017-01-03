@@ -39,10 +39,11 @@ public class TabsTag extends IncludeTag {
 			request.setAttribute("liferay-ui:tabs:param", _param);
 			request.setAttribute("liferay-ui:tabs:value", _value);
 
-			include(getEndPage());
+			include(getEndPage(), false);
 
 			request.removeAttribute("liferay-ui:tabs:backLabel");
 			request.removeAttribute("liferay-ui:tabs:backURL");
+			request.removeAttribute("liferay-ui:tabs:cssClass");
 			request.removeAttribute("liferay-ui:tabs:formName");
 			request.removeAttribute("liferay-ui:tabs:names");
 			request.removeAttribute("liferay-ui:tabs:namesJS");
@@ -65,6 +66,7 @@ public class TabsTag extends IncludeTag {
 			if (!ServerDetector.isResin()) {
 				_backLabel = null;
 				_backURL = null;
+				_cssClass = StringPool.BLANK;
 				_endPage = null;
 				_formName = StringPool.BLANK;
 				_names = null;
@@ -99,6 +101,7 @@ public class TabsTag extends IncludeTag {
 		try {
 			request.setAttribute("liferay-ui:tabs:backLabel", _backLabel);
 			request.setAttribute("liferay-ui:tabs:backURL", _backURL);
+			request.setAttribute("liferay-ui:tabs:cssClass", _cssClass);
 			request.setAttribute("liferay-ui:tabs:formName", _formName);
 			request.setAttribute("liferay-ui:tabs:names", _names);
 
@@ -204,7 +207,7 @@ public class TabsTag extends IncludeTag {
 
 			request.setAttribute("liferay-ui:tabs:value", _value);
 
-			include(getStartPage());
+			include(getStartPage(), true);
 
 			return EVAL_BODY_INCLUDE;
 		}
@@ -232,8 +235,7 @@ public class TabsTag extends IncludeTag {
 
 	public boolean getSectionSelected() {
 		if ((_names.length == 0) ||
-			((_names.length > _namesPos) &&
-			 _names[_namesPos].equals(_value))) {
+			((_names.length > _namesPos) && _names[_namesPos].equals(_value))) {
 
 			return true;
 		}
@@ -256,6 +258,10 @@ public class TabsTag extends IncludeTag {
 
 	public void setBackURL(String backURL) {
 		_backURL = backURL;
+	}
+
+	public void setCssClass(String cssClass) {
+		_cssClass = cssClass;
 	}
 
 	public void setEndPage(String endPage) {
@@ -416,6 +422,7 @@ public class TabsTag extends IncludeTag {
 
 	private String _backLabel;
 	private String _backURL;
+	private String _cssClass;
 	private String _endPage;
 	private String _formName;
 	private String[] _names;

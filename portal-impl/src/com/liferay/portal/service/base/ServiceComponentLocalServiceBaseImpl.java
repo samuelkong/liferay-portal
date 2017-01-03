@@ -17,28 +17,31 @@ package com.liferay.portal.service.base;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.ServiceComponent;
+import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.BaseLocalServiceImpl;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
+import com.liferay.portal.kernel.service.ServiceComponentLocalService;
+import com.liferay.portal.kernel.service.persistence.ReleasePersistence;
+import com.liferay.portal.kernel.service.persistence.ServiceComponentFinder;
+import com.liferay.portal.kernel.service.persistence.ServiceComponentPersistence;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.model.PersistedModel;
-import com.liferay.portal.model.ServiceComponent;
-import com.liferay.portal.service.BaseLocalServiceImpl;
-import com.liferay.portal.service.PersistedModelLocalServiceRegistry;
-import com.liferay.portal.service.ServiceComponentLocalService;
-import com.liferay.portal.service.persistence.ServiceComponentPersistence;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.io.Serializable;
 
@@ -55,17 +58,17 @@ import javax.sql.DataSource;
  *
  * @author Brian Wing Shun Chan
  * @see com.liferay.portal.service.impl.ServiceComponentLocalServiceImpl
- * @see com.liferay.portal.service.ServiceComponentLocalServiceUtil
+ * @see com.liferay.portal.kernel.service.ServiceComponentLocalServiceUtil
  * @generated
  */
 @ProviderType
 public abstract class ServiceComponentLocalServiceBaseImpl
 	extends BaseLocalServiceImpl implements ServiceComponentLocalService,
-		IdentifiableBean {
+		IdentifiableOSGiService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link com.liferay.portal.service.ServiceComponentLocalServiceUtil} to access the service component local service.
+	 * Never modify or reference this class directly. Always use {@link com.liferay.portal.kernel.service.ServiceComponentLocalServiceUtil} to access the service component local service.
 	 */
 
 	/**
@@ -180,10 +183,10 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
-	 * @return the number of rows that match the dynamic query
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
@@ -191,11 +194,11 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
-	 * @return the number of rows that match the dynamic query
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
@@ -226,20 +229,34 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	public ActionableDynamicQuery getActionableDynamicQuery() {
 		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
 
-		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.service.ServiceComponentLocalServiceUtil.getService());
-		actionableDynamicQuery.setClass(ServiceComponent.class);
+		actionableDynamicQuery.setBaseLocalService(serviceComponentLocalService);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
+		actionableDynamicQuery.setModelClass(ServiceComponent.class);
 
 		actionableDynamicQuery.setPrimaryKeyPropertyName("serviceComponentId");
 
 		return actionableDynamicQuery;
 	}
 
+	@Override
+	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery = new IndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setBaseLocalService(serviceComponentLocalService);
+		indexableActionableDynamicQuery.setClassLoader(getClassLoader());
+		indexableActionableDynamicQuery.setModelClass(ServiceComponent.class);
+
+		indexableActionableDynamicQuery.setPrimaryKeyPropertyName(
+			"serviceComponentId");
+
+		return indexableActionableDynamicQuery;
+	}
+
 	protected void initActionableDynamicQuery(
 		ActionableDynamicQuery actionableDynamicQuery) {
-		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.service.ServiceComponentLocalServiceUtil.getService());
-		actionableDynamicQuery.setClass(ServiceComponent.class);
+		actionableDynamicQuery.setBaseLocalService(serviceComponentLocalService);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
+		actionableDynamicQuery.setModelClass(ServiceComponent.class);
 
 		actionableDynamicQuery.setPrimaryKeyPropertyName("serviceComponentId");
 	}
@@ -303,7 +320,7 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	 *
 	 * @return the service component local service
 	 */
-	public com.liferay.portal.service.ServiceComponentLocalService getServiceComponentLocalService() {
+	public ServiceComponentLocalService getServiceComponentLocalService() {
 		return serviceComponentLocalService;
 	}
 
@@ -313,7 +330,7 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	 * @param serviceComponentLocalService the service component local service
 	 */
 	public void setServiceComponentLocalService(
-		com.liferay.portal.service.ServiceComponentLocalService serviceComponentLocalService) {
+		ServiceComponentLocalService serviceComponentLocalService) {
 		this.serviceComponentLocalService = serviceComponentLocalService;
 	}
 
@@ -337,11 +354,30 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the service component finder.
+	 *
+	 * @return the service component finder
+	 */
+	public ServiceComponentFinder getServiceComponentFinder() {
+		return serviceComponentFinder;
+	}
+
+	/**
+	 * Sets the service component finder.
+	 *
+	 * @param serviceComponentFinder the service component finder
+	 */
+	public void setServiceComponentFinder(
+		ServiceComponentFinder serviceComponentFinder) {
+		this.serviceComponentFinder = serviceComponentFinder;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
 	 */
-	public com.liferay.counter.service.CounterLocalService getCounterLocalService() {
+	public com.liferay.counter.kernel.service.CounterLocalService getCounterLocalService() {
 		return counterLocalService;
 	}
 
@@ -351,38 +387,65 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 	 * @param counterLocalService the counter local service
 	 */
 	public void setCounterLocalService(
-		com.liferay.counter.service.CounterLocalService counterLocalService) {
+		com.liferay.counter.kernel.service.CounterLocalService counterLocalService) {
 		this.counterLocalService = counterLocalService;
 	}
 
+	/**
+	 * Returns the release local service.
+	 *
+	 * @return the release local service
+	 */
+	public com.liferay.portal.kernel.service.ReleaseLocalService getReleaseLocalService() {
+		return releaseLocalService;
+	}
+
+	/**
+	 * Sets the release local service.
+	 *
+	 * @param releaseLocalService the release local service
+	 */
+	public void setReleaseLocalService(
+		com.liferay.portal.kernel.service.ReleaseLocalService releaseLocalService) {
+		this.releaseLocalService = releaseLocalService;
+	}
+
+	/**
+	 * Returns the release persistence.
+	 *
+	 * @return the release persistence
+	 */
+	public ReleasePersistence getReleasePersistence() {
+		return releasePersistence;
+	}
+
+	/**
+	 * Sets the release persistence.
+	 *
+	 * @param releasePersistence the release persistence
+	 */
+	public void setReleasePersistence(ReleasePersistence releasePersistence) {
+		this.releasePersistence = releasePersistence;
+	}
+
 	public void afterPropertiesSet() {
-		persistedModelLocalServiceRegistry.register("com.liferay.portal.model.ServiceComponent",
+		persistedModelLocalServiceRegistry.register("com.liferay.portal.kernel.model.ServiceComponent",
 			serviceComponentLocalService);
 	}
 
 	public void destroy() {
 		persistedModelLocalServiceRegistry.unregister(
-			"com.liferay.portal.model.ServiceComponent");
+			"com.liferay.portal.kernel.model.ServiceComponent");
 	}
 
 	/**
-	 * Returns the Spring bean ID for this bean.
+	 * Returns the OSGi service identifier.
 	 *
-	 * @return the Spring bean ID for this bean
+	 * @return the OSGi service identifier
 	 */
 	@Override
-	public String getBeanIdentifier() {
-		return _beanIdentifier;
-	}
-
-	/**
-	 * Sets the Spring bean ID for this bean.
-	 *
-	 * @param beanIdentifier the Spring bean ID for this bean
-	 */
-	@Override
-	public void setBeanIdentifier(String beanIdentifier) {
-		_beanIdentifier = beanIdentifier;
+	public String getOSGiServiceIdentifier() {
+		return ServiceComponentLocalService.class.getName();
 	}
 
 	protected Class<?> getModelClass() {
@@ -402,13 +465,13 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 		try {
 			DataSource dataSource = serviceComponentPersistence.getDataSource();
 
-			DB db = DBFactoryUtil.getDB();
+			DB db = DBManagerUtil.getDB();
 
 			sql = db.buildSQL(sql);
 			sql = PortalUtil.transformSQL(sql);
 
 			SqlUpdate sqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(dataSource,
-					sql, new int[0]);
+					sql);
 
 			sqlUpdate.update();
 		}
@@ -417,13 +480,18 @@ public abstract class ServiceComponentLocalServiceBaseImpl
 		}
 	}
 
-	@BeanReference(type = com.liferay.portal.service.ServiceComponentLocalService.class)
-	protected com.liferay.portal.service.ServiceComponentLocalService serviceComponentLocalService;
+	@BeanReference(type = ServiceComponentLocalService.class)
+	protected ServiceComponentLocalService serviceComponentLocalService;
 	@BeanReference(type = ServiceComponentPersistence.class)
 	protected ServiceComponentPersistence serviceComponentPersistence;
-	@BeanReference(type = com.liferay.counter.service.CounterLocalService.class)
-	protected com.liferay.counter.service.CounterLocalService counterLocalService;
+	@BeanReference(type = ServiceComponentFinder.class)
+	protected ServiceComponentFinder serviceComponentFinder;
+	@BeanReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
+	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
+	@BeanReference(type = com.liferay.portal.kernel.service.ReleaseLocalService.class)
+	protected com.liferay.portal.kernel.service.ReleaseLocalService releaseLocalService;
+	@BeanReference(type = ReleasePersistence.class)
+	protected ReleasePersistence releasePersistence;
 	@BeanReference(type = PersistedModelLocalServiceRegistry.class)
 	protected PersistedModelLocalServiceRegistry persistedModelLocalServiceRegistry;
-	private String _beanIdentifier;
 }

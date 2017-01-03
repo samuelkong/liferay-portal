@@ -16,7 +16,11 @@
 
 <%@ include file="/html/taglib/init.jsp" %>
 
+<%@ page import="com.liferay.dynamic.data.mapping.kernel.DDMTemplate" %><%@
+page import="com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry" %>
+
 <%
-String breadcrumbString = GetterUtil.getString((String)request.getAttribute("liferay-ui:breadcrumb:breadcrumbString"));
+List<BreadcrumbEntry> breadcrumbEntries = (List<BreadcrumbEntry>)request.getAttribute("liferay-ui:breadcrumb:breadcrumbEntries");
 String displayStyle = GetterUtil.getString((String)request.getAttribute("liferay-ui:breadcrumb:displayStyle"));
+long displayStyleGroupId = GetterUtil.getLong(request.getAttribute("liferay-ui:breadcrumb:displayStyleGroupId"), scopeGroupId);
 %>

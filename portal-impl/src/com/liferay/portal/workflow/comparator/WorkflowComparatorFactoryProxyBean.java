@@ -15,6 +15,7 @@
 package com.liferay.portal.workflow.comparator;
 
 import com.liferay.portal.kernel.messaging.proxy.BaseProxyBean;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
@@ -25,11 +26,21 @@ import com.liferay.portal.kernel.workflow.comparator.WorkflowComparatorFactory;
 /**
  * @author Shuyang Zhou
  */
+@OSGiBeanProperties(
+	property = "proxy.bean=true", service = WorkflowComparatorFactory.class
+)
 public class WorkflowComparatorFactoryProxyBean
 	extends BaseProxyBean implements WorkflowComparatorFactory {
 
 	@Override
 	public OrderByComparator<WorkflowDefinition> getDefinitionNameComparator(
+		boolean ascending) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public OrderByComparator<WorkflowInstance> getInstanceCompletedComparator(
 		boolean ascending) {
 
 		throw new UnsupportedOperationException();

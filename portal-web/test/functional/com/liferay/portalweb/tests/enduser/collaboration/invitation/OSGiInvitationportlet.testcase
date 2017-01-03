@@ -1,0 +1,30 @@
+<definition component-name="portal-plugins-osgi">
+	<property name="osgi.app.includes" value="invitation" />
+	<property name="portal.upstream" value="true" />
+	<property name="plugins.deployment.type" value="osgi" />
+	<property name="testray.main.component.name" value="Invite Members" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Test Page" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<execute macro="Page#tearDownPG" />
+	</tear-down>
+
+	<command name="InvitationPortletSmoke" priority="">
+		<var name="appName" value="Invitation" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Test Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Invitation" />
+		</execute>
+	</command>
+</definition>

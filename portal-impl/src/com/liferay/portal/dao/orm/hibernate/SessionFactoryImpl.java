@@ -21,8 +21,8 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.PreloadClassLoader;
-import com.liferay.portal.util.ClassLoaderUtil;
 import com.liferay.portal.util.PropsValues;
 
 import java.sql.Connection;
@@ -58,6 +58,10 @@ public class SessionFactoryImpl implements SessionFactory {
 		return new DialectImpl(_sessionFactoryImplementor.getDialect());
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	public ClassLoader getSessionFactoryClassLoader() {
 		return _sessionFactoryClassLoader;
 	}
@@ -116,7 +120,7 @@ public class SessionFactoryImpl implements SessionFactory {
 
 	protected Map<String, Class<?>> getPreloadClassLoaderClasses() {
 		try {
-			Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+			Map<String, Class<?>> classes = new HashMap<>();
 
 			for (String className : _PRELOAD_CLASS_NAMES) {
 				ClassLoader portalClassLoader =
@@ -135,17 +139,11 @@ public class SessionFactoryImpl implements SessionFactory {
 	}
 
 	protected Session wrapSession(org.hibernate.Session session) {
-		Session liferaySession = new SessionImpl(session);
 
-		if (_sessionFactoryClassLoader != null) {
+		// LPS-4190
 
-			// LPS-4190
-
-			liferaySession = new ClassLoaderSession(
-				liferaySession, _sessionFactoryClassLoader);
-		}
-
-		return liferaySession;
+		return new ClassLoaderSession(
+			new SessionImpl(session), _sessionFactoryClassLoader);
 	}
 
 	private static final String[] _PRELOAD_CLASS_NAMES =

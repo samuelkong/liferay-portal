@@ -14,24 +14,17 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.kernel.concurrent.LockRegistry;
-import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.model.PortalPreferences;
+import com.liferay.portal.kernel.model.PortletConstants;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.PortalPreferences;
-import com.liferay.portal.model.PortletConstants;
 import com.liferay.portal.service.base.PortalPreferencesLocalServiceBaseImpl;
 import com.liferay.portlet.PortalPreferencesImpl;
 import com.liferay.portlet.PortalPreferencesWrapper;
 import com.liferay.portlet.PortalPreferencesWrapperCacheUtil;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-
-import java.util.concurrent.locks.Lock;
 
 import javax.portlet.PortletPreferences;
 
@@ -44,6 +37,15 @@ public class PortalPreferencesLocalServiceImpl
 	@Override
 	public PortalPreferences addPortalPreferences(
 		long ownerId, int ownerType, String defaultPreferences) {
+
+		PortalPreferences previousPortalPreferences =
+			portalPreferencesPersistence.fetchByO_O(ownerId, ownerType);
+
+		if (previousPortalPreferences != null) {
+			throw new IllegalArgumentException(
+				"Duplicate owner ID and owner type exists in " +
+					previousPortalPreferences);
+		}
 
 		PortalPreferencesWrapperCacheUtil.remove(ownerId, ownerType);
 
@@ -82,19 +84,6 @@ public class PortalPreferencesLocalServiceImpl
 		return portalPreferences;
 	}
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #addPortalPreferences(long,
-	 *             int, String)}
-	 */
-	@Deprecated
-	@Override
-	public PortalPreferences addPortalPreferences(
-		long companyId, long ownerId, int ownerType,
-		String defaultPreferences) {
-
-		return addPortalPreferences(ownerId, ownerType, defaultPreferences);
-	}
-
 	@Override
 	public PortletPreferences getPreferences(long ownerId, int ownerType) {
 		return getPreferences(ownerId, ownerType, null);
@@ -104,66 +93,38 @@ public class PortalPreferencesLocalServiceImpl
 	public PortletPreferences getPreferences(
 		long ownerId, int ownerType, String defaultPreferences) {
 
-		DB db = DBFactoryUtil.getDB();
+		PortalPreferencesWrapper portalPreferencesWrapper =
+			PortalPreferencesWrapperCacheUtil.get(ownerId, ownerType);
 
-		String dbType = db.getType();
-
-		if (!dbType.equals(DB.TYPE_HYPERSONIC)) {
-			return doGetPreferences(ownerId, ownerType, defaultPreferences);
+		if (portalPreferencesWrapper != null) {
+			return portalPreferencesWrapper.clone();
 		}
 
-		StringBundler sb = new StringBundler(4);
+		PortalPreferences portalPreferences =
+			portalPreferencesPersistence.fetchByO_O(ownerId, ownerType);
 
-		sb.append(ownerId);
-		sb.append(StringPool.POUND);
-		sb.append(ownerType);
-		sb.append(StringPool.POUND);
-
-		String groupName = getClass().getName();
-		String key = sb.toString();
-
-		Lock lock = LockRegistry.allocateLock(groupName, key);
-
-		lock.lock();
-
-		try {
-			return doGetPreferences(ownerId, ownerType, defaultPreferences);
+		if (portalPreferences == null) {
+			portalPreferences =
+				portalPreferencesLocalService.addPortalPreferences(
+					ownerId, ownerType, defaultPreferences);
 		}
-		finally {
-			lock.unlock();
 
-			LockRegistry.freeLock(groupName, key);
-		}
-	}
+		PortalPreferencesImpl portalPreferencesImpl = new PortalPreferencesImpl(
+			portalPreferences, false);
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #getPreferences(long, int)}
-	 */
-	@Deprecated
-	@Override
-	public PortletPreferences getPreferences(
-		long companyId, long ownerId, int ownerType) {
+		portalPreferencesWrapper = new PortalPreferencesWrapper(
+			portalPreferencesImpl);
 
-		return getPreferences(ownerId, ownerType);
-	}
+		PortalPreferencesWrapperCacheUtil.put(
+			ownerId, ownerType, portalPreferencesWrapper);
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #getPreferences(long, int,
-	 *             String)}
-	 */
-	@Deprecated
-	@Override
-	public PortletPreferences getPreferences(
-		long companyId, long ownerId, int ownerType,
-		String defaultPreferences) {
-
-		return getPreferences(ownerId, ownerType, defaultPreferences);
+		return portalPreferencesWrapper.clone();
 	}
 
 	@Override
 	public PortalPreferences updatePreferences(
 		long ownerId, int ownerType,
-		com.liferay.portlet.PortalPreferences portalPreferences) {
+		com.liferay.portal.kernel.portlet.PortalPreferences portalPreferences) {
 
 		String xml = PortletPreferencesFactoryUtil.toXML(portalPreferences);
 
@@ -194,38 +155,6 @@ public class PortalPreferencesLocalServiceImpl
 		portalPreferencesPersistence.update(portalPreferences);
 
 		return portalPreferences;
-	}
-
-	protected PortletPreferences doGetPreferences(
-		long ownerId, int ownerType, String defaultPreferences) {
-
-		PortalPreferencesWrapper portalPreferencesWrapper =
-			PortalPreferencesWrapperCacheUtil.get(ownerId, ownerType);
-
-		if (portalPreferencesWrapper != null) {
-			return portalPreferencesWrapper.clone();
-		}
-
-		PortalPreferences portalPreferences =
-			portalPreferencesPersistence.fetchByO_O(ownerId, ownerType);
-
-		if (portalPreferences == null) {
-			portalPreferences =
-				portalPreferencesLocalService.addPortalPreferences(
-					ownerId, ownerType, defaultPreferences);
-		}
-
-		PortalPreferencesImpl portalPreferencesImpl =
-			(PortalPreferencesImpl)PortletPreferencesFactoryUtil.fromXML(
-				ownerId, ownerType, portalPreferences.getPreferences());
-
-		portalPreferencesWrapper = new PortalPreferencesWrapper(
-			portalPreferencesImpl);
-
-		PortalPreferencesWrapperCacheUtil.put(
-			ownerId, ownerType, portalPreferencesWrapper);
-
-		return portalPreferencesWrapper.clone();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

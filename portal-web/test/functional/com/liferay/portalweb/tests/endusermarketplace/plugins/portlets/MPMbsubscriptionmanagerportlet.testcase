@@ -1,0 +1,35 @@
+<definition component-name="portal-plugins-deployment">
+	<property name="testray.main.component.name" value="Plugin Installer" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<command name="MBSubscriptionManagerPortletSmoke" priority="4">
+		<property name="portlet.plugins.includes" value="mb-subscription-manager-portlet" />
+
+		<var name="appName" value="Message Boards Subscription Manager" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesConfiguration">
+			<var name="portlet" value="Message Boards Subscription Manager" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="App Manager" />
+		</execute>
+
+		<execute macro="AppManager#uninstallAppCP">
+			<var name="appName" value="${appName}" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="App Manager" />
+		</execute>
+
+		<execute macro="AppManager#viewUninstallAppCP">
+			<var name="appName" value="${appName}" />
+		</execute>
+	</command>
+</definition>

@@ -1,0 +1,147 @@
+<definition>
+	<command name="add">
+		<execute function="Type#typeEditor" locator1="Comments#COMMENT_FIELD" value1="${entryComment}" />
+
+		<execute function="AssertClick" locator1="Button#REPLY" value1="Reply" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="addPGAsGuest">
+		<execute macro="BlogsNavigator#gotoEntryPG">
+			<var name="entryContent" value="${entryContent}" />
+			<var name="entryTitle" value="${entryTitle}" />
+		</execute>
+
+		<var name="entryComment" value="${entryComment}" />
+
+		<execute function="Click" locator1="Comments#COMMENT_FIELD" />
+
+		<execute function="Type" locator1="Comments#COMMENT_FIELD" value1="${entryComment}" />
+
+		<execute function="AssertElementPresent" locator1="UserBar#USER_SIGN_IN" />
+
+		<execute function="AssertClick" locator1="Button#REPLY_AS" value1="Reply as..." />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertClick" locator1="Link#GUEST" value1="Guest" />
+
+		<execute function="Type" locator1="TextInput#FIRST_NAME" value1="${userFirstName}" />
+		<execute function="Type" locator1="TextInput#LAST_NAME" value1="${userLastName}" />
+		<execute function="Type" locator1="TextInput#EMAIL_ADDRESS" value1="${userEmailAddress}" />
+
+		<execute macro="Button#clickSave" />
+
+		<var name="uniqueSuccess" value="Your comment has already been posted. Would you like to create an account with the provided information?" />
+
+		<var name="key_uniqueSuccess" value="${uniqueSuccess}" />
+
+		<execute function="AssertTextEquals" locator1="Message#UNIQUE_SUCCESS" value1="${uniqueSuccess}" />
+
+		<execute function="AssertClick" locator1="Button#CANCEL" value1="Cancel" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="Pause" value1="1000" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="delete">
+		<var name="key_entryComment" value="${entryComment}" />
+
+		<execute function="MouseOver" locator1="Comments#COMMENT_BODY_SPECIFIC" value1="${entryComment}" />
+
+		<execute function="Click#clickAt" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClickNoError" locator1="MenuItem#DELETE" value1="Delete" />
+
+		<execute function="Confirm" value1="Are you sure you want to delete this? It will be deleted immediately." />
+
+		<execute macro="Alert#viewSuccessMessage" />
+		<execute function="AssertTextNotPresent" value1="${entryComment}" />
+	</command>
+
+	<command name="deleteSOPG">
+		<execute macro="BlogsNavigator#gotoEntryPG">
+			<var name="entryContent" value="${entryContent}" />
+			<var name="entryTitle" value="${entryTitle}" />
+		</execute>
+
+		<execute function="AssertClickNoError" locator1="Comments#DELETE_LINK" value1="Delete" />
+
+		<execute function="Confirm" value1="Are you sure you want to delete the selected comment?" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+		<execute function="AssertTextNotPresent" value1="${entryComment}" />
+	</command>
+
+	<command name="edit">
+		<var name="key_entryComment" value="${entryComment}" />
+
+		<execute function="MouseOver" locator1="Comments#COMMENT_BODY_SPECIFIC" />
+
+		<execute function="Click#clickAt" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<execute function="Click#clickAt" locator1="MenuItem#EDIT" value1="Edit" />
+
+		<execute function="Click#clickAt" locator1="Comments#EDIT_COMMENT_FIELD" />
+
+		<execute function="Type" locator1="Comments#EDIT_COMMENT_FIELD" value1="${entryCommentEdit}" />
+
+		<execute function="AssertClick" locator1="Comments#PUBLISH_COMMENT_BUTTON" value1="Publish" />
+
+		<var name="key_entryComment" value="${entryCommentEdit}" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+		<execute function="AssertTextEquals" locator1="Comments#COMMENT_BODY_SPECIFIC" value1="${entryCommentEdit}" />
+	</command>
+
+	<command name="subscribePG">
+		<execute function="AssertClick" locator1="Comments#SUBSCRIBE_TO_COMMENTS_LINK" value1="Subscribe to Comments" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="viewCP">
+		<var name="key_entryComment" value="${entryComment}" />
+
+		<execute macro="BlogsNavigator#gotoEntryCP">
+			<var name="entryContent" value="${entryContent}" />
+			<var name="entryTitle" value="${entryTitle}" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="Comments#ENTRY_COUNT_PANEL" value1="${commentCount} Comments" />
+		<execute function="AssertTextEquals" locator1="Comments#COMMENT_BODY_SPECIFIC" value1="${entryComment}" />
+	</command>
+
+	<command name="viewDefault">
+		<execute function="AssertTextEquals" locator1="Comments#ENTRY_COUNT_PANEL" value1="0 Comments" />
+		<execute function="AssertTextNotPresent" value1="${entryComment}" />
+	</command>
+
+	<command name="viewPG">
+		<var name="key_entryComment" value="${entryComment}" />
+
+		<execute function="Pause" locator1="1000" />
+
+		<execute function="AssertTextEquals" locator1="Comments#ENTRY_COUNT_PANEL" value1="${commentCount} Comments" />
+
+		<var name="key_userFullName" value="${userFullName}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="Comments#USER_NAME" value1="${userFullName}" />
+		<execute function="AssertTextEquals" locator1="Comments#COMMENT_BODY_SPECIFIC" value1="${entryComment}" />
+	</command>
+
+	<command name="viewSearchResultPG">
+		<execute function="AssertTextEquals" locator1="Blogs#SEARCH_RESULTS_ENTRY_TITLE" value1="${entryTitle}" />
+		<execute function="AssertTextEquals" locator1="Blogs#SEARCH_RESULTS_ENTRY_DESCRIPTION" value1="${entryContent}" />
+		<execute function="AssertTextEquals" locator1="Blogs#SEARCH_RESULTS_HIGHLIGHTED" value1="${entrySearchTerm}" />
+		<execute function="AssertTextEquals" locator1="Blogs#SEARCH_RESULTS_ENTRY_COMMENT" value1="${entryComment}" />
+	</command>
+
+	<command name="viewSubscribedPG">
+		<execute function="AssertTextEquals" locator1="Comments#UNSUBSCRIBE_FROM_COMMENTS_LINK" value1="Unsubscribe from Comments" />
+	</command>
+</definition>

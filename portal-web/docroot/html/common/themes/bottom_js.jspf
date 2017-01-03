@@ -17,13 +17,8 @@
 <%@ include file="/html/portal/layout/view/portlet_js.jspf" %>
 
 <aui:script position="inline">
-
-	<%
-	String controlPanelCategory = ParamUtil.getString(request, "controlPanelCategory");
-	%>
-
 	<c:choose>
-		<c:when test="<%= themeDisplay.isStatePopUp() || Validator.isNotNull(controlPanelCategory) %>">
+		<c:when test="<%= themeDisplay.isStatePopUp() %>">
 			Liferay.Util.getTop().Liferay.fire(
 				'popupReady',
 				{
@@ -49,11 +44,39 @@
 			</c:if>
 		</c:otherwise>
 	</c:choose>
+
+	Liferay.BrowserSelectors.run();
+</aui:script>
+
+<aui:script>
+	if (Liferay.Data.ICONS_INLINE_SVG) {
+		svg4everybody(
+			{
+				polyfill: true
+			}
+		);
+	}
 </aui:script>
 
 <aui:script use="aui-base">
 	if (A.UA.mobile) {
 		Liferay.Util.addInputCancel();
+	}
+</aui:script>
+
+<aui:script use="aui-tooltip">
+	if (!Liferay.Data.LFR_PORTAL_TOOLTIP) {
+		Liferay.Data.LFR_PORTAL_TOOLTIP = new A.TooltipDelegate(
+			{
+				constrain: true,
+				opacity: 1,
+				trigger: '.lfr-portal-tooltip',
+				triggerHideEvent: ['click', 'mouseleave', 'MSPointerUp', 'touchend'],
+				triggerShowEvent: ['mouseenter', 'MSPointerDown', 'touchstart'],
+				visible: false,
+				zIndex: Liferay.zIndex.TOOLTIP
+			}
+		);
 	}
 </aui:script>
 
@@ -69,9 +92,9 @@ if (layout != null) {
 }
 %>
 
-<c:if test="<%= !themeDisplay.isStatePopUp() && !group.isControlPanel() && (layout != null) && (!group.hasStagingGroup() || group.isStagingGroup() || layoutTypePortlet.isCustomizable()) && (GroupPermissionUtil.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_LAYOUT) || LayoutPermissionUtil.contains(permissionChecker, layout, ActionKeys.UPDATE) || (layoutTypePortlet.isCustomizable() && LayoutPermissionUtil.contains(permissionChecker, layout, ActionKeys.CUSTOMIZE))) %>">
+<c:if test="<%= !themeDisplay.isStatePopUp() && !group.isControlPanel() && (layout != null) && (!group.hasStagingGroup() || group.isStagingGroup() || !PropsValues.STAGING_LIVE_GROUP_LOCKING_ENABLED || layoutTypePortlet.isCustomizable()) && (GroupPermissionUtil.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_LAYOUT) || LayoutPermissionUtil.contains(permissionChecker, layout, ActionKeys.UPDATE) || (layoutTypePortlet.isCustomizable() && LayoutPermissionUtil.contains(permissionChecker, layout, ActionKeys.CUSTOMIZE))) %>">
 	<c:if test="<%= layout.isTypePortlet() %>">
-		<aui:script>
+		<aui:script position="inline">
 			Liferay.Data.layoutConfig = {
 				container: '#main-content',
 
@@ -88,13 +111,13 @@ if (layout != null) {
 
 				<c:choose>
 					<c:when test="<%= BrowserSnifferUtil.isMobile(request) %>">
-						handles: Liferay.Data.PORTLET_TOUCH_DRAG_HANDLE_SELECTOR || ['.portlet-title-text'],
+						handles: Liferay.Data.PORTLET_TOUCH_DRAG_HANDLE_SELECTOR || ['.portlet-title-default'],
 					</c:when>
 					<c:when test="<%= !themeDisplay.isFreeformLayout() %>">
-						handles: ['.portlet-title', '.portlet-title-default'],
+						handles: Liferay.Data.PORTLET_DRAG_HANDLE_SELECTOR || ['.portlet-title-default', '.portlet-topper'],
 					</c:when>
 					<c:otherwise>
-						handles: ['.portlet-header-bar', '.portlet-title-default', '.portlet-topper'],
+						handles: Liferay.Data.PORTLET_FREEFORM_DRAG_HANDLE_SELECTOR || ['.portlet-header-bar', '.portlet-title-default', '.portlet-topper'],
 					</c:otherwise>
 				</c:choose>
 
@@ -114,6 +137,8 @@ if (layout != null) {
 	</c:if>
 
 	<aui:script use="event-move,liferay-navigation">
+		var navBlock = A.one(Liferay.Data.NAV_SELECTOR);
+
 		Liferay.once(
 			'initNavigation',
 			function() {
@@ -134,8 +159,7 @@ if (layout != null) {
 								{
 									deletable: !A.UA.touchMobile && <%= LayoutPermissionUtil.contains(permissionChecker, curLayout, ActionKeys.DELETE) %>,
 									id: <%= curLayout.getLayoutId() %>,
-									sortable: <%= GroupPermissionUtil.contains(permissionChecker, scopeGroup, ActionKeys.MANAGE_LAYOUTS) && SitesUtil.isLayoutSortable(curLayout) %>,
-									updateable: <%= !group.isLayoutPrototype() && LayoutPermissionUtil.contains(permissionChecker, curLayout, ActionKeys.UPDATE) %>
+									sortable: <%= GroupPermissionUtil.contains(permissionChecker, scopeGroup, ActionKeys.MANAGE_LAYOUTS) && SitesUtil.isLayoutSortable(curLayout) %>
 								}
 
 							<%
@@ -154,16 +178,31 @@ if (layout != null) {
 			}
 		);
 
-		var navBlock = A.one(Liferay.Data.NAV_SELECTOR);
-
 		if (navBlock) {
-			navBlock.once(
-				['gesturemovestart', 'mousemove'],
-				function() {
-					Liferay.fire('initNavigation');
-				}
-			);
+			if (A.UA.touchMobile) {
+				AUI.$(Liferay.Data.NAV_SELECTOR_MOBILE).one(
+					'shown.bs.collapse',
+					function() {
+						Liferay.fire('initNavigation');
+					}
+				);
+			}
+			else {
+				navBlock.once(
+					['gesturemovestart', 'mousemove'],
+					function() {
+						Liferay.fire('initNavigation');
+					}
+				);
+			}
 		}
+
+		A.on(
+			'io:complete',
+			function() {
+				Liferay.fire('io:complete');
+			}
+		);
 	</aui:script>
 </c:if>
 
@@ -186,73 +225,18 @@ if (layout != null) {
 	</c:if>
 </aui:script>
 
-<c:if test="<%= PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED %>">
-	<div id="bottomJS">
-		<div id="bottomJS-defaultScreen">
-			<aui:script use="liferay-surface-app">
-				if (Liferay.Surface) {
+<script type="text/javascript">
+	// <![CDATA[
 
-					<%
-					List<Portlet> companyPortlets = PortletLocalServiceUtil.getPortlets(themeDisplay.getCompanyId());
+		<%
+		String currentURL = PortalUtil.getCurrentURL(request);
+		%>
 
-					for (Portlet portlet : companyPortlets) {
-						if (portlet.isAjaxable() || (portlet.isActive() && portlet.isReady() && !portlet.isUndeployedPortlet() && !portlet.isSinglePageApplication())) {
-					%>
+		Liferay.currentURL = '<%= HtmlUtil.escapeJS(currentURL) %>';
+		Liferay.currentURLEncoded = '<%= HtmlUtil.escapeJS(HttpUtil.encodeURL(currentURL)) %>';
 
-							Liferay.Surface.blacklist.route['<%= portlet.getPortletId() %>'] = true;
-
-					<%
-						}
-
-						boolean singlePageApplicationCacheable = GetterUtil.getBoolean(portlet.getInitParams().get("single-page-application-cacheable"), true);
-
-						if (!singlePageApplicationCacheable) {
-					%>
-
-							Liferay.Surface.blacklist.cache['<%= portlet.getPortletId() %>'] = true;
-
-					<%
-						}
-					}
-					%>
-
-					Liferay.Surface.blacklist.surface['<%= PortletKeys.NESTED_PORTLETS %>'] = true;
-				}
-			</aui:script>
-
-			<script type="text/surface-data-channel">
-
-				<%
-				String portletId = request.getParameter("p_p_id");
-
-				String singlePageApplicationLastPortletId = (String)session.getAttribute(WebKeys.SINGLE_PAGE_APPLICATION_LAST_PORTLET_ID);
-				%>
-
-					{
-						"clearScreensCache": <%= (Validator.isNotNull(portletId) && Validator.isNotNull(singlePageApplicationLastPortletId) && !Validator.equals(portletId, singlePageApplicationLastPortletId)) %>
-					}
-
-				<%
-				session.setAttribute(WebKeys.SINGLE_PAGE_APPLICATION_LAST_PORTLET_ID, portletId);
-				%>
-
-			</script>
-
-			<script type="text/javascript">
-				// <![CDATA[
-
-					<%
-					String currentURL = PortalUtil.getCurrentURL(request);
-					%>
-
-					Liferay.currentURL = '<%= HtmlUtil.escapeJS(currentURL) %>';
-					Liferay.currentURLEncoded = '<%= HttpUtil.encodeURL(currentURL) %>';
-
-				// ]]>
-			</script>
-
-			<div class="lfr-surface-loading-bar"></div>
-</c:if>
+	// ]]>
+</script>
 
 <c:if test="<%= layout != null %>">
 
@@ -273,9 +257,4 @@ if (layout != null) {
 			<%= GetterUtil.getString(layoutTypeSettings.getProperty("javascript")) %>
 		// ]]>
 	</script>
-</c:if>
-
-<c:if test="<%= PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED %>">
-		</div>
-	</div>
 </c:if>

@@ -1,0 +1,32 @@
+<definition component-name="portal-test-plugins">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Test Plugins" />
+	<property name="portlet.plugins.includes" value="sample-service-builder-portlet" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<execute macro="Page#tearDownPG" />
+	</tear-down>
+
+	<command name="SearchAndViewPagination" priority="4">
+		<description message="This is a use case for LPS-65608." />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Sample Service Builder Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Sample Service Builder" />
+		</execute>
+
+		<execute macro="TestSearchPaginationPortlet#search15Results">
+			<var name="itemsPerPage" value="5" />
+		</execute>
+	</command>
+</definition>

@@ -1,0 +1,7 @@
+<toggles>
+	<toggle name="LRQA-COM_LIFERAY_JOURNAL">
+		<date>2016-08-09</date>
+		<description>Testing toggles in a subrepository.</description>
+		<owner>Michael Hashimoto</owner>
+	</toggle>
+</toggles>

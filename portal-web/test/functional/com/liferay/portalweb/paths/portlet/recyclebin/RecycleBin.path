@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>RecycleBin</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">RecycleBin</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>SUCCESS_MESSAGE_CONTENT</td>
+	<td>//div[@class='portlet-body']/div[contains(.,'${key_assetType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_MESSAGE_CONTENT_LINK</td>
+	<td>//div[contains(@class,'alert-success') and contains(.,'${key_assetName}')]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_MESSAGE_RECYCLE_BIN_LINK</td>
+	<td>//div[contains(@class,'alert-success')]//a[contains(.,'the Recycle Bin')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_MESSAGE_RESTORE_LOCATION</td>
+	<td>//div[@class='portlet-body']/div/em[2]/a[contains(.,'${key_assetRestoreLocation}')] </td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_MESSAGE_RECYCLE_BIN</td>
+	<td>//form[contains(@id,'emptyForm')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EMPTY_RECYCLE_BIN</td>
+	<td>//a[contains(@id,'empty')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN</td>
+	<td>//div[contains(@id,'site_administration_content')]//a[contains(@id,'trash_web_portlet_TrashPortlet')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RECYCLE_BIN_TABLE-->
+<tr>
+	<td>RECYCLE_BIN_TABLE_NAME</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[2]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_TABLE_TYPE</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_TABLE_REMOVED_DATE</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_TABLE_REMOVED_BY</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[5]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_TABLE_ACTIONS</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[6]//div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RECYCLE_BIN_WARNING-->
+<tr>
+	<td>RECYCLE_BIN_WARNING_OVERWRITE_RADIO</td>
+	<td>//input[contains(@id,'override')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_WARNING_KEEP_AND_RENAME_RADIO</td>
+	<td>//input[contains(@id,'rename')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_WARNING_KEEP_AND_RENAME_FIELD</td>
+	<td>//input[contains(@id,'newName')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RECYCLE_BIN_FOLDER-->
+<tr>
+	<td>RECYCLE_BIN_FOLDER_DOCUMENT_NAME</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[1]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_FOLDER_ACTIONS</td>
+	<td>//div[contains(@id,'trashSearchContainer')]//tr[contains(.,'${key_assetName}')]/td[3]//div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_FOLDER_WARNING_IFRAME</td>
+	<td>//iframe[contains(@id,'selectContainer_iframe_')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_FOLDER_WARNING_INFO</td>
+	<td>//div[contains(@class,'alert-block')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_FOLDER_WARNING_CHOOSE_THIS_FOLDER_BUTTON</td>
+	<td>//button[contains(.,'Choose This Folder')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

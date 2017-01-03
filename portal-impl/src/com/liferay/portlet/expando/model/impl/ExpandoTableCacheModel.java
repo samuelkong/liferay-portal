@@ -16,11 +16,12 @@ package com.liferay.portlet.expando.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.expando.kernel.model.ExpandoTable;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.expando.model.ExpandoTable;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,30 @@ import java.io.ObjectOutput;
 @ProviderType
 public class ExpandoTableCacheModel implements CacheModel<ExpandoTable>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ExpandoTableCacheModel)) {
+			return false;
+		}
+
+		ExpandoTableCacheModel expandoTableCacheModel = (ExpandoTableCacheModel)obj;
+
+		if (tableId == expandoTableCacheModel.tableId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, tableId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(9);
@@ -77,7 +102,9 @@ public class ExpandoTableCacheModel implements CacheModel<ExpandoTable>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		tableId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
 		name = objectInput.readUTF();
 	}
@@ -86,7 +113,9 @@ public class ExpandoTableCacheModel implements CacheModel<ExpandoTable>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(tableId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(classNameId);
 
 		if (name == null) {

@@ -15,19 +15,14 @@
 package com.liferay.portal.events;
 
 import com.liferay.portal.deploy.RequiredPluginsUtil;
-import com.liferay.portal.im.AIMConnector;
-import com.liferay.portal.im.ICQConnector;
-import com.liferay.portal.im.MSNConnector;
-import com.liferay.portal.im.YMConnector;
-import com.liferay.portal.jcr.JCRFactoryUtil;
+import com.liferay.portal.fabric.server.FabricServerUtil;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.deploy.auto.AutoDeployDir;
 import com.liferay.portal.kernel.deploy.auto.AutoDeployUtil;
 import com.liferay.portal.kernel.deploy.hot.HotDeployUtil;
-import com.liferay.portal.kernel.deploy.sandbox.SandboxDeployDir;
-import com.liferay.portal.kernel.deploy.sandbox.SandboxDeployUtil;
 import com.liferay.portal.kernel.events.SimpleAction;
 import com.liferay.portal.kernel.executor.PortalExecutorManagerUtil;
 import com.liferay.portal.kernel.javadoc.JavadocManagerUtil;
@@ -36,20 +31,22 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.resiliency.mpi.MPIHelperUtil;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
-import com.liferay.portal.kernel.template.TemplateManagerUtil;
-import com.liferay.portal.kernel.template.TemplateResourceLoaderUtil;
 import com.liferay.portal.kernel.util.CentralizedThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.search.lucene.LuceneHelperUtil;
+import com.liferay.portal.struts.AuthPublicPathRegistry;
 import com.liferay.portal.util.PropsUtil;
+import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.zip.TrueZIPHelperUtil;
 import com.liferay.portlet.documentlibrary.util.DocumentConversionUtil;
 import com.liferay.util.ThirdPartyThreadLocalRegistry;
 
 import java.sql.Connection;
 import java.sql.Statement;
+
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Wing Shun Chan
@@ -99,73 +96,13 @@ public class GlobalShutdownAction extends SimpleAction {
 
 	protected void shutdownLevel1() {
 
-		// Instant messenger AIM
+		// Authentication
 
-		try {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Shutting down AIM");
-			}
-
-			AIMConnector.disconnect();
-		}
-		catch (Exception e) {
-		}
-
-		// Instant messenger ICQ
-
-		try {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Shutting down ICQ");
-			}
-
-			ICQConnector.disconnect();
-		}
-		catch (Exception e) {
-		}
-
-		// Instant messenger MSN
-
-		try {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Shutting down MSN");
-			}
-
-			MSNConnector.disconnect();
-		}
-		catch (Exception e) {
-		}
-
-		// Instant messenger YM
-
-		try {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Shutting down YM");
-			}
-
-			YMConnector.disconnect();
-		}
-		catch (Exception e) {
-		}
+		AuthPublicPathRegistry.unregister(PropsValues.AUTH_PUBLIC_PATHS);
 
 		// Javadoc
 
 		JavadocManagerUtil.unload(StringPool.BLANK);
-
-		// JCR
-
-		try {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Shutting down JCR");
-			}
-
-			JCRFactoryUtil.shutdown();
-		}
-		catch (Exception e) {
-		}
-
-		// Lucene
-
-		LuceneHelperUtil.shutdown();
 
 		// OpenOffice
 
@@ -174,39 +111,6 @@ public class GlobalShutdownAction extends SimpleAction {
 		// Plugins
 
 		RequiredPluginsUtil.stopCheckingRequiredPlugins();
-
-		// Scheduler engine
-
-		try {
-			SchedulerEngineHelperUtil.shutdown();
-		}
-		catch (Exception e) {
-		}
-
-		// Wait 1 second so Quartz threads can cleanly shutdown
-
-		try {
-			Thread.sleep(1000);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// Template manager
-
-		try {
-			TemplateManagerUtil.destroy();
-		}
-		catch (Exception e) {
-		}
-
-		// Template resource loader
-
-		try {
-			TemplateResourceLoaderUtil.destroy();
-		}
-		catch (Exception e) {
-		}
 	}
 
 	protected void shutdownLevel2() {
@@ -218,10 +122,6 @@ public class GlobalShutdownAction extends SimpleAction {
 		// Hot deploy
 
 		HotDeployUtil.unregisterListeners();
-
-		// Sandbox deploy
-
-		SandboxDeployUtil.unregisterDir(SandboxDeployDir.DEFAULT_NAME);
 	}
 
 	protected void shutdownLevel3() {
@@ -229,17 +129,30 @@ public class GlobalShutdownAction extends SimpleAction {
 		// Messaging
 
 		MessageBusUtil.shutdown(true);
+
+		// Portal fabric
+
+		if (PropsValues.PORTAL_FABRIC_ENABLED) {
+			try {
+				Future<?> future = FabricServerUtil.stop();
+
+				future.get(
+					PropsValues.PORTAL_FABRIC_SHUTDOWN_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			}
+			catch (Exception e) {
+				_log.error("Unable to stop fabric server", e);
+			}
+		}
 	}
 
 	protected void shutdownLevel4() {
 
 		// Hypersonic
 
-		DB db = DBFactoryUtil.getDB();
+		DB db = DBManagerUtil.getDB();
 
-		String dbType = db.getType();
-
-		if (dbType.equals(DB.TYPE_HYPERSONIC)) {
+		if (db.getDBType() == DBType.HYPERSONIC) {
 			Connection connection = null;
 			Statement statement = null;
 
@@ -268,6 +181,10 @@ public class GlobalShutdownAction extends SimpleAction {
 		// Portal executors
 
 		PortalExecutorManagerUtil.shutdown(true);
+
+		// TrueZip
+
+		TrueZIPHelperUtil.shutdown();
 	}
 
 	protected void shutdownLevel6() {
@@ -317,6 +234,7 @@ public class GlobalShutdownAction extends SimpleAction {
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(GlobalShutdownAction.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		GlobalShutdownAction.class);
 
 }

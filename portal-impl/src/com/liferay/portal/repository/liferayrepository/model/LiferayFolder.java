@@ -14,24 +14,23 @@
 
 package com.liferay.portal.repository.liferayrepository.model;
 
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.repository.model.RepositoryModelOperation;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portlet.documentlibrary.model.DLFolder;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portlet.documentlibrary.service.permission.DLFolderPermission;
 import com.liferay.portlet.documentlibrary.util.RepositoryModelUtil;
-import com.liferay.portlet.expando.model.ExpandoBridge;
 
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Alexander Chow
@@ -39,7 +38,14 @@ import java.util.Map;
 public class LiferayFolder extends LiferayModel implements Folder {
 
 	public LiferayFolder(DLFolder dlFolder) {
-		this(dlFolder, false);
+		_dlFolder = dlFolder;
+
+		if (dlFolder == null) {
+			_escapedModel = false;
+		}
+		else {
+			_escapedModel = dlFolder.isEscapedModel();
+		}
 	}
 
 	public LiferayFolder(DLFolder dlFolder, boolean escapedModel) {
@@ -49,26 +55,7 @@ public class LiferayFolder extends LiferayModel implements Folder {
 
 	@Override
 	public Object clone() {
-		LiferayFolder liferayFolder = new LiferayFolder(
-			_dlFolder, _escapedModel);
-
-		liferayFolder.setCompanyId(getCompanyId());
-		liferayFolder.setCreateDate(getCreateDate());
-		liferayFolder.setGroupId(getGroupId());
-		liferayFolder.setModifiedDate(getModifiedDate());
-		liferayFolder.setPrimaryKey(getPrimaryKey());
-		liferayFolder.setUserId(getUserId());
-		liferayFolder.setUserName(getUserName());
-
-		try {
-			liferayFolder.setUserUuid(getUserUuid());
-		}
-		catch (SystemException se) {
-		}
-
-		liferayFolder.setUuid(getUuid());
-
-		return liferayFolder;
+		return new LiferayFolder(_dlFolder);
 	}
 
 	@Override
@@ -92,7 +79,7 @@ public class LiferayFolder extends LiferayModel implements Folder {
 
 		LiferayFolder liferayFolder = (LiferayFolder)obj;
 
-		if (Validator.equals(_dlFolder, liferayFolder._dlFolder)) {
+		if (Objects.equals(_dlFolder, liferayFolder._dlFolder)) {
 			return true;
 		}
 
@@ -156,6 +143,11 @@ public class LiferayFolder extends LiferayModel implements Folder {
 	@Override
 	public Date getLastPostDate() {
 		return _dlFolder.getLastPostDate();
+	}
+
+	@Override
+	public Date getLastPublishDate() {
+		return _dlFolder.getLastPublishDate();
 	}
 
 	@Override
@@ -351,8 +343,8 @@ public class LiferayFolder extends LiferayModel implements Folder {
 	}
 
 	@Override
-	public void setCreateDate(Date date) {
-		_dlFolder.setCreateDate(date);
+	public void setCreateDate(Date createDate) {
+		_dlFolder.setCreateDate(createDate);
 	}
 
 	@Override
@@ -361,8 +353,13 @@ public class LiferayFolder extends LiferayModel implements Folder {
 	}
 
 	@Override
-	public void setModifiedDate(Date date) {
-		_dlFolder.setModifiedDate(date);
+	public void setLastPublishDate(Date lastPublishDate) {
+		_dlFolder.setLastPublishDate(lastPublishDate);
+	}
+
+	@Override
+	public void setModifiedDate(Date modifiedDate) {
+		_dlFolder.setModifiedDate(modifiedDate);
 	}
 
 	public void setPrimaryKey(long primaryKey) {

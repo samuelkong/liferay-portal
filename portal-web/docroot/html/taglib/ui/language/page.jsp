@@ -16,4 +16,26 @@
 
 <%@ include file="/html/taglib/ui/language/init.jsp" %>
 
-<liferay-util:include page='<%= "/html/taglib/ui/language/display_style_" + TextFormatter.format(displayStyle, TextFormatter.N) + ".jsp" %>' />
+<%
+Map<String, Object> contextObjects = new HashMap<String, Object>();
+
+contextObjects.put("formAction", formAction);
+contextObjects.put("formName", formName);
+contextObjects.put("name", name);
+contextObjects.put("namespace", namespace);
+%>
+
+<c:if test="<%= !languageEntries.isEmpty() %>">
+
+	<%
+	String renderedDDMTemplate = StringPool.BLANK;
+
+	DDMTemplate portletDisplayDDMTemplate = PortletDisplayTemplateManagerUtil.getDDMTemplate(displayStyleGroupId, PortalUtil.getClassNameId(LanguageEntry.class), displayStyle, true);
+
+	if (portletDisplayDDMTemplate != null) {
+		renderedDDMTemplate = PortletDisplayTemplateManagerUtil.renderDDMTemplate(request, response, portletDisplayDDMTemplate.getTemplateId(), languageEntries, contextObjects);
+	}
+	%>
+
+	<%= renderedDDMTemplate %>
+</c:if>

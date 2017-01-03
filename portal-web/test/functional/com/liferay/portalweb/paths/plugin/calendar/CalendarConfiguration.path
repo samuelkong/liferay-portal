@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>CalendarConfiguration</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">CalendarConfiguration</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>CALENDAR_CONFIGURATION_IFRAME</td>
+	<td>//iframe[contains(@class,'dialog-iframe-node') and contains(@name,'configurationIframe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_MESSAGE</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_HEADER</td>
+	<td>//h3[contains(@class,'alert') and contains(@class,'alert-danger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON</td>
+	<td>//button[contains(.,'Save')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--NAVIGATION-->
+<tr>
+	<td>NAVIGATION_USER_SETTINGS</td>
+	<td>//ul[contains(@class,'lfr-nav nav')]//a[contains(.,'User Settings')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_DISPLAY_SETTINGS</td>
+	<td>//ul[contains(@class,'lfr-nav nav')]//a[contains(.,'Display Settings')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_USER_RSS</td>
+	<td>//ul[contains(@class,'lfr-nav nav')]//a[contains(.,'RSS')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--USER_SETTINGS-->
+<tr>
+	<td>USER_SETTINGS_TIME_FORMAT_SELECT</td>
+	<td>//select[contains(@id,'timeFormat')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_SETTINGS_DEFAULT_DURATION_SELECT</td>
+	<td>//select[contains(@id,'defaultDuration')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_SETTINGS_DEFAULT_VIEW_SELECT</td>
+	<td>//select[contains(@id,'defaultView')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_SETTINGS_WEEK_STARTS_ON_SELECT</td>
+	<td>//select[contains(@id,'weekStartsOn')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_SETTINGS_TIME_ZONE_SELECT</td>
+	<td>//select[contains(@id,'timeZoneId')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_SETTINGS_TIME_ZONE_LOS_ANGELES_SELECT_OPTION</td>
+	<td>//select[contains(@id,'timeZoneId')]/option[@value='America/Los_Angeles']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_SETTINGS_GLOBAL_TIME_ZONE_CHECKBOX</td>
+	<td>//input[contains(@id,'usePortalTimeZone')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RSS-->
+<tr>
+	<td>RSS_ENABLE_RSS_SUBSCRIPTION_SWITCHER</td>
+	<td>//label[contains(.,'Enable RSS Subscription')]//span[@class='toggle-switch-handle']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RSS_SETTING_OPTIONS</td>
+	<td>//div[@class='rss-settings-options']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

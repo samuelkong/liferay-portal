@@ -14,10 +14,11 @@
 
 package com.liferay.portal.security.pwd;
 
-import com.liferay.portal.UserPasswordException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.PasswordPolicy;
-import com.liferay.portal.security.ldap.LDAPSettingsUtil;
+import com.liferay.portal.kernel.exception.UserPasswordException;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.security.ldap.LDAPSettingsUtil;
+import com.liferay.portal.kernel.security.pwd.Toolkit;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceTracker;
@@ -43,8 +44,7 @@ public class PwdToolkitUtil {
 		throws PortalException {
 
 		if (!password1.equals(password2)) {
-			throw new UserPasswordException(
-				UserPasswordException.PASSWORDS_DO_NOT_MATCH);
+			throw new UserPasswordException.MustMatch(userId);
 		}
 
 		if (!LDAPSettingsUtil.isPasswordPolicyEnabled(companyId) &&

@@ -15,7 +15,7 @@
 package com.liferay.portal.fabric.netty.codec.serialization;
 
 import com.liferay.portal.fabric.netty.util.NettyUtil;
-import com.liferay.portal.kernel.io.AnnotatedObjectInputStream;
+import com.liferay.portal.kernel.io.ProtectedAnnotatedObjectInputStream;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -47,7 +47,8 @@ public class AnnotatedObjectDecoder extends LengthFieldBasedFrameDecoder {
 	}
 
 	public void addFirst(
-		String name, ObjectDecodeChannelInboundHandler<?>
+		String name,
+		ObjectDecodeChannelInboundHandler<?>
 			objectDecodeChannelInboundHandler) {
 
 		_channelPipeline.addFirst(name, objectDecodeChannelInboundHandler);
@@ -61,7 +62,8 @@ public class AnnotatedObjectDecoder extends LengthFieldBasedFrameDecoder {
 	}
 
 	public void addLast(
-		String name, ObjectDecodeChannelInboundHandler<?>
+		String name,
+		ObjectDecodeChannelInboundHandler<?>
 			objectDecodeChannelInboundHandler) {
 
 		_channelPipeline.addLast(name, objectDecodeChannelInboundHandler);
@@ -107,8 +109,9 @@ public class AnnotatedObjectDecoder extends LengthFieldBasedFrameDecoder {
 			return null;
 		}
 
-		ObjectInputStream objectInputStream = new AnnotatedObjectInputStream(
-			new ByteBufInputStream(decodeByteBuf));
+		ObjectInputStream objectInputStream =
+			new ProtectedAnnotatedObjectInputStream(
+				new ByteBufInputStream(decodeByteBuf));
 
 		Object object = objectInputStream.readObject();
 

@@ -5,9 +5,8 @@
 -->
 
 <!ELEMENT hook (portal-properties?, language-properties*, custom-jsp-dir?,
-custom-jsp-global?, dynamic-data-mapping-form-field-renderer*,
-indexer-post-processor*, service*, servlet-filter*, servlet-filter-mapping*,
-struts-action*)>
+custom-jsp-global?, indexer-post-processor*, service*, servlet-filter*,
+servlet-filter-mapping*, struts-action*)>
 
 <!--
 Not all portal properties can be overridden via a hook. The supported properties
@@ -19,7 +18,6 @@ admin.default.role.names
 admin.default.user.group.names
 asset.publisher.asset.entry.query.processors
 asset.publisher.display.styles
-asset.publisher.query.form.configuration
 auth.forward.by.last.path
 auth.public.paths
 auto.deploy.listeners
@@ -46,17 +44,15 @@ control.panel.entry.class.default
 default.landing.page.path
 default.regular.color.scheme.id
 default.regular.theme.id
-default.wap.color.scheme.id
-default.wap.theme.id
 dl.file.entry.drafts.enabled
 dl.file.entry.processors
 dl.repository.impl
+dl.store.antivirus.enabled
 dl.store.antivirus.impl
 dl.store.impl
-dockbar.add.portlets
-field.enable.com.liferay.portal.model.Contact.birthday
-field.enable.com.liferay.portal.model.Contact.male
-field.enable.com.liferay.portal.model.Organization.status
+field.enable.com.liferay.portal.kernel.model.Contact.birthday
+field.enable.com.liferay.portal.kernel.model.Contact.male
+field.enable.com.liferay.portal.kernel.model.Organization.status
 hot.deploy.listeners
 javascript.fast.load
 journal.article.form.add
@@ -102,6 +98,8 @@ phone.number.format.usa.regexp
 portlet.add.default.resource.check.enabled
 portlet.add.default.resource.check.whitelist
 portlet.add.default.resource.check.whitelist.actions
+portlet.interrupted.request.whitelist
+portlet.interrupted.request.whitelist.actions
 rss.feeds.enabled
 sanitizer.impl
 servlet.session.create.events
@@ -207,5 +205,3 @@ before-filter)?, url-pattern+, dispatcher*)>
 <!ELEMENT struts-action-path (#PCDATA)>
 
 <!ELEMENT struts-action-impl (#PCDATA)>
-
-<!ELEMENT dynamic-data-mapping-form-field-renderer (#PCDATA)>

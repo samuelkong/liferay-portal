@@ -1,4 +1,0 @@
-Bundle-Name: Liferay OSGi Utilities
-Bundle-SymbolicName: com.liferay.osgi.util
-Bundle-Version: 2.0.0
-Export-Package: com.liferay.osgi.util.service

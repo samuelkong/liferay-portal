@@ -1,0 +1,289 @@
+<html>
+<head>
+<title>Message</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Message</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>CATEGORY_ALERT</td>
+	<td>//div[contains(@id,'categorization')]/div[contains(@class,'alert-danger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHECKOUT_SUCCESS</td>
+	<td>//div[contains(@class,'sidenav-content')]/div[contains(@class,'alert-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOMIZED_PAGE_INFO</td>
+	<td>//div[contains(@class,'layout')]/span[contains(@class,'message-info')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DDM_TEMPLATE_INFO</td>
+	<td>//div[contains(@id,'DDMPortlet')]//div[contains(@class,'empty-result-message')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DRAFT_AUTO_SAVE</td>
+	<td>//div/small[contains(@id,'saveStatus') and contains(.,'Draft saved at')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EMPTY_INFO</td>
+	<td>//div[contains(@class,'empty-result-message')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EMPTY_INFO_2</td>
+	<td>//div[contains(@class,'panel-default')][2]//div[contains(@class,'empty-result-message')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR</td>
+	<td>//div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_1</td>
+	<td>xpath=(//div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))])[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_1_COLUMN_1</td>
+	<td>xpath=(//div[contains(@id,'column-1')]/div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))])[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_1_COLUMN_2</td>
+	<td>xpath=(//div[contains(@id,'column-2')]/div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))])[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_2</td>
+	<td>xpath=(//div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_3</td>
+	<td>xpath=(//div[contains(@class,'alert') and (contains(@class,'alert-warning'))])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_3_ALT</td>
+	<td>//div[@class='alert alert-warning']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_3_LINK</td>
+	<td>xpath=(//div[contains(@class,'alert') and (contains(@class,'alert-warning'))]/a)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_EMPTY_FIELD</td>
+	<td>//div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))]//div[contains(.,'At least one option should be set for field ${key_fieldLabel}.')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_ENTER_VALID_CONTENT</td>
+	<td>//div[contains(@class,'alert-danger') and contains(.,'Please enter valid content')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_ENTER_A_VALID_TITLE</td>
+	<td>//div[contains(@class,'alert-danger') and contains(.,'Please enter a valid title')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_REQUEST_FAILED_TO_COMPLETE</td>
+	<td>//div[contains(@class,'alert-danger') and contains(.,'Your request failed to complete')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_FIELD_REQUIRED</td>
+	<td>//div[@role='alert' and contains(.,'This field is required')] | //span[contains(@id,'title')]//div[contains(.,'This field is required.')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_FORM_FIELD_REQUIRED</td>
+	<td>//div[contains(@class,'has-error')]//div[contains(@class,'help-block')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ERROR_SPECIFIC_FORM_FIELD_REQUIRED</td>
+	<td>//div[contains(@data-fieldname,'${key_fieldName}')]/../../div[contains(@class,'has-error')]//div[contains(@class,'help-block')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GENERIC</td>
+	<td>//div[contains(@class,'alert')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO</td>
+	<td>//div[contains(@class,'alert alert-info') and not(contains(@class,'hide'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_LINK</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-info')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_1</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-info')][1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_2</td>
+	<td>xpath=(//div[contains(@class,'alert') and contains(@class,'alert-info')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_4</td>
+	<td>xpath=(//div[contains(@class,'alert-info') and contains(@class,'alert-warning')]/a)[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_ARTICLE</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-info')]/span/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_NO_RESULTS_FOUND</td>
+	<td>//div[contains(@class,'empty-result-message')]//div[contains(@class,'text-center')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INFO_EXPLANATION_POST</td>
+	<td>//div[contains(@id,'explanationPost')]/div[@class='alert alert-info']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LOGIN_URL_SUCCESS</td>
+	<td>//tr[contains(.,'Login URL')]/td//span[contains(@class,'lfr-status-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LOGOUT_URL_SUCCESS</td>
+	<td>//tr[contains(.,'Logout URL')]/td//span[contains(@class,'lfr-status-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NO_COMMENTS</td>
+	<td>//div[contains(.,'No comments yet')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NO_ENTRIES</td>
+	<td>//div[contains(@id,'Empty') and contains(.,'No entries were found')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTAL_LOCALIZATION</td>
+	<td>//div[contains(@class,'portal-message') and contains(@class,'alert-info')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_RESTORE_SUCCESS</td>
+	<td>//div[contains(@class,'alert-success') and em[contains(@class,'restore')]] | //div[contains(@class,'alert-success') and contains(.,'restored')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECYCLE_BIN_INFO</td>
+	<td>//div[contains(@class,'tooltip-content')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REQUIRED_INFO</td>
+	<td>//div[contains(@class,'required') and contains(@role,'alert')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SEE_MORE_DETAILS_LINK</td>
+	<td>//a[contains(.,'See More Details')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SERVER_URL_SUCCESS</td>
+	<td>//tr[contains(.,'Server URL')]/td//span[contains(@class,'lfr-status-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_LOCALIZED</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-success')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_1</td>
+	<td>xpath=(//div[contains(@class,'alert') and contains(@class,'alert-success')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_2</td>
+	<td>//span[contains(@class,'alert-success') and contains(@class,'message')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_3</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-success')]/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_CONTENT</td>
+	<td>//div[@class='portlet-body']/div[contains(.,'${key_assetType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_RESTORE_LOCATION</td>
+	<td>//div[@class='portlet-body']/div/em[2]/a[contains(.,'${key_assetRestoreLocation}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLTIP</td>
+	<td>//div[contains(@class,'tooltip-content')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>UNIQUE_SUCCESS</td>
+	<td>//div[contains(@class,'alert') and contains(@class,'alert-success') and contains(.,'${key_uniqueSuccess}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>URL_ERROR</td>
+	<td>//code[@class='lfr-url-error']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_BLOCKED</td>
+	<td>//div[contains(@class,'alert-block')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WEB_CONTENT_STATUS</td>
+	<td>//span[contains(@class,'workflow-status')]/span[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WORKFLOW_STATUS</td>
+	<td>//span[contains(@class,'workflow-status')]/strong | //span[contains(@class,'workflow-status')]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WORKFLOW_UNAPPROVED</td>
+	<td>//div[@class='portlet-body']/div[contains(@class,'alert-warning')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

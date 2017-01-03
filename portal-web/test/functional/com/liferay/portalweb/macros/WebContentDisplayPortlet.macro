@@ -1,0 +1,386 @@
+<definition>
+	<command name="configureScopePG">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Scope" />
+		</execute>
+
+		<execute function="Select" locator1="Select#SCOPE" value1="regexp:.*${scopeSelection}.*" />
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
+	<command name="configureSetupPG">
+		<if>
+			<isset var="userToolNameList" />
+			<then>
+				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+				<execute function="Click" locator1="WCDConfiguration#USER_TOOLS_SELECT_BUTTON" />
+
+				<execute function="SelectFrameTop" />
+
+				<for list="${userToolNameList}" param="key_toggleCardLabel">
+					<if>
+						<condition function="IsNotChecked" locator1="WCDConfiguration#TOGGLE_CARD_CHECKBOX" />
+						<then>
+							<execute function="Click#clickNoWaitForVisible" locator1="WCDConfiguration#TOGGLE_CARD_CHECKBOX" />
+						</then>
+					</if>
+				</for>
+
+				<execute function="Click" locator1="Button#DONE" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="metadataNameList" />
+			<then>
+				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+				<execute function="Click" locator1="WCDConfiguration#CONTENT_METADATA_SELECT" />
+
+				<for list="${metadataNameList}" param="key_toggleCardLabel">
+					<execute function="Pause" locator1="1000" />
+
+					<execute function="SelectFrameTop" />
+
+					<if>
+						<condition function="IsNotChecked" locator1="WCDConfiguration#TOGGLE_CARD_CHECKBOX" />
+						<then>
+							<execute function="Click#clickNoWaitForVisible" locator1="WCDConfiguration#TOGGLE_CARD_CHECKBOX" />
+						</then>
+					</if>
+				</for>
+
+				<execute function="Click" locator1="Button#DONE" />
+			</then>
+		</if>
+
+		<if>
+			<equals arg1="${enableViewCountIncrement}" arg2="true" />
+			<then>
+				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+				<execute function="Check#checkToggleSwitch" locator1="WCDConfiguration#ENABLE_VIEW_COUNT_INCREMENT_CHECKBOX" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+			</then>
+		</if>
+	</command>
+
+	<command name="editTemplate">
+		<if>
+			<equals arg1="${editTemplateButton}" arg2="true" />
+			<then>
+				<execute macro="Portlet#gotoPortletOptions">
+					<var name="portletName" value="Web Content Display" />
+					<var name="portletOption" value="Edit Template" />
+				</execute>
+			</then>
+			<else>
+				<execute macro="WebContentNavigator#gotoEditPGViaWCD" />
+
+				<execute macro="Panel#expandPanel">
+					<var name="panelHeading" value="Structure and Template" />
+				</execute>
+
+				<execute function="AssertTextEquals" locator1="WCEditWebContent#SELECTED_STRUCTURE" value1="${structureName}" />
+
+				<execute function="ClickNoError" locator1="WCEditWebContent#EDIT_TEMPLATE" />
+
+				<execute function="Confirm" value1="Editing the current template deletes all unsaved content." />
+			</else>
+		</if>
+
+		<execute function="SelectFrameTop" />
+
+		<execute function="SelectFrame" locator1="IFrame#MODAL_IFRAME" />
+
+		<execute function="Type#clickAtType" locator1="TextInput#NAME" value1="Template Edit" />
+
+		<if>
+			<isset var="templateScript" />
+			<then>
+				<execute function="Type#typeAceEditor" locator1="DDMEditTemplate#SCRIPT_CONTENT_FIELD_TEXT_AREA" value1="${templateScript}" />
+			</then>
+		</if>
+
+		<execute macro="Button#clickSave" />
+
+		<if>
+			<equals arg1="${editTemplateButton}" arg2="true" />
+			<then>
+				<execute function="SelectFrame" value1="relative=top" />
+			</then>
+			<else>
+				<execute function="Pause" locator1="2000" />
+
+				<execute function="Click" locator1="Button#CLOSE_IFRAME" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+
+				<execute function="SelectFrame" locator1="IFrame#MODAL_IFRAME" />
+
+				<execute macro="Panel#expandPanel">
+					<var name="panelHeading" value="Structure and Template" />
+				</execute>
+
+				<execute function="AssertTextEquals" locator1="WCEditWebContent#SELECTED_TEMPLATE" value1="${templateName}" />
+
+				<execute function="AssertClick#pauseAssertTextClickAt" locator1="Button#PUBLISH" value1="Publish" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+			</else>
+		</if>
+
+		<if>
+			<isset var="templateScript" />
+			<then>
+				<execute function="AssertTextEquals" locator1="WCD#WEB_CONTENT_CONTENT" value1="${templateScript}" />
+			</then>
+			<else>
+				<execute function="AssertTextEquals" locator1="WCD#WEB_CONTENT_CONTENT" value1="${webContentContent}" />
+			</else>
+		</if>
+	</command>
+
+	<command name="saveConfiguration">
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute macro="PortletEntry#save" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="searchWebContent">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<if>
+			<isset var="webContentSearchValue" />
+			<then>
+				<execute function="AssertClick" locator1="WCDConfiguration#SELECT_WEB_CONTENT_BUTTON" value1="Select" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+
+				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+				<execute function="Type" locator1="NavBar#BASIC_SEARCH_FIELD" value1="${webContentSearchValue}" />
+			</then>
+			<else>
+				<execute function="AssertClick" locator1="WCDConfiguration#SELECT_WEB_CONTENT_BUTTON" value1="Select" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+
+				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+				<execute function="Type" locator1="NavBar#BASIC_SEARCH_FIELD" value1="${webContentTitle}" />
+			</else>
+		</if>
+
+		<execute function="Click" locator1="Icon#BASIC_SEARCH" />
+
+		<var name="key_webContentTitle" value="${webContentTitle}" />
+
+		<execute function="AssertTextEquals" locator1="WCDConfiguration#WEB_CONTENT_TABLE_TITLE" value1="${webContentTitle}" />
+
+		<if>
+			<equals arg1="${addSearchedContent}" arg2="true" />
+			<then>
+				<execute function="AssertClick" locator1="Button#WEB_CONTENT_CHOOSE" value1="Choose" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+
+				<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+				<execute function="AssertTextEquals" locator1="Message#INFO_ARTICLE" value1="${webContentTitle} (Modified)" />
+
+				<execute macro="Button#clickSave" />
+
+				<execute macro="Alert#viewSuccessMessage" />
+			</then>
+		</if>
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="searchWebContentNo">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertClick" locator1="WCDConfiguration#SELECT_WEB_CONTENT_BUTTON" value1="Select" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="Type" locator1="NavBar#BASIC_SEARCH_FIELD" value1="${webContentTitle}" />
+
+		<execute function="Click" locator1="Icon#BASIC_SEARCH" />
+
+		<var name="key_webContentTitle" value="${webContentTitle}" />
+
+		<execute function="AssertElementNotPresent" locator1="WCDConfiguration#WEB_CONTENT_TABLE_TITLE" value1="${webContentTitle}" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="selectParentSiteWebContent">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Web Content Display" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertClick" locator1="WCDConfiguration#SELECT_WEB_CONTENT_BUTTON" value1="Select" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="Click" locator1="Dropdown#FILTER" />
+
+		<var name="key_filterValue" value="${parentSiteName}" />
+
+		<execute function="AssertClick" locator1="Dropdown#FILTER_VALUES" value1="${parentSiteName}" />
+
+		<var name="key_webContentTitle" value="${webContentTitle}" />
+
+		<execute function="AssertClick" locator1="Link#WEB_CONTENT_ARTICLE" value1="${webContentTitle}" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute macro="Button#clickSave" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="Click" locator1="Icon#CLOSE" />
+	</command>
+
+	<command name="selectWebContent">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Web Content Display" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertClick" locator1="WCDConfiguration#SELECT_WEB_CONTENT_BUTTON" value1="Select" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<var name="key_webContentTitle" value="${webContentTitle}" />
+
+		<execute function="AssertClick" locator1="Link#WEB_CONTENT_ARTICLE" value1="${webContentTitle}" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute macro="Button#clickSave" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="tearDownScopePG">
+		<execute macro="WebContentDisplayPortlet#configureScopePG">
+			<var name="scopeSelection" value="Liferay" />
+		</execute>
+	</command>
+
+	<command name="viewAllSettingsEnabledPG">
+		<execute function="AssertTextEquals#assertPartialText" locator1="Icon#PRINT" value1="Print" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="Comments#SUBSCRIBE_TO_COMMENTS_LINK" value1="Subscribe to Comments" />
+
+		<var name="key_assetTitle" value="${relatedAssetTitle}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="WCD#RELATED_ASSETS" value1="${relatedAssetTitle}" />
+
+		<execute function="Type#typeEditor" locator1="Comments#COMMENT_FIELD" value1="Hello!" />
+
+		<execute function="AssertClick" locator1="Button#REPLY" value1="Reply" />
+
+		<execute function="AssertElementPresent" locator1="Comments#THUMBS_UP" />
+		<execute function="AssertElementPresent" locator1="Comments#THUMBS_DOWN" />
+	</command>
+
+	<command name="viewConfigureScopePG">
+		<var name="key_portletName" value="Web Content Display" />
+
+		<if>
+			<equals arg1="${scopeSelectionDefault}" arg2="true" />
+			<then>
+				<execute function="AssertTextEquals" locator1="Portlet#TITLE" value1="Web Content Display" />
+			</then>
+			<else>
+				<execute function="AssertTextEquals" locator1="Portlet#TITLE" value1="Web Content Display (${scopeSelection})" />
+			</else>
+		</if>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Scope" />
+		</execute>
+
+		<execute function="AssertSelectedLabel" locator1="Select#SCOPE" value1="${scopeSelection}" />
+	</command>
+
+	<command name="viewContentPageBreak">
+		<execute function="AssertClick" locator1="Pagination#PAGE_2" value1="2" />
+
+		<execute function="AssertTextEquals" locator1="WCD#WEB_CONTENT_CONTENT" value1="${webContentContent}" />
+
+		<execute function="AssertClick" locator1="Pagination#PREVIOUS_LINK" value1="Previous" />
+	</command>
+
+	<command name="viewDeletedArticlePGViaWCD">
+		<execute function="AssertTextEquals" locator1="Message#ERROR" value1="The selected web content no longer exists." />
+	</command>
+
+	<command name="viewEnabledFileTypesPGViaWCD">
+		<for list="${fileTypes}" param="fileType">
+			<var name="key_fileType" value="${fileType}" />
+
+			<execute function="AssertTextEquals#assertPartialText" locator1="WCD#DOCUMENT_CONVERSION_TYPE" value1="${fileType}" />
+			<execute function="AssertElementPresent" locator1="WCD#DOCUMENT_CONVERSION_TYPE_ICON" />
+		</for>
+	</command>
+
+	<command name="viewImageFieldViaWCD">
+		<execute function="SikuliAssertElementPresent" locator1="WCD#WEB_CONTENT_IMAGE_PNG" />
+	</command>
+
+	<command name="viewNoPermissionPG">
+		<execute function="AssertTextEquals" locator1="Message#ERROR" value1="You do not have the roles required to access this portlet." />
+	</command>
+</definition>

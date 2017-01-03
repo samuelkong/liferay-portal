@@ -42,13 +42,13 @@ boolean ignoreRequestValue = GetterUtil.getBoolean(String.valueOf(request.getAtt
 boolean inlineField = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:inlineField")));
 java.lang.String inlineLabel = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:inlineLabel"));
 java.lang.String label = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:label"));
-boolean localizeLabel = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:localizeLabel")), true);
 java.lang.String languageId = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:languageId"));
 boolean last = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:last")));
 boolean localized = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:localized")));
+boolean localizeLabel = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:localizeLabel")), true);
 java.lang.Number max = GetterUtil.getNumber(String.valueOf(request.getAttribute("aui:input:max")), null);
-java.lang.Class<?> model = (java.lang.Class<?>)request.getAttribute("aui:input:model");
 java.lang.Number min = GetterUtil.getNumber(String.valueOf(request.getAttribute("aui:input:min")), null);
+java.lang.Class<?> model = (java.lang.Class<?>)request.getAttribute("aui:input:model");
 boolean multiple = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:multiple")));
 java.lang.String name = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:name"));
 java.lang.String onChange = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:onChange"));
@@ -63,10 +63,9 @@ java.lang.String title = GetterUtil.getString((java.lang.String)request.getAttri
 java.lang.String type = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:type"));
 boolean useNamespace = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:useNamespace")), true);
 java.lang.Object value = (java.lang.Object)request.getAttribute("aui:input:value");
-boolean wrappedField = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:wrappedField")), false);
+boolean wrappedField = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:input:wrappedField")));
 java.lang.String wrapperCssClass = GetterUtil.getString((java.lang.String)request.getAttribute("aui:input:wrapperCssClass"));
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:input:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:input:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/input/init-ext.jspf" %>

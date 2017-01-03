@@ -49,7 +49,7 @@ public class TableIteratorTag extends TagSupport {
 				pageContext.setAttribute(
 					"tableIteratorObj", _list.get(_listPos));
 				pageContext.setAttribute(
-					"tableIteratorPos", new Integer(_listPos));
+					"tableIteratorPos", Integer.valueOf(_listPos));
 
 				return EVAL_BODY_AGAIN;
 			}
@@ -98,14 +98,14 @@ public class TableIteratorTag extends TagSupport {
 
 				request.setAttribute("liferay-ui:table-iterator:list", _list);
 				request.setAttribute(
+					"liferay-ui:table-iterator:rowBreak", _rowBreak);
+				request.setAttribute(
 					"liferay-ui:table-iterator:rowLength",
 					String.valueOf(_rowLength));
 				request.setAttribute(
 					"liferay-ui:table-iterator:rowPadding", _rowPadding);
 				request.setAttribute(
 					"liferay-ui:table-iterator:rowValign", _rowValign);
-				request.setAttribute(
-					"liferay-ui:table-iterator:rowBreak", _rowBreak);
 				request.setAttribute("liferay-ui:table-iterator:width", _width);
 
 				PortalIncludeUtil.include(pageContext, getStartPage());
@@ -113,7 +113,7 @@ public class TableIteratorTag extends TagSupport {
 				pageContext.setAttribute(
 					"tableIteratorObj", _list.get(_listPos));
 				pageContext.setAttribute(
-					"tableIteratorPos", new Integer(_listPos));
+					"tableIteratorPos", Integer.valueOf(_listPos));
 
 				return EVAL_BODY_INCLUDE;
 			}

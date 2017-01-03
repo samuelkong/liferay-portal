@@ -1,5 +1,0 @@
-<definition>
-	<command name="name">
-		<var name="name" value="value" />
-	</command>
-</definition>

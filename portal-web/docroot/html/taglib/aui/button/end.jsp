@@ -17,13 +17,13 @@
 <%@ include file="/html/taglib/aui/button/init.jsp" %>
 
 <c:if test="<%= dropdown %>">
-	<div class="btn-group" id="<%= id %>BtnGroup">
+	<div class="btn-group dropdown" id="<%= id %>BtnGroup">
 </c:if>
 
 <c:choose>
 	<c:when test="<%= Validator.isNotNull(escapedHREF) %>">
 		<a
-			class="<%= AUIUtil.buildCss(AUIUtil.BUTTON_PREFIX, disabled, false, false, cssClass) %> btn-default"
+			class="<%= AUIUtil.buildCss(AUIUtil.BUTTON_PREFIX, disabled, false, false, cssClass) %> <%= type.equals("cancel") ? "btn-link" : "btn-default" %>"
 			href="<%= escapedHREF %>"
 			id="<%= id %>"
 
@@ -37,7 +37,7 @@
 	</c:when>
 	<c:otherwise>
 		<button
-			class="<%= AUIUtil.buildCss(AUIUtil.BUTTON_PREFIX, disabled, false, false, cssClass) %> btn-default"
+			class="<%= AUIUtil.buildCss(AUIUtil.BUTTON_PREFIX, disabled, false, false, cssClass) %> <%= type.equals("cancel") ? "btn-link" : "btn-default" %>"
 
 			<c:if test="<%= disabled %>">
 				disabled
@@ -65,14 +65,12 @@
 	<i class="<%= icon %>"></i>
 </c:if>
 
-<%= LanguageUtil.get(request, value) %>
+<c:if test="<%= Validator.isNotNull(value) %>">
+	<span class="lfr-btn-label"><%= LanguageUtil.get(resourceBundle, value) %></span>
+</c:if>
 
 <c:if test='<%= Validator.isNotNull(icon) && iconAlign.equals("right") %>'>
 	<i class="<%= icon %>"></i>
-</c:if>
-
-<c:if test="<%= dropdown %>">
-	<i class="icon-caret-down"></i>
 </c:if>
 
 <c:choose>
@@ -85,25 +83,34 @@
 </c:choose>
 
 <c:if test="<%= dropdown %>">
+	<button aria-expanded="false" class="btn btn-primary dropdown-toggle <%= cssClass %>" data-toggle="dropdown" <%= disabled ? "disabled" : StringPool.BLANK %> id="<%= id %>Toggle" type="button">
+		<span class="caret"></span>
+
+		<span class="sr-only"><liferay-ui:message key="toggle-dropdown" /></span>
+	</button>
+</c:if>
+
+<c:if test="<%= dropdown %>">
 		<ul class="dropdown-menu" role="menu">
 			<%= bodyContentString %>
 		</ul>
 	</div>
-
-	<aui:script use="aui-dropdown">
-		new A.Dropdown(
-			{
-				boundingBox: '#<%= id %>BtnGroup',
-				contentBox: '#<%= id %>BtnGroup',
-				render: true,
-				trigger: '#<%= id %>'
-			}
-		);
-	</aui:script>
 </c:if>
 
 <c:if test="<%= useDialog %>">
 	<aui:script>
-		Liferay.delegateClick('<%= namespace + name %>', Liferay.Util.openInDialog);
+		Liferay.delegateClick(
+			'<%= namespace + name %>',
+			function(event) {
+				Liferay.Util.openInDialog(
+					event,
+					{
+						dialogIframe: {
+							bodyCssClass: 'dialog-with-footer'
+						}
+					}
+				);
+			}
+		);
 	</aui:script>
 </c:if>

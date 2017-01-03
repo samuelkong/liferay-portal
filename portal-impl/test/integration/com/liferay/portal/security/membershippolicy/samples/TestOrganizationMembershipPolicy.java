@@ -14,16 +14,16 @@
 
 package com.liferay.portal.security.membershippolicy.samples;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.UserGroupRole;
+import com.liferay.portal.kernel.security.membershippolicy.BaseOrganizationMembershipPolicy;
+import com.liferay.portal.kernel.security.membershippolicy.MembershipPolicyException;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.model.UserGroupRole;
-import com.liferay.portal.security.membershippolicy.BaseOrganizationMembershipPolicy;
 import com.liferay.portal.security.membershippolicy.BaseOrganizationMembershipPolicyTestCase;
-import com.liferay.portal.security.membershippolicy.MembershipPolicyException;
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.model.AssetTag;
 
 import java.io.Serializable;
 
@@ -161,13 +161,13 @@ public class TestOrganizationMembershipPolicy
 		List<AssetCategory> oldAssetCategories, List<AssetTag> oldAssetTags,
 		Map<String, Serializable> oldExpandoAttributes) {
 
-			Assert.assertNotNull(organization);
-			Assert.assertNotNull(oldOrganization);
-			Assert.assertNotNull(oldAssetCategories);
-			Assert.assertNotNull(oldAssetTags);
-			Assert.assertNotNull(oldExpandoAttributes);
+		Assert.assertNotNull(organization);
+		Assert.assertNotNull(oldOrganization);
+		Assert.assertNotNull(oldAssetCategories);
+		Assert.assertNotNull(oldAssetTags);
+		Assert.assertNotNull(oldExpandoAttributes);
 
-			verifyPolicy(organization);
+		verifyPolicy(organization);
 	}
 
 	@Override

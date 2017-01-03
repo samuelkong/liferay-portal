@@ -5,24 +5,9 @@
 	<resource file="resource-actions/portal.xml" />
 	<resource file="resource-actions/announcements.xml" />
 	<resource file="resource-actions/asset.xml" />
-	<resource file="resource-actions/blogs.xml" />
-	<resource file="resource-actions/bookmarks.xml" />
-	<resource file="resource-actions/breadcrumb.xml" />
-	<resource file="resource-actions/calendar.xml" />
-	<resource file="resource-actions/cms.xml" />
 	<resource file="resource-actions/documentlibrary.xml" />
-	<resource file="resource-actions/dynamicdatalists.xml" />
-	<resource file="resource-actions/dynamicdatamapping.xml" />
 	<resource file="resource-actions/expando.xml" />
-	<resource file="resource-actions/journal.xml" />
-	<resource file="resource-actions/language.xml" />
-	<resource file="resource-actions/login.xml" />
 	<resource file="resource-actions/messageboards.xml" />
-	<resource file="resource-actions/mobiledevicerules.xml" />
-	<resource file="resource-actions/shopping.xml" />
 	<resource file="resource-actions/sites.xml" />
-	<resource file="resource-actions/social.xml" />
-	<resource file="resource-actions/softwarecatalog.xml" />
-	<resource file="resource-actions/wiki.xml" />
 	<resource file="resource-actions/workflow.xml" />
 </resource-action-mapping>

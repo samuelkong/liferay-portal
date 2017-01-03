@@ -16,19 +16,19 @@ package com.liferay.portal.action;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.setup.SetupWizardUtil;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 
 import java.sql.SQLException;
 
@@ -77,6 +77,10 @@ public class SetupWizardAction extends Action {
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
 				SetupWizardUtil.updateSetup(request, response);
+
+				if (ParamUtil.getBoolean(request, "defaultDatabase")) {
+					PropsValues.SETUP_WIZARD_ENABLED = false;
+				}
 			}
 
 			response.sendRedirect(
@@ -122,7 +126,7 @@ public class SetupWizardAction extends Action {
 
 			putMessage(
 				request, jsonObject,
-				"database-connection-was-established-sucessfully");
+				"database-connection-was-established-successfully");
 		}
 		catch (ClassNotFoundException cnfe) {
 			putMessage(

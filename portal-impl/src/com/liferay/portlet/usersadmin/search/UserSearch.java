@@ -17,16 +17,17 @@ package com.liferay.portlet.usersadmin.search;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.PortalPreferences;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
+import com.liferay.users.admin.kernel.util.UsersAdminUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,9 +45,8 @@ public class UserSearch extends SearchContainer<User> {
 
 	public static final String EMPTY_RESULTS_MESSAGE = "no-users-were-found";
 
-	public static List<String> headerNames = new ArrayList<String>();
-	public static Map<String, String> orderableHeaders =
-		new HashMap<String, String>();
+	public static List<String> headerNames = new ArrayList<>();
+	public static Map<String, String> orderableHeaders = new HashMap<>();
 
 	static {
 		headerNames.add("first-name");
@@ -83,9 +83,11 @@ public class UserSearch extends SearchContainer<User> {
 		UserDisplayTerms displayTerms = (UserDisplayTerms)getDisplayTerms();
 		UserSearchTerms searchTerms = (UserSearchTerms)getSearchTerms();
 
+		String portletId = PortletProviderUtil.getPortletId(
+			User.class.getName(), PortletProvider.Action.VIEW);
 		String portletName = portletConfig.getPortletName();
 
-		if (!portletName.equals(PortletKeys.USERS_ADMIN)) {
+		if (!portletId.equals(portletName)) {
 			displayTerms.setStatus(WorkflowConstants.STATUS_APPROVED);
 			searchTerms.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
@@ -126,16 +128,15 @@ public class UserSearch extends SearchContainer<User> {
 				Validator.isNotNull(orderByType)) {
 
 				preferences.setValue(
-					PortletKeys.USERS_ADMIN, "users-order-by-col", orderByCol);
+					portletId, "users-order-by-col", orderByCol);
 				preferences.setValue(
-					PortletKeys.USERS_ADMIN, "users-order-by-type",
-					orderByType);
+					portletId, "users-order-by-type", orderByType);
 			}
 			else {
 				orderByCol = preferences.getValue(
-					PortletKeys.USERS_ADMIN, "users-order-by-col", "last-name");
+					portletId, "users-order-by-col", "last-name");
 				orderByType = preferences.getValue(
-					PortletKeys.USERS_ADMIN, "users-order-by-type", "asc");
+					portletId, "users-order-by-type", "asc");
 			}
 
 			OrderByComparator<User> orderByComparator =

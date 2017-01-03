@@ -1,0 +1,12 @@
+Bundle-Name: Liferay Portal Configurator Extender
+Bundle-SymbolicName: com.liferay.portal.configuration.extender
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.portal.configuration.extender
+Import-Package: !javax.*,*
+-includeresource:\
+	classes,\
+	test-classes/integration,\
+	@test-lib/biz.aQute.bndlib.jar!/aQute/lib/filter/*,\
+	@test-lib/org.apache.felix.utils.jar,\
+	@test-lib/com.liferay.portal.kernel.jar,\
+	@test-lib/com.liferay.registry.api.jar

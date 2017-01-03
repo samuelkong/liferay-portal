@@ -14,12 +14,12 @@
 
 package com.liferay.portlet;
 
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,9 @@ import javax.servlet.http.HttpServletRequest;
 public class PortletResourceStaticURLGenerator {
 
 	public List<String> generate(
-		Portlet portlet, PortletResourceAccessor ... portletResourceAccessors) {
+		Portlet portlet, PortletResourceAccessor... portletResourceAccessors) {
 
-		List<String> urls = new ArrayList<String>();
+		List<String> urls = new ArrayList<>();
 
 		for (PortletResourceAccessor portletResourceAccessor :
 				portletResourceAccessors) {
@@ -46,7 +46,8 @@ public class PortletResourceStaticURLGenerator {
 				contextPath = PortalUtil.getPathContext();
 			}
 			else {
-				contextPath = portlet.getContextPath();
+				contextPath =
+					PortalUtil.getPathProxy() + portlet.getContextPath();
 			}
 
 			List<String> portletResources = portletResourceAccessor.get(

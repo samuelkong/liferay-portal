@@ -14,10 +14,8 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.NoSuchListTypeException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.ClassName;
-import com.liferay.portal.model.ListType;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.service.base.ListTypeServiceBaseImpl;
 
 import java.util.List;
@@ -28,35 +26,25 @@ import java.util.List;
 public class ListTypeServiceImpl extends ListTypeServiceBaseImpl {
 
 	@Override
-	public ListType getListType(int listTypeId) throws PortalException {
-		return listTypePersistence.findByPrimaryKey(listTypeId);
+	public ListType getListType(long listTypeId) throws PortalException {
+		return listTypeLocalService.getListType(listTypeId);
 	}
 
 	@Override
 	public List<ListType> getListTypes(String type) {
-		return listTypePersistence.findByType(type);
+		return listTypeLocalService.getListTypes(type);
 	}
 
 	@Override
-	public void validate(int listTypeId, long classNameId, String type)
+	public void validate(long listTypeId, long classNameId, String type)
 		throws PortalException {
 
-		ClassName className = classNameLocalService.getClassName(classNameId);
-
-		validate(listTypeId, className.getValue() + type);
+		listTypeLocalService.validate(listTypeId, classNameId, type);
 	}
 
 	@Override
-	public void validate(int listTypeId, String type) throws PortalException {
-		ListType listType = listTypePersistence.fetchByPrimaryKey(listTypeId);
-
-		if ((listType == null) || !listType.getType().equals(type)) {
-			NoSuchListTypeException nslte = new NoSuchListTypeException();
-
-			nslte.setType(type);
-
-			throw nslte;
-		}
+	public void validate(long listTypeId, String type) throws PortalException {
+		listTypeLocalService.validate(listTypeId, type);
 	}
 
 }

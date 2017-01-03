@@ -1,0 +1,66 @@
+Bundle-Name: Liferay Wiki Service
+Bundle-SymbolicName: com.liferay.wiki.service
+Bundle-Version: 1.3.1
+Export-Package:\
+	com.liferay.wiki.asset,\
+	com.liferay.wiki.engine.impl,\
+	com.liferay.wiki.importer.impl,\
+	com.liferay.wiki.importer.impl.mediawiki,\
+	com.liferay.wiki.model.impl,\
+	com.liferay.wiki.search,\
+	com.liferay.wiki.service.permission,\
+	com.liferay.wiki.service.util,\
+	com.liferay.wiki.social,\
+	com.liferay.wiki.trash,\
+	com.liferay.wiki.util,\
+	com.liferay.wiki.util.comparator,\
+	com.liferay.wiki.verify
+Import-Package:\
+	!com.liferay.portal.tools.sql,\
+	\
+	!javax.activation.*,\
+	\
+	!javax.crypto.*,\
+	\
+	!javax.imageio.*,\
+	\
+	!javax.mail.*,\
+	\
+	!javax.naming.*,\
+	\
+	!junit.framework.*,\
+	\
+	!net.sf.akismet.*,\
+	!net.sf.ehcache.*,\
+	\
+	!net.sourceforge.stripes.*,\
+	\
+	!org.apache.commons.dbcp.*,\
+	!org.apache.commons.fileupload.*,\
+	!org.apache.commons.jrcs.*,\
+	!org.apache.commons.pool.impl.*,\
+	!org.apache.lucene.*,\
+	!org.apache.xerces.framework,\
+	!org.apache.xmlrpc.*,\
+	\
+	!org.freshcookies.test.*,\
+	\
+	!org.incava.util.diff.*,\
+	\
+	!org.intabulas.sandler.*,\
+	\
+	!org.jgroups.*,\
+	*
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Wiki
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+-includeresource:\
+	@../../../../../lib/portal/antlr2.jar,\
+	@../../../../../lib/portal/antlr3.jar,\
+	@../../../../../lib/portal/bnd.jar!/aQute/bnd/annotation/metatype/*,\
+	@../../../../../lib/portal/ecs.jar,\
+	@../../../../../lib/portal/jericho-html.jar,\
+	@../../../../../lib/portal/jrcs-diff.jar,\
+	@../../../../../lib/portal/oro.jar,\
+	@../../../../../lib/portal/stringtemplate.jar

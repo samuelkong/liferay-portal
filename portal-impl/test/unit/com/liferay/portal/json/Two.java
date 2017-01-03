@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.json.JSON;
 public class Two {
 
 	public String getFone() {
-		return _FONE;
+		return _fone;
 	}
 
 	public int getFtwo() {
@@ -34,12 +34,12 @@ public class Two {
 		return _not;
 	}
 
-	private static final String _FONE = "string";
+	private final String _fone = "string";
 
 	@JSON
-	private int _ftwo = 173;
+	private final int _ftwo = 173;
 
 	@JSON(include = false)
-	private long _not = -1;
+	private final long _not = -1;
 
 }

@@ -26,11 +26,11 @@
 			</c:when>
 			<c:otherwise>
 				<c:if test='<%= !tilesPortletContent.endsWith("/error.jsp") %>'>
-					<%@ include file="/html/common/themes/portlet_messages.jspf" %>
+					<liferay-theme:portlet-messages group="<%= group %>" portlet="<%= portlet %>" />
 				</c:if>
 
 				<c:choose>
-					<c:when test="<%= group.isLayoutPrototype() && layoutTypePortlet.hasPortletId(portletDisplay.getId()) && !portletName.equals(PortletKeys.NESTED_PORTLETS) && portletDisplay.isModeView() %>">
+					<c:when test="<%= PortalUtil.isSkipPortletContentRendering(group, layoutTypePortlet, portletDisplay, portletName) %>">
 						<div class="alert alert-info">
 							<liferay-ui:message key="configure-this-application-and-place-it-where-desired-on-the-page" />
 						</div>

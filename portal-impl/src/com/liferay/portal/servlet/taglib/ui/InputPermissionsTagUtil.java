@@ -16,7 +16,7 @@ package com.liferay.portal.servlet.taglib.ui;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.taglib.util.PortalIncludeUtil;
 
 import java.util.List;
@@ -59,11 +59,6 @@ public class InputPermissionsTagUtil {
 						modelName);
 
 				request.setAttribute(
-					"liferay-ui:input-permissions:modelName", modelName);
-				request.setAttribute(
-					"liferay-ui:input-permissions:supportedActions",
-					supportedActions);
-				request.setAttribute(
 					"liferay-ui:input-permissions:groupDefaultActions",
 					groupDefaultActions);
 				request.setAttribute(
@@ -72,6 +67,11 @@ public class InputPermissionsTagUtil {
 				request.setAttribute(
 					"liferay-ui:input-permissions:guestUnsupportedActions",
 					guestUnsupportedActions);
+				request.setAttribute(
+					"liferay-ui:input-permissions:modelName", modelName);
+				request.setAttribute(
+					"liferay-ui:input-permissions:supportedActions",
+					supportedActions);
 			}
 
 			PortalIncludeUtil.include(pageContext, page);

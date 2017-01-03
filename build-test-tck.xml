@@ -1,7 +1,54 @@
 <?xml version="1.0"?>
 
-<project name="portal-test-tck" basedir="." default="test" xmlns:antelope="antlib:ise.antelope.tasks">
+<project basedir="." default="test" name="portal-test-tck" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build-test.xml" />
+
+	<macrodef name="update-tck-war-version">
+		<attribute name="tck.war.file" />
+
+		<sequential>
+			<tstamp>
+				<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
+			</tstamp>
+
+			<mkdir dir="${tstamp.value}" />
+
+			<unwar dest="${tstamp.value}" src="@{tck.war.file}">
+				<patternset>
+					<include name="WEB-INF/web.xml" />
+				</patternset>
+			</unwar>
+
+			<fixcrlf eol="lf" file="${tstamp.value}/WEB-INF/web.xml" />
+
+			<replace file="${tstamp.value}/WEB-INF/web.xml">
+				<replacefilter>
+					<replacetoken><![CDATA[
+<!DOCTYPE web-app PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' 'http://java.sun.com/dtd/web-app_2_3.dtd'>
+]]></replacetoken>
+					<replacevalue></replacevalue>
+				</replacefilter>
+				<replacefilter token="&lt;web-app&gt;" value="&lt;web-app version=&quot;2.4&quot;&gt;" />
+			</replace>
+
+			<zip destfile="@{tck.war.file}" update="true">
+				<fileset dir="${tstamp.value}" />
+			</zip>
+
+			<delete dir="${tstamp.value}" />
+		</sequential>
+	</macrodef>
+
+	<target name="clean-up-tck-dependencies">
+		<delete file="${liferay.home}/osgi/modules/com.liferay.portlet.tck.bridge.jar" />
+
+		<delete includeemptydirs="true">
+			<fileset
+				dir="${app.server.tomcat.dir}/webapps/"
+				includes="portlet_jp_*/**"
+			/>
+		</delete>
+	</target>
 
 	<target name="prepare-tck">
 		<delete dir="tools/tck" />
@@ -10,22 +57,22 @@
 			<isset property="portlet.tck.url" />
 			<then>
 				<tstamp>
-					<format property="tstamp.value" pattern="yyyyMMddkkmmssSSS" />
+					<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
 				</tstamp>
 
-				<get dest="${tstamp.value}.zip" src="${portlet.tck.url}" />
+				<mirrors-get dest="${tstamp.value}.zip" src="${portlet.tck.url}" />
 
-				<unzip src="${tstamp.value}.zip" dest="tools/tck" />
+				<unzip dest="tools/tck" src="${tstamp.value}.zip" />
 
 				<delete file="${tstamp.value}.zip" />
 			</then>
 			<else>
-				<unzip src="${portlet.tck.zip}" dest="tools/tck" />
+				<unzip dest="tools/tck" src="${portlet.tck.zip}" />
 			</else>
 		</if>
 
 		<chmod
-			dir="tools/tck/bin/"
+			dir="tools/tck/bin"
 			includes="tsant*"
 			perm="744"
 		/>
@@ -34,141 +81,276 @@
 			<replacefilter token="http://localhost:8080/pluto/tck" value="http://localhost:8080/c/portal/tck" />
 		</replace>
 
-		<echo file="tools/tck/bin/build.properties" append="true">
+		<echo append="true" file="tools/tck/bin/build.properties">
 
 work.dir=${basedir.unix}/tools/tck/work</echo>
 	</target>
 
-	<target name="record-test-tck-package-names">
-		<ant antfile="build-test-tck.xml" target="prepare-tck" />
-
-		<script classpathref="project.classpath" language="beanshell">
-			import com.liferay.portal.kernel.util.OSDetector;
-			import com.liferay.portal.kernel.util.StringUtil;
-
-			import org.apache.tools.ant.DirectoryScanner;
-
-			DirectoryScanner directoryScanner = new DirectoryScanner();
-
-			directoryScanner.setBasedir(project.getBaseDir());
-			directoryScanner.setIncludes(new String[] {"**/com/sun/ts/tests/**/*.war"});
-
-			directoryScanner.scan();
-
-			String[] fileNames = directoryScanner.getIncludedFiles();
-
-			Arrays.sort(fileNames);
-
-			Set packageNames = new TreeSet();
-
-			for (String fileName : fileNames) {
-				int x = fileName.indexOf("com/");
-				int y = fileName.lastIndexOf("/");
-
-				if (OSDetector.isWindows()) {
-					x = fileName.indexOf("com\\");
-					y = fileName.lastIndexOf("\\");
-				}
-
-				String packageName = fileName.substring(x, y);
-
-				if (packageName.endsWith("PortletSessionSecondapp")) {
-					continue;
-				}
-
-				packageName = StringUtil.replace(packageName, "/", ".");
-				packageName = StringUtil.replace(packageName, "\\", ".");
-
-				packageNames.add(packageName);
-			}
-
-			project.setProperty("test.tck.package.names", StringUtil.merge(packageNames, " "));
-		</script>
-
-		<echo file="test.tck.package.names.properties">TEST_TCK_PACKAGE_NAMES=${test.tck.package.names}</echo>
-	</target>
-
-	<target name="run-tck-tomcat">
-		<antcall target="clean-up-java-processes" inheritAll="false" />
-
-		<antcall target="prepare-portal-ext-properties">
-			<param name="tck.url" value="true" />
-		</antcall>
-
-		<antcall target="rebuild-database" inheritAll="false" />
-
-		<antcall target="prepare-tck" />
-
-		<ant antfile="build-test-plugins.xml" target="deploy-simple-server-plugins">
-			<property name="plugin.types" value="portlets" />
-			<property name="plugins.includes" value="marketplace-portlet" />
-			<property name="simple.server.dir" value="${app.server.tomcat.dir}" />
-			<property name="simple.server.bin.dir" value="${app.server.tomcat.bin.dir}" />
-			<property name="simple.server.deploy.dir" value="${app.server.tomcat.deploy.dir}" />
-			<property name="simple.server.lib.global.dir" value="${app.server.tomcat.lib.global.dir}" />
-			<property name="simple.server.portal.dir" value="${app.server.tomcat.portal.dir}" />
-		</ant>
-
+	<target name="prepare-tck-dependencies">
 		<if>
 			<not>
-				<isset property="test.package" />
+				<isset property="test.packages" />
 			</not>
 			<then>
-				<property name="test.package" value="com.sun.ts.tests" />
+				<property name="test.packages" value="com.sun.ts.tests" />
 			</then>
 		</if>
 
 		<propertyregex
 			global="true"
-			input="${test.package}."
-			property="test.directory"
+			input="${test.packages}."
+			property="test.directories"
 			regexp="\."
 			replace="/"
 		/>
 
-		<copy todir="${liferay.home}/deploy" flatten="true">
-			<fileset
-				dir="tools/tck/dist/${test.directory}"
-				includes="**/*.war"
-			/>
-		</copy>
+		<antcall target="prepare-tck" />
 
-		<parallel>
-			<exec dir="${app.server.tomcat.bin.dir}" executable="catalina${file.suffix.bat}" resolveexecutable="true">
-				<arg line="run" />
-			</exec>
+		<var name="tck.servlet.context.names" value="" />
 
+		<for list="${test.directories}" param="test.directory">
 			<sequential>
-				<waitfor>
-					<http url="http://localhost:8080" />
-				</waitfor>
+				<for param="tck.war.file">
+					<path>
+						<fileset
+							dir="tools/tck/dist/@{test.directory}"
+							excludes="**/portlet_jp_PortletSession_secondapp_web.war"
+							includes="**/*.war"
+						/>
+					</path>
 
-				<sleep seconds="30" />
+					<sequential>
+						<local name="tck.servlet.context.name" />
 
-				<condition property="tsant.file.suffix.bat" value=".bat" else="">
-					<contains string="${os.name}" substring="Windows" casesensitive="false" />
-				</condition>
+						<basename file="@{tck.war.file}" property="tck.servlet.context.name" suffix=".war" />
 
-				<exec dir="tools/tck/src/${test.directory}" executable="${basedir}/tools/tck/bin/tsant${tsant.file.suffix.bat}">
+						<if>
+							<equals arg1="${tck.servlet.context.names}" arg2="" />
+							<then>
+								<var name="tck.servlet.context.names" value="${tck.servlet.context.name}" />
+							</then>
+							<else>
+								<var name="tck.servlet.context.names" value="${tck.servlet.context.names}|${tck.servlet.context.name}" />
+							</else>
+						</if>
+
+						<update-tck-war-version
+							tck.war.file="@{tck.war.file}"
+						/>
+
+						<copy
+							file="@{tck.war.file}"
+							flatten="true"
+							todir="${liferay.home}/deploy"
+						/>
+					</sequential>
+				</for>
+			</sequential>
+		</for>
+
+		<echo file="${liferay.home}/osgi/modules/com.liferay.portlet.tck.bridge.configuration.PortletTCKBridgeConfiguration.cfg">handShakeServerPort=${portlet.tck.bridge.handshake.port}
+servletContextNames=${tck.servlet.context.names}</echo>
+
+		<gradle-execute dir="modules/test/portlet-tck-bridge" task="deploy" />
+	</target>
+
+	<target name="record-test-tck-package-names">
+		<ant antfile="build-test-tck.xml" target="prepare-tck" />
+
+		<beanshell>
+			<![CDATA[
+				import org.apache.tools.ant.DirectoryScanner;
+
+				List getGroupPackageNamesList(List packageNames, int groupsSize) {
+					List groupPackageNamesList = new ArrayList(groupsSize);
+
+					for (int i = 0; i < groupsSize; i++) {
+						groupPackageNamesList.add(new ArrayList());
+					}
+
+					for (int i = 0; i < packageNames.size(); i++) {
+						String packageName = packageNames.get(i);
+
+						List groupPackageNames = groupPackageNamesList.get(i % groupsSize);
+
+						groupPackageNames.add(packageName);
+					}
+
+					return groupPackageNamesList;
+				}
+
+				List getPackageNames() {
+					DirectoryScanner directoryScanner = new DirectoryScanner();
+
+					directoryScanner.setBasedir(project.getBaseDir());
+					directoryScanner.setIncludes(new String[] {"**/com/sun/ts/tests/**/*.war"});
+
+					directoryScanner.scan();
+
+					String[] fileNames = directoryScanner.getIncludedFiles();
+
+					Arrays.sort(fileNames);
+
+					List packageNames = new ArrayList();
+
+					for (String fileName : fileNames) {
+						int x = fileName.indexOf("com" + File.separator);
+						int y = fileName.lastIndexOf(File.separatorChar);
+
+						String packageName = fileName.substring(x, y);
+
+						if (packageName.endsWith("PortletSessionSecondapp")) {
+							continue;
+						}
+
+						packageNames.add(packageName.replace(File.separatorChar, '.'));
+					}
+
+					return packageNames;
+				}
+
+				int testClassGroupsSize = Integer.parseInt(project.getProperty("test.class.groups.size"));
+
+				List groupPackageNamesList = getGroupPackageNamesList(getPackageNames(), testClassGroupsSize);
+
+				StringBuilder sb = new StringBuilder();
+
+				for (int i = 0; i < testClassGroupsSize; i++) {
+					List groupPackageNames = groupPackageNamesList.get(i);
+
+					sb.append("TEST_CLASS_GROUP_");
+					sb.append(i);
+					sb.append("=");
+
+					for (String packageName : groupPackageNames) {
+						sb.append(packageName);
+						sb.append(",");
+					}
+
+					if (!groupPackageNames.isEmpty()) {
+						sb.setLength(sb.length() - 1);
+					}
+
+					sb.append("\n\n");
+				}
+
+				sb.append("TEST_CLASS_GROUPS=");
+
+				for (int i = 0; i < testClassGroupsSize; i++) {
+					sb.append(i);
+					sb.append(" ");
+				}
+
+				if (testClassGroupsSize > 0) {
+					sb.setLength(sb.length() - 1);
+				}
+
+				project.setProperty("test.tck.package.names", sb.toString());
+			]]>
+		</beanshell>
+
+		<echo file="test.tck.package.names.properties">${test.tck.package.names}</echo>
+	</target>
+
+	<target depends="prepare-tck-dependencies" name="run-tck-tomcat">
+		<if>
+			<not>
+				<isset property="test.class.group" />
+			</not>
+			<then>
+				<antcall inheritAll="false" target="clean-up-java-processes" />
+
+				<antcall target="prepare-portal-ext-properties" />
+
+				<antcall target="prepare-system-ext-properties" />
+
+				<antcall inheritAll="false" target="rebuild-database" />
+			</then>
+		</if>
+
+		<antcall target="start-app-server">
+			<param name="testable.portal.started.marker.file" value=".testable.portal.started" />
+		</antcall>
+
+		<waitfor checkevery="100" checkeveryunit="millisecond" maxwait="10" maxwaitunit="minute" timeoutproperty="tck.wars.deployment.timeout">
+			<socket port="${portlet.tck.bridge.handshake.port}" server="localhost" />
+		</waitfor>
+
+		<if>
+			<isset property="tck.wars.deployment.timeout" />
+			<then>
+				<for param="logfile">
+					<path>
+						<fileset dir="${liferay.home}/logs" includes="*.log" />
+					</path>
+					<sequential>
+						<local name="logfile.content" />
+
+						<loadfile property="logfile.content" srcFile="@{logfile}" />
+
+						<echo>File content for ${liferay.home}/logs/@{logfile}:
+
+${logfile.content}</echo>
+					</sequential>
+				</for>
+
+				<fail message="Timeout while waiting for TCK wars to deploy." />
+			</then>
+		</if>
+
+		<condition else="" property="tsant.file.suffix.bat" value=".bat">
+			<contains casesensitive="false" string="${os.name}" substring="Windows" />
+		</condition>
+
+		<for list="${test.directories}" param="test.directory">
+			<sequential>
+				<exec dir="tools/tck/src/@{test.directory}" executable="${basedir}/tools/tck/bin/tsant${tsant.file.suffix.bat}" failonerror="true">
 					<arg line="runclient" />
+					<env key="ANT_OPTS" value="-verbose:gc -Xloggc:/tmp/tsant-gc.log -Xms8m -Xmx8m -XX:MaxNewSize=2m -XX:MaxPermSize=6m -XX:MaxTenuringThreshold=0 -XX:NewSize=2m -XX:PermSize=6m -XX:+PrintGCCause -XX:+PrintGCDetails -XX:SurvivorRatio=65536 -XX:TargetSurvivorRatio=0" />
 					<env key="TS_HOME" value="${basedir}/tools/tck" />
 				</exec>
 
-				<exec dir="${app.server.tomcat.bin.dir}" executable="shutdown${file.suffix.bat}" resolveexecutable="true" />
+				<mkdir dir="portal-impl/test-results" />
+
+				<java
+					classname="com.liferay.portal.tools.TCKtoJUnitConverter"
+					classpathref="project.classpath"
+					fork="true"
+					newenvironment="true"
+				>
+					<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
+					<arg value="tools/tck/work/jtData/harness.trace" />
+					<arg value="portal-impl/test-results" />
+				</java>
 			</sequential>
-		</parallel>
+		</for>
 
-		<mkdir dir="portal-impl/test-results" />
+		<antcall target="clean-up-tck-dependencies" />
+	</target>
 
-		<java
-			classname="com.liferay.portal.tools.TCKtoJUnitConverter"
-			classpathref="project.classpath"
-			fork="true"
-			newenvironment="true"
-		>
-			<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
-			<arg value="tools/tck/work/jtData/harness.trace" />
-			<arg value="portal-impl/test-results" />
-		</java>
+	<target name="test-class-group">
+		<if>
+			<not>
+				<isset property="test.class.group.index" />
+			</not>
+			<then>
+				<fail>Use "ant test-class-group -Dtest.class.group.index=0".</fail>
+			</then>
+		</if>
+
+		<property file="${project.dir}/test.tck.package.names.properties" />
+
+		<propertycopy from="TEST_CLASS_GROUP_${test.class.group.index}" name="test.packages" />
+
+		<if>
+			<not>
+				<equals arg1="${test.packages}" arg2="" />
+			</not>
+			<then>
+				<antcall target="run-tck-tomcat">
+					<param name="test.class.group" value="true" />
+				</antcall>
+			</then>
+		</if>
 	</target>
 </project>

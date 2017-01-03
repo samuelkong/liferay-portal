@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.MVCCModel;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -40,6 +41,33 @@ import java.util.Date;
 public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 	MVCCModel {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ContactCacheModel)) {
+			return false;
+		}
+
+		ContactCacheModel contactCacheModel = (ContactCacheModel)obj;
+
+		if ((contactId == contactCacheModel.contactId) &&
+				(mvccVersion == contactCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, contactId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
+	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
 	}
@@ -51,7 +79,7 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(69);
+		StringBundler sb = new StringBundler(59);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -93,24 +121,14 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 		sb.append(birthday);
 		sb.append(", smsSn=");
 		sb.append(smsSn);
-		sb.append(", aimSn=");
-		sb.append(aimSn);
 		sb.append(", facebookSn=");
 		sb.append(facebookSn);
-		sb.append(", icqSn=");
-		sb.append(icqSn);
 		sb.append(", jabberSn=");
 		sb.append(jabberSn);
-		sb.append(", msnSn=");
-		sb.append(msnSn);
-		sb.append(", mySpaceSn=");
-		sb.append(mySpaceSn);
 		sb.append(", skypeSn=");
 		sb.append(skypeSn);
 		sb.append(", twitterSn=");
 		sb.append(twitterSn);
-		sb.append(", ymSn=");
-		sb.append(ymSn);
 		sb.append(", employeeStatusId=");
 		sb.append(employeeStatusId);
 		sb.append(", employeeNumber=");
@@ -207,13 +225,6 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 			contactImpl.setSmsSn(smsSn);
 		}
 
-		if (aimSn == null) {
-			contactImpl.setAimSn(StringPool.BLANK);
-		}
-		else {
-			contactImpl.setAimSn(aimSn);
-		}
-
 		if (facebookSn == null) {
 			contactImpl.setFacebookSn(StringPool.BLANK);
 		}
@@ -221,32 +232,11 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 			contactImpl.setFacebookSn(facebookSn);
 		}
 
-		if (icqSn == null) {
-			contactImpl.setIcqSn(StringPool.BLANK);
-		}
-		else {
-			contactImpl.setIcqSn(icqSn);
-		}
-
 		if (jabberSn == null) {
 			contactImpl.setJabberSn(StringPool.BLANK);
 		}
 		else {
 			contactImpl.setJabberSn(jabberSn);
-		}
-
-		if (msnSn == null) {
-			contactImpl.setMsnSn(StringPool.BLANK);
-		}
-		else {
-			contactImpl.setMsnSn(msnSn);
-		}
-
-		if (mySpaceSn == null) {
-			contactImpl.setMySpaceSn(StringPool.BLANK);
-		}
-		else {
-			contactImpl.setMySpaceSn(mySpaceSn);
 		}
 
 		if (skypeSn == null) {
@@ -261,13 +251,6 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 		}
 		else {
 			contactImpl.setTwitterSn(twitterSn);
-		}
-
-		if (ymSn == null) {
-			contactImpl.setYmSn(StringPool.BLANK);
-		}
-		else {
-			contactImpl.setYmSn(ymSn);
 		}
 
 		if (employeeStatusId == null) {
@@ -313,34 +296,39 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		contactId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
+
 		accountId = objectInput.readLong();
+
 		parentContactId = objectInput.readLong();
 		emailAddress = objectInput.readUTF();
 		firstName = objectInput.readUTF();
 		middleName = objectInput.readUTF();
 		lastName = objectInput.readUTF();
-		prefixId = objectInput.readInt();
-		suffixId = objectInput.readInt();
+
+		prefixId = objectInput.readLong();
+
+		suffixId = objectInput.readLong();
+
 		male = objectInput.readBoolean();
 		birthday = objectInput.readLong();
 		smsSn = objectInput.readUTF();
-		aimSn = objectInput.readUTF();
 		facebookSn = objectInput.readUTF();
-		icqSn = objectInput.readUTF();
 		jabberSn = objectInput.readUTF();
-		msnSn = objectInput.readUTF();
-		mySpaceSn = objectInput.readUTF();
 		skypeSn = objectInput.readUTF();
 		twitterSn = objectInput.readUTF();
-		ymSn = objectInput.readUTF();
 		employeeStatusId = objectInput.readUTF();
 		employeeNumber = objectInput.readUTF();
 		jobTitle = objectInput.readUTF();
@@ -352,8 +340,11 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(contactId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -365,9 +356,13 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
+
 		objectOutput.writeLong(accountId);
+
 		objectOutput.writeLong(parentContactId);
 
 		if (emailAddress == null) {
@@ -398,8 +393,10 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 			objectOutput.writeUTF(lastName);
 		}
 
-		objectOutput.writeInt(prefixId);
-		objectOutput.writeInt(suffixId);
+		objectOutput.writeLong(prefixId);
+
+		objectOutput.writeLong(suffixId);
+
 		objectOutput.writeBoolean(male);
 		objectOutput.writeLong(birthday);
 
@@ -410,13 +407,6 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 			objectOutput.writeUTF(smsSn);
 		}
 
-		if (aimSn == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(aimSn);
-		}
-
 		if (facebookSn == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
@@ -424,32 +414,11 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 			objectOutput.writeUTF(facebookSn);
 		}
 
-		if (icqSn == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(icqSn);
-		}
-
 		if (jabberSn == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
 		else {
 			objectOutput.writeUTF(jabberSn);
-		}
-
-		if (msnSn == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(msnSn);
-		}
-
-		if (mySpaceSn == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(mySpaceSn);
 		}
 
 		if (skypeSn == null) {
@@ -464,13 +433,6 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 		}
 		else {
 			objectOutput.writeUTF(twitterSn);
-		}
-
-		if (ymSn == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(ymSn);
 		}
 
 		if (employeeStatusId == null) {
@@ -524,20 +486,15 @@ public class ContactCacheModel implements CacheModel<Contact>, Externalizable,
 	public String firstName;
 	public String middleName;
 	public String lastName;
-	public int prefixId;
-	public int suffixId;
+	public long prefixId;
+	public long suffixId;
 	public boolean male;
 	public long birthday;
 	public String smsSn;
-	public String aimSn;
 	public String facebookSn;
-	public String icqSn;
 	public String jabberSn;
-	public String msnSn;
-	public String mySpaceSn;
 	public String skypeSn;
 	public String twitterSn;
-	public String ymSn;
 	public String employeeStatusId;
 	public String employeeNumber;
 	public String jobTitle;

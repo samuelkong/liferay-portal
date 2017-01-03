@@ -16,11 +16,12 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.asset.model.AssetEntry;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -40,8 +41,32 @@ import java.util.Date;
 public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AssetEntryCacheModel)) {
+			return false;
+		}
+
+		AssetEntryCacheModel assetEntryCacheModel = (AssetEntryCacheModel)obj;
+
+		if (entryId == assetEntryCacheModel.entryId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, entryId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(53);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("{entryId=");
 		sb.append(entryId);
@@ -65,6 +90,8 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 		sb.append(classUuid);
 		sb.append(", classTypeId=");
 		sb.append(classTypeId);
+		sb.append(", listable=");
+		sb.append(listable);
 		sb.append(", visible=");
 		sb.append(visible);
 		sb.append(", startDate=");
@@ -141,6 +168,7 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 		}
 
 		assetEntryImpl.setClassTypeId(classTypeId);
+		assetEntryImpl.setListable(listable);
 		assetEntryImpl.setVisible(visible);
 
 		if (startDate == Long.MIN_VALUE) {
@@ -226,16 +254,25 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		entryId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
 		classUuid = objectInput.readUTF();
+
 		classTypeId = objectInput.readLong();
+
+		listable = objectInput.readBoolean();
+
 		visible = objectInput.readBoolean();
 		startDate = objectInput.readLong();
 		endDate = objectInput.readLong();
@@ -247,9 +284,13 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 		summary = objectInput.readUTF();
 		url = objectInput.readUTF();
 		layoutUuid = objectInput.readUTF();
+
 		height = objectInput.readInt();
+
 		width = objectInput.readInt();
+
 		priority = objectInput.readDouble();
+
 		viewCount = objectInput.readInt();
 	}
 
@@ -257,8 +298,11 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(entryId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -270,7 +314,9 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
 
 		if (classUuid == null) {
@@ -281,6 +327,9 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 		}
 
 		objectOutput.writeLong(classTypeId);
+
+		objectOutput.writeBoolean(listable);
+
 		objectOutput.writeBoolean(visible);
 		objectOutput.writeLong(startDate);
 		objectOutput.writeLong(endDate);
@@ -330,8 +379,11 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 		}
 
 		objectOutput.writeInt(height);
+
 		objectOutput.writeInt(width);
+
 		objectOutput.writeDouble(priority);
+
 		objectOutput.writeInt(viewCount);
 	}
 
@@ -346,6 +398,7 @@ public class AssetEntryCacheModel implements CacheModel<AssetEntry>,
 	public long classPK;
 	public String classUuid;
 	public long classTypeId;
+	public boolean listable;
 	public boolean visible;
 	public long startDate;
 	public long endDate;

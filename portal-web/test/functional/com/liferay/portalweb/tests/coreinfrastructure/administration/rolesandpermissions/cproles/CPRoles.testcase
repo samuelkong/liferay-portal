@@ -1,0 +1,120 @@
+<definition component-name="portal-user-management-and-portal-configuration">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Roles" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="User#firstLoginPG" />
+
+				<execute macro="Role#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddOrganizationRole" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#addCP">
+			<var name="roleTitle" value="Roles Orgrole Name" />
+			<var name="roleType" value="Organization" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#viewCP">
+			<var name="roleTitle" value="Roles Orgrole Name" />
+			<var name="roleType" value="Organization" />
+		</execute>
+	</command>
+
+	<command name="AddRegularRole" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#addCP">
+			<var name="roleTitle" value="Roles Regrole Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#viewCP">
+			<var name="roleTitle" value="Roles Regrole Name" />
+			<var name="roleType" value="Regular" />
+		</execute>
+	</command>
+
+	<command name="AddSiteRole" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#addCP">
+			<var name="roleTitle" value="Roles Siterole Name" />
+			<var name="roleType" value="Site" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#viewCP">
+			<var name="roleTitle" value="Roles Siterole Name" />
+			<var name="roleType" value="Site" />
+		</execute>
+	</command>
+
+	<command name="DeleteRegularRole" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#addCP">
+			<var name="roleTitle" value="Roles Regrole Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#deleteCP">
+			<var name="roleTitle" value="Roles Regrole Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#viewDefaultCP">
+			<var name="roleTitle" value="Roles Regrole Name" />
+		</execute>
+	</command>
+</definition>

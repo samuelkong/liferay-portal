@@ -2,115 +2,10 @@
 <!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 7.0.0//EN" "http://www.liferay.com/dtd/liferay-resource-action-mapping_7_0_0.dtd">
 
 <resource-action-mapping>
-	<portlet-resource>
-		<portlet-name>99</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-	<portlet-name>101</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_PORTLET_DISPLAY_TEMPLATE</action-key>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>SUBSCRIBE</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>SUBSCRIBE</action-key>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ADD_PORTLET_DISPLAY_TEMPLATE</action-key>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>SUBSCRIBE</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>122</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_PORTLET_DISPLAY_TEMPLATE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ADD_PORTLET_DISPLAY_TEMPLATE</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>141</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_PORTLET_DISPLAY_TEMPLATE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ADD_PORTLET_DISPLAY_TEMPLATE</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>147</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
 	<model-resource>
-		<model-name>com.liferay.portlet.asset</model-name>
+		<model-name>com.liferay.asset</model-name>
 		<portlet-ref>
-			<portlet-name>99</portlet-name>
+			<portlet-name>com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -126,10 +21,11 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
-		<model-name>com.liferay.portlet.asset</model-name>
+		<model-name>com.liferay.asset</model-name>
 		<portlet-ref>
-			<portlet-name>147</portlet-name>
+			<portlet-name>com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet</portlet-name>
 		</portlet-ref>
+		<root>true</root>
 		<weight>1</weight>
 		<permissions>
 			<supports>
@@ -145,9 +41,29 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
-		<model-name>com.liferay.portlet.asset.model.AssetCategory</model-name>
+		<model-name>com.liferay.asset.categories</model-name>
 		<portlet-ref>
-			<portlet-name>147</portlet-name>
+			<portlet-name>com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet</portlet-name>
+		</portlet-ref>
+		<root>true</root>
+		<weight>1</weight>
+		<permissions>
+			<supports>
+				<action-key>ADD_CATEGORY</action-key>
+				<action-key>ADD_VOCABULARY</action-key>
+			</supports>
+			<site-member-defaults />
+			<guest-defaults />
+			<guest-unsupported>
+				<action-key>ADD_CATEGORY</action-key>
+				<action-key>ADD_VOCABULARY</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+	<model-resource>
+		<model-name>com.liferay.asset.kernel.model.AssetCategory</model-name>
+		<portlet-ref>
+			<portlet-name>com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>3</weight>
 		<permissions>
@@ -172,9 +88,28 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
-		<model-name>com.liferay.portlet.asset.model.AssetTag</model-name>
+		<model-name>com.liferay.asset.kernel.model.AssetTag</model-name>
 		<portlet-ref>
-			<portlet-name>99</portlet-name>
+			<portlet-name>com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet</portlet-name>
+		</portlet-ref>
+		<weight>2</weight>
+		<permissions>
+			<supports>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+			</supports>
+			<site-member-defaults />
+			<guest-defaults />
+			<guest-unsupported>
+				<action-key>UPDATE</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+	<model-resource>
+		<model-name>com.liferay.asset.kernel.model.AssetVocabulary</model-name>
+		<portlet-ref>
+			<portlet-name>com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -196,26 +131,20 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
-		<model-name>com.liferay.portlet.asset.model.AssetVocabulary</model-name>
+		<model-name>com.liferay.asset.tags</model-name>
 		<portlet-ref>
-			<portlet-name>147</portlet-name>
+			<portlet-name>com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet</portlet-name>
 		</portlet-ref>
-		<weight>2</weight>
+		<root>true</root>
+		<weight>1</weight>
 		<permissions>
 			<supports>
-				<action-key>DELETE</action-key>
-				<action-key>PERMISSIONS</action-key>
-				<action-key>UPDATE</action-key>
-				<action-key>VIEW</action-key>
+				<action-key>ADD_TAG</action-key>
 			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
+			<site-member-defaults />
+			<guest-defaults />
 			<guest-unsupported>
-				<action-key>UPDATE</action-key>
+				<action-key>ADD_TAG</action-key>
 			</guest-unsupported>
 		</permissions>
 	</model-resource>

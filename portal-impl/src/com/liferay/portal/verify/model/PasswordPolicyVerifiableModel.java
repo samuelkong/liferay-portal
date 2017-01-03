@@ -14,7 +14,9 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portal.model.PasswordPolicy;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,6 +37,11 @@ public class PasswordPolicyVerifiableModel
 	@Override
 	public String getTableName() {
 		return "PasswordPolicy";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

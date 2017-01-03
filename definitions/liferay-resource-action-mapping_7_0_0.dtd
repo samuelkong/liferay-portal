@@ -23,8 +23,8 @@ The portlet-name element is the name of the portlet.
 <!ELEMENT portlet-name (#PCDATA) >
 
 <!--
-The permissions define the default permissions granted and unsupported to
-community members, guests users, and layout managers.
+The permissions element defines the default permissions granted and unsupported
+to community members, guests users, and layout managers.
 -->
 <!ELEMENT permissions (supports, (community-defaults | site-member-defaults)?,
 guest-defaults?, guest-unsupported?, layout-manager?, owner-defaults?) >
@@ -88,7 +88,25 @@ permissions on all supported actions.
 <!--
 The model-resource element defines the permissions of the model.
 -->
-<!ELEMENT model-resource (model-name, portlet-ref, root?, weight?, permissions?) >
+<!ELEMENT model-resource ((composite-model-name | model-name), portlet-ref, root?, weight?, permissions?) >
+
+<!--
+The organization value specifies if the model resource is an organization model
+resource. The default value is false.
+
+The portal value specifies if the model resource is a portal model resource. The
+default value is false.
+-->
+<!ATTLIST model-resource
+	organization CDATA #IMPLIED
+	portal CDATA #IMPLIED
+>
+
+<!--
+The composite-model-name element groups multiple model names together, which
+generates a dash separated list of model names.
+-->
+<!ELEMENT composite-model-name (model-name+) >
 
 <!--
 The model-name element is the name of the model.
@@ -120,7 +138,7 @@ resource-action-mappings.
 <!ELEMENT resource EMPTY >
 
 <!--
-The attribute file specifies the external file that should be loaded to define
+The file value specifies the external file that should be loaded to define
 resource actions.
 -->
 <!ATTLIST resource file CDATA #REQUIRED >

@@ -1,0 +1,112 @@
+<definition component-name="portal-search">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Elastic Search Impl" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="MessageboardsThread#tearDownCP" />
+
+				<execute macro="DMDocument#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AssertConfigFileValuesPropogateToModule" priority="4">
+		<property name="osgi.module.configuration.file.names" value="com.liferay.portal.search.elasticsearch.configuration.ElasticsearchConfiguration.config" />
+		<property name="osgi.module.configurations" value="operationMode=&quot;EMBEDDED&quot;
+clientTransportIgnoreClusterName=&quot;false&quot;
+indexNamePrefix=&quot;liferay-&quot;
+httpCORSConfigurations=&quot;&quot;
+additionalConfigurations=&quot;&quot;
+httpCORSAllowOrigin=&quot;/https?://localhost(:[0-9]+)?/&quot;
+networkBindHost=&quot;&quot;
+transportTcpPort=&quot;&quot;
+bootstrapMlockAll=&quot;false&quot;
+networkPublishHost=&quot;&quot;
+overrideTypeMappings=&quot;&quot;
+clientTransportSniff=&quot;true&quot;
+additionalIndexConfigurations=&quot;&quot;
+retryOnConflict=&quot;5&quot;
+httpCORSEnabled=&quot;true&quot;
+clientTransportNodesSamplerInterval=&quot;5s&quot;
+additionalTypeMappings=&quot;&quot;
+logExceptionsOnly=&quot;true&quot;
+httpEnabled=&quot;true&quot;
+networkHost=&quot;&quot;
+transportAddresses=&quot;localhost:9300&quot;
+clusterName=&quot;LiferayElasticsearchCluster1&quot;
+discoveryZenPingUnicastHostsPort=&quot;9300-9400&quot;" />
+
+		<execute macro="Navigator#openSpecificURL">
+			<var name="url" value="http://localhost:9200" />
+		</execute>
+
+		<execute macro="Elasticsearch#viewClusterStatus">
+			<var name="clusterStatus" value="&quot;cluster_name&quot; : &quot;LiferayElasticsearchCluster1&quot;" />
+		</execute>
+	</command>
+
+	<command name="AssertIndexOnStartupViaRemote" priority="5">
+		<description message="This test asserts that index on startup works consistently on remote Elasticsearch." />
+
+		<property name="remote.elasticsearch.enabled" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#viewCP">
+			<var name="userEmailAddress" value="test@liferay.com" />
+			<var name="userFirstName" value="Test" />
+			<var name="userLastName" value="Test" />
+			<var name="userScreenName" value="test" />
+		</execute>
+	</command>
+
+	<command name="AssertSystemSettingsPropogateToModule" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="System Settings" />
+		</execute>
+
+		<execute macro="SystemSettings#gotoCategory">
+			<var name="category" value="Foundation" />
+		</execute>
+
+		<execute macro="SystemSettings#viewConfiguration">
+			<var name="configurationName" value="Elasticsearch" />
+		</execute>
+
+		<execute macro="SystemSettings#editTextAreaSetting">
+			<var name="settingName" value="clusterName" />
+			<var name="settingValue" value="LiferayElasticsearchCluster1" />
+		</execute>
+
+		<execute macro="SystemSettings#saveConfiguration" />
+
+		<execute macro="Navigator#openSpecificURL">
+			<var name="url" value="http://localhost:9200" />
+		</execute>
+
+		<!-- LRQA-28998 -->
+
+		<!--<execute macro="Elasticsearch#viewClusterStatus">
+			<var name="clusterStatus" value="&quot;cluster_name&quot; : &quot;LiferayElasticsearchCluster1&quot;" />
+		</execute>-->
+	</command>
+</definition>

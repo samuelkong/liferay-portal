@@ -14,30 +14,34 @@
 
 package com.liferay.portal.security.membershippolicy;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.RoleLocalServiceUtil;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.UserTestUtil;
-import com.liferay.portlet.rolesadmin.search.UserRoleChecker;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portlet.rolesadmin.search.SetUserRoleChecker;
+import com.liferay.portlet.rolesadmin.search.UnsetUserRoleChecker;
 
 import javax.portlet.RenderResponse;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.powermock.api.mockito.PowerMockito;
 
 /**
  * @author Roberto Díaz
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class RoleMembershipPolicyRowCheckerTest
 	extends BaseRoleMembershipPolicyTestCase {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@Test
 	public void testIsCheckerDisabledWhenSettingForbiddenRoleToUser()
@@ -49,12 +53,12 @@ public class RoleMembershipPolicyRowCheckerTest
 
 		Role forbiddenRole = RoleLocalServiceUtil.getRole(forbiddenRoleId);
 
-		UserRoleChecker userRoleChecker = new UserRoleChecker(
+		SetUserRoleChecker setUserRoleChecker = new SetUserRoleChecker(
 			renderResponse, forbiddenRole);
 
 		User user = UserTestUtil.addUser();
 
-		Assert.assertTrue(userRoleChecker.isDisabled(user));
+		Assert.assertTrue(setUserRoleChecker.isDisabled(user));
 	}
 
 	@Test
@@ -67,12 +71,12 @@ public class RoleMembershipPolicyRowCheckerTest
 
 		Role requiredRole = RoleLocalServiceUtil.getRole(requiredRoleId);
 
-		UserRoleChecker userRoleChecker = new UserRoleChecker(
+		SetUserRoleChecker setUserRoleChecker = new SetUserRoleChecker(
 			renderResponse, requiredRole);
 
 		User user = UserTestUtil.addUser();
 
-		Assert.assertFalse(userRoleChecker.isDisabled(user));
+		Assert.assertFalse(setUserRoleChecker.isDisabled(user));
 	}
 
 	@Test
@@ -85,14 +89,14 @@ public class RoleMembershipPolicyRowCheckerTest
 
 		Role forbiddenRole = RoleLocalServiceUtil.getRole(forbiddenRoleId);
 
-		UserRoleChecker userRoleChecker = new UserRoleChecker(
+		UnsetUserRoleChecker unsetUserRoleChecker = new UnsetUserRoleChecker(
 			renderResponse, forbiddenRole);
 
 		User user = UserTestUtil.addUser();
 
 		RoleLocalServiceUtil.addUserRole(user.getUserId(), forbiddenRoleId);
 
-		Assert.assertFalse(userRoleChecker.isDisabled(user));
+		Assert.assertFalse(unsetUserRoleChecker.isDisabled(user));
 	}
 
 	@Test
@@ -105,14 +109,14 @@ public class RoleMembershipPolicyRowCheckerTest
 
 		Role requiredRole = RoleLocalServiceUtil.getRole(requiredRoleId);
 
-		UserRoleChecker userRoleChecker = new UserRoleChecker(
+		UnsetUserRoleChecker unsetUserRoleChecker = new UnsetUserRoleChecker(
 			renderResponse, requiredRole);
 
 		User user = UserTestUtil.addUser();
 
 		RoleLocalServiceUtil.addUserRole(user.getUserId(), requiredRoleId);
 
-		Assert.assertTrue(userRoleChecker.isDisabled(user));
+		Assert.assertTrue(unsetUserRoleChecker.isDisabled(user));
 	}
 
 }

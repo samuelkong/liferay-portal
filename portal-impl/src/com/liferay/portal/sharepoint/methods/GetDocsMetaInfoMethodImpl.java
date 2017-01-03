@@ -14,12 +14,12 @@
 
 package com.liferay.portal.sharepoint.methods;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.portal.sharepoint.Property;
 import com.liferay.portal.sharepoint.ResponseElement;
 import com.liferay.portal.sharepoint.SharepointRequest;
 import com.liferay.portal.sharepoint.SharepointStorage;
 import com.liferay.portal.sharepoint.Tree;
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class GetDocsMetaInfoMethodImpl extends BaseMethodImpl {
 			SharepointRequest sharepointRequest)
 		throws Exception {
 
-		List<ResponseElement> elements = new ArrayList<ResponseElement>();
+		List<ResponseElement> elements = new ArrayList<>();
 
 		SharepointStorage storage = sharepointRequest.getSharepointStorage();
 

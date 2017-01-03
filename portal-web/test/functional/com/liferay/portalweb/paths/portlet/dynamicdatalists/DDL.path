@@ -1,0 +1,285 @@
+<html>
+<head>
+<title>DDL</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">DDL</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>HEADER_TITLE</td>
+	<td>//h3[@class='header-title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON</td>
+	<td>//div[contains(@class,'button-holder ')]/button[contains(.,'Save')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--TOOLBAR-->
+<tr>
+	<td>TOOLBAR_ADD</td>
+	<td>//a[contains(.,'Add ${key_ddlDataDefinitionName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_MANAGE_DATA_DEFINITIONS</td>
+	<td>//ul[contains(@aria-label,'Dynamic Data List')]//a[@role='menuitem']/span[contains(.,'Manage Data Definitions')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_EXPORT</td>
+	<td>//ul[contains(@aria-label,'Dynamic Data List')]//a[@role='menuitem']/span[contains(.,'Export')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RECORD_TABLE-->
+<tr>
+	<td>RECORD_TABLE_ENTRY</td>
+	<td>//tr/th[contains(.,'${key_fieldFieldLabel}')]/../../../tbody/tr/td/a[.='${key_ddlRecordFieldData}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_ENTRY_2</td>
+	<td>//tr/th[contains(.,'${key_fieldFieldLabel}')]/../../../tbody/tr[2]/td[contains(.,'${key_ddlRecordFieldData}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_NAME</td>
+	<td>//div[contains(@id,'ddlRecordSearchContainer')]//th[contains(.,'${key_fieldFieldLabel}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_ONE_NAME</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//thead/tr/th[2])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_ONE_RECORD_1</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//tr/td[2]//a)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_TWO_NAME</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//thead/tr/th[3])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_TWO_RECORD_1</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//tr/td[3]//a)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_TWO_RECORD_1_WORKFLOW_STATUS</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//tr/td[3]//span)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_TWO_RECORD_1_VIEW</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//tr/td[3]//span)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_ONE_PREVIEW_1</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//tr/td[2]//a[contains(.,'Preview')])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_THREE_NAME</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//thead/tr/th[4])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_COLUMN_THREE_RECORD_1</td>
+	<td>xpath=(//div[contains(@id,'ddlRecordSearchContainer')]//tr/td[4])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_ELLIPSIS</td>
+	<td>//tr[contains(.,'${key_ddlRecordFieldData}')]//td[contains(@class,'entry-action')]//span/*[name()='svg'][contains(@class,'icon-ellipsis-v')][1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_ELLIPSIS_1</td>
+	<td>xpath=//td[contains(@class,'entry-action')]//span/*[name()='svg'][contains(@class,'icon-ellipsis-v')][1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_GUEST_VIEW_LINK</td>
+	<td>//a[contains(.,'View')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_PREVIEW</td>
+	<td>//div[contains(@class,'modal-body')]/p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_PREVIEW_CLOSE</td>
+	<td>//button[contains(@class,'close')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_PREVIEW_INVALID_IMG</td>
+	<td>//img[@src='x']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_WORKFLOW_STATUS</td>
+	<td>//tr/th[contains(.,'${key_fieldFieldLabel}')]/../../../tbody/tr[contains(.,'${key_workflowStatus}')]//strong[contains(.,'${key_workflowStatus}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RECORD_TABLE_DISPLAY_FIELD</td>
+	<td>//div[@class='ddl-record' and contains(.,'${key_ddlRecordFieldData}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--LIST_TABLE-->
+<tr>
+	<td>LIST_TABLE_NAME</td>
+	<td>//div[contains(@id,'ddlRecordSetSearchContainer')]//tr[contains(.,'${key_ddlListName}')]/td[3]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_TABLE_ELLIPSIS</td>
+	<td>//tr[contains(.,'${key_ddlListName}')]//td[contains(@class,'entry-action')]//div/a/span[contains(@class,'icon-ellipsis-vertical')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_TABLE_ID_1</td>
+	<td>xpath=(//table[contains(@class,'table-list')]//tr[1]/td//following-sibling::td[1]/a)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_TABLE_NAME_1</td>
+	<td>xpath=(//table[contains(@class,'table-list')]//tr[1]/td//following-sibling::td[2]/a)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_TABLE_DESCRIPTION</td>
+	<td>//table[contains(@class,'table-list')]//tr[1]/td//following-sibling::td[contains(.,'${key_ddlListDescription}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_TABLE_DESCRIPTION_1</td>
+	<td>xpath=(//table[contains(@class,'table-list')]//tr[1]/td//following-sibling::td[3])</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_TABLE_ELLIPSIS_1</td>
+	<td>xpath=//td[contains(@class,'entry-action')]//div/a/span[contains(@class,'icon-ellipsis-vertical')][1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PORTLET_ACTIONS-->
+<tr>
+	<td>PORTLET_ACTIONS_ADD_FORM_TEMPLATE</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Add Form Template')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_ACTIONS_ADD_DISPLAY_TEMPLATE</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Add Display Template')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_ACTIONS_EDIT_FORM_TEMPLATE</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Edit Form Template')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_ACTIONS_SELECT_LIST</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Select List')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_ACTIONS_ADD_LIST</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Add List')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_ACTIONS_EDIT_LIST</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Edit List')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--MENULIST-->
+<tr>
+	<td>MENULIST_VIEW</td>
+	<td>//a[@role='menuitem' and contains(.,'View')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENULIST_VIEW_SPECIFIC_RECORD</td>
+	<td>//tr[contains(.,'${key_ddlRecordFieldData}')]//a[@role='menuitem' and contains(.,'View')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENULIST_SPREADSHEET_VIEW</td>
+	<td>//a[@role='menuitem' and contains(.,'Spreadsheet View')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENULIST_EDIT</td>
+	<td>//a[@role='menuitem' and contains(.,'Edit')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENULIST_EXPORT</td>
+	<td>//a[@role='menuitem' and contains(.,'Export')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENULIST_PERMISSIONS</td>
+	<td>//a[@role='menuitem' and contains(.,'Permissions')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENULIST_DELETE</td>
+	<td>//a[@role='menuitem' and contains(.,'Delete')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SPREADSHEET_EDIT_CONTROLS-->
+<tr>
+	<td>SPREADSHEET_EDIT_CONTROLS_ADD_ROWS_BUTTON</td>
+	<td>//button[contains(.,'Add')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SPREADSHEET_EDIT_CONTROLS_ADD_ROWS_SELECT_MENULIST</td>
+	<td>//label[contains(.,'More rows at bottom.')]/../select</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

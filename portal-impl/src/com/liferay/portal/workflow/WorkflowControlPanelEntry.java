@@ -14,11 +14,11 @@
 
 package com.liferay.portal.workflow;
 
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.BaseControlPanelEntry;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.workflow.WorkflowEngineManagerUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portlet.BaseControlPanelEntry;
 
 /**
  * @author Jorge Ferrer
@@ -30,13 +30,14 @@ public class WorkflowControlPanelEntry extends BaseControlPanelEntry {
 			PermissionChecker permissionChecker, Group group, Portlet portlet)
 		throws Exception {
 
-		if (group.isLayoutSetPrototype() ||
+		if (group.isLayoutPrototype() || group.isLayoutSetPrototype() ||
 			!WorkflowEngineManagerUtil.isDeployed()) {
 
 			return true;
 		}
 
-		return false;
+		return super.hasAccessPermissionDenied(
+			permissionChecker, group, portlet);
 	}
 
 }

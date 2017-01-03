@@ -14,7 +14,8 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portlet.documentlibrary.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
 
 /**
  * @author Brian Wing Shun Chan
@@ -34,6 +35,11 @@ public class DLFolderVerifiableModel implements VerifiableResourcedModel {
 	@Override
 	public String getTableName() {
 		return "DLFolder";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

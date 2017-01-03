@@ -15,6 +15,7 @@
 package com.liferay.portal.tools;
 
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -66,12 +67,13 @@ public class TCKtoJUnitConverter {
 				}
 
 				int x = s.indexOf(StringPool.POUND);
+
 				int y = s.lastIndexOf(StringPool.SLASH, x);
 
 				String className = s.substring(15, y);
 
 				className = StringUtil.replace(
-					className, StringPool.SLASH, StringPool.PERIOD);
+					className, CharPool.SLASH, CharPool.PERIOD);
 
 				y = s.indexOf(StringPool.COLON, y);
 

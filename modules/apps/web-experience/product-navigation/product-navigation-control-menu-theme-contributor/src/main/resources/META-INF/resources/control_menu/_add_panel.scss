@@ -1,0 +1,94 @@
+@import "bourbon";
+@import "mixins";
+
+body.open-admin-panel {
+	&, .control-menu, .affix {
+		@include sm() {
+			padding-right: $admin-panel-width;
+		}
+	}
+
+	.control-menu-level-2 {
+		@include sm() {
+			right: $admin-panel-width;
+		}
+	}
+}
+
+body.open-admin-panel, body.sidenav-transition {
+	@include sm() {
+		overflow-x: hidden;
+	}
+}
+
+.lfr-add-panel.open-admin-panel {
+	visibility: visible;
+	width: $admin-panel-width;
+}
+
+.lfr-admin-panel {
+	&.sidenav-menu-slider {
+		z-index: $admin-panel-zindex;
+
+		.product-menu {
+			width: $admin-panel-width;
+		}
+	}
+
+	.sidebar-body {
+		padding: 0;
+	}
+}
+
+.lfr-add-panel {
+	.search-bar {
+		display: block;
+		margin: 10px;
+
+		.form-control {
+			display: block;
+			float: none;
+		}
+	}
+
+	.input-group-btn {
+		display: block;
+		margin-top: -8px;
+		position: absolute;
+		right: 20px;
+		top: 50%;
+	}
+}
+
+.lfr-add-panel .add-content-menu {
+	.add-portlet-message {
+		background-color: #1B2228;
+		margin: 20px;
+		padding: 5px 20px;
+
+		.info-message {
+			margin: 20px 0;
+		}
+	}
+
+	.add-application-panel .lfr-content-item {
+		height: 40px;
+		padding: 0 16px;
+
+		&.lfr-archived-setup {
+			padding-left: 30px;
+		}
+	}
+
+	.display-style-bar {
+		margin: 10px;
+
+		.display-style {
+			padding: 5px;
+
+			&.active {
+				color: #869CAD;
+			}
+		}
+	}
+}

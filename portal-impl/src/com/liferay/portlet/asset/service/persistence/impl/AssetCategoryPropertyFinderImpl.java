@@ -14,16 +14,15 @@
 
 package com.liferay.portlet.asset.service.persistence.impl;
 
+import com.liferay.asset.kernel.model.AssetCategoryProperty;
+import com.liferay.asset.kernel.service.persistence.AssetCategoryPropertyFinder;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portlet.asset.model.AssetCategoryProperty;
 import com.liferay.portlet.asset.model.impl.AssetCategoryPropertyImpl;
-import com.liferay.portlet.asset.service.persistence.AssetCategoryPropertyFinder;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.List;
  * @author Jorge Ferrer
  */
 public class AssetCategoryPropertyFinderImpl
-	extends BasePersistenceImpl<AssetCategoryProperty>
+	extends AssetCategoryPropertyFinderBaseImpl
 	implements AssetCategoryPropertyFinder {
 
 	public static final String COUNT_BY_G_K =
@@ -107,8 +106,7 @@ public class AssetCategoryPropertyFinderImpl
 			qPos.add(groupId);
 			qPos.add(key);
 
-			List<AssetCategoryProperty> categoryProperties =
-				new ArrayList<AssetCategoryProperty>();
+			List<AssetCategoryProperty> categoryProperties = new ArrayList<>();
 
 			Iterator<String> itr = (Iterator<String>)QueryUtil.iterate(
 				q, getDialect(), start, end);

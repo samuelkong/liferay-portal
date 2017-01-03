@@ -1,0 +1,74 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+			<c:if test="<%= Validator.isNotNull(actionJsp) || Validator.isNotNull(footer) || Validator.isNotNull(header) || Validator.isNotNull(subtitle) || Validator.isNotNull(title) %>">
+				<div class="card-row card-row-layout-fixed card-row-padded card-row-valign-top taglib-vertical-card-footer">
+					<div class="card-col-content lfr-card-details-column">
+						<c:if test="<%= Validator.isNotNull(header) %>">
+							<span class="lfr-card-modified-by-text truncate-text">
+								<%= header %>
+							</span>
+						</c:if>
+
+						<c:if test="<%= Validator.isNotNull(title) %>">
+							<span class="lfr-card-title-text truncate-text">
+								<aui:a href="<%= url %>" onClick="<%= onClick %>" title="<%= HtmlUtil.escape(title) %>">
+									<%= HtmlUtil.escape(title) %>
+								</aui:a>
+							</span>
+						</c:if>
+
+						<c:if test="<%= Validator.isNotNull(subtitle) %>">
+							<span class="lfr-card-subtitle-text truncate-text" title="<%= HtmlUtil.escape(subtitle) %>">
+								<%= HtmlUtil.escape(subtitle) %>
+							</span>
+						</c:if>
+
+						<c:if test="<%= Validator.isNotNull(footer) %>">
+							<span class="lfr-card-workflow-text truncate-text">
+								<%= footer %>
+							</span>
+						</c:if>
+					</div>
+
+					<liferay-util:buffer var="actionJspBuffer">
+						<liferay-util:include page="<%= actionJsp %>" servletContext="<%= actionJspServletContext %>" />
+					</liferay-util:buffer>
+
+					<c:if test="<%= Validator.isNotNull(actionJspBuffer) %>">
+						<div class="card-col-field lfr-card-actions-column">
+							<%= actionJspBuffer %>
+						</div>
+					</c:if>
+				</div>
+			</c:if>
+		</div>
+
+	<c:choose>
+		<c:when test="<%= (rowChecker != null) && (resultRow != null) %>">
+			<liferay-util:buffer var="checkboxInput">
+				<%= rowChecker.getRowCheckBox(request, rowChecker.isChecked(resultRow.getObject()), rowChecker.isDisabled(resultRow.getObject()), resultRow.getPrimaryKey()) %>
+			</liferay-util:buffer>
+
+			<c:if test="<%= Validator.isNotNull(checkboxInput) %>">
+				</div>
+			</c:if>
+		</c:when>
+		<c:when test="<%= showCheckbox %>">
+			</div>
+		</c:when>
+	</c:choose>
+</div>

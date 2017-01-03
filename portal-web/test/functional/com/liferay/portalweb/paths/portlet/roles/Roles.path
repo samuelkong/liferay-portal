@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>Roles</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Roles</td></tr>
+</thead>
+<tbody>
+<!--ROLE_TABLE-->
+<tr>
+	<td>ROLE_TABLE_TITLE</td>
+	<td>//tr[contains(.,'${key_roleTitle}')]/td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROLE_TABLE_TITLE_LINK</td>
+	<td>//tr[contains(.,'${key_roleTitle}')]/td[2]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROLE_TABLE_DESCRIPTION</td>
+	<td>//tr[contains(.,'${key_roleTitle}')]/td[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROLE_TABLE_USER_TITLE</td>
+	<td>//tr[@data-qa-id='row']//td[contains(.,'${key_roleUser}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PERMISSION_TABLE_PERMISSIONS</td>
+	<td>//tr[contains(.,'${key_permissionNavigationValue}') and contains(.,'${key_permissionDefinitionValue}')]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROLE_TABLE_ACTIONS</td>
+	<td>//tr[contains(.,'${key_roleTitle}')]//span/*[name()='svg'][contains(@class,'icon-ellipsis-v')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROLE_TABLE_ACTIONS_DEFAULT</td>
+	<td>//tr//span/*[name()='svg'][contains(@class,'icon-ellipsis-v')]</td>
+	<td></td>
+</tr>
+<!---->
+<!--SEARCH-->
+<tr>
+	<td>ROLE_SEARCH_BUTTON</td>
+	<td>//*[@data-qa-id='searchButton']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

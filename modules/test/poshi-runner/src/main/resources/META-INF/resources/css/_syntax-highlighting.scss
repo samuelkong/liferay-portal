@@ -1,0 +1,63 @@
+/* ---------- Syntax highlight ---------- */
+
+/* ---------- Breaks ---------- */
+
+.name + .misc {
+	display: inline-block;
+}
+
+.misc:first-child {
+	margin-left: 0;
+}
+
+/* ---------- Sidebar ---------- */
+
+.command-name {
+	color: $command-name-color;
+	font-family: $monospaced-font;
+	font-size: 14px;
+	font-weight: 300;
+}
+
+.param-type {
+	color: $param-type-color;
+}
+
+.param-value {
+	color: $param-value-color;
+	cursor: text;
+	display: block;
+	font-family: $monospaced-font;
+	font-weight: 300;
+	letter-spacing: 0.05em;
+	line-height: 2.5;
+}
+
+.action-type, .misc, .tag-type {
+	margin: 3px;
+}
+
+/* ---------- XML log ---------- */
+
+.xml-log .misc {
+	color: $xml-misc-color;
+}
+
+.name {
+	color: $xml-name-color;
+	font-size: 13px;
+	font-weight: 300;
+	letter-spacing: 0.06em;
+}
+
+.tag-type {
+	color: $xml-tag-type-color;
+}
+
+/* ---------- Current scope ---------- */
+
+.current-scope {
+	.name, .command-name {
+		color: $current-scope-name-color;
+	}
+}

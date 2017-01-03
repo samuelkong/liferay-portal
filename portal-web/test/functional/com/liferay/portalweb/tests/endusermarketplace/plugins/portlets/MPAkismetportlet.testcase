@@ -1,0 +1,33 @@
+<definition component-name="portal-plugins-deployment">
+	<property name="testray.main.component.name" value="Plugin Installer" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<command name="AkismetPortletSmoke" priority="4">
+		<property name="portlet.plugins.includes" value="akismet-portlet" />
+
+		<var name="appName" value="Akismet" />
+
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="Akismet" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="App Manager" />
+		</execute>
+
+		<execute macro="AppManager#uninstallAppCP">
+			<var name="appName" value="${appName}" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="App Manager" />
+		</execute>
+
+		<execute macro="AppManager#viewUninstallAppCP">
+			<var name="appName" value="${appName}" />
+		</execute>
+	</command>
+</definition>

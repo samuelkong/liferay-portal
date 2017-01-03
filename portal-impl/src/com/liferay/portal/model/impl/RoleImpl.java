@@ -17,20 +17,17 @@ package com.liferay.portal.model.impl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.model.Team;
+import com.liferay.portal.kernel.service.TeamLocalServiceUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.RoleConstants;
-import com.liferay.portal.model.Team;
-import com.liferay.portal.service.TeamLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Jorge Ferrer
  */
 public class RoleImpl extends RoleBaseImpl {
-
-	public RoleImpl() {
-	}
 
 	@Override
 	public String getDescriptiveName() throws PortalException {
@@ -83,21 +80,29 @@ public class RoleImpl extends RoleBaseImpl {
 	}
 
 	@Override
-	public boolean isTeam() {
-		return hasClassName(Team.class);
+	public boolean isSystem() {
+		return PortalUtil.isSystemRole(getName());
 	}
 
-	protected boolean hasClassName(Class<?> clazz) {
-		long classNameId = getClassNameId();
-
-		if (classNameId == PortalUtil.getClassNameId(clazz)) {
+	@Override
+	public boolean isTeam() {
+		if (getClassNameId() == ClassNameIds._TEAM_CLASS_NAME_ID) {
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(RoleImpl.class);
+
+	private static class ClassNameIds {
+
+		private ClassNameIds() {
+		}
+
+		private static final long _TEAM_CLASS_NAME_ID =
+			PortalUtil.getClassNameId(Team.class);
+
+	}
 
 }

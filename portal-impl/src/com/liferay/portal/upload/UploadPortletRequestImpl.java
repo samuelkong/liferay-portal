@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.PortletRequest;
+
 import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
@@ -42,11 +44,13 @@ public class UploadPortletRequestImpl
 	extends HttpServletRequestWrapper implements UploadPortletRequest {
 
 	public UploadPortletRequestImpl(
-		UploadServletRequest uploadServletRequest, String namespace) {
+		UploadServletRequest uploadServletRequest,
+		PortletRequest portletRequest, String namespace) {
 
 		super(uploadServletRequest);
 
 		_uploadServletRequest = uploadServletRequest;
+		_portletRequest = portletRequest;
 		_namespace = namespace;
 	}
 
@@ -67,7 +71,11 @@ public class UploadPortletRequestImpl
 		if (Validator.isNull(contentType) ||
 			contentType.equals(ContentTypes.APPLICATION_OCTET_STREAM)) {
 
-			contentType = MimeTypesUtil.getContentType(getFile(name));
+			File file = getFile(name);
+
+			if (file != null) {
+				contentType = MimeTypesUtil.getContentType(file);
+			}
 		}
 
 		return contentType;
@@ -183,7 +191,7 @@ public class UploadPortletRequestImpl
 			return Collections.emptyMap();
 		}
 
-		Map<String, FileItem[]> map = new HashMap<String, FileItem[]>();
+		Map<String, FileItem[]> map = new HashMap<>();
 
 		UploadServletRequestImpl uploadServletRequestImpl =
 			(UploadServletRequestImpl)_uploadServletRequest;
@@ -191,14 +199,19 @@ public class UploadPortletRequestImpl
 		Map<String, FileItem[]> multipartParameterMap =
 			uploadServletRequestImpl.getMultipartParameterMap();
 
-		for (String name : multipartParameterMap.keySet()) {
+		for (Map.Entry<String, FileItem[]> entry :
+				multipartParameterMap.entrySet()) {
+
+			String name = entry.getKey();
+			FileItem[] fileItems = entry.getValue();
+
 			if (name.startsWith(_namespace)) {
 				map.put(
 					name.substring(_namespace.length(), name.length()),
-					multipartParameterMap.get(name));
+					fileItems);
 			}
 			else {
-				map.put(name, multipartParameterMap.get(name));
+				map.put(name, fileItems);
 			}
 		}
 
@@ -219,7 +232,7 @@ public class UploadPortletRequestImpl
 
 	@Override
 	public Map<String, String[]> getParameterMap() {
-		Map<String, String[]> map = new HashMap<String, String[]>();
+		Map<String, String[]> map = new HashMap<>();
 
 		Enumeration<String> enu = getParameterNames();
 
@@ -234,7 +247,7 @@ public class UploadPortletRequestImpl
 
 	@Override
 	public Enumeration<String> getParameterNames() {
-		List<String> parameterNames = new ArrayList<String>();
+		List<String> parameterNames = new ArrayList<>();
 
 		Enumeration<String> enu = _uploadServletRequest.getParameterNames();
 
@@ -265,12 +278,17 @@ public class UploadPortletRequestImpl
 	}
 
 	@Override
+	public PortletRequest getPortletRequest() {
+		return _portletRequest;
+	}
+
+	@Override
 	public Map<String, List<String>> getRegularParameterMap() {
 		if (!(_uploadServletRequest instanceof UploadServletRequestImpl)) {
 			return Collections.emptyMap();
 		}
 
-		Map<String, List<String>> map = new HashMap<String, List<String>>();
+		Map<String, List<String>> map = new HashMap<>();
 
 		UploadServletRequestImpl uploadServletRequestImpl =
 			(UploadServletRequestImpl)_uploadServletRequest;
@@ -278,14 +296,19 @@ public class UploadPortletRequestImpl
 		Map<String, List<String>> regularParameterMap =
 			uploadServletRequestImpl.getRegularParameterMap();
 
-		for (String name : regularParameterMap.keySet()) {
+		for (Map.Entry<String, List<String>> entry :
+				regularParameterMap.entrySet()) {
+
+			String name = entry.getKey();
+			List<String> parameters = entry.getValue();
+
 			if (name.startsWith(_namespace)) {
 				map.put(
 					name.substring(_namespace.length(), name.length()),
-					regularParameterMap.get(name));
+					parameters);
 			}
 			else {
-				map.put(name, regularParameterMap.get(name));
+				map.put(name, parameters);
 			}
 		}
 
@@ -325,6 +348,7 @@ public class UploadPortletRequestImpl
 	}
 
 	private final String _namespace;
+	private final PortletRequest _portletRequest;
 	private final UploadServletRequest _uploadServletRequest;
 
 }

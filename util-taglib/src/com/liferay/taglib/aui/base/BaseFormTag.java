@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseFormTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseFormTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -71,60 +71,44 @@ public class BaseFormTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setAction(java.lang.String action) {
 		_action = action;
-
-		setScopedAttribute("action", action);
 	}
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setEscapeXml(boolean escapeXml) {
 		_escapeXml = escapeXml;
-
-		setScopedAttribute("escapeXml", escapeXml);
 	}
 
 	public void setInlineLabels(boolean inlineLabels) {
 		_inlineLabels = inlineLabels;
-
-		setScopedAttribute("inlineLabels", inlineLabels);
 	}
 
 	public void setMethod(java.lang.String method) {
 		_method = method;
-
-		setScopedAttribute("method", method);
 	}
 
 	public void setName(java.lang.String name) {
 		_name = name;
-
-		setScopedAttribute("name", name);
 	}
 
 	public void setOnSubmit(java.lang.String onSubmit) {
 		_onSubmit = onSubmit;
-
-		setScopedAttribute("onSubmit", onSubmit);
 	}
 
 	public void setPortletNamespace(java.lang.String portletNamespace) {
 		_portletNamespace = portletNamespace;
-
-		setScopedAttribute("portletNamespace", portletNamespace);
 	}
 
 	public void setUseNamespace(boolean useNamespace) {
 		_useNamespace = useNamespace;
-
-		setScopedAttribute("useNamespace", useNamespace);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_action = null;
 		_cssClass = null;
 		_escapeXml = true;

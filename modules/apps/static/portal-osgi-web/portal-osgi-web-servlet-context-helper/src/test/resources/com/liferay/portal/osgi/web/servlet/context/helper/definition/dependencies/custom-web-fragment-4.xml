@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<web-fragment
+	version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+>
+	<name>fragment4</name>
+	<ordering>
+		<before>
+			<others/>
+		</before>
+	</ordering>
+	<context-param>
+		<param-name>name</param-name>
+		<param-value>value4</param-value>
+	</context-param>
+</web-fragment>

@@ -14,11 +14,11 @@
 
 package com.liferay.portal.security.membershippolicy;
 
-import com.liferay.portal.model.Group;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicy;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.security.membershippolicy.samples.TestSiteMembershipPolicy;
-import com.liferay.portal.util.test.GroupTestUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portal.util.test.RoleTestUtil;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceRegistration;
@@ -67,7 +67,7 @@ public abstract class BaseSiteMembershipPolicyTestCase
 
 		Registry registry = RegistryUtil.getRegistry();
 
-		Map<String, Object> properties = new HashMap<String, Object>();
+		Map<String, Object> properties = new HashMap<>();
 
 		properties.put("service.ranking", 1);
 
@@ -92,13 +92,11 @@ public abstract class BaseSiteMembershipPolicyTestCase
 	}
 
 	protected long[] addForbiddenGroups() throws Exception {
-		Group forbiddenGroup1 = GroupTestUtil.addGroup(
-			RandomTestUtil.randomString());
+		Group forbiddenGroup1 = GroupTestUtil.addGroup();
 
 		_forbiddenGroupIds[0] = forbiddenGroup1.getGroupId();
 
-		Group forbiddenGroup2 = GroupTestUtil.addGroup(
-			RandomTestUtil.randomString());
+		Group forbiddenGroup2 = GroupTestUtil.addGroup();
 
 		_forbiddenGroupIds[1] = forbiddenGroup2.getGroupId();
 
@@ -113,13 +111,11 @@ public abstract class BaseSiteMembershipPolicyTestCase
 	}
 
 	protected long[] addRequiredGroups() throws Exception {
-		Group requiredGroup1 = GroupTestUtil.addGroup(
-			RandomTestUtil.randomString());
+		Group requiredGroup1 = GroupTestUtil.addGroup();
 
 		_requiredGroupIds[0] = requiredGroup1.getGroupId();
 
-		Group requiredGroup2 = GroupTestUtil.addGroup(
-			RandomTestUtil.randomString());
+		Group requiredGroup2 = GroupTestUtil.addGroup();
 
 		_requiredGroupIds[1] = requiredGroup2.getGroupId();
 
@@ -134,13 +130,11 @@ public abstract class BaseSiteMembershipPolicyTestCase
 	}
 
 	protected long[] addStandardGroups() throws Exception {
-		Group standardGroup1 = GroupTestUtil.addGroup(
-			RandomTestUtil.randomString());
+		Group standardGroup1 = GroupTestUtil.addGroup();
 
 		_standardGroupIds[0] = standardGroup1.getGroupId();
 
-		Group standardGroup2 = GroupTestUtil.addGroup(
-			RandomTestUtil.randomString());
+		Group standardGroup2 = GroupTestUtil.addGroup();
 
 		_standardGroupIds[1] = standardGroup2.getGroupId();
 

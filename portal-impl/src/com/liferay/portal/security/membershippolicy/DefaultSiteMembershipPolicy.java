@@ -14,21 +14,23 @@
 
 package com.liferay.portal.security.membershippolicy;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.interval.IntervalActionProcessor;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.membershippolicy.BaseSiteMembershipPolicy;
+import com.liferay.portal.kernel.security.membershippolicy.MembershipPolicyException;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.GroupConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.model.AssetTag;
 
 import java.io.Serializable;
 
@@ -157,12 +159,11 @@ public class DefaultSiteMembershipPolicy extends BaseSiteMembershipPolicy {
 	protected List<Group> getLimitedChildrenGroups(Group group)
 		throws PortalException {
 
-		List<Group> parentGroups = new ArrayList<Group>();
+		List<Group> parentGroups = new ArrayList<>();
 
 		parentGroups.add(group);
 
-		LinkedHashMap<String, Object> groupParams =
-			new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> groupParams = new LinkedHashMap<>();
 
 		groupParams.put("groupsTree", parentGroups);
 		groupParams.put(
@@ -214,30 +215,43 @@ public class DefaultSiteMembershipPolicy extends BaseSiteMembershipPolicy {
 	protected void verifyLimitedParentMembership(final Group group)
 		throws PortalException {
 
-		int count = UserLocalServiceUtil.getGroupUsersCount(group.getGroupId());
+		int total = UserLocalServiceUtil.getGroupUsersCount(group.getGroupId());
 
-		int pages = count / Indexer.DEFAULT_INTERVAL;
+		final IntervalActionProcessor<Void> intervalActionProcessor =
+			new IntervalActionProcessor<>(total);
 
-		for (int i = 0; i <= pages; i++) {
-			int start = (i * Indexer.DEFAULT_INTERVAL);
-			int end = start + Indexer.DEFAULT_INTERVAL;
+		intervalActionProcessor.setPerformIntervalActionMethod(
+			new IntervalActionProcessor.PerformIntervalActionMethod<Void>() {
 
-			List<User> users = UserLocalServiceUtil.getGroupUsers(
-				group.getGroupId(), start, end);
+				@Override
+				public Void performIntervalAction(int start, int end)
+					throws PortalException {
 
-			for (User user : users) {
-				if (!UserLocalServiceUtil.hasGroupUser(
-						group.getParentGroupId(), user.getUserId())) {
+					List<User> users = UserLocalServiceUtil.getGroupUsers(
+						group.getGroupId(), start, end);
 
-					UserLocalServiceUtil.unsetGroupUsers(
-						group.getGroupId(), new long[] {user.getUserId()},
-						null);
+					for (User user : users) {
+						if (!UserLocalServiceUtil.hasGroupUser(
+								group.getParentGroupId(), user.getUserId())) {
+
+							UserLocalServiceUtil.unsetGroupUsers(
+								group.getGroupId(),
+								new long[] {user.getUserId()}, null);
+						}
+						else {
+							intervalActionProcessor.incrementStart();
+						}
+					}
+
+					return null;
 				}
-			}
-		}
+
+			});
+
+		intervalActionProcessor.performIntervalActions();
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultSiteMembershipPolicy.class);
 
 }

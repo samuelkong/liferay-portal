@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.User;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -40,6 +41,33 @@ import java.util.Date;
 public class UserCacheModel implements CacheModel<User>, Externalizable,
 	MVCCModel {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof UserCacheModel)) {
+			return false;
+		}
+
+		UserCacheModel userCacheModel = (UserCacheModel)obj;
+
+		if ((userId == userCacheModel.userId) &&
+				(mvccVersion == userCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, userId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
+	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
 	}
@@ -51,7 +79,7 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(83);
+		StringBundler sb = new StringBundler(85);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -91,6 +119,8 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		sb.append(emailAddress);
 		sb.append(", facebookId=");
 		sb.append(facebookId);
+		sb.append(", googleUserId=");
+		sb.append(googleUserId);
 		sb.append(", ldapServerId=");
 		sb.append(ldapServerId);
 		sb.append(", openId=");
@@ -228,6 +258,14 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		}
 
 		userImpl.setFacebookId(facebookId);
+
+		if (googleUserId == null) {
+			userImpl.setGoogleUserId(StringPool.BLANK);
+		}
+		else {
+			userImpl.setGoogleUserId(googleUserId);
+		}
+
 		userImpl.setLdapServerId(ldapServerId);
 
 		if (openId == null) {
@@ -353,25 +391,36 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
+
 		userId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		defaultUser = objectInput.readBoolean();
+
 		contactId = objectInput.readLong();
 		password = objectInput.readUTF();
+
 		passwordEncrypted = objectInput.readBoolean();
+
 		passwordReset = objectInput.readBoolean();
 		passwordModifiedDate = objectInput.readLong();
 		digest = objectInput.readUTF();
 		reminderQueryQuestion = objectInput.readUTF();
 		reminderQueryAnswer = objectInput.readUTF();
+
 		graceLoginCount = objectInput.readInt();
 		screenName = objectInput.readUTF();
 		emailAddress = objectInput.readUTF();
+
 		facebookId = objectInput.readLong();
+		googleUserId = objectInput.readUTF();
+
 		ldapServerId = objectInput.readLong();
 		openId = objectInput.readUTF();
+
 		portraitId = objectInput.readLong();
 		languageId = objectInput.readUTF();
 		timeZoneId = objectInput.readUTF();
@@ -386,11 +435,16 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		lastLoginDate = objectInput.readLong();
 		lastLoginIP = objectInput.readUTF();
 		lastFailedLoginDate = objectInput.readLong();
+
 		failedLoginAttempts = objectInput.readInt();
+
 		lockout = objectInput.readBoolean();
 		lockoutDate = objectInput.readLong();
+
 		agreedToTermsOfUse = objectInput.readBoolean();
+
 		emailAddressVerified = objectInput.readBoolean();
+
 		status = objectInput.readInt();
 	}
 
@@ -407,10 +461,13 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		}
 
 		objectOutput.writeLong(userId);
+
 		objectOutput.writeLong(companyId);
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeBoolean(defaultUser);
+
 		objectOutput.writeLong(contactId);
 
 		if (password == null) {
@@ -421,6 +478,7 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		}
 
 		objectOutput.writeBoolean(passwordEncrypted);
+
 		objectOutput.writeBoolean(passwordReset);
 		objectOutput.writeLong(passwordModifiedDate);
 
@@ -462,6 +520,14 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		}
 
 		objectOutput.writeLong(facebookId);
+
+		if (googleUserId == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(googleUserId);
+		}
+
 		objectOutput.writeLong(ldapServerId);
 
 		if (openId == null) {
@@ -548,11 +614,16 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 		}
 
 		objectOutput.writeLong(lastFailedLoginDate);
+
 		objectOutput.writeInt(failedLoginAttempts);
+
 		objectOutput.writeBoolean(lockout);
 		objectOutput.writeLong(lockoutDate);
+
 		objectOutput.writeBoolean(agreedToTermsOfUse);
+
 		objectOutput.writeBoolean(emailAddressVerified);
+
 		objectOutput.writeInt(status);
 	}
 
@@ -575,6 +646,7 @@ public class UserCacheModel implements CacheModel<User>, Externalizable,
 	public String screenName;
 	public String emailAddress;
 	public long facebookId;
+	public String googleUserId;
 	public long ldapServerId;
 	public String openId;
 	public long portraitId;

@@ -16,6 +16,9 @@ package com.liferay.portal.search;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.search.BaseOpenSearchImpl;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -24,29 +27,17 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
-import com.liferay.portal.service.PortletLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portal.util.WebKeys;
-import com.liferay.portlet.journal.model.JournalArticle;
-import com.liferay.portlet.journal.model.JournalArticleConstants;
-import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
-import com.liferay.portlet.journal.service.JournalContentSearchLocalServiceUtil;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.portlet.PortletURL;
 
@@ -58,7 +49,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class PortalOpenSearchImpl extends BaseOpenSearchImpl {
 
-	public static final String SEARCH_PATH = "/c/search/open_search";
+	public PortalOpenSearchImpl(
+		String openSearchURL, String openSearchDescriptionURL) {
+
+		super(openSearchURL, openSearchDescriptionURL);
+	}
 
 	@Override
 	public String search(
@@ -82,7 +77,7 @@ public class PortalOpenSearchImpl extends BaseOpenSearchImpl {
 
 			Object[] values = addSearchResults(
 				queryTerms, keywords, startPage, itemsPerPage, total, start,
-				"Liferay Portal Search: " + keywords, SEARCH_PATH, format,
+				"Liferay Portal Search: " + keywords, StringPool.BLANK, format,
 				themeDisplay);
 
 			com.liferay.portal.kernel.xml.Document doc =
@@ -92,7 +87,10 @@ public class PortalOpenSearchImpl extends BaseOpenSearchImpl {
 			for (int i = 0; i < results.getDocs().length; i++) {
 				Document result = results.doc(i);
 
-				String portletId = result.get(Field.PORTLET_ID);
+				String className = result.get(Field.ENTRY_CLASS_NAME);
+
+				String portletId = PortletProviderUtil.getPortletId(
+					className, PortletProvider.Action.VIEW);
 
 				Portlet portlet = PortletLocalServiceUtil.getPortletById(
 					themeDisplay.getCompanyId(), portletId);
@@ -131,14 +129,14 @@ public class PortalOpenSearchImpl extends BaseOpenSearchImpl {
 
 				String content = StringPool.BLANK;
 
-				Indexer indexer = IndexerRegistryUtil.getIndexer(
+				Indexer<?> indexer = IndexerRegistryUtil.getIndexer(
 					entryClassName);
 
 				if (indexer != null) {
 					String snippet = result.get(Field.SNIPPET);
 
 					Summary summary = indexer.getSummary(
-						result, snippet, portletURL, null, null);
+						result, snippet, null, null);
 
 					if (summary == null) {
 						continue;
@@ -147,11 +145,6 @@ public class PortalOpenSearchImpl extends BaseOpenSearchImpl {
 					title = summary.getTitle();
 					url = portletURL.toString();
 					content = summary.getContent();
-
-					if (portlet.getPortletId().equals(PortletKeys.JOURNAL)) {
-						url = getJournalURL(
-							themeDisplay, resultGroupId, result);
-					}
 				}
 
 				double score = results.score(i);
@@ -174,57 +167,7 @@ public class PortalOpenSearchImpl extends BaseOpenSearchImpl {
 		}
 	}
 
-	protected String getJournalURL(
-			ThemeDisplay themeDisplay, long groupId, Document result)
-		throws Exception {
-
-		String articleId = result.get(Field.ARTICLE_ID);
-
-		JournalArticle article = JournalArticleServiceUtil.getArticle(
-			groupId, articleId);
-
-		if (Validator.isNotNull(article.getLayoutUuid())) {
-			String groupFriendlyURL = PortalUtil.getGroupFriendlyURL(
-				GroupLocalServiceUtil.getGroup(article.getGroupId()), false,
-				themeDisplay);
-
-			return groupFriendlyURL.concat(
-				JournalArticleConstants.CANONICAL_URL_SEPARATOR).concat(
-					article.getUrlTitle());
-		}
-
-		Layout layout = themeDisplay.getLayout();
-
-		List<Long> hitLayoutIds =
-			JournalContentSearchLocalServiceUtil.getLayoutIds(
-				layout.getGroupId(), layout.isPrivateLayout(), articleId);
-
-		if (!hitLayoutIds.isEmpty()) {
-			Long hitLayoutId = hitLayoutIds.get(0);
-
-			Layout hitLayout = LayoutLocalServiceUtil.getLayout(
-				layout.getGroupId(), layout.isPrivateLayout(),
-				hitLayoutId.longValue());
-
-			return PortalUtil.getLayoutURL(hitLayout, themeDisplay);
-		}
-
-		StringBundler sb = new StringBundler(7);
-
-		sb.append(themeDisplay.getPathMain());
-		sb.append("/journal/view_article_content?groupId=");
-		sb.append(groupId);
-		sb.append("&articleId=");
-		sb.append(articleId);
-		sb.append("&version=");
-
-		String version = result.get("version");
-
-		sb.append(version);
-
-		return sb.toString();
-	}
-
-	private static Log _log = LogFactoryUtil.getLog(PortalOpenSearchImpl.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortalOpenSearchImpl.class);
 
 }

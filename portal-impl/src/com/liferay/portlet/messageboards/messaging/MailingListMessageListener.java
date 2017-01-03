@@ -14,25 +14,25 @@
 
 package com.liferay.portlet.messageboards.messaging;
 
+import com.liferay.mail.kernel.model.Account;
+import com.liferay.message.boards.kernel.model.MBMessage;
+import com.liferay.message.boards.kernel.model.MBMessageConstants;
+import com.liferay.message.boards.kernel.service.MBMessageLocalServiceUtil;
+import com.liferay.message.boards.kernel.service.MBMessageServiceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.mail.Account;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.PermissionCheckerUtil;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.messageboards.NoSuchMessageException;
-import com.liferay.portlet.messageboards.model.MBMessage;
-import com.liferay.portlet.messageboards.model.MBMessageConstants;
-import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
-import com.liferay.portlet.messageboards.service.MBMessageServiceUtil;
 import com.liferay.portlet.messageboards.util.MBMailMessage;
 import com.liferay.portlet.messageboards.util.MBUtil;
 import com.liferay.portlet.messageboards.util.MailingListThreadLocal;
@@ -201,13 +201,9 @@ public class MailingListMessageListener extends BaseMessageListener {
 
 		MBMessage parentMessage = null;
 
-		try {
-			if (parentMessageId > 0) {
-				parentMessage = MBMessageLocalServiceUtil.getMessage(
-					parentMessageId);
-			}
-		}
-		catch (NoSuchMessageException nsme) {
+		if (parentMessageId > 0) {
+			parentMessage = MBMessageLocalServiceUtil.fetchMBMessage(
+				parentMessageId);
 		}
 
 		if (_log.isDebugEnabled()) {
@@ -228,8 +224,13 @@ public class MailingListMessageListener extends BaseMessageListener {
 
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
+
+		String portletId = PortletProviderUtil.getPortletId(
+			MBMessage.class.getName(), PortletProvider.Action.VIEW);
+
 		serviceContext.setLayoutFullURL(
-			PortalUtil.getLayoutFullURL(groupId, PortletKeys.MESSAGE_BOARDS));
+			PortalUtil.getLayoutFullURL(groupId, portletId));
+
 		serviceContext.setScopeGroupId(groupId);
 
 		List<ObjectValuePair<String, InputStream>> inputStreamOVPs =

@@ -1,0 +1,143 @@
+@import "mixins";
+
+.private-messaging-portlet {
+	.layout {
+		width: auto;
+	}
+
+	.alert {
+		margin-bottom: 0;
+	}
+
+	.column-content .check-all {
+		margin: 0 20px 0 5px;
+	}
+
+	.controls {
+		background: #F5F8FA;
+		padding: 5px 10px;
+
+		>.input-checkbox-wrapper {
+			float: left;
+			margin-bottom: 0;
+		}
+
+		.check-all {
+			margin: 9px 6px 9px 0;
+		}
+	}
+
+	img.avatar {
+		width: 60px;
+	}
+
+	.body {
+		clear: right;
+		word-break: break-word;
+	}
+
+	.message-container .portlet-msg-error {
+		display: block;
+		margin-bottom: 10px;
+	}
+
+	.message-body {
+		min-height: 100px;
+	}
+
+	.messages .list-group-item.unread {
+		background: #F0F5F7;
+	}
+
+	.thread {
+		.body {
+			margin-top: 20px;
+
+			.image-thumbnail {
+				float: left;
+				height: 150px;
+				margin: 10px;
+				width: 150px;
+
+				img {
+					max-height: 150px;
+					max-width: 150px;
+				}
+			}
+		}
+
+		.message-attachments {
+			margin-top: 20px;
+
+			li {
+				list-style: none;
+			}
+		}
+
+		.back-button {
+			float: right;
+		}
+	}
+}
+
+/* ---------- Extras ---------- */
+
+.private-messaging-portlet .controls {
+	border-radius: 4px;
+}
+
+/* ---------- Responsive ---------- */
+
+@include respond-to(phone, tablet) {
+	.private-messaging-portlet {
+		.btn-group, .button-holder {
+			width: auto;
+		}
+	}
+}
+
+@include respond-to(phone) {
+	.private-messaging-portlet {
+		.messages {
+			.button-holder {
+				padding-left: 51px;
+				position: relative;
+
+				.check-all {
+					height: 24px;
+					left: 16px;
+					margin-top: -12px;
+					position: absolute;
+					top: 50%;
+					width: 24px;
+				}
+			}
+		}
+
+		button, button:hover {
+			margin-bottom: 5px;
+			width: 100%;
+
+			&.close {
+				width: auto;
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		.avatar {
+			width: 45px;
+		}
+
+		.subject {
+			margin-top: 10px;
+		}
+
+		.body {
+			clear: both;
+			margin-top: 10px;
+		}
+	}
+}

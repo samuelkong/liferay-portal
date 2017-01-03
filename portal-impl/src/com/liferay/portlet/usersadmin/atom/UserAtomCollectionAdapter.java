@@ -19,14 +19,15 @@ import com.liferay.portal.atom.AtomUtil;
 import com.liferay.portal.kernel.atom.AtomEntryContent;
 import com.liferay.portal.kernel.atom.AtomRequestContext;
 import com.liferay.portal.kernel.atom.BaseAtomCollectionAdapter;
+import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.UserServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Address;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.CompanyThreadLocal;
-import com.liferay.portal.service.UserServiceUtil;
-import com.liferay.portal.util.PortletKeys;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +46,7 @@ public class UserAtomCollectionAdapter extends BaseAtomCollectionAdapter<User> {
 
 	@Override
 	public List<String> getEntryAuthors(User user) {
-		List<String> authors = new ArrayList<String>();
+		List<String> authors = new ArrayList<>();
 
 		authors.add(user.getFullName());
 
@@ -107,8 +108,11 @@ public class UserAtomCollectionAdapter extends BaseAtomCollectionAdapter<User> {
 
 	@Override
 	public String getFeedTitle(AtomRequestContext atomRequestContext) {
+		String portletId = PortletProviderUtil.getPortletId(
+			User.class.getName(), PortletProvider.Action.VIEW);
+
 		return AtomUtil.createFeedTitleFromPortletName(
-			atomRequestContext, PortletKeys.USERS_ADMIN);
+			atomRequestContext, portletId);
 	}
 
 	@Override

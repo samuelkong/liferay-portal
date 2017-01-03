@@ -17,6 +17,8 @@ package com.liferay.portal.xml;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.xml.DocumentType;
 
+import java.util.Objects;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -24,6 +26,25 @@ public class DocumentTypeImpl implements DocumentType {
 
 	public DocumentTypeImpl(org.dom4j.DocumentType documentType) {
 		_documentType = documentType;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof DocumentTypeImpl)) {
+			return false;
+		}
+
+		DocumentTypeImpl documentTypeImpl = (DocumentTypeImpl)obj;
+
+		if (Objects.equals(_documentType, documentTypeImpl._documentType)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override

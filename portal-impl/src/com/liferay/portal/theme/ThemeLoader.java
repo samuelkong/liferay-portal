@@ -16,13 +16,13 @@ package com.liferay.portal.theme;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.service.ThemeLocalServiceUtil;
+import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
@@ -110,12 +110,16 @@ public class ThemeLoader {
 		_servletContextName = servletContextName;
 		_servletContext = servletContext;
 
+		boolean loadFromServletContext = true;
+		File fileStorage = null;
+		String themesPath = null;
+
 		try {
-			Document doc = SAXReaderUtil.read(xmls[0], true);
+			Document doc = UnsecureSAXReaderUtil.read(xmls[0], true);
 
 			Element root = doc.getRootElement();
 
-			_themesPath = GetterUtil.getString(
+			themesPath = GetterUtil.getString(
 				root.elementText("themes-path"), "/themes");
 
 			String fileStorageValue = PropsValues.THEME_LOADER_STORAGE_PATH;
@@ -124,31 +128,34 @@ public class ThemeLoader {
 				root.elementText("file-storage"), fileStorageValue);
 
 			if (Validator.isNotNull(fileStorageValue)) {
-				_fileStorage = new File(fileStorageValue);
-				_loadFromServletContext = false;
+				fileStorage = new File(fileStorageValue);
+				loadFromServletContext = false;
 			}
 			else {
-				_fileStorage = new File(
-					servletContext.getRealPath(_themesPath));
-				_loadFromServletContext = true;
+				fileStorage = new File(servletContext.getRealPath(themesPath));
+				loadFromServletContext = true;
 			}
 
-			if (!_fileStorage.exists()) {
+			if (!fileStorage.exists()) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
-						"File storage " + _fileStorage + " does not exist");
+						"File storage " + fileStorage + " does not exist");
 				}
 
-				if (!_fileStorage.mkdirs()) {
+				if (!fileStorage.mkdirs()) {
 					_log.error(
 						"Unable to create theme loader file storage at " +
-							_fileStorage);
+							fileStorage);
 				}
 			}
 		}
 		catch (Exception e) {
 			_log.error(e, e);
 		}
+
+		_loadFromServletContext = loadFromServletContext;
+		_fileStorage = fileStorage;
+		_themesPath = themesPath;
 
 		loadThemes();
 	}
@@ -175,13 +182,13 @@ public class ThemeLoader {
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(ThemeLoader.class);
+	private static final Log _log = LogFactoryUtil.getLog(ThemeLoader.class);
 
-	private File _fileStorage;
-	private Map<String, Long> _lastModifiedMap = new HashMap<String, Long>();
-	private boolean _loadFromServletContext = true;
-	private ServletContext _servletContext;
-	private String _servletContextName;
-	private String _themesPath;
+	private final File _fileStorage;
+	private final Map<String, Long> _lastModifiedMap = new HashMap<>();
+	private final boolean _loadFromServletContext;
+	private final ServletContext _servletContext;
+	private final String _servletContextName;
+	private final String _themesPath;
 
 }

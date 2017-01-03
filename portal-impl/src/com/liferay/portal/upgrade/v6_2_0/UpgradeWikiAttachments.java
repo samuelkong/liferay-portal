@@ -14,14 +14,11 @@
 
 package com.liferay.portal.upgrade.v6_2_0;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.portal.kernel.upgrade.v6_2_0.BaseUpgradeAttachments;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portlet.wiki.model.WikiPage;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -33,7 +30,7 @@ public class UpgradeWikiAttachments extends BaseUpgradeAttachments {
 
 	@Override
 	protected String getClassName() {
-		return WikiPage.class.getName();
+		return "com.liferay.portlet.wiki.model.WikiPage";
 	}
 
 	@Override
@@ -69,18 +66,12 @@ public class UpgradeWikiAttachments extends BaseUpgradeAttachments {
 
 	@Override
 	protected String getPortletId() {
-		return PortletKeys.WIKI;
+		return "36";
 	}
 
 	@Override
 	protected void updateAttachments() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			StringBundler sb = new StringBundler(4);
 
 			sb.append("select resourcePrimKey, groupId, companyId, ");
@@ -88,25 +79,23 @@ public class UpgradeWikiAttachments extends BaseUpgradeAttachments {
 			sb.append("nodeId from WikiPage group by resourcePrimKey, ");
 			sb.append("groupId, companyId, nodeId");
 
-			ps = con.prepareStatement(sb.toString());
+			try (PreparedStatement ps = connection.prepareStatement(
+					sb.toString());
+				ResultSet rs = ps.executeQuery()) {
 
-			rs = ps.executeQuery();
+				while (rs.next()) {
+					long resourcePrimKey = rs.getLong("resourcePrimKey");
+					long groupId = rs.getLong("groupId");
+					long companyId = rs.getLong("companyId");
+					long userId = rs.getLong("userId");
+					String userName = rs.getString("userName");
+					long nodeId = rs.getLong("nodeId");
 
-			while (rs.next()) {
-				long resourcePrimKey = rs.getLong("resourcePrimKey");
-				long groupId = rs.getLong("groupId");
-				long companyId = rs.getLong("companyId");
-				long userId = rs.getLong("userId");
-				String userName = rs.getString("userName");
-				long nodeId = rs.getLong("nodeId");
-
-				updateEntryAttachments(
-					companyId, groupId, resourcePrimKey, nodeId, userId,
-					userName);
+					updateEntryAttachments(
+						companyId, groupId, resourcePrimKey, nodeId, userId,
+						userName);
+				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 

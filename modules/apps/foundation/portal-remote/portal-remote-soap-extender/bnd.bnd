@@ -1,0 +1,48 @@
+Bundle-ClassPath:\
+	.,\
+	lib/cxf-rt-bindings-xml.jar,\
+	lib/cxf-rt-frontend-jaxws.jar,\
+	lib/cxf-rt-frontend-simple.jar,\
+	lib/cxf-rt-ws-policy.jar
+Bundle-Name: Liferay Portal Remote SOAP Extender
+Bundle-SymbolicName: com.liferay.portal.remote.soap.extender
+Bundle-Version: 2.0.3
+Export-Package:\
+	com.liferay.portal.remote.soap.extender,\
+	com.liferay.portal.remote.soap.extender.configuration
+Import-Package:\
+	!com.sun.*,\
+	\
+	!javax.validation.*,\
+	\
+	!net.sf.cglib.proxy.*,\
+	\
+	!org.apache.abdera.*,\
+	!org.apache.aries.*,\
+	!org.apache.cxf.aegis.*,\
+	!org.apache.cxf.ws.policy.*,\
+	!org.apache.neethi.*,\
+	!org.apache.velocity.*,\
+	!org.apache.xml.resolver.*,\
+	!org.apache.xmlbeans.*,\
+	\
+	!org.junit.*,\
+	\
+	!org.jvnet.fastinfoset.*,\
+	!org.jvnet.staxex.*,\
+	\
+	!org.osgi.service.blueprint.*,\
+	\
+	!org.relaxng.datatype.*,\
+	\
+	!org.slf4j.spi.*,\
+	\
+	!org.springframework.*,\
+	*
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Remote Service Engines
+-includeresource:\
+	lib/cxf-rt-bindings-xml.jar=cxf-rt-bindings-xml-[0-9]*.jar,\
+	lib/cxf-rt-frontend-jaxws.jar=cxf-rt-frontend-jaxws-[0-9]*.jar,\
+	lib/cxf-rt-frontend-simple.jar=cxf-rt-frontend-simple-[0-9]*.jar,\
+	lib/cxf-rt-ws-policy.jar=cxf-rt-ws-policy-[0-9]*.jar

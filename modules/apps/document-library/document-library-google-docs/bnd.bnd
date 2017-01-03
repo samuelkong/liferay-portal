@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Document Library Google Docs
-Bundle-SymbolicName: com.liferay.document.library.google.docs
-Bundle-Version: 1.0.0
-Include-Resource: classes

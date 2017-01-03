@@ -14,15 +14,16 @@
 
 package com.liferay.portlet.documentlibrary.lar;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.service.persistence.DLFileEntryUtil;
+import com.liferay.document.library.kernel.store.DLStoreUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
-import com.liferay.portlet.documentlibrary.model.DLFileEntry;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portlet.documentlibrary.service.persistence.DLFileEntryUtil;
-import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 import com.liferay.portlet.documentlibrary.util.RepositoryModelUtil;
 
 import java.io.InputStream;
@@ -35,8 +36,22 @@ import java.util.List;
 public class FileEntryUtil {
 
 	public static FileEntry fetchByPrimaryKey(long fileEntryId) {
-		DLFileEntry dlFileEntry = DLFileEntryUtil.fetchByPrimaryKey(
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(
 			fileEntryId);
+
+		if (dlFileEntry == null) {
+			return null;
+		}
+
+		return new LiferayFileEntry(dlFileEntry);
+	}
+
+	public static FileEntry fetchByR_F_FN(
+		long repositoryId, long folderId, String fileName) {
+
+		DLFileEntry dlFileEntry =
+			DLFileEntryLocalServiceUtil.fetchFileEntryByFileName(
+				repositoryId, folderId, fileName);
 
 		if (dlFileEntry == null) {
 			return null;
@@ -48,7 +63,7 @@ public class FileEntryUtil {
 	public static FileEntry fetchByR_F_T(
 		long repositoryId, long folderId, String title) {
 
-		DLFileEntry dlFileEntry = DLFileEntryUtil.fetchByG_F_T(
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchFileEntry(
 			repositoryId, folderId, title);
 
 		if (dlFileEntry == null) {
@@ -59,7 +74,7 @@ public class FileEntryUtil {
 	}
 
 	public static FileEntry fetchByUUID_R(String uuid, long repositoryId) {
-		DLFileEntry dlFileEntry = DLFileEntryUtil.fetchByUUID_G(
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchFileEntry(
 			uuid, repositoryId);
 
 		if (dlFileEntry == null) {

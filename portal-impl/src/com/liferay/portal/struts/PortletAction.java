@@ -17,29 +17,23 @@ package com.liferay.portal.struts;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.PortletResponseUtil;
-import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
-import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
-import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutTypePortlet;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.service.PortletLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.WebKeys;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portlet.StrictPortletPreferencesImpl;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 
@@ -73,6 +67,7 @@ import org.apache.struts.util.MessageResources;
 
 /**
  * @author Brian Wing Shun Chan
+ * @see    com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand
  */
 public class PortletAction extends Action {
 
@@ -170,16 +165,16 @@ public class PortletAction extends Action {
 			ResourceResponse resourceResponse)
 		throws Exception {
 
-		String resourceId = resourceRequest.getResourceID();
+		String resourceID = resourceRequest.getResourceID();
 
-		if (Validator.isNull(resourceId)) {
+		if (Validator.isNull(resourceID)) {
 			return;
 		}
 
 		PortletContext portletContext = portletConfig.getPortletContext();
 
 		PortletRequestDispatcher portletRequestDispatcher =
-			portletContext.getRequestDispatcher(resourceId);
+			portletContext.getRequestDispatcher(resourceID);
 
 		if (portletRequestDispatcher == null) {
 			return;
@@ -258,32 +253,16 @@ public class PortletAction extends Action {
 			Layout layout, String portletId)
 		throws PortalException {
 
-		if (Validator.isNull(portletId)) {
-			return null;
-		}
-
-		PortletPreferences portletPreferences =
-			PortletPreferencesFactoryUtil.getStrictPortletSetup(
-				layout, portletId);
-
-		if (portletPreferences instanceof StrictPortletPreferencesImpl) {
-			throw new PrincipalException();
-		}
-
-		return portletPreferences;
+		return PortletPreferencesFactoryUtil.getExistingPortletSetup(
+			layout, portletId);
 	}
 
 	protected PortletPreferences getStrictPortletSetup(
 			PortletRequest portletRequest)
 		throws PortalException {
 
-		String portletResource = ParamUtil.getString(
-			portletRequest, "portletResource");
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		return getStrictPortletSetup(themeDisplay.getLayout(), portletResource);
+		return PortletPreferencesFactoryUtil.getExistingPortletSetup(
+			portletRequest);
 	}
 
 	protected void hideDefaultErrorMessage(PortletRequest portletRequest) {
@@ -291,17 +270,6 @@ public class PortletAction extends Action {
 			portletRequest,
 			PortalUtil.getPortletId(portletRequest) +
 				SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0 {@link
-	 *             #hideDefaultSuccessMessage(PortletRequest)}
-	 */
-	@Deprecated
-	protected void hideDefaultSuccessMessage(
-		PortletConfig portletConfig, PortletRequest portletRequest) {
-
-		hideDefaultSuccessMessage(portletRequest);
 	}
 
 	protected void hideDefaultSuccessMessage(PortletRequest portletRequest) {
@@ -332,18 +300,11 @@ public class PortletAction extends Action {
 		String portletId = (String)portletRequest.getAttribute(
 			WebKeys.PORTLET_ID);
 
-		try {
-			LayoutTypePortlet layoutTypePortlet =
-				themeDisplay.getLayoutTypePortlet();
+		LayoutTypePortlet layoutTypePortlet =
+			themeDisplay.getLayoutTypePortlet();
 
-			if (layoutTypePortlet.hasPortletId(portletId)) {
-				return true;
-			}
-		}
-		catch (PortalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
+		if (layoutTypePortlet.hasPortletId(portletId)) {
+			return true;
 		}
 
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(
@@ -428,25 +389,6 @@ public class PortletAction extends Action {
 			return;
 		}
 
-		// LPS-1928
-
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(
-			actionRequest);
-
-		if (BrowserSnifferUtil.isIe(request) &&
-			(BrowserSnifferUtil.getMajorVersion(request) == 6.0) &&
-			redirect.contains(StringPool.POUND)) {
-
-			String redirectToken = "&#";
-
-			if (!redirect.contains(StringPool.QUESTION)) {
-				redirectToken = StringPool.QUESTION + redirectToken;
-			}
-
-			redirect = StringUtil.replace(
-				redirect, StringPool.POUND, redirectToken);
-		}
-
 		redirect = PortalUtil.escapeRedirect(redirect);
 
 		if (Validator.isNotNull(redirect)) {
@@ -463,23 +405,7 @@ public class PortletAction extends Action {
 			Object json)
 		throws IOException {
 
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(
-			portletRequest);
-
-		String contentType = ContentTypes.APPLICATION_JSON;
-
-		if (BrowserSnifferUtil.isIe(request)) {
-			contentType = ContentTypes.TEXT_HTML;
-		}
-
-		HttpServletResponse response = PortalUtil.getHttpServletResponse(
-			actionResponse);
-
-		response.setContentType(contentType);
-
-		ServletResponseUtil.write(response, json.toString());
-
-		response.flushBuffer();
+		JSONPortletResponseUtil.writeJSON(portletRequest, actionResponse, json);
 
 		setForward(portletRequest, ActionConstants.COMMON_NULL);
 	}
@@ -489,20 +415,7 @@ public class PortletAction extends Action {
 			Object json)
 		throws IOException {
 
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(
-			portletRequest);
-
-		String contentType = ContentTypes.APPLICATION_JSON;
-
-		if (BrowserSnifferUtil.isIe(request)) {
-			contentType = ContentTypes.TEXT_HTML;
-		}
-
-		mimeResponse.setContentType(contentType);
-
-		PortletResponseUtil.write(mimeResponse, json.toString());
-
-		mimeResponse.flushBuffer();
+		JSONPortletResponseUtil.writeJSON(portletRequest, mimeResponse, json);
 	}
 
 	private static final boolean _CHECK_METHOD_ON_PROCESS_ACTION = true;

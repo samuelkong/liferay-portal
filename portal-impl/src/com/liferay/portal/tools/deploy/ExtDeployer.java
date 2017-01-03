@@ -14,22 +14,24 @@
 
 package com.liferay.portal.tools.deploy;
 
-import com.liferay.portal.model.Plugin;
+import com.liferay.portal.kernel.model.Plugin;
 import com.liferay.portal.tools.ToolDependencies;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 6.2.0
  */
+@Deprecated
 public class ExtDeployer extends BaseDeployer {
 
 	public static void main(String[] args) {
 		ToolDependencies.wireDeployers();
 
-		List<String> wars = new ArrayList<String>();
-		List<String> jars = new ArrayList<String>();
+		List<String> wars = new ArrayList<>();
+		List<String> jars = new ArrayList<>();
 
 		for (String arg : args) {
 			if (arg.endsWith(".war")) {

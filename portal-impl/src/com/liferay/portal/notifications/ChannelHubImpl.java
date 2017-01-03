@@ -20,8 +20,7 @@ import com.liferay.portal.kernel.notifications.ChannelHub;
 import com.liferay.portal.kernel.notifications.ChannelListener;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.UnknownChannelException;
-import com.liferay.portal.model.CompanyConstants;
-import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.ArrayList;
@@ -41,6 +40,10 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ChannelHubImpl implements ChannelHub {
 
+	public ChannelHubImpl(long companyId) {
+		_companyId = companyId;
+	}
+
 	@Override
 	public void cleanUp() throws ChannelException {
 		for (Channel channel : _channels.values()) {
@@ -53,16 +56,6 @@ public class ChannelHubImpl implements ChannelHub {
 		Channel channel = getChannel(userId);
 
 		channel.cleanUp();
-	}
-
-	@Override
-	public ChannelHub clone(long companyId) {
-		ChannelHubImpl channelHubImpl = new ChannelHubImpl();
-
-		channelHubImpl.setChannelPrototype(_channel);
-		channelHubImpl.setCompanyId(companyId);
-
-		return channelHubImpl;
 	}
 
 	@Override
@@ -107,7 +100,7 @@ public class ChannelHubImpl implements ChannelHub {
 			return _channels.get(userId);
 		}
 
-		Channel channel = _channel.clone(_companyId, userId);
+		Channel channel = new ChannelImpl(_companyId, userId);
 
 		Channel oldChannel = _channels.putIfAbsent(userId, channel);
 
@@ -363,8 +356,8 @@ public class ChannelHubImpl implements ChannelHub {
 			return;
 		}
 
-		List<NotificationEvent> persistedNotificationEvents =
-			new ArrayList<NotificationEvent>(notificationEvents.size());
+		List<NotificationEvent> persistedNotificationEvents = new ArrayList<>(
+			notificationEvents.size());
 
 		for (NotificationEvent notificationEvent : notificationEvents) {
 			if (notificationEvent.isDeliveryRequired()) {
@@ -379,14 +372,6 @@ public class ChannelHubImpl implements ChannelHub {
 		catch (Exception e) {
 			throw new ChannelException("Unable to send events", e);
 		}
-	}
-
-	public void setChannelPrototype(Channel channel) {
-		_channel = channel;
-	}
-
-	public void setCompanyId(long companyId) {
-		_companyId = companyId;
 	}
 
 	@Override
@@ -412,9 +397,8 @@ public class ChannelHubImpl implements ChannelHub {
 		channel.unregisterChannelListener(channelListener);
 	}
 
-	private Channel _channel;
 	private final ConcurrentMap<Long, Channel> _channels =
-		new ConcurrentHashMap<Long, Channel>();
-	private long _companyId = CompanyConstants.SYSTEM;
+		new ConcurrentHashMap<>();
+	private final long _companyId;
 
 }

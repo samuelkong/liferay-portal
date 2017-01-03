@@ -1,0 +1,323 @@
+@import "bourbon";
+@import "mixins";
+
+.portlet-asset-publisher, .portlet-message-boards, .portlet-trash {
+	.advanced-reply {
+		float: right;
+	}
+
+	.category-subscriptions {
+		clear: both;
+		margin-bottom: 1em;
+	}
+
+	.category-subscriptions {
+		overflow: hidden;
+	}
+
+	.category-subscription-types {
+		float: right;
+		margin-bottom: 0;
+	}
+
+	.quote {
+		background: #FFF url(@theme_image_path@/message_boards/quoteleft.png) left top no-repeat;
+		border: 1px solid #777;
+		padding: 5px 0 0 5px;
+	}
+
+	.quote-content {
+		background: transparent url(@theme_image_path@/message_boards/quoteright.png) right bottom no-repeat;
+		padding: 5px 30px 10px 30px;
+	}
+
+	.quote-title {
+		font-weight: bold;
+		padding: 5px 0 5px 0;
+	}
+
+	.title {
+		border-bottom: 1px solid #CCC;
+		font-size: large;
+		font-weight: normal;
+		padding: 5px;
+	}
+
+	.trash-attachments {
+		float: right;
+	}
+
+	#messageBoardsPanelContainer {
+		border-width: 0;
+	}
+
+	.message-attachments {
+		h3 {
+			color: #333;
+			font-size: 1em;
+		}
+
+		ul, .deleted-input {
+			list-style: none;
+		}
+
+		.message-attachment {
+			padding: 0.5em;
+		}
+
+		.deleted-input {
+			margin-left: -2em;
+			padding: 0;
+		}
+
+		.undo {
+			font-weight: bold;
+		}
+	}
+
+	.view-entries-container {
+		span.h6 {
+			margin-right: 12px;
+		}
+	}
+
+	.thread-container {
+		margin-top: 20px;
+
+		.panel-heading {
+			span.h5 {
+				margin-right: 12px;
+			}
+		}
+
+		& > .message-container {
+			padding-left: 0;
+		}
+
+		.message-content {
+			img {
+				max-width: 100%;
+			}
+		}
+
+		.reply-to-main-thread-container {
+			text-align: center;
+		}
+	}
+
+	.message-container {
+		padding-left: 10px;
+	}
+
+	.thread-bottom, .thread-top {
+		padding: 3px 5px;
+	}
+
+	.thread-top {
+		border-bottom: 1px solid #EEE;
+	}
+
+	.thread-bottom {
+		vertical-align: bottom;
+	}
+
+	.taglib-ratings.thumbs .total-rating {
+		padding: 0 5px 0 10px;
+	}
+
+	td.user-info {
+		border-right: 1px solid #CCC;
+		width: 150px;
+	}
+
+	.edit-controls li, .subject {
+		float: left;
+	}
+
+	.edit-controls {
+		float: right;
+
+		li {
+			margin-right: 10px;
+		}
+	}
+
+	.reply-to-message {
+		margin-bottom: 20px;
+	}
+
+	.thread-body {
+		overflow: hidden;
+		padding: 15px;
+
+		td {
+			border: 1px solid #CCC;
+		}
+	}
+
+	@include sm {
+		.message-user-display {
+			width: 50%;
+		}
+
+		.social-interaction {
+			position: absolute;
+			right: 0;
+			top: 0;
+			width: 50%;
+
+			& > div {
+				float: right;
+				margin-right: 12px;
+			}
+		}
+	}
+
+	.clear {
+		clear: both;
+	}
+
+	.taglib-custom-attributes-list {
+		margin-bottom: 1em;
+	}
+
+	.message-boards-panels, .statistics-panel {
+		border-width: 0;
+	}
+
+	.statistics-panel-content {
+		margin: 1em;
+
+		dt {
+			float: left;
+			font-weight: bold;
+			margin-right: 1em;
+		}
+
+		.list-group-item-content span.h5 {
+			margin-right: 12px;
+		}
+	}
+
+	.views {
+		clear: both;
+		color: #999;
+		float: left;
+		padding: 5px 0;
+		text-align: center;
+		width: 100%;
+
+		.count {
+			display: inline;
+			font-size: 1em;
+		}
+	}
+
+	.taglib-workflow-status {
+		margin: 0;
+	}
+
+	.count {
+		display: block;
+		font-size: 190%;
+		font-weight: bold;
+		height: 25px;
+	}
+
+	.toggle_id_message_boards_view_message_thread {
+		border: 1px solid #CCC;
+		clear: both;
+		margin: 5px 0 0 0;
+		width: 100%;
+	}
+
+	.thread-controls {
+		border: 1px solid #CCC;
+		margin-bottom: 5px;
+		padding: 3px 5px;
+	}
+
+	.thread-priority {
+		float: left;
+	}
+
+	.thread-actions {
+		float: right;
+	}
+
+	.thread-priority {
+		border-width: 0;
+	}
+
+	.thread-view-controls {
+		list-style: none;
+		margin: 0;
+		text-align: right;
+
+		li {
+			display: inline-block;
+		}
+	}
+
+	.emoticons {
+		border: 1px solid #CCC;
+		margin-left: 10px;
+	}
+
+	.tree {
+		vertical-align: middle;
+	}
+
+	.message-scroll {
+		margin: 5px 0 0 0;
+	}
+
+	.lfr-textarea {
+		&.message-edit {
+			height: 100%;
+			width: 100%;
+
+			textarea {
+				height: 378px;
+				min-height: 100%;
+				width: 99.5%;
+			}
+		}
+	}
+
+	.category-description, .category-title {
+		display: block;
+	}
+
+	.category-description {
+		@include hyphens;
+	}
+
+	.category-title {
+		@include ellipsis;
+
+		font-weight: bold;
+	}
+
+	.subcategories {
+		text-decoration: underline;
+	}
+
+	.threads-panel {
+		margin-top: 1em;
+	}
+
+	.search-root-entry {
+		color: #999;
+		float: right;
+	}
+}
+
+.trash-restore-popup {
+	.form {
+		fieldset {
+			margin-bottom: 0;
+			padding: 0 15px;
+		}
+	}
+}

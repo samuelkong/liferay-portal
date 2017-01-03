@@ -14,7 +14,8 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portlet.asset.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
 
 /**
  * @author Brian Wing Shun Chan
@@ -34,6 +35,11 @@ public class AssetCategoryVerifiableModel implements VerifiableResourcedModel {
 	@Override
 	public String getTableName() {
 		return "AssetCategory";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

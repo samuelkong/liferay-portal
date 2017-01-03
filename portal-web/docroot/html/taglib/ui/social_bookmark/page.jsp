@@ -19,14 +19,7 @@
 <c:choose>
 	<c:when test='<%= displayStyle.equals("menu") %>'>
 		<c:if test="<%= Validator.isNotNull(postUrl) %>">
-			<liferay-ui:icon
-				cssClass="social-bookmark"
-				image="<%= icon %>"
-				label="<%= true %>"
-				message="<%= type %>"
-				method="get"
-				url="<%= postUrl %>"
-			/>
+			<liferay-ui:icon image="<%= icon %>" label="<%= true %>" linkCssClass="social-bookmark" message="<%= type %>" method="get" src="<%= icon %>" url="<%= postUrl %>" />
 		</c:if>
 	</c:when>
 	<c:otherwise>

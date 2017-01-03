@@ -54,8 +54,7 @@ public class SessionParameters {
 
 		if (newParameter == null) {
 			newParameter =
-				StringUtil.randomString() + StringPool.UNDERLINE +
-					parameter;
+				StringUtil.randomString() + StringPool.UNDERLINE + parameter;
 
 			parameters.put(parameter, newParameter);
 		}
@@ -78,8 +77,7 @@ public class SessionParameters {
 
 		if (newParameter == null) {
 			newParameter =
-				StringUtil.randomString() + StringPool.UNDERLINE +
-					parameter;
+				StringUtil.randomString() + StringPool.UNDERLINE + parameter;
 
 			parameters.put(parameter, newParameter);
 		}
@@ -94,13 +92,13 @@ public class SessionParameters {
 			parameters = (Map<String, String>)session.getAttribute(KEY);
 
 			if (parameters == null) {
-				parameters = new HashMap<String, String>();
+				parameters = new HashMap<>();
 
 				session.setAttribute(KEY, parameters);
 			}
 		}
 		catch (IllegalStateException ise) {
-			parameters = new HashMap<String, String>();
+			parameters = new HashMap<>();
 		}
 
 		return parameters;
@@ -115,13 +113,13 @@ public class SessionParameters {
 			parameters = (Map<String, String>)portletSession.getAttribute(KEY);
 
 			if (parameters == null) {
-				parameters = new LinkedHashMap<String, String>();
+				parameters = new LinkedHashMap<>();
 
 				portletSession.setAttribute(KEY, parameters);
 			}
 		}
 		catch (IllegalStateException ise) {
-			parameters = new LinkedHashMap<String, String>();
+			parameters = new LinkedHashMap<>();
 		}
 
 		return parameters;

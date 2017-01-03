@@ -44,7 +44,7 @@ public class NodeList<E, F> extends TranslatedList<E, F> {
 	protected TranslatedList<E, F> newInstance(
 		List<E> newList, List<F> oldList) {
 
-		return new NodeList<E, F>(newList, oldList);
+		return new NodeList<>(newList, oldList);
 	}
 
 	@Override
@@ -117,7 +117,9 @@ public class NodeList<E, F> extends TranslatedList<E, F> {
 			return (F)nodeImpl.getWrappedNode();
 		}
 
-		throw new IllegalArgumentException(o.getClass().getName());
+		Class<?> clazz = o.getClass();
+
+		throw new IllegalArgumentException(clazz.getName());
 	}
 
 }

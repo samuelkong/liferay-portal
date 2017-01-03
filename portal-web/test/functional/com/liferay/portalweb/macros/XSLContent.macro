@@ -1,0 +1,80 @@
+<definition>
+	<command name="configureConfigurationAdminXSL">
+		<var name="key_configurationAdminName" value="XSL Content Options" />
+
+		<while>
+			<condition function="IsElementNotPresent" locator1="ConfigurationAdmin#CONFIGURATION_ADMIN_NAME_LINK" />
+			<then>
+				<execute function="Click" locator1="Icon#CARET_RIGHT" />
+
+				<execute function="Pause" value1="1000" />
+			</then>
+		</while>
+
+		<execute function="Click" locator1="ConfigurationAdmin#CONFIGURATION_ADMIN_NAME_LINK" />
+
+		<execute function="Type" locator1="TextArea#URL" value1="@portlet_context_url@,@portal_url@" />
+
+		<execute function="Check" locator1="ConfigurationAdmin#XSL_CONTENT_CONFIGURATION_XML_DOCTYPE_DECLARATION_CHECKBOX" />
+
+		<execute function="Click" locator1="Button#SAVE" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="configureXSLContentPortlet">
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="Type" locator1="TextInput#SETUP_XML_URL" value1="@portal_url@/${xmlURL}" />
+		<execute function="Type" locator1="TextInput#SETUP_XSL_URL" value1="@portal_url@/${xslURL}" />
+
+		<execute function="SelectFrameTop" value1="relative=top" />
+	</command>
+
+	<command name="gotoDocumentURL">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#ICON_DOCUMENT_TITLE_LINK" value1="${dmDocumentTitle}" />
+
+		<execute function="AssertTextEquals" locator1="DocumentsAndMediaDocument#DOCUMENT_INFO_UPLOADED_BY" value1="Test Test" />
+
+		<execute function="Click" locator1="Icon#INFO" />
+
+		<execute function="ClickNoError" locator1="Link#URL" />
+
+		<execute function="Pause" locator1="5000" />
+	</command>
+
+	<command name="viewConfigurationXSLContent">
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertTextEquals" locator1="TextInput#SETUP_XML_URL" value1="@portlet_context_url@/example.xml" />
+		<execute function="AssertTextEquals" locator1="TextInput#SETUP_XSL_URL" value1="@portlet_context_url@/example.xsl" />
+
+		<execute function="SelectFrameTop" value1="relative=top" />
+	</command>
+
+	<command name="viewConsoleError">
+		<execute function="AssertConsoleTextPresent" value1="${consoleTextError}" />
+	</command>
+
+	<command name="viewErrorMessage">
+		<execute function="AssertTextEquals" locator1="Message#ERROR" value1="An error occurred while processing your XML and XSL." />
+	</command>
+
+	<command name="viewXSLPortletHymnDisplay">
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TITLE" value1="My Hymn Collection" />
+
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_TITLE_HEADER" value1="Title" />
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_ARTIST_HEADER" value1="Artist" />
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_COUNTRY_HEADER" value1="Country" />
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_YEAR_HEADER" value1="Year" />
+
+		<var name="key_titleEntry" value="${tableTitleEntry}" />
+
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_TITLE_ENTRY" value1="${tableTitleEntry}" />
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_ARTIST_ENTRY" value1="${tableArtistEntry}" />
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_COUNTRY_ENTRY" value1="${tableCountryEntry}" />
+		<execute function="AssertTextEquals" locator1="XSLContentPortlet#TABLE_YEAR_ENTRY" value1="${tableYearEntry}" />
+	</command>
+</definition>

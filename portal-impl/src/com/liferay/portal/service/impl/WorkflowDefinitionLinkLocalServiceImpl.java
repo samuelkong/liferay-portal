@@ -14,10 +14,12 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.NoSuchWorkflowDefinitionLinkException;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.portal.kernel.exception.NoSuchWorkflowDefinitionLinkException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.spring.aop.Skip;
-import com.liferay.portal.kernel.staging.StagingUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
@@ -25,11 +27,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowEngineManagerUtil;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.WorkflowDefinitionLink;
 import com.liferay.portal.service.base.WorkflowDefinitionLinkLocalServiceBaseImpl;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,15 +51,12 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 		User user = userPersistence.findByPrimaryKey(userId);
 		groupId = StagingUtil.getLiveGroupId(groupId);
 		long classNameId = classNameLocalService.getClassNameId(className);
-		Date now = new Date();
 
 		long workflowDefinitionLinkId = counterLocalService.increment();
 
 		WorkflowDefinitionLink workflowDefinitionLink =
 			workflowDefinitionLinkPersistence.create(workflowDefinitionLinkId);
 
-		workflowDefinitionLink.setCreateDate(now);
-		workflowDefinitionLink.setModifiedDate(now);
 		workflowDefinitionLink.setUserId(userId);
 		workflowDefinitionLink.setUserName(user.getFullName());
 		workflowDefinitionLink.setGroupId(groupId);
@@ -287,7 +283,6 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 		User user = userPersistence.findByPrimaryKey(userId);
 		groupId = StagingUtil.getLiveGroupId(groupId);
 		long classNameId = classNameLocalService.getClassNameId(className);
-		Date now = new Date();
 
 		WorkflowDefinitionLink workflowDefinitionLink =
 			workflowDefinitionLinkPersistence.fetchByG_C_C_C_T(
@@ -299,7 +294,6 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 				workflowDefinitionName, workflowDefinitionVersion);
 		}
 
-		workflowDefinitionLink.setModifiedDate(now);
 		workflowDefinitionLink.setUserId(userId);
 		workflowDefinitionLink.setUserName(user.getFullName());
 		workflowDefinitionLink.setGroupId(groupId);

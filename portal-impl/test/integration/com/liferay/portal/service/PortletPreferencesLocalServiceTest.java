@@ -17,27 +17,30 @@ package com.liferay.portal.service;
 import com.liferay.portal.deploy.hot.ServiceBag;
 import com.liferay.portal.kernel.bean.ClassLoaderBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.model.PortletPreferencesIds;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceWrapper;
+import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletPreferences;
-import com.liferay.portal.model.PortletPreferencesIds;
-import com.liferay.portal.service.util.PortletPreferencesImplTestUtil;
+import com.liferay.portal.service.util.test.PortletPreferencesImplTestUtil;
 import com.liferay.portal.service.util.test.PortletPreferencesTestUtil;
 import com.liferay.portal.spring.aop.ServiceBeanAopCacheManagerUtil;
 import com.liferay.portal.spring.aop.ServiceBeanAopProxy;
-import com.liferay.portal.test.DeleteAfterTestRun;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.ClassLoaderUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portal.util.test.GroupTestUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.test.LayoutTestUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portlet.PortletPreferencesImpl;
 import com.liferay.portlet.StrictPortletPreferencesImpl;
 
@@ -47,8 +50,9 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.AdvisedSupport;
@@ -57,9 +61,12 @@ import org.springframework.aop.framework.AdvisedSupport;
  * @author Cristina González
  * @author Manuel de la Peña
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class PortletPreferencesLocalServiceTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@Before
 	public void setUp() throws Exception {
@@ -90,6 +97,7 @@ public class PortletPreferencesLocalServiceTest {
 				portletPreferences);
 
 		assertOwner(_layout, portletPreferencesImpl);
+
 		assertValues(portletPreferences, _NAME, _MULTIPLE_VALUES);
 	}
 
@@ -149,6 +157,7 @@ public class PortletPreferencesLocalServiceTest {
 				portletPreferences);
 
 		assertOwner(_layout, portletPreferencesImpl);
+
 		assertValues(portletPreferences, _NAME, _SINGLE_VALUE);
 	}
 
@@ -169,6 +178,7 @@ public class PortletPreferencesLocalServiceTest {
 				portletPreferences);
 
 		assertOwner(_layout, portletPreferencesImpl);
+
 		assertValues(portletPreferences, _NAME, _SINGLE_VALUE);
 	}
 
@@ -724,11 +734,10 @@ public class PortletPreferencesLocalServiceTest {
 		PortletPreferencesTestUtil.addGroupPortletPreferences(
 			_layout, _portlet, portletPreferencesXML);
 
-		PortletPreferencesIds portletPreferencesIds =
-			new PortletPreferencesIds(
-				_group.getCompanyId(), _group.getGroupId(),
-				PortletKeys.PREFS_OWNER_TYPE_GROUP, _layout.getPlid(),
-				_portlet.getPortletId());
+		PortletPreferencesIds portletPreferencesIds = new PortletPreferencesIds(
+			_group.getCompanyId(), _group.getGroupId(),
+			PortletKeys.PREFS_OWNER_TYPE_GROUP, _layout.getPlid(),
+			_portlet.getPortletId());
 
 		javax.portlet.PortletPreferences jxPortletPreferences =
 			PortletPreferencesLocalServiceUtil.getPreferences(
@@ -921,11 +930,10 @@ public class PortletPreferencesLocalServiceTest {
 		PortletPreferencesTestUtil.addLayoutPortletPreferences(
 			_layout, _portlet, portletPreferencesXML);
 
-		PortletPreferencesIds portletPreferencesIds =
-			new PortletPreferencesIds(
-				_layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				_portlet.getPortletId());
+		PortletPreferencesIds portletPreferencesIds = new PortletPreferencesIds(
+			_layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+			_portlet.getPortletId());
 
 		javax.portlet.PortletPreferences jxPortletPreferences =
 			PortletPreferencesLocalServiceUtil.getPreferences(
@@ -938,8 +946,7 @@ public class PortletPreferencesLocalServiceTest {
 	@Test
 	public void testGetLayoutPrivatePortletPreferences() throws Exception {
 		Layout layout = LayoutTestUtil.addLayout(
-			GroupTestUtil.addGroup().getGroupId(),
-			RandomTestUtil.randomString(), true);
+			GroupTestUtil.addGroup(), true);
 
 		PortletPreferencesTestUtil.addGroupPortletPreferences(layout, _portlet);
 
@@ -955,8 +962,7 @@ public class PortletPreferencesLocalServiceTest {
 	@Test
 	public void testGetNotLayoutPrivatePortletPreferences() throws Exception {
 		Layout layout = LayoutTestUtil.addLayout(
-			GroupTestUtil.addGroup().getGroupId(),
-			RandomTestUtil.randomString(), false);
+			GroupTestUtil.addGroup(), false);
 
 		PortletPreferencesTestUtil.addGroupPortletPreferences(layout, _portlet);
 
@@ -1516,13 +1522,13 @@ public class PortletPreferencesLocalServiceTest {
 	private Group _group;
 
 	@DeleteAfterTestRun
-	private List<Group> _groups = new ArrayList<Group>();
+	private final List<Group> _groups = new ArrayList<>();
 
 	private Layout _layout;
 	private Portlet _portlet;
 	private ServiceBag<PortletPreferencesLocalService> _serviceBag;
 
-	private class TestPortletPreferencesLocalServiceWrapper
+	private static class TestPortletPreferencesLocalServiceWrapper
 		extends PortletPreferencesLocalServiceWrapper {
 
 		public TestPortletPreferencesLocalServiceWrapper(
@@ -1546,9 +1552,10 @@ public class PortletPreferencesLocalServiceTest {
 			try {
 				return ReflectionTestUtil.invoke(
 					classLoaderBeanHandler.getBean(), "getPreferences",
-					new Class[] {
+					new Class<?>[] {
 						long.class, long.class, int.class, long.class,
-						String.class, String.class, boolean.class},
+						String.class, String.class, boolean.class
+					},
 					companyId, ownerId, ownerType, plid, portletId, null,
 					_strict);
 			}

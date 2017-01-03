@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BrowserSniffer;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;
+import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CharPool;
@@ -30,10 +32,12 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.minifier.MinifierUtil;
 import com.liferay.portal.servlet.filters.IgnoreModuleRequestFilter;
@@ -77,10 +81,12 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 		while (true) {
 			int commentX = content.indexOf(_CSS_COMMENT_BEGIN, pos);
+
 			int commentY = content.indexOf(
 				_CSS_COMMENT_END, commentX + _CSS_COMMENT_BEGIN.length());
 
 			int importX = content.indexOf(_CSS_IMPORT_BEGIN, pos);
+
 			int importY = content.indexOf(
 				_CSS_IMPORT_END, importX + _CSS_IMPORT_BEGIN.length());
 
@@ -251,8 +257,7 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 			request, "bundleId",
 			ParamUtil.getString(request, "minifierBundleId"));
 
-		if (Validator.isNull(minifierType) ||
-			Validator.isNull(bundleId) ||
+		if (Validator.isNull(minifierType) || Validator.isNull(bundleId) ||
 			!ArrayUtil.contains(PropsValues.JAVASCRIPT_BUNDLE_IDS, bundleId)) {
 
 			return null;
@@ -261,7 +266,11 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		String bundleDirName = PropsUtil.get(
 			PropsKeys.JAVASCRIPT_BUNDLE_DIR, new Filter(bundleId));
 
-		URL bundleDirURL = _servletContext.getResource(bundleDirName);
+		ServletContext jsServletContext =
+			PortalWebResourcesUtil.getServletContext(
+				PortalWebResourceConstants.RESOURCE_TYPE_JS);
+
+		URL bundleDirURL = jsServletContext.getResource(bundleDirName);
 
 		if (bundleDirURL == null) {
 			return null;
@@ -274,28 +283,10 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		File cacheFile = new File(_tempDir, cacheFileName);
 
 		if (cacheFile.exists()) {
-			boolean staleCache = false;
+			long lastModified = PortalWebResourcesUtil.getLastModified(
+				PortalWebResourceConstants.RESOURCE_TYPE_JS);
 
-			for (String fileName : fileNames) {
-				URL resourceURL = _servletContext.getResource(
-					bundleDirName.concat(StringPool.SLASH).concat(fileName));
-
-				if (resourceURL == null) {
-					continue;
-				}
-
-				URLConnection urlConnection = resourceURL.openConnection();
-
-				if (urlConnection.getLastModified() >
-						cacheFile.lastModified()) {
-
-					staleCache = true;
-
-					break;
-				}
-			}
-
-			if (!staleCache) {
+			if (lastModified <= cacheFile.lastModified()) {
 				response.setContentType(ContentTypes.TEXT_JAVASCRIPT);
 
 				return cacheFile;
@@ -313,7 +304,7 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		}
 		else {
 			content = aggregateJavaScript(
-				new ServletPaths(_servletContext, bundleDirName), fileNames);
+				new ServletPaths(jsServletContext, bundleDirName), fileNames);
 		}
 
 		response.setContentType(ContentTypes.TEXT_JAVASCRIPT);
@@ -332,10 +323,16 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		cacheKeyGenerator.append(StringPool.UNDERLINE);
 		cacheKeyGenerator.append(request.getRequestURI());
 
-		String queryString = request.getQueryString();
+		String requestURL = String.valueOf(request.getRequestURL());
 
-		if (queryString != null) {
-			cacheKeyGenerator.append(sterilizeQueryString(queryString));
+		if (requestURL != null) {
+			requestURL = HttpUtil.removeParameter(requestURL, "zx");
+
+			String queryString = HttpUtil.getQueryString(requestURL);
+
+			if (queryString != null) {
+				cacheKeyGenerator.append(sterilizeQueryString(queryString));
+			}
 		}
 
 		return String.valueOf(cacheKeyGenerator.finish());
@@ -369,13 +366,25 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 			resourcePath = resourcePath.substring(contextPath.length());
 		}
 
+		if (resourcePath.endsWith(_CSS_EXTENSION) &&
+			PortalUtil.isRightToLeft(request)) {
+
+			int pos = resourcePath.lastIndexOf(StringPool.PERIOD);
+
+			resourcePath =
+				resourcePath.substring(0, pos) + "_rtl" +
+					resourcePath.substring(pos);
+		}
+
 		URL resourceURL = _servletContext.getResource(resourcePath);
 
 		if (resourceURL == null) {
-			return null;
-		}
+			resourceURL = PortalWebResourcesUtil.getResource(resourcePath);
 
-		URLConnection urlConnection = resourceURL.openConnection();
+			if (resourceURL == null) {
+				return null;
+			}
+		}
 
 		String cacheCommonFileName = getCacheFileName(request);
 
@@ -385,7 +394,8 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 			_tempDir, cacheCommonFileName + "_E_DATA");
 
 		if (cacheDataFile.exists() &&
-			(cacheDataFile.lastModified() >= urlConnection.getLastModified())) {
+			(cacheDataFile.lastModified() >=
+				URLUtil.getLastModifiedTime(resourceURL))) {
 
 			if (cacheContentTypeFile.exists()) {
 				String contentType = FileUtil.read(cacheContentTypeFile);
@@ -430,10 +440,10 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 				new BufferCacheServletResponse(response);
 
 			processFilter(
-				AggregateFilter.class, request, bufferCacheServletResponse,
-				filterChain);
+				AggregateFilter.class.getName(), request,
+				bufferCacheServletResponse, filterChain);
 
-			bufferCacheServletResponse.finishResponse();
+			bufferCacheServletResponse.finishResponse(false);
 
 			content = bufferCacheServletResponse.getString();
 
@@ -463,11 +473,24 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		String resourcePath, String content) {
 
 		try {
-			content = DynamicCSSUtil.parseSass(
-				_servletContext, request, resourcePath, content);
+			ServletContext cssServletContext = null;
+
+			String requestURI = request.getRequestURI();
+
+			if (PortalWebResourcesUtil.hasContextPath(requestURI)) {
+				cssServletContext =
+					PortalWebResourcesUtil.getPathServletContext(requestURI);
+			}
+
+			if (cssServletContext == null) {
+				cssServletContext = _servletContext;
+			}
+
+			content = DynamicCSSUtil.replaceToken(
+				cssServletContext, request, content);
 		}
 		catch (Exception e) {
-			_log.error("Unable to parse SASS on CSS " + resourcePath, e);
+			_log.error("Unable to replace tokens in CSS " + resourcePath, e);
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(content);
@@ -494,14 +517,28 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 			URL resourceURL, String resourcePath)
 		throws IOException {
 
+		ServletContext cssServletContext = null;
+		String resourcePathRoot = null;
+
+		String requestURI = request.getRequestURI();
+
+		if (PortalWebResourcesUtil.hasContextPath(requestURI)) {
+			cssServletContext = PortalWebResourcesUtil.getPathServletContext(
+				requestURI);
+			resourcePathRoot = "/";
+		}
+
+		if (cssServletContext == null) {
+			cssServletContext = _servletContext;
+			resourcePathRoot = ServletPaths.getParentPath(resourcePath);
+		}
+
 		URLConnection urlConnection = resourceURL.openConnection();
 
 		String content = StringUtil.read(urlConnection.getInputStream());
 
 		content = aggregateCss(
-			new ServletPaths(
-				_servletContext, ServletPaths.getParentPath(resourcePath)),
-			content);
+			new ServletPaths(cssServletContext, resourcePathRoot), content);
 
 		return getCssContent(request, response, resourcePath, content);
 	}
@@ -512,6 +549,17 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		String content = StringUtil.read(urlConnection.getInputStream());
 
 		return getJavaScriptContent(resourceURL.toString(), content);
+	}
+
+	@Override
+	protected boolean isModuleRequest(HttpServletRequest request) {
+		String requestURI = request.getRequestURI();
+
+		if (PortalWebResourcesUtil.hasContextPath(requestURI)) {
+			return false;
+		}
+
+		return super.isModuleRequest(request);
 	}
 
 	@Override
@@ -528,7 +576,8 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 		if (minifiedContent == null) {
 			processFilter(
-				AggregateFilter.class, request, response, filterChain);
+				AggregateFilter.class.getName(), request, response,
+				filterChain);
 		}
 		else {
 			if (minifiedContent instanceof File) {
@@ -542,11 +591,11 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 	protected String sterilizeQueryString(String queryString) {
 		return StringUtil.replace(
-			queryString, new String[] {StringPool.SLASH, StringPool.BACK_SLASH},
-			new String[] {StringPool.UNDERLINE, StringPool.UNDERLINE});
+			queryString, new char[] {CharPool.SLASH, CharPool.BACK_SLASH},
+			new char[] {CharPool.UNDERLINE, CharPool.UNDERLINE});
 	}
 
-	private static String _BASE_URL = "@base_url@";
+	private static final String _BASE_URL = "@base_url@";
 
 	private static final String _CSS_COMMENT_BEGIN = "/*";
 
@@ -566,9 +615,10 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 	private static final String _TEMP_DIR = "aggregate";
 
-	private static Log _log = LogFactoryUtil.getLog(AggregateFilter.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		AggregateFilter.class);
 
-	private static Pattern _pattern = Pattern.compile(
+	private static final Pattern _pattern = Pattern.compile(
 		"^(\\.ie|\\.js\\.ie)([^}]*)}", Pattern.MULTILINE);
 
 	private ServletContext _servletContext;

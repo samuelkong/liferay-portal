@@ -1,0 +1,24 @@
+<html>
+<head>
+<title>HelloWorld</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">HelloWorld</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>PORTLET_TITLE</td>
+	<td>//section[@id='portlet_com_liferay_hello_world_web_portlet_HelloWorldPortlet']//*[contains(@class,'portlet-title-text')][name()='h2'] | //section[@id='portlet_com_liferay_hello_world_web_portlet_HelloWorldPortlet']//h2[contains(@class,'portlet-title-text')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_CONTENT</td>
+	<td>//section[@id='portlet_com_liferay_hello_world_web_portlet_HelloWorldPortlet']//div[@class='portlet-body']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

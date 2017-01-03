@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.PasswordPolicy;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,6 +40,33 @@ import java.util.Date;
 @ProviderType
 public class PasswordPolicyCacheModel implements CacheModel<PasswordPolicy>,
 	Externalizable, MVCCModel {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof PasswordPolicyCacheModel)) {
+			return false;
+		}
+
+		PasswordPolicyCacheModel passwordPolicyCacheModel = (PasswordPolicyCacheModel)obj;
+
+		if ((passwordPolicyId == passwordPolicyCacheModel.passwordPolicyId) &&
+				(mvccVersion == passwordPolicyCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, passwordPolicyId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
 	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
@@ -223,38 +251,65 @@ public class PasswordPolicyCacheModel implements CacheModel<PasswordPolicy>,
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
+
 		passwordPolicyId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		defaultPolicy = objectInput.readBoolean();
 		name = objectInput.readUTF();
 		description = objectInput.readUTF();
+
 		changeable = objectInput.readBoolean();
+
 		changeRequired = objectInput.readBoolean();
+
 		minAge = objectInput.readLong();
+
 		checkSyntax = objectInput.readBoolean();
+
 		allowDictionaryWords = objectInput.readBoolean();
+
 		minAlphanumeric = objectInput.readInt();
+
 		minLength = objectInput.readInt();
+
 		minLowerCase = objectInput.readInt();
+
 		minNumbers = objectInput.readInt();
+
 		minSymbols = objectInput.readInt();
+
 		minUpperCase = objectInput.readInt();
 		regex = objectInput.readUTF();
+
 		history = objectInput.readBoolean();
+
 		historyCount = objectInput.readInt();
+
 		expireable = objectInput.readBoolean();
+
 		maxAge = objectInput.readLong();
+
 		warningTime = objectInput.readLong();
+
 		graceLimit = objectInput.readInt();
+
 		lockout = objectInput.readBoolean();
+
 		maxFailure = objectInput.readInt();
+
 		lockoutDuration = objectInput.readLong();
+
 		requireUnlock = objectInput.readBoolean();
+
 		resetFailureCount = objectInput.readLong();
+
 		resetTicketMaxAge = objectInput.readLong();
 	}
 
@@ -271,7 +326,9 @@ public class PasswordPolicyCacheModel implements CacheModel<PasswordPolicy>,
 		}
 
 		objectOutput.writeLong(passwordPolicyId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -283,6 +340,7 @@ public class PasswordPolicyCacheModel implements CacheModel<PasswordPolicy>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeBoolean(defaultPolicy);
 
 		if (name == null) {
@@ -300,15 +358,25 @@ public class PasswordPolicyCacheModel implements CacheModel<PasswordPolicy>,
 		}
 
 		objectOutput.writeBoolean(changeable);
+
 		objectOutput.writeBoolean(changeRequired);
+
 		objectOutput.writeLong(minAge);
+
 		objectOutput.writeBoolean(checkSyntax);
+
 		objectOutput.writeBoolean(allowDictionaryWords);
+
 		objectOutput.writeInt(minAlphanumeric);
+
 		objectOutput.writeInt(minLength);
+
 		objectOutput.writeInt(minLowerCase);
+
 		objectOutput.writeInt(minNumbers);
+
 		objectOutput.writeInt(minSymbols);
+
 		objectOutput.writeInt(minUpperCase);
 
 		if (regex == null) {
@@ -319,16 +387,27 @@ public class PasswordPolicyCacheModel implements CacheModel<PasswordPolicy>,
 		}
 
 		objectOutput.writeBoolean(history);
+
 		objectOutput.writeInt(historyCount);
+
 		objectOutput.writeBoolean(expireable);
+
 		objectOutput.writeLong(maxAge);
+
 		objectOutput.writeLong(warningTime);
+
 		objectOutput.writeInt(graceLimit);
+
 		objectOutput.writeBoolean(lockout);
+
 		objectOutput.writeInt(maxFailure);
+
 		objectOutput.writeLong(lockoutDuration);
+
 		objectOutput.writeBoolean(requireUnlock);
+
 		objectOutput.writeLong(resetFailureCount);
+
 		objectOutput.writeLong(resetTicketMaxAge);
 	}
 

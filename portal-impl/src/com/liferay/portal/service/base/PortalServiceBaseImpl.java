@@ -15,17 +15,17 @@
 package com.liferay.portal.service.base;
 
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
+import com.liferay.portal.kernel.service.BaseServiceImpl;
+import com.liferay.portal.kernel.service.PortalService;
+import com.liferay.portal.kernel.service.persistence.ClassNamePersistence;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
-import com.liferay.portal.service.BaseServiceImpl;
-import com.liferay.portal.service.PortalService;
-import com.liferay.portal.service.persistence.ClassNamePersistence;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import javax.sql.DataSource;
 
@@ -38,15 +38,15 @@ import javax.sql.DataSource;
  *
  * @author Brian Wing Shun Chan
  * @see com.liferay.portal.service.impl.PortalServiceImpl
- * @see com.liferay.portal.service.PortalServiceUtil
+ * @see com.liferay.portal.kernel.service.PortalServiceUtil
  * @generated
  */
 public abstract class PortalServiceBaseImpl extends BaseServiceImpl
-	implements PortalService, IdentifiableBean {
+	implements PortalService, IdentifiableOSGiService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link com.liferay.portal.service.PortalServiceUtil} to access the portal remote service.
+	 * Never modify or reference this class directly. Always use {@link com.liferay.portal.kernel.service.PortalServiceUtil} to access the portal remote service.
 	 */
 
 	/**
@@ -54,7 +54,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the portal local service
 	 */
-	public com.liferay.portal.service.PortalLocalService getPortalLocalService() {
+	public com.liferay.portal.kernel.service.PortalLocalService getPortalLocalService() {
 		return portalLocalService;
 	}
 
@@ -64,7 +64,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 * @param portalLocalService the portal local service
 	 */
 	public void setPortalLocalService(
-		com.liferay.portal.service.PortalLocalService portalLocalService) {
+		com.liferay.portal.kernel.service.PortalLocalService portalLocalService) {
 		this.portalLocalService = portalLocalService;
 	}
 
@@ -73,7 +73,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the portal remote service
 	 */
-	public com.liferay.portal.service.PortalService getPortalService() {
+	public PortalService getPortalService() {
 		return portalService;
 	}
 
@@ -82,8 +82,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @param portalService the portal remote service
 	 */
-	public void setPortalService(
-		com.liferay.portal.service.PortalService portalService) {
+	public void setPortalService(PortalService portalService) {
 		this.portalService = portalService;
 	}
 
@@ -92,7 +91,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the counter local service
 	 */
-	public com.liferay.counter.service.CounterLocalService getCounterLocalService() {
+	public com.liferay.counter.kernel.service.CounterLocalService getCounterLocalService() {
 		return counterLocalService;
 	}
 
@@ -102,7 +101,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 * @param counterLocalService the counter local service
 	 */
 	public void setCounterLocalService(
-		com.liferay.counter.service.CounterLocalService counterLocalService) {
+		com.liferay.counter.kernel.service.CounterLocalService counterLocalService) {
 		this.counterLocalService = counterLocalService;
 	}
 
@@ -111,7 +110,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the class name local service
 	 */
-	public com.liferay.portal.service.ClassNameLocalService getClassNameLocalService() {
+	public com.liferay.portal.kernel.service.ClassNameLocalService getClassNameLocalService() {
 		return classNameLocalService;
 	}
 
@@ -121,7 +120,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 * @param classNameLocalService the class name local service
 	 */
 	public void setClassNameLocalService(
-		com.liferay.portal.service.ClassNameLocalService classNameLocalService) {
+		com.liferay.portal.kernel.service.ClassNameLocalService classNameLocalService) {
 		this.classNameLocalService = classNameLocalService;
 	}
 
@@ -130,7 +129,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the class name remote service
 	 */
-	public com.liferay.portal.service.ClassNameService getClassNameService() {
+	public com.liferay.portal.kernel.service.ClassNameService getClassNameService() {
 		return classNameService;
 	}
 
@@ -140,7 +139,7 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	 * @param classNameService the class name remote service
 	 */
 	public void setClassNameService(
-		com.liferay.portal.service.ClassNameService classNameService) {
+		com.liferay.portal.kernel.service.ClassNameService classNameService) {
 		this.classNameService = classNameService;
 	}
 
@@ -170,23 +169,13 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 	}
 
 	/**
-	 * Returns the Spring bean ID for this bean.
+	 * Returns the OSGi service identifier.
 	 *
-	 * @return the Spring bean ID for this bean
+	 * @return the OSGi service identifier
 	 */
 	@Override
-	public String getBeanIdentifier() {
-		return _beanIdentifier;
-	}
-
-	/**
-	 * Sets the Spring bean ID for this bean.
-	 *
-	 * @param beanIdentifier the Spring bean ID for this bean
-	 */
-	@Override
-	public void setBeanIdentifier(String beanIdentifier) {
-		_beanIdentifier = beanIdentifier;
+	public String getOSGiServiceIdentifier() {
+		return PortalService.class.getName();
 	}
 
 	/**
@@ -198,13 +187,13 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 		try {
 			DataSource dataSource = InfrastructureUtil.getDataSource();
 
-			DB db = DBFactoryUtil.getDB();
+			DB db = DBManagerUtil.getDB();
 
 			sql = db.buildSQL(sql);
 			sql = PortalUtil.transformSQL(sql);
 
 			SqlUpdate sqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(dataSource,
-					sql, new int[0]);
+					sql);
 
 			sqlUpdate.update();
 		}
@@ -213,17 +202,16 @@ public abstract class PortalServiceBaseImpl extends BaseServiceImpl
 		}
 	}
 
-	@BeanReference(type = com.liferay.portal.service.PortalLocalService.class)
-	protected com.liferay.portal.service.PortalLocalService portalLocalService;
-	@BeanReference(type = com.liferay.portal.service.PortalService.class)
-	protected com.liferay.portal.service.PortalService portalService;
-	@BeanReference(type = com.liferay.counter.service.CounterLocalService.class)
-	protected com.liferay.counter.service.CounterLocalService counterLocalService;
-	@BeanReference(type = com.liferay.portal.service.ClassNameLocalService.class)
-	protected com.liferay.portal.service.ClassNameLocalService classNameLocalService;
-	@BeanReference(type = com.liferay.portal.service.ClassNameService.class)
-	protected com.liferay.portal.service.ClassNameService classNameService;
+	@BeanReference(type = com.liferay.portal.kernel.service.PortalLocalService.class)
+	protected com.liferay.portal.kernel.service.PortalLocalService portalLocalService;
+	@BeanReference(type = PortalService.class)
+	protected PortalService portalService;
+	@BeanReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
+	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
+	@BeanReference(type = com.liferay.portal.kernel.service.ClassNameLocalService.class)
+	protected com.liferay.portal.kernel.service.ClassNameLocalService classNameLocalService;
+	@BeanReference(type = com.liferay.portal.kernel.service.ClassNameService.class)
+	protected com.liferay.portal.kernel.service.ClassNameService classNameService;
 	@BeanReference(type = ClassNamePersistence.class)
 	protected ClassNamePersistence classNamePersistence;
-	private String _beanIdentifier;
 }

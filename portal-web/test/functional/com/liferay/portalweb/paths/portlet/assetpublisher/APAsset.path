@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>APAsset</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">APAsset</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ASSET_BACK_TO_ICON</td>
+	<td>//span[@class='header-back-to']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TITLE</td>
+	<td>//h4[@class='asset-title']/a[contains(.,'${key_assetTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TITLE_HEADER</td>
+	<td>//div[@class='h2']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_CONTENT</td>
+	<td>//div[@class='asset-content']/div[contains(.,'${key_assetContent}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_VIEW_CONTENT</td>
+	<td>//div[(@class='asset-content')and contains(.,'${key_assetContent}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_ROW_ENTRY_TITLE</td>
+	<td>//div[contains(@class,'asset-abstract')][${key_rowNumber}]//h4[@class='asset-title']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--DOCUMENT_CONVERSION-->
+<tr>
+	<td>DOCUMENT_CONVERSION_NAME</td>
+	<td>//span[contains(@class,'taglib-text') and contains (.,'${key_documentType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DOCUMENT_CONVERSION_NAME_ICON</td>
+	<td>//span[contains(@class,'taglib-text') and contains (.,'${key_documentType}')]/../i</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

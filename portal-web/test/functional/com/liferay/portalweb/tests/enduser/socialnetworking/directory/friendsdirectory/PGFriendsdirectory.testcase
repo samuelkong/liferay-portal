@@ -1,0 +1,280 @@
+<definition component-name="portal-social-networking">
+	<property name="osgi.app.includes" value="social-networking" />
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="testray.main.component.name" value="Social Networking" />
+
+	<var name="pageName" value="Friends Directory Page" />
+	<var name="portletName" value="Friends Directory" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Friends Directory" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="User#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+
+				<execute macro="Page#tearDownPG">
+					<var name="site" value="test" />
+					<var name="siteURL" value="true" />
+				</execute>
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="SearchFriendsDirectory" priority="3">
+		<var name="pageName" value="Friends Directory Page" />
+		<var name="userEmailAddress" value="userea@liferay.com" />
+		<var name="userFirstName" value="userfn" />
+		<var name="userLastName" value="userln" />
+		<var name="userMiddleName" value="usermn" />
+		<var name="userScreenName" value="usersn" />
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userMiddleName" value="usermn" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenuHelper#openProductMenu" />
+
+		<execute macro="ProductMenu#gotoPersonalSite" />
+
+		<execute macro="ProductMenuHelper#expandPanelSites" />
+
+		<execute macro="ProductMenuHelper#expandCategory">
+			<var name="category" value="Navigation" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Friends Request Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="ProductMenuHelper#openProductMenu" />
+
+		<execute macro="ProductMenu#gotoPersonalSite" />
+
+		<var name="key_pageName" value="Friends Request Page" />
+
+		<execute function="AssertClick" locator1="Home#PAGE" value1="Friends Request Page" />
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Requests" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="test" />
+		</execute>
+
+		<execute macro="ProductMenuHelper#openProductMenu" />
+
+		<execute macro="ProductMenu#gotoPersonalSite" />
+
+		<execute function="AssertClick" locator1="Home#PAGE" value1="Friends Request Page" />
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Summary" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Friends Request Page" />
+			<var name="siteName" value="test" />
+		</execute>
+
+		<execute function="AssertClick" locator1="//div[@class='add-as-friend']/button[contains(.,'Add as Friend')]" value1="ADD AS FRIEND" />
+
+		<execute function="AssertTextEquals" locator1="//div[contains(@class,'alert') and contains(@class,'alert-info')]" value1="Friend Requested" />
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="test@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Friends Request Page" />
+			<var name="siteName" value="test" />
+		</execute>
+
+		<execute function="AssertClick" locator1="//span[@class='taglib-text 'and contains(.,'Confirm')]" value1="Confirm" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="First Name" />
+			<var name="searchTerm" value="userfn" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="First Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="userfn1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Middle Name" />
+			<var name="searchTerm" value="usermn" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Middle Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="usermn1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Last Name" />
+			<var name="searchTerm" value="userln" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Last Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="userln1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Screen Name" />
+			<var name="searchTerm" value="usersn" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Screen Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="usersn1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Email Address" />
+			<var name="searchTerm" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Friends Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaFriendsDirectoryPG">
+			<var name="searchField" value="Email Address" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="userea@liferay.com1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+	</command>
+</definition>

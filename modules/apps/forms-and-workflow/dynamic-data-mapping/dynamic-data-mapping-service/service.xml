@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-import-default-references="false" auto-namespace-tables="false" package-path="com.liferay.dynamic.data.mapping">
+	<namespace>DDM</namespace>
+	<entity local-service="true" name="DDMContent" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="contentId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column localized="true" name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="data" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
+	<entity local-service="true" name="DDMDataProviderInstance" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="dataProviderInstanceId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="definition" type="String" />
+		<column name="type" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<reference entity="DDMDataProviderInstanceLink" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="Group" package-path="com.liferay.portal" />
+		<reference entity="Resource" package-path="com.liferay.portal" />
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
+	<entity local-service="true" name="DDMDataProviderInstanceLink" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="dataProviderInstanceLinkId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="dataProviderInstanceId" type="long" />
+		<column name="structureId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="DataProviderInstanceId" return-type="Collection">
+			<finder-column name="dataProviderInstanceId" />
+		</finder>
+		<finder name="StructureId" return-type="Collection">
+			<finder-column name="structureId" />
+		</finder>
+		<finder name="D_S" return-type="DDMDataProviderInstanceLink" unique="true">
+			<finder-column name="dataProviderInstanceId" />
+			<finder-column name="structureId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="DDMStorageLink" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="storageLinkId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="structureId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ClassPK" return-type="DDMStorageLink" unique="true">
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="StructureId" return-type="Collection">
+			<finder-column name="structureId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="DDMStructure" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="structureId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="versionUserId" type="long" />
+		<column name="versionUserName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentStructureId" type="long" />
+		<column name="classNameId" type="long" />
+		<column name="structureKey" type="String" />
+		<column name="version" type="String" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="definition" type="String" />
+		<column name="storageType" type="String" />
+		<column name="type" type="int" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+		</finder>
+		<finder name="ParentStructureId" return-type="Collection">
+			<finder-column name="parentStructureId" />
+		</finder>
+		<finder name="ClassNameId" return-type="Collection">
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="StructureKey" return-type="Collection">
+			<finder-column name="structureKey" />
+		</finder>
+		<finder name="G_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentStructureId" />
+		</finder>
+		<finder name="G_C" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_C_S" return-type="DDMStructure" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="structureKey" />
+		</finder>
+		<finder db-index="false" name="G_N_D" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="name" />
+			<finder-column name="description" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="DDMDataProviderInstance" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMDataProviderInstanceLink" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMStructureLayout" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMStructureLink" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMStructureVersion" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMTemplate" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="ClassName" package-path="com.liferay.portal" />
+		<reference entity="Group" package-path="com.liferay.portal" />
+		<reference entity="Resource" package-path="com.liferay.portal" />
+		<reference entity="SystemEvent" package-path="com.liferay.portal" />
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
+	<entity local-service="true" name="DDMStructureLayout" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="structureLayoutId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="structureVersionId" type="long" />
+		<column name="definition" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="StructureVersionId" return-type="DDMStructureLayout" unique="true">
+			<finder-column name="structureVersionId" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
+	<entity local-service="true" name="DDMStructureLink" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="structureLinkId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="structureId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ClassNameId" return-type="Collection">
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="StructureId" return-type="Collection">
+			<finder-column name="structureId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_S" return-type="DDMStructureLink" unique="true">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="structureId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="DDMStructureVersion" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="structureVersionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="structureId" type="long" />
+		<column name="version" type="String" />
+		<column name="parentStructureId" type="long" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="definition" type="String" />
+		<column name="storageType" type="String" />
+		<column name="type" type="int" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="StructureId" return-type="Collection">
+			<finder-column name="structureId" />
+		</finder>
+		<finder name="S_V" return-type="DDMStructureVersion" unique="true">
+			<finder-column name="structureId" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="S_S" return-type="Collection">
+			<finder-column name="structureId" />
+			<finder-column name="status" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="DDMTemplate" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="templateId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="versionUserId" type="long" />
+		<column name="versionUserName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="resourceClassNameId" type="long" />
+		<column name="templateKey" type="String" />
+		<column name="version" type="String" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="type" type="String" />
+		<column name="mode" type="String" />
+		<column name="language" type="String" />
+		<column name="script" type="String" />
+		<column name="cacheable" type="boolean" />
+		<column name="smallImage" type="boolean" />
+		<column name="smallImageId" type="long" />
+		<column name="smallImageURL" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="ClassPK" return-type="Collection">
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="TemplateKey" return-type="Collection">
+			<finder-column name="templateKey" />
+		</finder>
+		<finder name="Type" return-type="Collection">
+			<finder-column name="type" />
+		</finder>
+		<finder name="Language" return-type="Collection">
+			<finder-column name="language" />
+		</finder>
+		<finder name="SmallImageId" return-type="DDMTemplate">
+			<finder-column name="smallImageId" />
+		</finder>
+		<finder name="G_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_CPK" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_C_C" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_C_T" return-type="DDMTemplate" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="templateKey" />
+		</finder>
+		<finder name="C_C_T" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_C_C_T" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_C_C_T_M" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+			<finder-column name="mode" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="DDMStructure" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMTemplateLink" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="DDMTemplateVersion" package-path="com.liferay.dynamic.data.mapping" />
+		<reference entity="ClassName" package-path="com.liferay.portal" />
+		<reference entity="Group" package-path="com.liferay.portal" />
+		<reference entity="Image" package-path="com.liferay.portal" />
+		<reference entity="Resource" package-path="com.liferay.portal" />
+		<reference entity="SystemEvent" package-path="com.liferay.portal" />
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
+	<entity local-service="true" name="DDMTemplateLink" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="templateLinkId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="templateId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ClassNameId" return-type="Collection">
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="TemplateId" return-type="Collection">
+			<finder-column name="templateId" />
+		</finder>
+		<finder name="C_C" return-type="DDMTemplateLink" unique="true">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="DDMTemplateVersion" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="templateVersionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="templateId" type="long" />
+		<column name="version" type="String" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="language" type="String" />
+		<column name="script" type="String" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="TemplateId" return-type="Collection">
+			<finder-column name="templateId" />
+		</finder>
+		<finder name="T_V" return-type="DDMTemplateVersion" unique="true">
+			<finder-column name="templateId" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="T_S" return-type="Collection">
+			<finder-column name="templateId" />
+			<finder-column name="status" />
+		</finder>
+	</entity>
+	<exceptions>
+		<exception>Content</exception>
+		<exception>ContentData</exception>
+		<exception>ContentName</exception>
+		<exception>DataProviderInstanceName</exception>
+		<exception>InvalidParentStructure</exception>
+		<exception>InvalidStructureVersion</exception>
+		<exception>InvalidTemplateVersion</exception>
+		<exception>RequiredStructure</exception>
+		<exception>RequiredTemplate</exception>
+		<exception>Storage</exception>
+		<exception>StorageFieldName</exception>
+		<exception>StorageFieldRequired</exception>
+		<exception>StorageFieldValue</exception>
+		<exception>StructureDefinition</exception>
+		<exception>StructureDuplicateElement</exception>
+		<exception>StructureDuplicateStructureKey</exception>
+		<exception>StructureField</exception>
+		<exception>StructureLayout</exception>
+		<exception>StructureName</exception>
+		<exception>TemplateDuplicateTemplateKey</exception>
+		<exception>TemplateName</exception>
+		<exception>TemplateScript</exception>
+		<exception>TemplateSmallImageName</exception>
+		<exception>TemplateSmallImageSize</exception>
+	</exceptions>
+</service-builder>

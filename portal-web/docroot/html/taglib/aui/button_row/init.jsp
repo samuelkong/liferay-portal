@@ -22,7 +22,6 @@
 java.lang.String cssClass = GetterUtil.getString((java.lang.String)request.getAttribute("aui:button-row:cssClass"));
 java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribute("aui:button-row:id"));
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:button-row:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:button-row:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/button_row/init-ext.jspf" %>

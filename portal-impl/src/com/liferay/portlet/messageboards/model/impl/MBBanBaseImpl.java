@@ -16,8 +16,8 @@ package com.liferay.portlet.messageboards.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.messageboards.model.MBBan;
-import com.liferay.portlet.messageboards.service.MBBanLocalServiceUtil;
+import com.liferay.message.boards.kernel.model.MBBan;
+import com.liferay.message.boards.kernel.service.MBBanLocalServiceUtil;
 
 /**
  * The extended model base implementation for the MBBan service. Represents a row in the &quot;MBBan&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.messageboards.service.MBBanLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see MBBanImpl
- * @see com.liferay.portlet.messageboards.model.MBBan
+ * @see MBBan
  * @generated
  */
 @ProviderType

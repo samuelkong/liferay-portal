@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.WorkflowInstanceLink;
-import com.liferay.portal.service.WorkflowInstanceLinkLocalServiceUtil;
+import com.liferay.portal.kernel.model.WorkflowInstanceLink;
+import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalServiceUtil;
 
 /**
  * The extended model base implementation for the WorkflowInstanceLink service. Represents a row in the &quot;WorkflowInstanceLink&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.WorkflowInstanceLinkLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see WorkflowInstanceLinkImpl
- * @see com.liferay.portal.model.WorkflowInstanceLink
+ * @see WorkflowInstanceLink
  * @generated
  */
 @ProviderType

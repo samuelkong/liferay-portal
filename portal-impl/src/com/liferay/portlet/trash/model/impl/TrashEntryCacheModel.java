@@ -16,11 +16,12 @@ package com.liferay.portlet.trash.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
 
-import com.liferay.portlet.trash.model.TrashEntry;
+import com.liferay.trash.kernel.model.TrashEntry;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,6 +40,30 @@ import java.util.Date;
 @ProviderType
 public class TrashEntryCacheModel implements CacheModel<TrashEntry>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof TrashEntryCacheModel)) {
+			return false;
+		}
+
+		TrashEntryCacheModel trashEntryCacheModel = (TrashEntryCacheModel)obj;
+
+		if (entryId == trashEntryCacheModel.entryId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, entryId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(23);
@@ -114,15 +139,22 @@ public class TrashEntryCacheModel implements CacheModel<TrashEntry>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		entryId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
+
 		systemEventSetKey = objectInput.readLong();
 		typeSettings = objectInput.readUTF();
+
 		status = objectInput.readInt();
 	}
 
@@ -130,8 +162,11 @@ public class TrashEntryCacheModel implements CacheModel<TrashEntry>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(entryId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -142,8 +177,11 @@ public class TrashEntryCacheModel implements CacheModel<TrashEntry>,
 		}
 
 		objectOutput.writeLong(createDate);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
+
 		objectOutput.writeLong(systemEventSetKey);
 
 		if (typeSettings == null) {

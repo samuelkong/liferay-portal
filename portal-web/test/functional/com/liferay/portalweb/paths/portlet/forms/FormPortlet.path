@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>FormPortlet</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">FormPortlet</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>FORM_CONTAINER</td>
+	<td>//div[contains(@class,'form-container')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_CONTENT</td>
+	<td>//div[contains(@class,'form-container')]/div[contains(@class,'form-content')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_FORM</td>
+	<td>//span[contains(@class,'taglib-text') and contains(.,'Select Form')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_PAGE</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'${key_formPageName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_PAGE_ACTIVE</td>
+	<td>//ul[contains(@class,'multi-step-progress-bar')]/li[@class='active' and contains(.,'${key_formPageName}')]/div[@class='progress-bar-title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_PAGE_INACTIVE</td>
+	<td>//ul[contains(@class,'multi-step-progress-bar')]/li[not(contains(@class,'active')) and contains(.,'${key_formPageName}')]/div[@class='progress-bar-title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_CONTENT</td>
+	<td>//div[contains(@class,'portlet-content-editable')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

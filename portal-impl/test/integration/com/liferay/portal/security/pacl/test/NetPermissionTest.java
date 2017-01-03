@@ -14,10 +14,8 @@
 
 package com.liferay.portal.security.pacl.test;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
+import com.liferay.portal.test.rule.PACLTestRule;
 
 import java.net.Authenticator;
 import java.net.ProxySelector;
@@ -26,15 +24,18 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class NetPermissionTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
 
 	@Test
 	public void test1() throws Exception {
@@ -49,22 +50,16 @@ public class NetPermissionTest {
 
 	@Test
 	public void test2() throws Exception {
-		try {
-			new URL(
-				Http.HTTP, "localhost", 80, ".",
-				new URLStreamHandler() {
+		new URL(
+			Http.HTTP, "localhost", 80, ".",
+			new URLStreamHandler() {
 
-					@Override
-					protected URLConnection openConnection(URL url) {
-						return null;
-					}
-
+				@Override
+				protected URLConnection openConnection(URL url) {
+					return null;
 				}
-			);
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+
+			});
 	}
 
 	@Test

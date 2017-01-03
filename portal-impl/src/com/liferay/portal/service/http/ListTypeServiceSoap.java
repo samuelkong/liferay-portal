@@ -18,13 +18,13 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.service.ListTypeServiceUtil;
+import com.liferay.portal.kernel.service.ListTypeServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.service.ListTypeServiceUtil} service utility. The
+ * {@link ListTypeServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -32,10 +32,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portal.model.ListTypeSoap}.
+ * is translated to an array of {@link com.liferay.portal.kernel.model.ListTypeSoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portal.model.ListType}, that is translated to a
- * {@link com.liferay.portal.model.ListTypeSoap}. Methods that SOAP cannot
+ * {@link com.liferay.portal.kernel.model.ListType}, that is translated to a
+ * {@link com.liferay.portal.kernel.model.ListTypeSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -58,18 +58,18 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see ListTypeServiceHttp
- * @see com.liferay.portal.model.ListTypeSoap
- * @see com.liferay.portal.service.ListTypeServiceUtil
+ * @see com.liferay.portal.kernel.model.ListTypeSoap
+ * @see ListTypeServiceUtil
  * @generated
  */
 @ProviderType
 public class ListTypeServiceSoap {
-	public static com.liferay.portal.model.ListTypeSoap getListType(
-		int listTypeId) throws RemoteException {
+	public static com.liferay.portal.kernel.model.ListTypeSoap getListType(
+		long listTypeId) throws RemoteException {
 		try {
-			com.liferay.portal.model.ListType returnValue = ListTypeServiceUtil.getListType(listTypeId);
+			com.liferay.portal.kernel.model.ListType returnValue = ListTypeServiceUtil.getListType(listTypeId);
 
-			return com.liferay.portal.model.ListTypeSoap.toSoapModel(returnValue);
+			return com.liferay.portal.kernel.model.ListTypeSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -78,12 +78,13 @@ public class ListTypeServiceSoap {
 		}
 	}
 
-	public static com.liferay.portal.model.ListTypeSoap[] getListTypes(
+	public static com.liferay.portal.kernel.model.ListTypeSoap[] getListTypes(
 		java.lang.String type) throws RemoteException {
 		try {
-			java.util.List<com.liferay.portal.model.ListType> returnValue = ListTypeServiceUtil.getListTypes(type);
+			java.util.List<com.liferay.portal.kernel.model.ListType> returnValue =
+				ListTypeServiceUtil.getListTypes(type);
 
-			return com.liferay.portal.model.ListTypeSoap.toSoapModels(returnValue);
+			return com.liferay.portal.kernel.model.ListTypeSoap.toSoapModels(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -92,7 +93,7 @@ public class ListTypeServiceSoap {
 		}
 	}
 
-	public static void validate(int listTypeId, long classNameId,
+	public static void validate(long listTypeId, long classNameId,
 		java.lang.String type) throws RemoteException {
 		try {
 			ListTypeServiceUtil.validate(listTypeId, classNameId, type);
@@ -104,7 +105,7 @@ public class ListTypeServiceSoap {
 		}
 	}
 
-	public static void validate(int listTypeId, java.lang.String type)
+	public static void validate(long listTypeId, java.lang.String type)
 		throws RemoteException {
 		try {
 			ListTypeServiceUtil.validate(listTypeId, type);

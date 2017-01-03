@@ -16,11 +16,12 @@ package com.liferay.portlet.messageboards.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.message.boards.kernel.model.MBMailingList;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.messageboards.model.MBMailingList;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,6 +40,30 @@ import java.util.Date;
 @ProviderType
 public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MBMailingListCacheModel)) {
+			return false;
+		}
+
+		MBMailingListCacheModel mbMailingListCacheModel = (MBMailingListCacheModel)obj;
+
+		if (mailingListId == mbMailingListCacheModel.mailingListId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, mailingListId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(53);
@@ -223,30 +248,43 @@ public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		mailingListId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		categoryId = objectInput.readLong();
 		emailAddress = objectInput.readUTF();
 		inProtocol = objectInput.readUTF();
 		inServerName = objectInput.readUTF();
+
 		inServerPort = objectInput.readInt();
+
 		inUseSSL = objectInput.readBoolean();
 		inUserName = objectInput.readUTF();
 		inPassword = objectInput.readUTF();
+
 		inReadInterval = objectInput.readInt();
 		outEmailAddress = objectInput.readUTF();
+
 		outCustom = objectInput.readBoolean();
 		outServerName = objectInput.readUTF();
+
 		outServerPort = objectInput.readInt();
+
 		outUseSSL = objectInput.readBoolean();
 		outUserName = objectInput.readUTF();
 		outPassword = objectInput.readUTF();
+
 		allowAnonymous = objectInput.readBoolean();
+
 		active = objectInput.readBoolean();
 	}
 
@@ -261,8 +299,11 @@ public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 		}
 
 		objectOutput.writeLong(mailingListId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -274,6 +315,7 @@ public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(categoryId);
 
 		if (emailAddress == null) {
@@ -298,6 +340,7 @@ public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 		}
 
 		objectOutput.writeInt(inServerPort);
+
 		objectOutput.writeBoolean(inUseSSL);
 
 		if (inUserName == null) {
@@ -333,6 +376,7 @@ public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 		}
 
 		objectOutput.writeInt(outServerPort);
+
 		objectOutput.writeBoolean(outUseSSL);
 
 		if (outUserName == null) {
@@ -350,6 +394,7 @@ public class MBMailingListCacheModel implements CacheModel<MBMailingList>,
 		}
 
 		objectOutput.writeBoolean(allowAnonymous);
+
 		objectOutput.writeBoolean(active);
 	}
 

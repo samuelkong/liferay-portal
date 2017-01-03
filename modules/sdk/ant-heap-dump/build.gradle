@@ -1,0 +1,14 @@
+clean {
+	ext {
+		cleanDeployed = false
+	}
+}
+
+dependencies {
+	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
+	provided group: "org.apache.ant", name: "ant", transitive: false, version: "1.9.4"
+}
+
+liferay {
+	deployDir = "../../../tools/sdk/dependencies/com.liferay.ant.heap.dump/lib"
+}

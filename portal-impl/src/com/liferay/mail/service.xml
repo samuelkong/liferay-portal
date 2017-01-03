@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
-<service-builder package-path="com.liferay.mail">
+<service-builder api-package-path="com.liferay.mail.kernel" package-path="com.liferay.mail">
 	<namespace>Mail</namespace>
-	<entity name="Cyrus" local-service="false" remote-service="true" />
-	<entity name="Mail" local-service="false" remote-service="true" />
+	<entity local-service="false" name="Mail" remote-service="true" />
 </service-builder>

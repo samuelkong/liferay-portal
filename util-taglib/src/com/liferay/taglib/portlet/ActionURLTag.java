@@ -16,21 +16,22 @@ package com.liferay.taglib.portlet;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.DummyPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletModeFactory;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryConstants;
 import com.liferay.portal.kernel.portlet.WindowStateFactory;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.LayoutConstants;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.taglib.util.ParamAndPropertyAncestorTagImpl;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
@@ -133,6 +134,8 @@ public class ActionURLTag extends ParamAndPropertyAncestorTagImpl {
 			liferayPortletURL.setDoAsUserId(doAsUserId);
 		}
 
+		String settingsScope = null;
+
 		if ((portletConfiguration != null) &&
 			portletConfiguration.booleanValue()) {
 
@@ -141,19 +144,38 @@ public class ActionURLTag extends ParamAndPropertyAncestorTagImpl {
 			String portletResource = ParamUtil.getString(
 				request, "portletResource");
 			String previewWidth = ParamUtil.getString(request, "previewWidth");
+			settingsScope = ParamUtil.getString(
+				request, "settingsScope",
+				PortletPreferencesFactoryConstants.
+					SETTINGS_SCOPE_PORTLET_INSTANCE);
+
+			if (Validator.isNull(name)) {
+				liferayPortletURL.setParameter(
+					ActionRequest.ACTION_NAME, "editConfiguration");
+			}
 
 			liferayPortletURL.setParameter(
-				"struts_action", "/portlet_configuration/edit_configuration");
+				"mvcPath", "/edit_configuration.jsp");
 			liferayPortletURL.setParameter(
 				"returnToFullPageURL", returnToFullPageURL);
+			liferayPortletURL.setParameter(
+				"portletConfiguration", Boolean.TRUE.toString());
 			liferayPortletURL.setParameter("portletResource", portletResource);
 			liferayPortletURL.setParameter("previewWidth", previewWidth);
 		}
 
 		if (parameterMap != null) {
-			MapUtil.merge(liferayPortletURL.getParameterMap(), parameterMap);
+			for (Entry<String, String[]> entry : parameterMap.entrySet()) {
+				liferayPortletURL.setParameter(
+					entry.getKey(), entry.getValue(), false);
+			}
+		}
 
-			liferayPortletURL.setParameters(parameterMap);
+		if ((settingsScope != null) &&
+			((parameterMap == null) ||
+			 !parameterMap.containsKey("settingsScope"))) {
+
+			liferayPortletURL.setParameter("settingsScope", settingsScope);
 		}
 
 		liferayPortletURL.setRemovedParameterNames(removedParameterNames);
@@ -214,8 +236,11 @@ public class ActionURLTag extends ParamAndPropertyAncestorTagImpl {
 		_cacheability = cacheability;
 	}
 
+	@Override
 	public void setCopyCurrentRenderParameters(
 		boolean copyCurrentRenderParameters) {
+
+		super.setCopyCurrentRenderParameters(copyCurrentRenderParameters);
 
 		_copyCurrentRenderParameters = Boolean.valueOf(
 			copyCurrentRenderParameters);

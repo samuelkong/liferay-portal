@@ -14,24 +14,22 @@
 
 package com.liferay.portal.upgrade.v6_2_0;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
+import com.liferay.document.library.kernel.store.DLStoreUtil;
+import com.liferay.portal.kernel.security.auth.FullNameGenerator;
+import com.liferay.portal.kernel.security.auth.FullNameGeneratorFactory;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.security.auth.FullNameGenerator;
-import com.liferay.portal.security.auth.FullNameGeneratorFactory;
 import com.liferay.portal.upgrade.v6_2_0.util.DLFileEntryTypeTable;
-import com.liferay.portlet.documentlibrary.model.DLFileEntryTypeConstants;
-import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -46,38 +44,22 @@ import java.util.Map;
 public class UpgradeDocumentLibrary extends UpgradeProcess {
 
 	protected void deleteChecksumDirectory() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			PreparedStatement ps = connection.prepareStatement(
 				"select distinct companyId from DLFileEntry");
-
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery()) {
 
 			while (rs.next()) {
 				long companyId = rs.getLong("companyId");
 
-				try {
-					DLStoreUtil.deleteDirectory(companyId, 0, "checksum");
-				}
-				catch (Exception e) {
-				}
+				DLStoreUtil.deleteDirectory(companyId, 0, "checksum");
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 
 	protected void deleteTempDirectory() {
-		try {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			DLStoreUtil.deleteDirectory(0, 0, "liferay_temp/");
-		}
-		catch (Exception e) {
 		}
 	}
 
@@ -86,18 +68,10 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 
 		// DLFileEntryType
 
-		try {
-			runSQL("alter table DLFileEntryType add fileEntryTypeKey STRING");
-
-			runSQL("alter_column_type DLFileEntryType name STRING null");
-		}
-		catch (SQLException sqle) {
-			upgradeTable(
-				DLFileEntryTypeTable.TABLE_NAME,
-				DLFileEntryTypeTable.TABLE_COLUMNS,
-				DLFileEntryTypeTable.TABLE_SQL_CREATE,
-				DLFileEntryTypeTable.TABLE_SQL_ADD_INDEXES);
-		}
+		alter(
+			DLFileEntryTypeTable.class,
+			new AlterTableAddColumn("fileEntryTypeKey STRING"),
+			new AlterColumnType("name", "STRING null"));
 
 		updateFileEntryTypes();
 
@@ -111,37 +85,27 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 	}
 
 	protected String getUserName(long userId) throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+		try (PreparedStatement ps = connection.prepareStatement(
 				"select firstName, middleName, lastName from User_ where " +
-					"userId = ?");
+					"userId = ?")) {
 
 			ps.setLong(1, userId);
 
-			rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					String firstName = rs.getString("firstName");
+					String middleName = rs.getString("middleName");
+					String lastName = rs.getString("lastName");
 
-			if (rs.next()) {
-				String firstName = rs.getString("firstName");
-				String middleName = rs.getString("middleName");
-				String lastName = rs.getString("lastName");
+					FullNameGenerator fullNameGenerator =
+						FullNameGeneratorFactory.getInstance();
 
-				FullNameGenerator fullNameGenerator =
-					FullNameGeneratorFactory.getInstance();
+					return fullNameGenerator.getFullName(
+						firstName, middleName, lastName);
+				}
 
-				return fullNameGenerator.getFullName(
-					firstName, middleName, lastName);
+				return StringPool.BLANK;
 			}
-
-			return StringPool.BLANK;
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 
@@ -152,7 +116,7 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 
 		Locale locale = LocaleUtil.fromLanguageId(languageId);
 
-		Map<Locale, String> localizationMap = new HashMap<Locale, String>();
+		Map<Locale, String> localizationMap = new HashMap<>();
 
 		localizationMap.put(locale, content);
 
@@ -165,15 +129,9 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 			String name, String description)
 		throws Exception {
 
-		Connection con = null;
-		PreparedStatement ps = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+		try (PreparedStatement ps = connection.prepareStatement(
 				"update DLFileEntryType set fileEntryTypeKey = ?, name = ?, " +
-					"description = ? where fileEntryTypeId = ?");
+					"description = ? where fileEntryTypeId = ?")) {
 
 			ps.setString(1, fileEntryTypeKey);
 			ps.setString(2, localize(companyId, name, "Name"));
@@ -182,24 +140,14 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 
 			ps.executeUpdate();
 		}
-		finally {
-			DataAccess.cleanUp(con, ps);
-		}
 	}
 
 	protected void updateFileEntryTypes() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			PreparedStatement ps = connection.prepareStatement(
 				"select fileEntryTypeId, companyId, name, description from " +
 					"DLFileEntryType");
-
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery()) {
 
 			while (rs.next()) {
 				long fileEntryTypeId = rs.getLong("fileEntryTypeId");
@@ -218,9 +166,6 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 					fileEntryTypeId, companyId, StringUtil.toUpperCase(name),
 					name, description);
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 

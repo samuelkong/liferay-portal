@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.Phone;
-import com.liferay.portal.service.PhoneLocalServiceUtil;
+import com.liferay.portal.kernel.model.Phone;
+import com.liferay.portal.kernel.service.PhoneLocalServiceUtil;
 
 /**
  * The extended model base implementation for the Phone service. Represents a row in the &quot;Phone&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.PhoneLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see PhoneImpl
- * @see com.liferay.portal.model.Phone
+ * @see Phone
  * @generated
  */
 @ProviderType

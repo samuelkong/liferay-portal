@@ -1,0 +1,52 @@
+apply plugin: "com.liferay.maven.plugin.builder"
+
+buildPluginDescriptor {
+	ext {
+		autoClean = false
+	}
+
+	finalizedBy formatSource
+	finalizedBy formatXML
+
+	forcedExclusions "com.ibm.icu:icu4j:2.6.1"
+	goalPrefix = "liferay"
+}
+
+dependencies {
+	compile group: "com.thoughtworks.qdox", name: "qdox", transitive: false, version: "1.12.1"
+	compile group: "dom4j", name: "dom4j", transitive: false, version: "1.6.1"
+	compile group: "jalopy", name: "jalopy", transitive: false, version: "1.5rc3"
+	compile group: "jaxen", name: "jaxen", transitive: false, version: "1.1.1"
+	compile group: "log4j", name: "log4j", version: "1.2.17"
+	compile group: "org.freemarker", name: "freemarker", transitive: false, version: "2.3.23"
+
+	provided group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.8.0"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	provided group: "com.liferay.portal", name: "com.liferay.util.java", version: "2.0.0"
+	provided group: "org.apache.ant", name: "ant", transitive: false, version: "1.9.4"
+	provided group: "org.apache.maven", name: "maven-plugin-api", transitive: false, version: "3.0.4"
+	provided group: "xerces", name: "xercesImpl", transitive: false, version: "2.11.0"
+}
+
+formatSource {
+	mustRunAfter formatXML
+}
+
+formatXML {
+	exclude "**/jalopy.xml"
+}
+
+liferay {
+	deployDir = "../../../tools/sdk/dependencies/com.liferay.portal.tools.service.builder/lib"
+}
+
+processResources {
+	into("com/liferay/blogs") {
+		from "../../../modules/apps/collaboration/blogs/blogs-service/service.xml"
+	}
+}
+
+updateFileVersions {
+	match(/\t\t\t\t<version>(\d.+)<\/version>/, "samples/pom.xml")
+	match(/com\.liferay\.portal\.tools\.service\.builder=(\d.+)/, "../../sdk/gradle-plugins/src/main/resources/com/liferay/gradle/plugins/dependencies/portal-tools.properties")
+}

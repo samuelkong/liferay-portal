@@ -15,18 +15,21 @@
 package com.liferay.portal.verify;
 
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
-import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.concurrent.ThrowableAwareRunnable;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-import com.liferay.portal.verify.model.VerifiableUUIDModel;
+import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,61 +37,12 @@ import java.util.Map;
  */
 public class VerifyUUID extends VerifyProcess {
 
-	public static void verify(VerifiableUUIDModel ... verifiableUUIDModels)
+	public static void verify(VerifiableUUIDModel... verifiableUUIDModels)
 		throws Exception {
 
-		for (VerifiableUUIDModel verifiableUUIDModel : verifiableUUIDModels) {
-			verifyUUID(verifiableUUIDModel);
-		}
-	}
+		VerifyUUID verifyUUID = new VerifyUUID();
 
-	protected static void updateUUID(
-			VerifiableUUIDModel verifiableUUIDModel, long primKey)
-		throws Exception {
-
-		DB db = DBFactoryUtil.getDB();
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append("update ");
-		sb.append(verifiableUUIDModel.getTableName());
-		sb.append(" set uuid_ = '");
-		sb.append(PortalUUIDUtil.generate());
-		sb.append("' where ");
-		sb.append(verifiableUUIDModel.getPrimaryKeyColumnName());
-		sb.append(" = ");
-		sb.append(primKey);
-
-		db.runSQL(sb.toString());
-	}
-
-	protected static void verifyUUID(VerifiableUUIDModel verifiableUUIDModel)
-		throws Exception {
-
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
-				"select " + verifiableUUIDModel.getPrimaryKeyColumnName() +
-					" from " + verifiableUUIDModel.getTableName() +
-						" where uuid_ is null or uuid_ = ''");
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				long pk = rs.getLong(
-					verifiableUUIDModel.getPrimaryKeyColumnName());
-
-				updateUUID(verifiableUUIDModel, pk);
-			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
-		}
+		verifyUUID.doVerify(verifiableUUIDModels);
 	}
 
 	@Override
@@ -99,9 +53,76 @@ public class VerifyUUID extends VerifyProcess {
 		Collection<VerifiableUUIDModel> verifiableUUIDModels =
 			verifiableUUIDModelsMap.values();
 
-		verify(
+		doVerify(
 			verifiableUUIDModels.toArray(
 				new VerifiableUUIDModel[verifiableUUIDModels.size()]));
+	}
+
+	protected void doVerify(VerifiableUUIDModel... verifiableUUIDModels)
+		throws Exception {
+
+		List<VerifyUUIDRunnable> verifyUUIDRunnables = new ArrayList<>(
+			verifiableUUIDModels.length);
+
+		for (VerifiableUUIDModel verifiableUUIDModel : verifiableUUIDModels) {
+			VerifyUUIDRunnable verifyUUIDRunnable = new VerifyUUIDRunnable(
+				verifiableUUIDModel);
+
+			verifyUUIDRunnables.add(verifyUUIDRunnable);
+		}
+
+		doVerify(verifyUUIDRunnables);
+	}
+
+	protected void verifyUUID(VerifiableUUIDModel verifiableUUIDModel)
+		throws Exception {
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append("update ");
+		sb.append(verifiableUUIDModel.getTableName());
+		sb.append(" set uuid_ = ? where ");
+		sb.append(verifiableUUIDModel.getPrimaryKeyColumnName());
+		sb.append(" = ?");
+
+		try (LoggingTimer loggingTimer = new LoggingTimer(
+				verifiableUUIDModel.getTableName());
+			Connection con = DataAccess.getUpgradeOptimizedConnection();
+			PreparedStatement ps1 = con.prepareStatement(
+				"select " + verifiableUUIDModel.getPrimaryKeyColumnName() +
+					" from " + verifiableUUIDModel.getTableName() +
+						" where uuid_ is null or uuid_ = ''");
+			ResultSet rs = ps1.executeQuery();
+			PreparedStatement ps2 = AutoBatchPreparedStatementUtil.autoBatch(
+				con.prepareStatement(sb.toString()))) {
+
+			while (rs.next()) {
+				long pk = rs.getLong(
+					verifiableUUIDModel.getPrimaryKeyColumnName());
+
+				ps2.setString(1, PortalUUIDUtil.generate());
+				ps2.setLong(2, pk);
+
+				ps2.addBatch();
+			}
+
+			ps2.executeBatch();
+		}
+	}
+
+	private class VerifyUUIDRunnable extends ThrowableAwareRunnable {
+
+		public VerifyUUIDRunnable(VerifiableUUIDModel verifiableUUIDModel) {
+			_verifiableUUIDModel = verifiableUUIDModel;
+		}
+
+		@Override
+		protected void doRun() throws Exception {
+			verifyUUID(_verifiableUUIDModel);
+		}
+
+		private final VerifiableUUIDModel _verifiableUUIDModel;
+
 	}
 
 }

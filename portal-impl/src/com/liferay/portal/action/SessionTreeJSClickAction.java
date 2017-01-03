@@ -14,16 +14,23 @@
 
 package com.liferay.portal.action;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutConstants;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.ui.util.SessionTreeJSClicks;
 
-import java.util.List;
+import java.util.ConcurrentModificationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,19 +69,12 @@ public class SessionTreeJSClickAction extends Action {
 				long plid = ParamUtil.getLong(request, "plid");
 
 				if (plid == LayoutConstants.DEFAULT_PLID) {
-					long groupId = ParamUtil.getLong(request, "groupId");
 					boolean privateLayout = ParamUtil.getBoolean(
 						request, "privateLayout");
 
-					List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
-						groupId, privateLayout,
-						LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
-
-					for (Layout layout : layouts) {
-						SessionTreeJSClicks.openLayoutNodes(
-							request, treeId, layout.isPrivateLayout(),
-							layout.getLayoutId(), true);
-					}
+					SessionTreeJSClicks.openLayoutNodes(
+						request, treeId, privateLayout,
+						LayoutConstants.DEFAULT_PLID, true);
 				}
 				else {
 					boolean recursive = ParamUtil.getBoolean(
@@ -93,19 +93,7 @@ public class SessionTreeJSClickAction extends Action {
 				long plid = ParamUtil.getLong(request, "plid");
 
 				if (plid == LayoutConstants.DEFAULT_PLID) {
-					long groupId = ParamUtil.getLong(request, "groupId");
-					boolean privateLayout = ParamUtil.getBoolean(
-						request, "privateLayout");
-
-					List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
-						groupId, privateLayout,
-						LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
-
-					for (Layout layout : layouts) {
-						SessionTreeJSClicks.closeLayoutNodes(
-							request, treeId, layout.isPrivateLayout(),
-							layout.getLayoutId(), true);
-					}
+					SessionTreeJSClicks.closeNodes(request, treeId);
 				}
 				else {
 					boolean recursive = ParamUtil.getBoolean(
@@ -132,12 +120,74 @@ public class SessionTreeJSClickAction extends Action {
 				}
 			}
 
+			if (!cmd.isEmpty()) {
+				updateCheckedLayoutPlids(request, treeId);
+			}
+
+			response.setContentType(ContentTypes.APPLICATION_JSON);
+
+			PortalPreferences portalPreferences =
+				PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+			String json = portalPreferences.getValue(
+				SessionTreeJSClicks.class.getName(), treeId + "Plid");
+
+			if (Validator.isNotNull(json)) {
+				ServletResponseUtil.write(response, json);
+			}
+
 			return null;
 		}
 		catch (Exception e) {
 			PortalUtil.sendError(e, request, response);
 
 			return null;
+		}
+	}
+
+	protected void updateCheckedLayoutPlids(
+		HttpServletRequest request, String treeId) {
+
+		long groupId = ParamUtil.getLong(request, "groupId");
+		boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		while (true) {
+			try {
+				PortalPreferences portalPreferences =
+					PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+				long[] checkedLayoutIds = StringUtil.split(
+					portalPreferences.getValue(
+						SessionTreeJSClicks.class.getName(), treeId),
+					0L);
+
+				for (long checkedLayoutId : checkedLayoutIds) {
+					if (checkedLayoutId == LayoutConstants.DEFAULT_PLID) {
+						jsonArray.put(
+							String.valueOf(LayoutConstants.DEFAULT_PLID));
+					}
+
+					Layout checkedLayout = LayoutLocalServiceUtil.fetchLayout(
+						groupId, privateLayout, checkedLayoutId);
+
+					if (checkedLayout == null) {
+						continue;
+					}
+
+					jsonArray.put(String.valueOf(checkedLayout.getPlid()));
+				}
+
+				portalPreferences.setValue(
+					SessionTreeJSClicks.class.getName(), treeId + "Plid",
+					jsonArray.toString());
+
+				return;
+			}
+			catch (ConcurrentModificationException cme) {
+				continue;
+			}
 		}
 	}
 

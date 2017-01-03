@@ -14,8 +14,8 @@
 
 package com.liferay.portal.fabric.netty.fileserver;
 
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -32,8 +32,8 @@ import org.junit.Test;
 public class CompressionLevelTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Test
 	public void testLevels() {

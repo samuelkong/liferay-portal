@@ -16,10 +16,11 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.model.CacheModel;
+import com.liferay.asset.kernel.model.AssetTagStats;
 
-import com.liferay.portlet.asset.model.AssetTagStats;
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,11 +38,37 @@ import java.io.ObjectOutput;
 public class AssetTagStatsCacheModel implements CacheModel<AssetTagStats>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AssetTagStatsCacheModel)) {
+			return false;
+		}
+
+		AssetTagStatsCacheModel assetTagStatsCacheModel = (AssetTagStatsCacheModel)obj;
+
+		if (tagStatsId == assetTagStatsCacheModel.tagStatsId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, tagStatsId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(9);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{tagStatsId=");
 		sb.append(tagStatsId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", tagId=");
 		sb.append(tagId);
 		sb.append(", classNameId=");
@@ -58,6 +85,7 @@ public class AssetTagStatsCacheModel implements CacheModel<AssetTagStats>,
 		AssetTagStatsImpl assetTagStatsImpl = new AssetTagStatsImpl();
 
 		assetTagStatsImpl.setTagStatsId(tagStatsId);
+		assetTagStatsImpl.setCompanyId(companyId);
 		assetTagStatsImpl.setTagId(tagId);
 		assetTagStatsImpl.setClassNameId(classNameId);
 		assetTagStatsImpl.setAssetCount(assetCount);
@@ -70,8 +98,13 @@ public class AssetTagStatsCacheModel implements CacheModel<AssetTagStats>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		tagStatsId = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+
 		tagId = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		assetCount = objectInput.readInt();
 	}
 
@@ -79,12 +112,18 @@ public class AssetTagStatsCacheModel implements CacheModel<AssetTagStats>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(tagStatsId);
+
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(tagId);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeInt(assetCount);
 	}
 
 	public long tagStatsId;
+	public long companyId;
 	public long tagId;
 	public long classNameId;
 	public int assetCount;

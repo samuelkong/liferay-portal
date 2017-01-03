@@ -22,9 +22,7 @@ import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.scripting.ScriptingException;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
-import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -37,7 +35,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.minifier.MinifierUtil;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
-import com.liferay.portal.servlet.filters.dynamiccss.DynamicCSSUtil;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.Writer;
@@ -51,7 +48,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,12 +59,15 @@ import javax.servlet.http.HttpServletResponse;
 public class StripFilter extends BasePortalFilter {
 
 	public static final String SKIP_FILTER =
-		StripFilter.class.getName() + "SKIP_FILTER";
+		StripFilter.class.getName() + "#SKIP_FILTER";
 
 	public StripFilter() {
 		if (PropsValues.MINIFIER_INLINE_CONTENT_CACHE_SIZE > 0) {
-			_minifierCache = new ConcurrentLFUCache<String, String>(
+			_minifierCache = new ConcurrentLFUCache<>(
 				PropsValues.MINIFIER_INLINE_CONTENT_CACHE_SIZE);
+		}
+		else {
+			_minifierCache = null;
 		}
 	}
 
@@ -79,8 +78,6 @@ public class StripFilter extends BasePortalFilter {
 		for (String ignorePath : PropsValues.STRIP_IGNORE_PATHS) {
 			_ignorePaths.add(ignorePath);
 		}
-
-		_servletContext = filterConfig.getServletContext();
 	}
 
 	@Override
@@ -292,27 +289,6 @@ public class StripFilter extends BasePortalFilter {
 			minifiedContent = _minifierCache.get(key);
 
 			if (minifiedContent == null) {
-				if (PropsValues.STRIP_CSS_SASS_ENABLED) {
-					try {
-						content = DynamicCSSUtil.parseSass(
-							_servletContext, request, request.getRequestURI(),
-							content);
-					}
-					catch (ScriptingException se) {
-						_log.error("Unable to parse SASS on CSS " + key, se);
-
-						if (_log.isDebugEnabled()) {
-							_log.debug(content);
-						}
-
-						if (response != null) {
-							response.setHeader(
-								HttpHeaders.CACHE_CONTROL,
-								HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
-						}
-					}
-				}
-
 				minifiedContent = MinifierUtil.minifyCss(content);
 
 				boolean skipCache = false;
@@ -358,7 +334,7 @@ public class StripFilter extends BasePortalFilter {
 			new BufferCacheServletResponse(response);
 
 		processFilter(
-			StripFilter.class, request, bufferCacheServletResponse,
+			StripFilter.class.getName(), request, bufferCacheServletResponse,
 			filterChain);
 
 		String contentType = GetterUtil.getString(
@@ -748,13 +724,12 @@ public class StripFilter extends BasePortalFilter {
 
 	private static final String _STRIP = "strip";
 
-	private static Log _log = LogFactoryUtil.getLog(StripFilter.class);
+	private static final Log _log = LogFactoryUtil.getLog(StripFilter.class);
 
-	private static Pattern _javaScriptPattern = Pattern.compile(
+	private static final Pattern _javaScriptPattern = Pattern.compile(
 		"[Jj][aA][vV][aA][sS][cC][rR][iI][pP][tT]");
 
-	private Set<String> _ignorePaths = new HashSet<String>();
-	private ConcurrentLFUCache<String, String> _minifierCache;
-	private ServletContext _servletContext;
+	private final Set<String> _ignorePaths = new HashSet<>();
+	private final ConcurrentLFUCache<String, String> _minifierCache;
 
 }

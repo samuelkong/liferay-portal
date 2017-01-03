@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Shuyang Zhou
  */
 public abstract class BaseIntrabandPortalCacheManager
-		<K extends Serializable, V extends Serializable>
-	implements PortalCacheManager<K, V> {
+	<K extends Serializable, V extends Serializable>
+		implements PortalCacheManager<K, V> {
 
 	public static Class<? extends PortalCache<?, ?>> getPortalCacheStubClass() {
 		return _STUB_CLASS;
@@ -42,28 +42,30 @@ public abstract class BaseIntrabandPortalCacheManager
 	}
 
 	@Override
-	public PortalCache<K, V> getCache(String name) {
-		return getCache(name, false);
+	public PortalCache<K, V> getPortalCache(String portalCacheName) {
+		return getPortalCache(portalCacheName, false);
 	}
 
 	@Override
-	public PortalCache<K, V> getCache(String name, boolean blocking) {
-		PortalCache<K, V> portalCache = _portalCaches.get(name);
+	public PortalCache<K, V> getPortalCache(
+		String portalCacheName, boolean blocking) {
+
+		PortalCache<K, V> portalCache = _portalCaches.get(portalCacheName);
 
 		if (portalCache == null) {
 			portalCache = (PortalCache<K, V>)IntrabandProxyUtil.newStubInstance(
-				_STUB_CLASS, name, _registrationReference,
+				_STUB_CLASS, portalCacheName, _registrationReference,
 				WarnLogExceptionHandler.INSTANCE);
 
-			_portalCaches.put(name, portalCache);
+			_portalCaches.put(portalCacheName, portalCache);
 		}
 
 		return portalCache;
 	}
 
 	@Override
-	public void removeCache(String name) {
-		_portalCaches.remove(name);
+	public void removePortalCache(String portalCacheName) {
+		_portalCaches.remove(portalCacheName);
 	}
 
 	private static final Class<? extends PortalCache<?, ?>> _STUB_CLASS =
@@ -72,7 +74,7 @@ public abstract class BaseIntrabandPortalCacheManager
 				PortalCache.class, PortalCache.class.getName());
 
 	private final Map<String, PortalCache<K, V>> _portalCaches =
-		new ConcurrentHashMap<String, PortalCache<K, V>>();
+		new ConcurrentHashMap<>();
 	private final RegistrationReference _registrationReference = null;
 
 }

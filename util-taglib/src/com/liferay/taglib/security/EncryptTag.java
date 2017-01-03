@@ -16,15 +16,15 @@ package com.liferay.taglib.security;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.Encryptor;
 import com.liferay.util.EncryptorException;
 
@@ -40,8 +40,10 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class EncryptTag extends TagSupport {
 
 	@Override
@@ -194,13 +196,13 @@ public class EncryptTag extends TagSupport {
 		_url = url;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(EncryptTag.class);
+	private static final Log _log = LogFactoryUtil.getLog(EncryptTag.class);
 
 	private String _className;
 	private String _protocol;
 	private String _style;
 	private String _target;
-	private Set<String> _unencryptedParamsSet = new HashSet<String>();
+	private final Set<String> _unencryptedParamsSet = new HashSet<>();
 	private String _url;
 
 }

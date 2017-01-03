@@ -36,7 +36,6 @@
 						<%= PropsValues.COMPANY_DEFAULT_NAME %>
 					</span>
 				</span>
-
 				<span class="configuration-title" title="<liferay-ui:message key="basic-configuration" />">
 					<i class="icon-cog"></i>
 
@@ -50,10 +49,6 @@
 		<div id="main-content">
 
 			<%
-			String defaultEmailAddress = PropsValues.DEFAULT_ADMIN_EMAIL_ADDRESS_PREFIX + StringPool.AT + company.getMx();
-
-			String emailAddress = GetterUtil.getString((String)session.getAttribute(WebKeys.EMAIL_ADDRESS), defaultEmailAddress);
-
 			UnicodeProperties unicodeProperties = (UnicodeProperties)session.getAttribute(WebKeys.SETUP_WIZARD_PROPERTIES);
 			%>
 
@@ -71,33 +66,33 @@
 							<aui:fieldset cssClass="col-md-6" label="portal">
 								<aui:input helpTextCssClass="help-inline" label="portal-name" name="companyName" suffix='<%= LanguageUtil.format(request, "for-example-x", "Liferay", false) %>' value="<%= PropsValues.COMPANY_DEFAULT_NAME %>" />
 
-								<aui:select inlineField="<%= true %>" label="default-language" name="companyLocale">
+								<aui:field-wrapper inlineLabel="default-language" label="default-language" name="companyLocale">
+									<aui:select label="" name="companyLocale">
 
-									<%
-									String languageId = GetterUtil.getString((String)session.getAttribute(WebKeys.SETUP_WIZARD_DEFAULT_LOCALE), SetupWizardUtil.getDefaultLanguageId());
+										<%
+										String languageId = GetterUtil.getString((String)session.getAttribute(WebKeys.SETUP_WIZARD_DEFAULT_LOCALE), SetupWizardUtil.getDefaultLanguageId());
 
-									Locale[] locales = LanguageUtil.getAvailableLocales();
+										for (Locale curLocale : LanguageUtil.getAvailableLocales()) {
+										%>
 
-									for (Locale curLocale : locales) {
-									%>
+											<aui:option label="<%= curLocale.getDisplayName(curLocale) %>" selected="<%= languageId.equals(LocaleUtil.toLanguageId(curLocale)) %>" value="<%= LocaleUtil.toLanguageId(curLocale) %>" />
 
-										<aui:option label="<%= curLocale.getDisplayName(curLocale) %>" selected="<%= languageId.equals(LocaleUtil.toLanguageId(curLocale)) %>" value="<%= LocaleUtil.toLanguageId(curLocale) %>" />
+										<%
+										}
+										%>
 
-									<%
-									}
-									%>
+									</aui:select>
 
-								</aui:select>
+									<aui:button cssClass="change-language" name="changeLanguageButton" value="change" />
+								</aui:field-wrapper>
 
-								<aui:button cssClass="change-language" name="changeLanguageButton" value="change" />
-
-								<aui:input name="addSampleData" type="checkbox" value="<%= true %>" />
+								<aui:input label="add-sample-data" name='<%= "properties--" + PropsKeys.SETUP_WIZARD_ADD_SAMPLE_DATA + "--" %>' type="checkbox" value="<%= true %>" />
 							</aui:fieldset>
 
 							<aui:fieldset cssClass="col-md-6 column-last" label="administrator-user">
 								<%@ include file="/html/portal/setup_wizard_user_name.jspf" %>
 
-								<aui:input label="email" name="adminEmailAddress" value="<%= emailAddress %>">
+								<aui:input label="email" name="adminEmailAddress" value="<%= PropsValues.ADMIN_EMAIL_FROM_ADDRESS %>">
 									<aui:validator name="email" />
 									<aui:validator name="required" />
 								</aui:input>
@@ -218,7 +213,7 @@
 						</div>
 
 						<aui:button-row>
-							<aui:button name="finishButton" type="submit" value="finish-configuration" />
+							<aui:button cssClass="btn-lg" name="finishButton" type="submit" value="finish-configuration" />
 						</aui:button-row>
 					</aui:form>
 
@@ -230,13 +225,11 @@
 						var defaultDatabaseOptions = A.one('#defaultDatabaseOptions');
 						var defaultDatabaseOptionsLink = A.one('#defaultDatabaseOptionsLink');
 
-						var jdbcDefaultURL = A.one('#jdbcDefaultURL');
 						var jdbcDefaultDriverClassName = A.one('#jdbcDefaultDriverName');
-						var jdbcDefaultUserName = A.one('#jdbcDefaultUserName');
-						var jdbcDefaultPassword = A.one('#jdbcDefaultPassword');
+						var jdbcDefaultURL = A.one('#jdbcDefaultURL');
 
-						var setupForm = A.one('#fm');
 						var command = A.one('#<%= Constants.CMD %>');
+						var setupForm = A.one('#fm');
 
 						var connectionMessages = A.one('#connectionMessages');
 
@@ -261,17 +254,15 @@
 						}
 
 						var onChangeDatabaseSelector = function() {
-							var value = databaseSelector.val();
-
 							var index = databaseSelector.get('selectedIndex');
 
 							var selectedOption = databaseSelector.get('options').item(index);
 
-							var driverClassName = selectedOption.attr('data-driverClassName');
 							var databaseURL = selectedOption.attr('data-url');
+							var driverClassName = selectedOption.attr('data-driverClassName');
 
-							jdbcDefaultURL.val(databaseURL);
 							jdbcDefaultDriverClassName.val(driverClassName);
+							jdbcDefaultURL.val(databaseURL);
 						};
 
 						databaseSelector.on('change', onChangeDatabaseSelector);
@@ -356,52 +347,37 @@
 				<c:otherwise>
 
 					<%
-					SetupWizardUtil.setSetupFinished(true);
-
 					boolean propertiesFileCreated = GetterUtil.getBoolean((Boolean)session.getAttribute(WebKeys.SETUP_WIZARD_PROPERTIES_FILE_CREATED));
 					%>
 
 					<c:choose>
 						<c:when test="<%= propertiesFileCreated %>">
+							<div class="alert alert-success">
+								<liferay-ui:message key="your-configuration-was-saved-sucessfully" />
+							</div>
 
-							<%
-							PortletURL loginURL = new PortletURLImpl(request, PortletKeys.LOGIN, plid, PortletRequest.ACTION_PHASE);
-
-							loginURL.setParameter("saveLastPath", Boolean.FALSE.toString());
-							loginURL.setParameter("struts_action", "/login/login");
-							loginURL.setPortletMode(PortletMode.VIEW);
-							loginURL.setWindowState(WindowState.NORMAL);
-							%>
-
-							<aui:form action="<%= loginURL %>" method="post" name="fm">
-								<aui:input name="login" type="hidden" value="<%= emailAddress %>" />
-								<aui:input name="password" type="hidden" value="<%= PropsValues.DEFAULT_ADMIN_PASSWORD %>" />
-
-								<div class="alert alert-success">
-									<liferay-ui:message key="your-configuration-was-saved-sucessfully" />
-								</div>
-
-								<p class="lfr-setup-notice">
-
-									<%
-									String taglibArguments = "<span class=\"lfr-inline-code\">" + PropsValues.LIFERAY_HOME + StringPool.SLASH + SetupWizardUtil.PROPERTIES_FILE_NAME + "</span>";
-									%>
-
-									<liferay-ui:message arguments="<%= taglibArguments %>" key="the-configuration-was-saved-in" translateArguments="<%= false %>" />
-								</p>
+							<p class="lfr-setup-notice">
 
 								<%
-								boolean passwordUpdated = GetterUtil.getBoolean((Boolean)session.getAttribute(WebKeys.SETUP_WIZARD_PASSWORD_UPDATED));
+								String taglibArguments = "<span class=\"lfr-inline-code\">" + PropsValues.LIFERAY_HOME + StringPool.SLASH + SetupWizardUtil.PROPERTIES_FILE_NAME + "</span>";
 								%>
 
-								<c:if test="<%= !passwordUpdated %>">
-									<p class="lfr-setup-notice">
-										<liferay-ui:message arguments="<%= PropsValues.DEFAULT_ADMIN_PASSWORD %>" key="your-password-is-x.-you-will-be-required-to-change-your-password-the-next-time-you-log-into-the-portal" translateArguments="<%= false %>" />
-									</p>
-								</c:if>
+								<liferay-ui:message arguments="<%= taglibArguments %>" key="the-configuration-was-saved-in" translateArguments="<%= false %>" />
+							</p>
 
-								<aui:button type="submit" value="go-to-my-portal" />
-							</aui:form>
+							<%
+							boolean passwordUpdated = GetterUtil.getBoolean((Boolean)session.getAttribute(WebKeys.SETUP_WIZARD_PASSWORD_UPDATED));
+							%>
+
+							<c:if test="<%= !passwordUpdated %>">
+								<p class="lfr-setup-notice">
+									<liferay-ui:message arguments="<%= PropsValues.DEFAULT_ADMIN_PASSWORD %>" key="your-password-is-x.-you-will-be-required-to-change-your-password-the-next-time-you-log-into-the-portal" translateArguments="<%= false %>" />
+								</p>
+							</c:if>
+
+							<div class="alert alert-info">
+								<liferay-ui:message key="changes-will-take-effect-once-the-portal-is-restarted-please-restart-the-portal-now" />
+							</div>
 						</c:when>
 						<c:otherwise>
 							<p>

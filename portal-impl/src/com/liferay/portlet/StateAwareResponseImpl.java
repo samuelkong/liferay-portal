@@ -16,12 +16,14 @@ package com.liferay.portlet;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.model.PublicRenderParameter;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortletQNameUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PublicRenderParameter;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.io.Serializable;
 
@@ -213,8 +215,7 @@ public abstract class StateAwareResponseImpl
 			throw new IllegalArgumentException();
 		}
 		else {
-			Map<String, String[]> newParams =
-				new LinkedHashMap<String, String[]>();
+			Map<String, String[]> newParams = new LinkedHashMap<>();
 
 			for (Map.Entry<String, String[]> entry : params.entrySet()) {
 				String key = entry.getKey();
@@ -280,8 +281,13 @@ public abstract class StateAwareResponseImpl
 		_portletName = portletName;
 		_user = user;
 		_layout = layout;
+
+		Portlet portlet = portletRequestImpl.getPortlet();
+
+		PortletApp portletApp = portlet.getPortletApp();
+
 		_publicRenderParameters = PublicRenderParametersPool.get(
-			getHttpServletRequest(), layout.getPlid());
+			getHttpServletRequest(), layout.getPlid(), portletApp.isWARFile());
 
 		if (windowState != null) {
 			setWindowState(windowState);
@@ -295,6 +301,15 @@ public abstract class StateAwareResponseImpl
 		// setPortletMode sets it to true
 
 		_calledSetRenderParameter = false;
+	}
+
+	protected void reset() {
+		_calledSetRenderParameter = false;
+		_events.clear();
+		_params.clear();
+		_portletMode = null;
+		_redirectLocation = null;
+		_windowState = null;
 	}
 
 	protected boolean setPublicRenderParameter(String name, String[] values) {
@@ -322,14 +337,13 @@ public abstract class StateAwareResponseImpl
 		return true;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		StateAwareResponseImpl.class);
 
 	private boolean _calledSetRenderParameter;
-	private List<Event> _events = new ArrayList<Event>();
+	private final List<Event> _events = new ArrayList<>();
 	private Layout _layout;
-	private Map<String, String[]> _params =
-		new LinkedHashMap<String, String[]>();
+	private Map<String, String[]> _params = new LinkedHashMap<>();
 	private PortletMode _portletMode;
 	private String _portletName;
 	private PortletRequestImpl _portletRequestImpl;

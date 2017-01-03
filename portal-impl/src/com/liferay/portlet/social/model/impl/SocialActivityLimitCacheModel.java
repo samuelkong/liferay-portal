@@ -16,11 +16,12 @@ package com.liferay.portlet.social.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
 
-import com.liferay.portlet.social.model.SocialActivityLimit;
+import com.liferay.social.kernel.model.SocialActivityLimit;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,30 @@ import java.io.ObjectOutput;
 @ProviderType
 public class SocialActivityLimitCacheModel implements CacheModel<SocialActivityLimit>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SocialActivityLimitCacheModel)) {
+			return false;
+		}
+
+		SocialActivityLimitCacheModel socialActivityLimitCacheModel = (SocialActivityLimitCacheModel)obj;
+
+		if (activityLimitId == socialActivityLimitCacheModel.activityLimitId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, activityLimitId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(19);
@@ -98,11 +123,17 @@ public class SocialActivityLimitCacheModel implements CacheModel<SocialActivityL
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		activityLimitId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
+
 		activityType = objectInput.readInt();
 		activityCounterName = objectInput.readUTF();
 		value = objectInput.readUTF();
@@ -112,11 +143,17 @@ public class SocialActivityLimitCacheModel implements CacheModel<SocialActivityL
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(activityLimitId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
+
 		objectOutput.writeInt(activityType);
 
 		if (activityCounterName == null) {

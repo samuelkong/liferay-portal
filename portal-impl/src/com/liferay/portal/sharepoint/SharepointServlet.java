@@ -16,15 +16,15 @@ package com.liferay.portal.sharepoint;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webdav.WebDAVUtil;
-import com.liferay.portal.model.User;
 import com.liferay.portal.sharepoint.methods.Method;
 import com.liferay.portal.sharepoint.methods.MethodFactory;
-import com.liferay.portal.util.WebKeys;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -143,6 +143,7 @@ public class SharepointServlet extends HttpServlet {
 		ServletResponseUtil.write(response, sb.toString());
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(SharepointServlet.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		SharepointServlet.class);
 
 }

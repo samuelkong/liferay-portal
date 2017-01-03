@@ -37,16 +37,16 @@ public class MulticastServerTool {
 			DatagramHandler handler = new DatagramHandler() {
 
 				@Override
+				public void errorReceived(Throwable t) {
+					t.printStackTrace();
+				}
+
+				@Override
 				public void process(DatagramPacket packet) {
 					String s = new String(
 						packet.getData(), 0, packet.getLength());
 
 					System.out.println(s);
-				}
-
-				@Override
-				public void errorReceived(Throwable t) {
-					t.printStackTrace();
 				}
 
 			};
@@ -58,7 +58,7 @@ public class MulticastServerTool {
 
 			String msg =
 				InetAddress.getLocalHost().getHostName() + ":" + port +
-					" heartbeat " ;
+					" heartbeat ";
 
 			int i = 0;
 

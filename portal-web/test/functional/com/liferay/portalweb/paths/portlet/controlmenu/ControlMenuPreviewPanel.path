@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>ControlMenuPreviewPanel</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ControlMenuPreviewPanel</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_AUTOSIZE</td>
+	<td>//div[@data-device='autosize']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_SMARTPHONE</td>
+	<td>//div[@data-device='smartphone']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_TABLET</td>
+	<td>//div[@data-device='tablet']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_DESKTOP</td>
+	<td>//div[@data-device='desktop']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_CUSTOM</td>
+	<td>//div[@data-device='custom']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_CUSTOM_WIDTH_FIELD</td>
+	<td>//input[contains(@id,'_width')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_CUSTOM_HEIGHT_FIELD</td>
+	<td>//input[contains(@id,'_height')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_MESSAGE</td>
+	<td>//li[contains(@id,'_simulationDeviceContainer')]//div[contains(@class,'preview-info-message')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_DEVICE_IFRAME</td>
+	<td>//div[contains(@class,'${key_deviceType}')]//iframe[@id='simulationDeviceIframe']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_DEVICE_GENERAL_IFRAME</td>
+	<td>//iframe[@id='simulationDeviceIframe']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

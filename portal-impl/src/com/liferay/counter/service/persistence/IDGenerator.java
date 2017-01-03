@@ -14,7 +14,7 @@
 
 package com.liferay.counter.service.persistence;
 
-import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 
 import java.io.Serializable;
 

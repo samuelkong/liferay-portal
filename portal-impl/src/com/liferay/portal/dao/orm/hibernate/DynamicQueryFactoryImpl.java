@@ -14,18 +14,21 @@
 
 package com.liferay.portal.dao.orm.hibernate;
 
+import com.liferay.portal.kernel.annotation.ImplementationClassName;
+import com.liferay.portal.kernel.concurrent.ConcurrentReferenceKeyHashMap;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.memory.FinalizeManager;
 import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermission;
 import com.liferay.portal.security.lang.DoPrivilegedUtil;
-import com.liferay.portal.util.ClassLoaderUtil;
 
 import java.security.PrivilegedAction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import org.hibernate.criterion.DetachedCriteria;
 
@@ -69,36 +72,39 @@ public class DynamicQueryFactoryImpl implements DynamicQueryFactory {
 	}
 
 	protected Class<?> getImplClass(Class<?> clazz, ClassLoader classLoader) {
+		ImplementationClassName implementationClassName = clazz.getAnnotation(
+			ImplementationClassName.class);
+
+		if (implementationClassName == null) {
+			String className = clazz.getName();
+
+			if (!className.endsWith("Impl")) {
+				_log.error("Unable find model for " + clazz);
+			}
+
+			PortalRuntimePermission.checkDynamicQuery(clazz);
+
+			return clazz;
+		}
+
 		Class<?> implClass = clazz;
 
-		String className = clazz.getName();
+		String implClassName = implementationClassName.value();
 
-		if (!className.endsWith("Impl")) {
-			if (classLoader == null) {
-				classLoader = ClassLoaderUtil.getContextClassLoader();
-			}
-
-			Package pkg = clazz.getPackage();
-
-			String implClassName =
-				pkg.getName() + ".impl." + clazz.getSimpleName() + "Impl";
-
-			try {
-				implClass = getImplClass(implClassName, classLoader);
-			}
-			catch (Exception e1) {
-				if (classLoader != _portalClassLoader) {
-					try {
-						implClass = getImplClass(
-							implClassName, _portalClassLoader);
-					}
-					catch (Exception e2) {
-						_log.error("Unable find model " + implClassName, e2);
-					}
+		try {
+			implClass = getImplClass(implClassName, classLoader);
+		}
+		catch (Exception e1) {
+			if (classLoader != _portalClassLoader) {
+				try {
+					implClass = getImplClass(implClassName, _portalClassLoader);
 				}
-				else {
-					_log.error("Unable find model " + implClassName, e1);
+				catch (Exception e2) {
+					_log.error("Unable find model " + implClassName, e2);
 				}
+			}
+			else {
+				_log.error("Unable find model " + implClassName, e1);
 			}
 		}
 
@@ -114,7 +120,7 @@ public class DynamicQueryFactoryImpl implements DynamicQueryFactory {
 		Map<String, Class<?>> classes = _classes.get(classLoader);
 
 		if (classes == null) {
-			classes = new HashMap<String, Class<?>>();
+			classes = new HashMap<>();
 
 			_classes.put(classLoader, classes);
 		}
@@ -133,12 +139,15 @@ public class DynamicQueryFactoryImpl implements DynamicQueryFactory {
 	private static final Log _log = LogFactoryUtil.getLog(
 		DynamicQueryFactoryImpl.class);
 
-	private final Map<ClassLoader, Map<String, Class<?>>> _classes =
-		new HashMap<ClassLoader, Map<String, Class<?>>>();
+	private static final
+		ConcurrentMap<ClassLoader, Map<String, Class<?>>> _classes =
+			new ConcurrentReferenceKeyHashMap<>(
+				FinalizeManager.WEAK_REFERENCE_FACTORY);
+
 	private final ClassLoader _portalClassLoader =
 		DynamicQueryFactoryImpl.class.getClassLoader();
 
-	private class DynamicQueryPrivilegedAction
+	private static class DynamicQueryPrivilegedAction
 		implements PrivilegedAction<DynamicQuery> {
 
 		public DynamicQueryPrivilegedAction(Class<?> clazz, String alias) {

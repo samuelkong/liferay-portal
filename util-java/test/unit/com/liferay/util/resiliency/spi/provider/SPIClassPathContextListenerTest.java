@@ -22,19 +22,24 @@ import com.liferay.portal.kernel.resiliency.spi.MockSPIProvider;
 import com.liferay.portal.kernel.resiliency.spi.SPIUtil;
 import com.liferay.portal.kernel.resiliency.spi.provider.SPIProvider;
 import com.liferay.portal.kernel.test.CaptureHandler;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
-import com.liferay.portal.kernel.test.NewClassLoaderJUnitTestRunner;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
+import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.util.PropsImpl;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,19 +62,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockServletContext;
 
 /**
  * @author Shuyang Zhou
  */
-@RunWith(NewClassLoaderJUnitTestRunner.class)
 public class SPIClassPathContextListenerTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Before
 	public void setUp() throws Exception {
@@ -105,13 +108,13 @@ public class SPIClassPathContextListenerTest {
 
 		extNotJarFile.createNewFile();
 
-		// Global lib 1 directory for portal-service.jar
+		// Global lib 1 directory for portal-kernel.jar
 
 		File globalLib1Dir = new File(_CONTEXT_PATH, _GLOBAL_LIB_1_DIR_NAME);
 
 		globalLib1Dir.mkdir();
 
-		_portalServiceJarFile = new File(globalLib1Dir, "portal-service.jar");
+		_portalServiceJarFile = new File(globalLib1Dir, "portal-kernel.jar");
 
 		_portalServiceJarFile.createNewFile();
 
@@ -145,42 +148,56 @@ public class SPIClassPathContextListenerTest {
 
 		// Mock lookup
 
-		final Map<String, URL> resources = new HashMap<String, URL>();
+		final Map<String, URL> resources = new HashMap<>();
 
 		final String driverClassName = "TestDriver";
 
 		putResource(resources, _jdbcDriverJarFile, driverClassName);
+
 		putResource(
 			resources, _portalServiceJarFile, PortalException.class.getName());
 
-		PropsUtil.setProps(
-			new PropsImpl() {
+		final Method getMethod = Props.class.getMethod("get", String.class);
 
-				@Override
-				public String get(String key) {
-					if (key.equals(PropsKeys.JDBC_DEFAULT_DRIVER_CLASS_NAME)) {
-						return driverClassName;
+		PropsUtil.setProps(
+			(Props)ProxyUtil.newProxyInstance(
+				Props.class.getClassLoader(), new Class<?>[] {Props.class},
+				new InvocationHandler() {
+
+					@Override
+					public Object invoke(
+						Object proxy, Method method, Object[] args) {
+
+						if (getMethod.equals(method)) {
+							if (args[0].equals(
+									PropsKeys.JDBC_DEFAULT_DRIVER_CLASS_NAME)) {
+
+								return driverClassName;
+							}
+
+							return StringPool.BLANK;
+						}
+
+						throw new UnsupportedOperationException();
 					}
 
-					return super.get(key);
+				}));
+
+		PortalClassLoaderUtil.setClassLoader(
+			new ClassLoader() {
+
+				@Override
+				public URL getResource(String name) {
+					URL url = resources.get(name);
+
+					if (url != null) {
+						return url;
+					}
+
+					return super.getResource(name);
 				}
 
 			});
-
-		PortalClassLoaderUtil.setClassLoader(new ClassLoader() {
-
-			@Override
-			public URL getResource(String name) {
-				URL url = resources.get(name);
-
-				if (url != null) {
-					return url;
-				}
-
-				return super.getResource(name);
-			}
-
-		});
 	}
 
 	@After
@@ -192,14 +209,11 @@ public class SPIClassPathContextListenerTest {
 
 	@Test
 	public void testClassPathGeneration() {
-		CaptureHandler captureHandler = null;
-
-		try {
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					SPIClassPathContextListener.class.getName(), Level.FINE)) {
 
 			// With log
-
-			captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-				SPIClassPathContextListener.class.getName(), Level.FINE);
 
 			List<LogRecord> logRecords = captureHandler.getLogRecords();
 
@@ -233,6 +247,7 @@ public class SPIClassPathContextListenerTest {
 
 			Assert.assertEquals(
 				spiClassPath, SPIClassPathContextListener.SPI_CLASS_PATH);
+
 			Assert.assertEquals(2, logRecords.size());
 
 			LogRecord logRecord = logRecords.get(0);
@@ -265,11 +280,6 @@ public class SPIClassPathContextListenerTest {
 				spiClassPath, SPIClassPathContextListener.SPI_CLASS_PATH);
 			Assert.assertTrue(logRecords.isEmpty());
 		}
-		finally {
-			if (captureHandler != null) {
-				captureHandler.close();
-			}
-		}
 	}
 
 	@Test
@@ -294,6 +304,7 @@ public class SPIClassPathContextListenerTest {
 			ReflectionTestUtil.invoke(
 				childClassLoader, "findLoadedClass",
 				new Class<?>[] {String.class}, TestClass.class.getName()));
+
 		Assert.assertNull(
 			ReflectionTestUtil.invoke(
 				parentClassLoader, "findLoadedClass",
@@ -352,10 +363,11 @@ public class SPIClassPathContextListenerTest {
 
 		// Duplicate register
 
-		CaptureHandler captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			SPIClassPathContextListener.class.getName(), Level.SEVERE);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					SPIClassPathContextListener.class.getName(),
+					Level.SEVERE)) {
 
-		try {
 			List<LogRecord> logRecords = captureHandler.getLogRecords();
 
 			spiClassPathContextListener.contextInitialized(
@@ -370,9 +382,6 @@ public class SPIClassPathContextListenerTest {
 					" is already registered in servlet context " +
 						_mockServletContext.getContextPath(),
 				logRecord.getMessage());
-		}
-		finally {
-			captureHandler.close();
 		}
 
 		// Unregister
@@ -425,7 +434,7 @@ public class SPIClassPathContextListenerTest {
 	}
 
 	protected void deleteFile(File file) {
-		Queue<File> fileQueue = new LinkedList<File>();
+		Queue<File> fileQueue = new LinkedList<>();
 
 		fileQueue.offer(file);
 
@@ -466,7 +475,9 @@ public class SPIClassPathContextListenerTest {
 
 		// Does not exist
 
-		deleteFile(new File(_CONTEXT_PATH, dirName));
+		File file = new File(_CONTEXT_PATH, dirName);
+
+		deleteFile(file);
 
 		SPIClassPathContextListener spiClassPathContextListener =
 			new SPIClassPathContextListener();
@@ -479,13 +490,11 @@ public class SPIClassPathContextListenerTest {
 		}
 		catch (RuntimeException re) {
 			Assert.assertEquals(
-				"Unable to find directory " + _CONTEXT_PATH +
-					dirName, re.getMessage());
+				"Unable to find directory " + file.getAbsolutePath(),
+				re.getMessage());
 		}
 
 		// Not a directory
-
-		File file = new File(_CONTEXT_PATH, dirName);
 
 		file.deleteOnExit();
 
@@ -499,16 +508,16 @@ public class SPIClassPathContextListenerTest {
 		}
 		catch (RuntimeException re) {
 			Assert.assertEquals(
-				"Unable to find directory " + _CONTEXT_PATH +
-					dirName, re.getMessage());
+				"Unable to find directory " + file.getAbsolutePath(),
+				re.getMessage());
 		}
 		finally {
 			file.delete();
 		}
 	}
 
-	private static final String _CONTEXT_PATH = System.getProperty(
-		"java.io.tmpdir");
+	private static final String _CONTEXT_PATH = StringUtil.toLowerCase(
+		System.getProperty("java.io.tmpdir"));
 
 	private static final String _EMBEDDED_LIB_DIR_NAME = "/embeddedLib";
 
@@ -540,7 +549,7 @@ public class SPIClassPathContextListenerTest {
 
 	private File _portalServiceJarFile;
 
-	private class TestClass {
+	private static class TestClass {
 	}
 
 }

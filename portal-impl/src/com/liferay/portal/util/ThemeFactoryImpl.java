@@ -14,11 +14,12 @@
 
 package com.liferay.portal.util;
 
+import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.ThemeFactory;
 import com.liferay.portal.kernel.util.ThemeFactoryUtil;
-import com.liferay.portal.model.Theme;
 import com.liferay.portal.model.impl.ThemeImpl;
 
 /**
@@ -39,20 +40,6 @@ public class ThemeFactoryImpl implements ThemeFactory {
 			companyId, PropsKeys.DEFAULT_REGULAR_THEME_ID);
 
 		return PortalUtil.getJsSafePortletId(defaultRegularThemeId);
-	}
-
-	@Override
-	public Theme getDefaultWapTheme(long companyId) {
-		return new ThemeImpl(
-			ThemeFactoryUtil.getDefaultWapThemeId(companyId), StringPool.BLANK);
-	}
-
-	@Override
-	public String getDefaultWapThemeId(long companyId) {
-		String defaultWapThemeId = PrefsPropsUtil.getString(
-			companyId, PropsKeys.DEFAULT_WAP_THEME_ID);
-
-		return PortalUtil.getJsSafePortletId(defaultWapThemeId);
 	}
 
 	@Override

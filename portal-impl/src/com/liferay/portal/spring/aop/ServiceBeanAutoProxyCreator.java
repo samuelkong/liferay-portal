@@ -52,9 +52,8 @@ public class ServiceBeanAutoProxyCreator
 			(ListableBeanFactory)getBeanFactory();
 
 		Map<String, ChainableMethodAdviceInjector>
-			chainableMethodAdviceInjectors =
-				listableBeanFactory.getBeansOfType(
-					ChainableMethodAdviceInjector.class);
+			chainableMethodAdviceInjectors = listableBeanFactory.getBeansOfType(
+				ChainableMethodAdviceInjector.class);
 
 		for (ChainableMethodAdviceInjector chainableMethodAdviceInjector :
 				chainableMethodAdviceInjectors.values()) {
@@ -116,8 +115,7 @@ public class ServiceBeanAutoProxyCreator
 						_serviceBeanAopCacheManager);
 				}
 
-			}
-		);
+			});
 	}
 
 	@Override

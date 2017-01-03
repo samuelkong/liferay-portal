@@ -16,10 +16,11 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.BrowserTracker;
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.model.BrowserTracker;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,33 @@ import java.io.ObjectOutput;
 public class BrowserTrackerCacheModel implements CacheModel<BrowserTracker>,
 	Externalizable, MVCCModel {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof BrowserTrackerCacheModel)) {
+			return false;
+		}
+
+		BrowserTrackerCacheModel browserTrackerCacheModel = (BrowserTrackerCacheModel)obj;
+
+		if ((browserTrackerId == browserTrackerCacheModel.browserTrackerId) &&
+				(mvccVersion == browserTrackerCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, browserTrackerId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
+	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
 	}
@@ -48,12 +76,14 @@ public class BrowserTrackerCacheModel implements CacheModel<BrowserTracker>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(9);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", browserTrackerId=");
 		sb.append(browserTrackerId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", userId=");
 		sb.append(userId);
 		sb.append(", browserKey=");
@@ -69,6 +99,7 @@ public class BrowserTrackerCacheModel implements CacheModel<BrowserTracker>,
 
 		browserTrackerImpl.setMvccVersion(mvccVersion);
 		browserTrackerImpl.setBrowserTrackerId(browserTrackerId);
+		browserTrackerImpl.setCompanyId(companyId);
 		browserTrackerImpl.setUserId(userId);
 		browserTrackerImpl.setBrowserKey(browserKey);
 
@@ -80,8 +111,13 @@ public class BrowserTrackerCacheModel implements CacheModel<BrowserTracker>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		browserTrackerId = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
+
 		browserKey = objectInput.readLong();
 	}
 
@@ -89,13 +125,19 @@ public class BrowserTrackerCacheModel implements CacheModel<BrowserTracker>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(browserTrackerId);
+
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
+
 		objectOutput.writeLong(browserKey);
 	}
 
 	public long mvccVersion;
 	public long browserTrackerId;
+	public long companyId;
 	public long userId;
 	public long browserKey;
 }

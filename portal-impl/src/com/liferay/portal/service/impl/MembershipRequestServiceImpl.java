@@ -15,11 +15,11 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.MembershipRequest;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.model.MembershipRequest;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.service.base.MembershipRequestServiceBaseImpl;
-import com.liferay.portal.service.permission.GroupPermissionUtil;
 
 /**
  * @author Jorge Ferrer
@@ -37,7 +37,7 @@ public class MembershipRequestServiceImpl
 	}
 
 	@Override
-	public void deleteMembershipRequests(long groupId, int statusId)
+	public void deleteMembershipRequests(long groupId, long statusId)
 		throws PortalException {
 
 		GroupPermissionUtil.check(
@@ -51,13 +51,20 @@ public class MembershipRequestServiceImpl
 	public MembershipRequest getMembershipRequest(long membershipRequestId)
 		throws PortalException {
 
-		return membershipRequestLocalService.getMembershipRequest(
-			membershipRequestId);
+		MembershipRequest membershipRequest =
+			membershipRequestLocalService.getMembershipRequest(
+				membershipRequestId);
+
+		GroupPermissionUtil.check(
+			getPermissionChecker(), membershipRequest.getGroupId(),
+			ActionKeys.ASSIGN_MEMBERS);
+
+		return membershipRequest;
 	}
 
 	@Override
 	public void updateStatus(
-			long membershipRequestId, String reviewComments, int statusId,
+			long membershipRequestId, String reviewComments, long statusId,
 			ServiceContext serviceContext)
 		throws PortalException {
 

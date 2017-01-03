@@ -14,6 +14,9 @@
 
 package com.liferay.portal.verify.model;
 
+import com.liferay.portal.kernel.verify.model.VerifiableAuditedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
+
 /**
  * @author Miguel Pastor
  */
@@ -43,6 +46,11 @@ public class MBThreadVerifiableModel
 	@Override
 	public String getTableName() {
 		return "MBThread";
+	}
+
+	@Override
+	public boolean isAnonymousUserAllowed() {
+		return false;
 	}
 
 	@Override

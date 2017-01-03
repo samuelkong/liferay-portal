@@ -17,48 +17,34 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutType;
+import com.liferay.portal.kernel.model.LayoutTypeAccessPolicy;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.ActionResult;
 import com.liferay.portal.kernel.portlet.PortletContainer;
 import com.liferay.portal.kernel.portlet.PortletContainerException;
 import com.liferay.portal.kernel.portlet.PortletContainerUtil;
-import com.liferay.portal.kernel.portlet.PortletModeFactory;
 import com.liferay.portal.kernel.resiliency.spi.SPIUtil;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
+import com.liferay.portal.kernel.security.auth.AuthTokenWhitelistUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.TempAttributesServletRequest;
 import com.liferay.portal.kernel.struts.LastPath;
-import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutTypePortlet;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.security.auth.AuthTokenUtil;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.service.permission.GroupPermissionUtil;
-import com.liferay.portal.service.permission.LayoutPermissionUtil;
-import com.liferay.portal.service.permission.LayoutPrototypePermissionUtil;
-import com.liferay.portal.service.permission.LayoutSetPrototypePermissionUtil;
-import com.liferay.portal.service.permission.OrganizationPermissionUtil;
-import com.liferay.portal.service.permission.PortletPermissionUtil;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 
 import java.util.List;
 import java.util.Map;
 
 import javax.portlet.Event;
-import javax.portlet.PortletMode;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -139,11 +125,18 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 			_portletContainer.render(request, response, portlet);
 		}
-		catch (PrincipalException e) {
+		catch (PrincipalException pe) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe, pe);
+			}
+
 			processRenderException(request, response, portlet);
 		}
-		catch (PortletContainerException e) {
-			throw e;
+		catch (PortletContainerException pce) {
+			throw pce;
 		}
 		catch (Exception e) {
 			throw new PortletContainerException(e);
@@ -184,10 +177,11 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 		if (!isValidPortletId(portlet.getPortletId())) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Invalid portlet id " + portlet.getPortletId());
+				_log.warn("Invalid portlet ID " + portlet.getPortletId());
 			}
 
-			throw new PrincipalException();
+			throw new PrincipalException(
+				"Invalid portlet ID " + portlet.getPortletId());
 		}
 
 		if (portlet.isUndeployedPortlet()) {
@@ -196,21 +190,13 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 		Layout layout = (Layout)request.getAttribute(WebKeys.LAYOUT);
 
-		if (layout.isTypeControlPanel()) {
-			isAccessAllowedToControlPanelPortlet(request, portlet);
+		LayoutType layoutType = layout.getLayoutType();
 
-			return;
-		}
+		LayoutTypeAccessPolicy layoutTypeAccessPolicy =
+			layoutType.getLayoutTypeAccessPolicy();
 
-		if (isAccessAllowedToLayoutPortlet(request, portlet)) {
-			PortalUtil.addPortletDefaultResource(request, portlet);
-
-			if (hasAccessPermission(request, portlet)) {
-				return;
-			}
-		}
-
-		throw new PrincipalException();
+		layoutTypeAccessPolicy.checkAccessAllowedToPortlet(
+			request, layout, portlet);
 	}
 
 	protected void checkAction(HttpServletRequest request, Portlet portlet)
@@ -229,6 +215,10 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 		boolean checkAuthToken = GetterUtil.getBoolean(
 			initParams.get("check-auth-token"), true);
+
+		if (AuthTokenWhitelistUtil.isPortletCSRFWhitelisted(request, portlet)) {
+			checkAuthToken = false;
+		}
 
 		if (checkAuthToken) {
 			AuthTokenUtil.checkCSRFToken(
@@ -318,277 +308,6 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 		return tempAttributesServletRequest;
 	}
 
-	protected boolean hasAccessPermission(
-			HttpServletRequest request, Portlet portlet)
-		throws PortalException {
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		Layout layout = (Layout)request.getAttribute(WebKeys.LAYOUT);
-
-		PortletMode portletMode = PortletMode.VIEW;
-
-		String portletId = portlet.getPortletId();
-		String ppid = request.getParameter("p_p_id");
-		String ppmode = request.getParameter("p_p_mode");
-
-		if (portletId.equals(ppid) && (ppmode != null)) {
-			portletMode = PortletModeFactory.getPortletMode(ppmode);
-		}
-
-		return PortletPermissionUtil.hasAccessPermission(
-			permissionChecker, themeDisplay.getScopeGroupId(), layout, portlet,
-			portletMode);
-	}
-
-	protected void isAccessAllowedToControlPanelPortlet(
-			HttpServletRequest request, Portlet portlet)
-		throws PortalException {
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		if (PortletPermissionUtil.hasControlPanelAccessPermission(
-				permissionChecker, themeDisplay.getScopeGroupId(), portlet)) {
-
-			return;
-		}
-
-		if (isAccessGrantedByRuntimePortlet(request, portlet)) {
-			return;
-		}
-
-		if (isAccessGrantedByPortletAuthenticationToken(request, portlet)) {
-			return;
-		}
-
-		throw new PrincipalException();
-	}
-
-	protected boolean isAccessAllowedToLayoutPortlet(
-			HttpServletRequest request, Portlet portlet)
-		throws PortalException {
-
-		if (isAccessGrantedByRuntimePortlet(request, portlet)) {
-			return true;
-		}
-
-		if (isAccessGrantedByPortletOnPage(request, portlet)) {
-			return true;
-		}
-
-		if (isLayoutConfigurationAllowed(request, portlet)) {
-			return true;
-		}
-
-		if (isAccessGrantedByPortletAuthenticationToken(request, portlet)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	protected boolean isAccessGrantedByPortletAuthenticationToken(
-		HttpServletRequest request, Portlet portlet) {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		String portletId = portlet.getPortletId();
-
-		if (!portlet.isAddDefaultResource()) {
-			return false;
-		}
-
-		if (!PropsValues.PORTLET_ADD_DEFAULT_RESOURCE_CHECK_ENABLED) {
-			return true;
-		}
-
-		String namespace = PortalUtil.getPortletNamespace(portletId);
-
-		String strutsAction = ParamUtil.getString(
-			request, namespace + "struts_action");
-
-		if (Validator.isNull(strutsAction)) {
-			strutsAction = ParamUtil.getString(request, "struts_action");
-		}
-
-		String requestPortletAuthenticationToken = ParamUtil.getString(
-			request, "p_p_auth");
-
-		if (Validator.isNull(requestPortletAuthenticationToken)) {
-			HttpServletRequest originalRequest =
-				PortalUtil.getOriginalServletRequest(request);
-
-			requestPortletAuthenticationToken = ParamUtil.getString(
-				originalRequest, "p_p_auth");
-		}
-
-		if (AuthTokenUtil.isValidPortletInvocationToken(
-				request, themeDisplay.getPlid(), portletId, strutsAction,
-			requestPortletAuthenticationToken)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	protected boolean isAccessGrantedByPortletOnPage(
-			HttpServletRequest request, Portlet portlet)
-		throws PortalException {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		Layout layout = themeDisplay.getLayout();
-
-		String portletId = portlet.getPortletId();
-
-		if (layout.isTypePanel() &&
-			isPanelSelectedPortlet(themeDisplay, portletId)) {
-
-			return true;
-		}
-
-		LayoutTypePortlet layoutTypePortlet =
-			themeDisplay.getLayoutTypePortlet();
-
-		if ((layoutTypePortlet != null) &&
-			layoutTypePortlet.hasPortletId(portletId)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	protected boolean isAccessGrantedByRuntimePortlet(
-		HttpServletRequest request, Portlet portlet) {
-
-		Boolean renderPortletResource = (Boolean)request.getAttribute(
-			WebKeys.RENDER_PORTLET_RESOURCE);
-
-		if (renderPortletResource != null) {
-			boolean runtimePortlet = renderPortletResource.booleanValue();
-
-			if (runtimePortlet) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	protected boolean isLayoutConfigurationAllowed(
-			HttpServletRequest request, Portlet portlet)
-		throws PortalException {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		if (!themeDisplay.isSignedIn()) {
-			return false;
-		}
-
-		String portletId = portlet.getPortletId();
-
-		if (!portletId.equals(PortletKeys.LAYOUTS_ADMIN)) {
-			return false;
-		}
-
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
-		Layout layout = themeDisplay.getLayout();
-
-		Group group = layout.getGroup();
-
-		if (group.isSite()) {
-			if (LayoutPermissionUtil.contains(
-					permissionChecker, layout, ActionKeys.CUSTOMIZE) ||
-				LayoutPermissionUtil.contains(
-					permissionChecker, layout, ActionKeys.UPDATE)) {
-
-				return true;
-			}
-		}
-
-		if (group.isCompany()) {
-			if (permissionChecker.isCompanyAdmin()) {
-				return true;
-			}
-		}
-		else if (group.isLayoutPrototype()) {
-			long layoutPrototypeId = group.getClassPK();
-
-			if (LayoutPrototypePermissionUtil.contains(
-					permissionChecker, layoutPrototypeId,
-				ActionKeys.UPDATE)) {
-
-				return true;
-			}
-		}
-		else if (group.isLayoutSetPrototype()) {
-			long layoutSetPrototypeId = group.getClassPK();
-
-			if (LayoutSetPrototypePermissionUtil.contains(
-					permissionChecker, layoutSetPrototypeId,
-				ActionKeys.UPDATE)) {
-
-				return true;
-			}
-		}
-		else if (group.isOrganization()) {
-			long organizationId = group.getOrganizationId();
-
-			if (OrganizationPermissionUtil.contains(
-					permissionChecker, organizationId, ActionKeys.UPDATE)) {
-
-				return true;
-			}
-		}
-		else if (group.isUserGroup()) {
-			long scopeGroupId = themeDisplay.getScopeGroupId();
-
-			if (GroupPermissionUtil.contains(
-					permissionChecker, scopeGroupId, ActionKeys.UPDATE)) {
-
-				return true;
-			}
-		}
-		else if (group.isUser()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	protected boolean isPanelSelectedPortlet(
-		ThemeDisplay themeDisplay, String portletId) {
-
-		Layout layout = themeDisplay.getLayout();
-
-		String panelSelectedPortlets = layout.getTypeSettingsProperty(
-			"panelSelectedPortlets");
-
-		if (Validator.isNotNull(panelSelectedPortlets)) {
-			String[] panelSelectedPortletsArray = StringUtil.split(
-				panelSelectedPortlets);
-
-			return ArrayUtil.contains(panelSelectedPortletsArray, portletId);
-		}
-
-		return false;
-	}
-
 	protected boolean isValidPortletId(String portletId) {
 		for (int i = 0; i < portletId.length(); i++) {
 			char c = portletId.charAt(i);
@@ -605,7 +324,7 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 				continue;
 			}
 
-			if (c == CharPool.UNDERLINE) {
+			if ((c == CharPool.POUND) || (c == CharPool.UNDERLINE)) {
 				continue;
 			}
 
@@ -617,18 +336,20 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 	protected ActionResult processActionException(
 		HttpServletRequest request, HttpServletResponse response,
-		Portlet portlet, PrincipalException e) {
+		Portlet portlet, PrincipalException pe) {
 
 		if (_log.isDebugEnabled()) {
-			_log.debug(e);
+			_log.debug(pe);
 		}
 
 		String url = getOriginalURL(request);
 
 		if (_log.isWarnEnabled()) {
 			_log.warn(
-				"Reject process action for " + url + " on " +
-					portlet.getPortletId());
+				String.format(
+					"User %s is not allowed to access URL %s and portlet %s",
+					PortalUtil.getUserId(request), url,
+					portlet.getPortletId()));
 		}
 
 		return ActionResult.EMPTY_ACTION_RESULT;
@@ -653,17 +374,17 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 				requestDispatcher.include(request, response);
 			}
 		}
-		catch (Exception ex) {
-			throw new PortletContainerException(ex);
+		catch (Exception e) {
+			throw new PortletContainerException(e);
 		}
 	}
 
 	protected void processServeResourceException(
 		HttpServletRequest request, HttpServletResponse response,
-		Portlet portlet, PrincipalException e) {
+		Portlet portlet, PrincipalException pe) {
 
 		if (_log.isDebugEnabled()) {
-			_log.debug(e);
+			_log.debug(pe);
 		}
 
 		String url = getOriginalURL(request);
@@ -681,9 +402,9 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		SecurityPortletContainerWrapper.class);
 
-	private PortletContainer _portletContainer;
+	private final PortletContainer _portletContainer;
 
 }

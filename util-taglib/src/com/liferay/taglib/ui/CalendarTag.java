@@ -23,8 +23,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class CalendarTag extends IncludeTag {
 
 	public void setData(Set<Integer> data) {
@@ -75,9 +77,9 @@ public class CalendarTag extends IncludeTag {
 	protected void setAttributes(HttpServletRequest request) {
 		request.setAttribute("liferay-ui:calendar:data", _data);
 		request.setAttribute("liferay-ui:calendar:day", String.valueOf(_day));
+		request.setAttribute("liferay-ui:calendar:headerFormat", _headerFormat);
 		request.setAttribute(
 			"liferay-ui:calendar:headerPattern", _headerPattern);
-		request.setAttribute("liferay-ui:calendar:headerFormat", _headerFormat);
 		request.setAttribute(
 			"liferay-ui:calendar:month", String.valueOf(_month));
 		request.setAttribute(

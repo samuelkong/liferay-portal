@@ -14,11 +14,11 @@
 
 package com.liferay.portal.upgrade.v6_1_0;
 
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.upgrade.BaseUpgradePortletPreferences;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +80,9 @@ public class UpgradeCamelCasePortletPreferences
 
 		Map<String, String[]> preferencesMap = portletPreferences.getMap();
 
-		for (String oldName : preferencesMap.keySet()) {
+		for (Map.Entry<String, String[]> entry : preferencesMap.entrySet()) {
+			String oldName = entry.getKey();
+
 			String newName = _camelCasePreferenceNames.get(oldName);
 
 			if (Validator.isNull(newName)) {
@@ -99,7 +101,7 @@ public class UpgradeCamelCasePortletPreferences
 			}
 
 			if (Validator.isNotNull(newName)) {
-				String[] values = preferencesMap.get(oldName);
+				String[] values = entry.getValue();
 
 				portletPreferences.reset(oldName);
 				portletPreferences.setValues(newName, values);
@@ -110,6 +112,6 @@ public class UpgradeCamelCasePortletPreferences
 	}
 
 	private final Map<String, String> _camelCasePreferenceNames =
-		new HashMap<String, String>();
+		new HashMap<>();
 
 }

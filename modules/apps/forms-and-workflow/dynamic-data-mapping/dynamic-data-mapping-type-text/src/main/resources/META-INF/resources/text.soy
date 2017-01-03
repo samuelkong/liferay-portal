@@ -1,0 +1,68 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the text field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'text'"}
+	{call .text data="all" /}
+{/deltemplate}
+
+/**
+ * Prints the DDM form text field.
+ *
+ * @param? childElementsHTML
+ * @param dir
+ * @param displayStyle
+ * @param? label
+ * @param name
+ * @param placeholder
+ * @param predefinedValue
+ * @param readOnly
+ * @param required
+ * @param showLabel
+ * @param tip
+ * @param tooltip
+ * @param value
+ * @param visible
+ */
+{template .text autoescape="deprecated-contextual"}
+	{let $displayValue: $value ? $value : $predefinedValue ? $predefinedValue : '' /}
+
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-text {$tip ? 'liferay-ddm-form-field-has-tip' : ''}" data-fieldname="{$name}">
+		{if $showLabel}
+			<label class="control-label" for="{$name}">
+				{$label}
+
+				{if $required}
+					<span class="icon-asterisk text-warning"></span>
+				{/if}
+			</label>
+
+			{if $tip}
+				<p class="liferay-ddm-form-field-tip">{$tip}</p>
+			{/if}
+		{/if}
+
+		<div class="input-group-container {if $tooltip}input-group-default{/if}">
+			{if $displayStyle == 'multiline'}
+				<textarea class="field form-control" dir="{$dir}" id="{$name}" name="{$name}" placeholder="{$placeholder}" {if $readOnly}readonly{/if} >
+					{$displayValue}
+				</textarea>
+			{else}
+				<input class="field form-control" dir="{$dir}" id="{$name}" name="{$name}" placeholder="{$placeholder}" {if $readOnly}readonly{/if} type="text" value="{$displayValue}">
+			{/if}
+
+			{if $tooltip}
+				<span class="input-group-addon">
+					<span class="input-group-addon-content">
+						<a class="help-icon help-icon-default icon-monospaced icon-question" data-original-title="{$tooltip}" data-toggle="popover" href="javascript:;" title="{$tooltip}"></a>
+					</span>
+				</span>
+			{/if}
+		</div>
+
+		{if $childElementsHTML}
+			{$childElementsHTML|noAutoescape}
+		{/if}
+	</div>
+{/template}

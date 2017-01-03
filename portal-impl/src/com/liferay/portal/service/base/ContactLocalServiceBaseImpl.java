@@ -17,36 +17,37 @@ package com.liferay.portal.service.base;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.BaseLocalServiceImpl;
+import com.liferay.portal.kernel.service.ContactLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
+import com.liferay.portal.kernel.service.persistence.AddressPersistence;
+import com.liferay.portal.kernel.service.persistence.ContactPersistence;
+import com.liferay.portal.kernel.service.persistence.EmailAddressPersistence;
+import com.liferay.portal.kernel.service.persistence.OrganizationFinder;
+import com.liferay.portal.kernel.service.persistence.OrganizationPersistence;
+import com.liferay.portal.kernel.service.persistence.PhonePersistence;
+import com.liferay.portal.kernel.service.persistence.UserFinder;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
+import com.liferay.portal.kernel.service.persistence.WebsitePersistence;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.PersistedModel;
-import com.liferay.portal.service.BaseLocalServiceImpl;
-import com.liferay.portal.service.ContactLocalService;
-import com.liferay.portal.service.PersistedModelLocalServiceRegistry;
-import com.liferay.portal.service.persistence.AddressPersistence;
-import com.liferay.portal.service.persistence.ContactPersistence;
-import com.liferay.portal.service.persistence.EmailAddressPersistence;
-import com.liferay.portal.service.persistence.OrganizationFinder;
-import com.liferay.portal.service.persistence.OrganizationPersistence;
-import com.liferay.portal.service.persistence.PhonePersistence;
-import com.liferay.portal.service.persistence.UserFinder;
-import com.liferay.portal.service.persistence.UserPersistence;
-import com.liferay.portal.service.persistence.WebsitePersistence;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.io.Serializable;
 
@@ -63,16 +64,16 @@ import javax.sql.DataSource;
  *
  * @author Brian Wing Shun Chan
  * @see com.liferay.portal.service.impl.ContactLocalServiceImpl
- * @see com.liferay.portal.service.ContactLocalServiceUtil
+ * @see com.liferay.portal.kernel.service.ContactLocalServiceUtil
  * @generated
  */
 @ProviderType
 public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
-	implements ContactLocalService, IdentifiableBean {
+	implements ContactLocalService, IdentifiableOSGiService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link com.liferay.portal.service.ContactLocalServiceUtil} to access the contact local service.
+	 * Never modify or reference this class directly. Always use {@link com.liferay.portal.kernel.service.ContactLocalServiceUtil} to access the contact local service.
 	 */
 
 	/**
@@ -183,10 +184,10 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
-	 * @return the number of rows that match the dynamic query
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
@@ -194,11 +195,11 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
-	 * @return the number of rows that match the dynamic query
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
@@ -227,20 +228,33 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	public ActionableDynamicQuery getActionableDynamicQuery() {
 		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
 
-		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.service.ContactLocalServiceUtil.getService());
-		actionableDynamicQuery.setClass(Contact.class);
+		actionableDynamicQuery.setBaseLocalService(contactLocalService);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
+		actionableDynamicQuery.setModelClass(Contact.class);
 
 		actionableDynamicQuery.setPrimaryKeyPropertyName("contactId");
 
 		return actionableDynamicQuery;
 	}
 
+	@Override
+	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery = new IndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setBaseLocalService(contactLocalService);
+		indexableActionableDynamicQuery.setClassLoader(getClassLoader());
+		indexableActionableDynamicQuery.setModelClass(Contact.class);
+
+		indexableActionableDynamicQuery.setPrimaryKeyPropertyName("contactId");
+
+		return indexableActionableDynamicQuery;
+	}
+
 	protected void initActionableDynamicQuery(
 		ActionableDynamicQuery actionableDynamicQuery) {
-		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.service.ContactLocalServiceUtil.getService());
-		actionableDynamicQuery.setClass(Contact.class);
+		actionableDynamicQuery.setBaseLocalService(contactLocalService);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
+		actionableDynamicQuery.setModelClass(Contact.class);
 
 		actionableDynamicQuery.setPrimaryKeyPropertyName("contactId");
 	}
@@ -303,7 +317,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the contact local service
 	 */
-	public com.liferay.portal.service.ContactLocalService getContactLocalService() {
+	public ContactLocalService getContactLocalService() {
 		return contactLocalService;
 	}
 
@@ -312,28 +326,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param contactLocalService the contact local service
 	 */
-	public void setContactLocalService(
-		com.liferay.portal.service.ContactLocalService contactLocalService) {
+	public void setContactLocalService(ContactLocalService contactLocalService) {
 		this.contactLocalService = contactLocalService;
-	}
-
-	/**
-	 * Returns the contact remote service.
-	 *
-	 * @return the contact remote service
-	 */
-	public com.liferay.portal.service.ContactService getContactService() {
-		return contactService;
-	}
-
-	/**
-	 * Sets the contact remote service.
-	 *
-	 * @param contactService the contact remote service
-	 */
-	public void setContactService(
-		com.liferay.portal.service.ContactService contactService) {
-		this.contactService = contactService;
 	}
 
 	/**
@@ -359,7 +353,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the counter local service
 	 */
-	public com.liferay.counter.service.CounterLocalService getCounterLocalService() {
+	public com.liferay.counter.kernel.service.CounterLocalService getCounterLocalService() {
 		return counterLocalService;
 	}
 
@@ -369,7 +363,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param counterLocalService the counter local service
 	 */
 	public void setCounterLocalService(
-		com.liferay.counter.service.CounterLocalService counterLocalService) {
+		com.liferay.counter.kernel.service.CounterLocalService counterLocalService) {
 		this.counterLocalService = counterLocalService;
 	}
 
@@ -378,7 +372,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the address local service
 	 */
-	public com.liferay.portal.service.AddressLocalService getAddressLocalService() {
+	public com.liferay.portal.kernel.service.AddressLocalService getAddressLocalService() {
 		return addressLocalService;
 	}
 
@@ -388,27 +382,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param addressLocalService the address local service
 	 */
 	public void setAddressLocalService(
-		com.liferay.portal.service.AddressLocalService addressLocalService) {
+		com.liferay.portal.kernel.service.AddressLocalService addressLocalService) {
 		this.addressLocalService = addressLocalService;
-	}
-
-	/**
-	 * Returns the address remote service.
-	 *
-	 * @return the address remote service
-	 */
-	public com.liferay.portal.service.AddressService getAddressService() {
-		return addressService;
-	}
-
-	/**
-	 * Sets the address remote service.
-	 *
-	 * @param addressService the address remote service
-	 */
-	public void setAddressService(
-		com.liferay.portal.service.AddressService addressService) {
-		this.addressService = addressService;
 	}
 
 	/**
@@ -434,7 +409,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the email address local service
 	 */
-	public com.liferay.portal.service.EmailAddressLocalService getEmailAddressLocalService() {
+	public com.liferay.portal.kernel.service.EmailAddressLocalService getEmailAddressLocalService() {
 		return emailAddressLocalService;
 	}
 
@@ -444,27 +419,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param emailAddressLocalService the email address local service
 	 */
 	public void setEmailAddressLocalService(
-		com.liferay.portal.service.EmailAddressLocalService emailAddressLocalService) {
+		com.liferay.portal.kernel.service.EmailAddressLocalService emailAddressLocalService) {
 		this.emailAddressLocalService = emailAddressLocalService;
-	}
-
-	/**
-	 * Returns the email address remote service.
-	 *
-	 * @return the email address remote service
-	 */
-	public com.liferay.portal.service.EmailAddressService getEmailAddressService() {
-		return emailAddressService;
-	}
-
-	/**
-	 * Sets the email address remote service.
-	 *
-	 * @param emailAddressService the email address remote service
-	 */
-	public void setEmailAddressService(
-		com.liferay.portal.service.EmailAddressService emailAddressService) {
-		this.emailAddressService = emailAddressService;
 	}
 
 	/**
@@ -491,7 +447,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the organization local service
 	 */
-	public com.liferay.portal.service.OrganizationLocalService getOrganizationLocalService() {
+	public com.liferay.portal.kernel.service.OrganizationLocalService getOrganizationLocalService() {
 		return organizationLocalService;
 	}
 
@@ -501,27 +457,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param organizationLocalService the organization local service
 	 */
 	public void setOrganizationLocalService(
-		com.liferay.portal.service.OrganizationLocalService organizationLocalService) {
+		com.liferay.portal.kernel.service.OrganizationLocalService organizationLocalService) {
 		this.organizationLocalService = organizationLocalService;
-	}
-
-	/**
-	 * Returns the organization remote service.
-	 *
-	 * @return the organization remote service
-	 */
-	public com.liferay.portal.service.OrganizationService getOrganizationService() {
-		return organizationService;
-	}
-
-	/**
-	 * Sets the organization remote service.
-	 *
-	 * @param organizationService the organization remote service
-	 */
-	public void setOrganizationService(
-		com.liferay.portal.service.OrganizationService organizationService) {
-		this.organizationService = organizationService;
 	}
 
 	/**
@@ -566,7 +503,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the phone local service
 	 */
-	public com.liferay.portal.service.PhoneLocalService getPhoneLocalService() {
+	public com.liferay.portal.kernel.service.PhoneLocalService getPhoneLocalService() {
 		return phoneLocalService;
 	}
 
@@ -576,27 +513,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param phoneLocalService the phone local service
 	 */
 	public void setPhoneLocalService(
-		com.liferay.portal.service.PhoneLocalService phoneLocalService) {
+		com.liferay.portal.kernel.service.PhoneLocalService phoneLocalService) {
 		this.phoneLocalService = phoneLocalService;
-	}
-
-	/**
-	 * Returns the phone remote service.
-	 *
-	 * @return the phone remote service
-	 */
-	public com.liferay.portal.service.PhoneService getPhoneService() {
-		return phoneService;
-	}
-
-	/**
-	 * Sets the phone remote service.
-	 *
-	 * @param phoneService the phone remote service
-	 */
-	public void setPhoneService(
-		com.liferay.portal.service.PhoneService phoneService) {
-		this.phoneService = phoneService;
 	}
 
 	/**
@@ -622,7 +540,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the user local service
 	 */
-	public com.liferay.portal.service.UserLocalService getUserLocalService() {
+	public com.liferay.portal.kernel.service.UserLocalService getUserLocalService() {
 		return userLocalService;
 	}
 
@@ -632,27 +550,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param userLocalService the user local service
 	 */
 	public void setUserLocalService(
-		com.liferay.portal.service.UserLocalService userLocalService) {
+		com.liferay.portal.kernel.service.UserLocalService userLocalService) {
 		this.userLocalService = userLocalService;
-	}
-
-	/**
-	 * Returns the user remote service.
-	 *
-	 * @return the user remote service
-	 */
-	public com.liferay.portal.service.UserService getUserService() {
-		return userService;
-	}
-
-	/**
-	 * Sets the user remote service.
-	 *
-	 * @param userService the user remote service
-	 */
-	public void setUserService(
-		com.liferay.portal.service.UserService userService) {
-		this.userService = userService;
 	}
 
 	/**
@@ -696,7 +595,7 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @return the website local service
 	 */
-	public com.liferay.portal.service.WebsiteLocalService getWebsiteLocalService() {
+	public com.liferay.portal.kernel.service.WebsiteLocalService getWebsiteLocalService() {
 		return websiteLocalService;
 	}
 
@@ -706,27 +605,8 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param websiteLocalService the website local service
 	 */
 	public void setWebsiteLocalService(
-		com.liferay.portal.service.WebsiteLocalService websiteLocalService) {
+		com.liferay.portal.kernel.service.WebsiteLocalService websiteLocalService) {
 		this.websiteLocalService = websiteLocalService;
-	}
-
-	/**
-	 * Returns the website remote service.
-	 *
-	 * @return the website remote service
-	 */
-	public com.liferay.portal.service.WebsiteService getWebsiteService() {
-		return websiteService;
-	}
-
-	/**
-	 * Sets the website remote service.
-	 *
-	 * @param websiteService the website remote service
-	 */
-	public void setWebsiteService(
-		com.liferay.portal.service.WebsiteService websiteService) {
-		this.websiteService = websiteService;
 	}
 
 	/**
@@ -748,33 +628,23 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	public void afterPropertiesSet() {
-		persistedModelLocalServiceRegistry.register("com.liferay.portal.model.Contact",
+		persistedModelLocalServiceRegistry.register("com.liferay.portal.kernel.model.Contact",
 			contactLocalService);
 	}
 
 	public void destroy() {
 		persistedModelLocalServiceRegistry.unregister(
-			"com.liferay.portal.model.Contact");
+			"com.liferay.portal.kernel.model.Contact");
 	}
 
 	/**
-	 * Returns the Spring bean ID for this bean.
+	 * Returns the OSGi service identifier.
 	 *
-	 * @return the Spring bean ID for this bean
+	 * @return the OSGi service identifier
 	 */
 	@Override
-	public String getBeanIdentifier() {
-		return _beanIdentifier;
-	}
-
-	/**
-	 * Sets the Spring bean ID for this bean.
-	 *
-	 * @param beanIdentifier the Spring bean ID for this bean
-	 */
-	@Override
-	public void setBeanIdentifier(String beanIdentifier) {
-		_beanIdentifier = beanIdentifier;
+	public String getOSGiServiceIdentifier() {
+		return ContactLocalService.class.getName();
 	}
 
 	protected Class<?> getModelClass() {
@@ -794,13 +664,13 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 		try {
 			DataSource dataSource = contactPersistence.getDataSource();
 
-			DB db = DBFactoryUtil.getDB();
+			DB db = DBManagerUtil.getDB();
 
 			sql = db.buildSQL(sql);
 			sql = PortalUtil.transformSQL(sql);
 
 			SqlUpdate sqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(dataSource,
-					sql, new int[0]);
+					sql);
 
 			sqlUpdate.update();
 		}
@@ -809,55 +679,40 @@ public abstract class ContactLocalServiceBaseImpl extends BaseLocalServiceImpl
 		}
 	}
 
-	@BeanReference(type = com.liferay.portal.service.ContactLocalService.class)
-	protected com.liferay.portal.service.ContactLocalService contactLocalService;
-	@BeanReference(type = com.liferay.portal.service.ContactService.class)
-	protected com.liferay.portal.service.ContactService contactService;
+	@BeanReference(type = ContactLocalService.class)
+	protected ContactLocalService contactLocalService;
 	@BeanReference(type = ContactPersistence.class)
 	protected ContactPersistence contactPersistence;
-	@BeanReference(type = com.liferay.counter.service.CounterLocalService.class)
-	protected com.liferay.counter.service.CounterLocalService counterLocalService;
-	@BeanReference(type = com.liferay.portal.service.AddressLocalService.class)
-	protected com.liferay.portal.service.AddressLocalService addressLocalService;
-	@BeanReference(type = com.liferay.portal.service.AddressService.class)
-	protected com.liferay.portal.service.AddressService addressService;
+	@BeanReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
+	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
+	@BeanReference(type = com.liferay.portal.kernel.service.AddressLocalService.class)
+	protected com.liferay.portal.kernel.service.AddressLocalService addressLocalService;
 	@BeanReference(type = AddressPersistence.class)
 	protected AddressPersistence addressPersistence;
-	@BeanReference(type = com.liferay.portal.service.EmailAddressLocalService.class)
-	protected com.liferay.portal.service.EmailAddressLocalService emailAddressLocalService;
-	@BeanReference(type = com.liferay.portal.service.EmailAddressService.class)
-	protected com.liferay.portal.service.EmailAddressService emailAddressService;
+	@BeanReference(type = com.liferay.portal.kernel.service.EmailAddressLocalService.class)
+	protected com.liferay.portal.kernel.service.EmailAddressLocalService emailAddressLocalService;
 	@BeanReference(type = EmailAddressPersistence.class)
 	protected EmailAddressPersistence emailAddressPersistence;
-	@BeanReference(type = com.liferay.portal.service.OrganizationLocalService.class)
-	protected com.liferay.portal.service.OrganizationLocalService organizationLocalService;
-	@BeanReference(type = com.liferay.portal.service.OrganizationService.class)
-	protected com.liferay.portal.service.OrganizationService organizationService;
+	@BeanReference(type = com.liferay.portal.kernel.service.OrganizationLocalService.class)
+	protected com.liferay.portal.kernel.service.OrganizationLocalService organizationLocalService;
 	@BeanReference(type = OrganizationPersistence.class)
 	protected OrganizationPersistence organizationPersistence;
 	@BeanReference(type = OrganizationFinder.class)
 	protected OrganizationFinder organizationFinder;
-	@BeanReference(type = com.liferay.portal.service.PhoneLocalService.class)
-	protected com.liferay.portal.service.PhoneLocalService phoneLocalService;
-	@BeanReference(type = com.liferay.portal.service.PhoneService.class)
-	protected com.liferay.portal.service.PhoneService phoneService;
+	@BeanReference(type = com.liferay.portal.kernel.service.PhoneLocalService.class)
+	protected com.liferay.portal.kernel.service.PhoneLocalService phoneLocalService;
 	@BeanReference(type = PhonePersistence.class)
 	protected PhonePersistence phonePersistence;
-	@BeanReference(type = com.liferay.portal.service.UserLocalService.class)
-	protected com.liferay.portal.service.UserLocalService userLocalService;
-	@BeanReference(type = com.liferay.portal.service.UserService.class)
-	protected com.liferay.portal.service.UserService userService;
+	@BeanReference(type = com.liferay.portal.kernel.service.UserLocalService.class)
+	protected com.liferay.portal.kernel.service.UserLocalService userLocalService;
 	@BeanReference(type = UserPersistence.class)
 	protected UserPersistence userPersistence;
 	@BeanReference(type = UserFinder.class)
 	protected UserFinder userFinder;
-	@BeanReference(type = com.liferay.portal.service.WebsiteLocalService.class)
-	protected com.liferay.portal.service.WebsiteLocalService websiteLocalService;
-	@BeanReference(type = com.liferay.portal.service.WebsiteService.class)
-	protected com.liferay.portal.service.WebsiteService websiteService;
+	@BeanReference(type = com.liferay.portal.kernel.service.WebsiteLocalService.class)
+	protected com.liferay.portal.kernel.service.WebsiteLocalService websiteLocalService;
 	@BeanReference(type = WebsitePersistence.class)
 	protected WebsitePersistence websitePersistence;
 	@BeanReference(type = PersistedModelLocalServiceRegistry.class)
 	protected PersistedModelLocalServiceRegistry persistedModelLocalServiceRegistry;
-	private String _beanIdentifier;
 }

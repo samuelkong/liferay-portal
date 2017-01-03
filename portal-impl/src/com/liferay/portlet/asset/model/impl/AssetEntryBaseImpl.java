@@ -16,8 +16,8 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.asset.model.AssetEntry;
-import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 
 /**
  * The extended model base implementation for the AssetEntry service. Represents a row in the &quot;AssetEntry&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see AssetEntryImpl
- * @see com.liferay.portlet.asset.model.AssetEntry
+ * @see AssetEntry
  * @generated
  */
 @ProviderType

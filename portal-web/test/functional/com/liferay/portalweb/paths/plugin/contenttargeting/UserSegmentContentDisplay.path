@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>UserSegmentContentDisplay</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">UserSegmentContentDisplay</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ENTRY_CONTENT</td>
+	<td>//div[contains(@id,'UserSegmentContentDisplayPortlet')]//div[@class='full-content']</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PREVIEW-->
+<tr>
+	<td>PREVIEW_DOCUMENT_1_PNG</td>
+	<td>portal/portlets/user_segment_content_display_document.png</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RULE_PANEL-->
+<tr>
+	<td>RULE_PANEL_BELONGS_RADIO</td>
+	<td>xpath=(//label[contains(.,'belongs')]/input)[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_DOES_NOT_BELONG_RADIO</td>
+	<td>xpath=(//label[contains(.,'does not belong')]/input)[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_ANY_RADIO</td>
+	<td>xpath=(//label[contains(.,'Any')]/input)[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_ALL_RADIO</td>
+	<td>xpath=(//label[contains(.,'All')]/input)[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_USER_SEGMENT_SELECT_BUTTON</td>
+	<td>xpath=(//button[@title='Select User Segments'])[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_SELECTED_USER_SEGMENT</td>
+	<td>//span[contains(.,'${key_userSegmentName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_DISPLAY_CONTENT_SELECT</td>
+	<td>xpath=(//div/a[@title='Select Content'])[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RULE_PANEL_USER_SEGMENT_SELECT_USER_SEGMENT-->
+<tr>
+	<td>RULE_PANEL_USER_SEGMENT_SELECT_USER_SEGMENT_CHECKBOX</td>
+	<td>//div[contains(.,'${key_userSegmentName}')]/span[@class='tree-label']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_USER_SEGMENT_SELECT_USER_SEGMENT_SCOPE</td>
+	<td>//div[contains(.,'${key_userSegmentName}')]//span[@class='tree-label'][contains(.,'${key_siteScope}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_USER_SEGMENT_SELECT_USER_SEGMENT_SEARCH_BAR</td>
+	<td>//input[contains(@class,'search-query')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_USER_SEGMENT_SELECT_USER_SEGMENT_CLOSE_BUTTON</td>
+	<td>//div[contains(@class,'selector-popup')]//button[contains(@class,'close-content')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

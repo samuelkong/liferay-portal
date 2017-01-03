@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.UserNotificationDelivery;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.UserNotificationDelivery;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,33 @@ import java.io.ObjectOutput;
 @ProviderType
 public class UserNotificationDeliveryCacheModel implements CacheModel<UserNotificationDelivery>,
 	Externalizable, MVCCModel {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof UserNotificationDeliveryCacheModel)) {
+			return false;
+		}
+
+		UserNotificationDeliveryCacheModel userNotificationDeliveryCacheModel = (UserNotificationDeliveryCacheModel)obj;
+
+		if ((userNotificationDeliveryId == userNotificationDeliveryCacheModel.userNotificationDeliveryId) &&
+				(mvccVersion == userNotificationDeliveryCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, userNotificationDeliveryId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
 	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
@@ -103,13 +131,20 @@ public class UserNotificationDeliveryCacheModel implements CacheModel<UserNotifi
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		userNotificationDeliveryId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		portletId = objectInput.readUTF();
+
 		classNameId = objectInput.readLong();
+
 		notificationType = objectInput.readInt();
+
 		deliveryType = objectInput.readInt();
+
 		deliver = objectInput.readBoolean();
 	}
 
@@ -117,8 +152,11 @@ public class UserNotificationDeliveryCacheModel implements CacheModel<UserNotifi
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(userNotificationDeliveryId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (portletId == null) {
@@ -129,8 +167,11 @@ public class UserNotificationDeliveryCacheModel implements CacheModel<UserNotifi
 		}
 
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeInt(notificationType);
+
 		objectOutput.writeInt(deliveryType);
+
 		objectOutput.writeBoolean(deliver);
 	}
 

@@ -28,7 +28,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 
 import java.io.IOException;
 
@@ -52,26 +52,40 @@ public class AxisServlet extends org.apache.axis.transport.http.AxisServlet {
 			doDestroy();
 		}
 		else {
-			DestroyThread destroyThread = new DestroyThread();
+			Thread currentThread = Thread.currentThread();
 
-			destroyThread.start();
+			ClassLoader contextClassLoader =
+				currentThread.getContextClassLoader();
+
+			Class<?> clazz = getClass();
+
+			currentThread.setContextClassLoader(clazz.getClassLoader());
 
 			try {
-				destroyThread.join();
-			}
-			catch (InterruptedException ie) {
-				throw new RuntimeException(ie);
-			}
+				DestroyThread destroyThread = new DestroyThread();
 
-			Exception e = destroyThread.getException();
+				destroyThread.start();
 
-			if (e != null) {
-				if (e instanceof RuntimeException) {
-					throw (RuntimeException)e;
+				try {
+					destroyThread.join();
 				}
-				else {
-					throw new RuntimeException(e);
+				catch (InterruptedException ie) {
+					throw new RuntimeException(ie);
 				}
+
+				Exception e = destroyThread.getException();
+
+				if (e != null) {
+					if (e instanceof RuntimeException) {
+						throw (RuntimeException)e;
+					}
+					else {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+			finally {
+				currentThread.setContextClassLoader(contextClassLoader);
 			}
 		}
 	}
@@ -253,7 +267,7 @@ public class AxisServlet extends org.apache.axis.transport.http.AxisServlet {
 				_correctStringArray
 			});
 
-		Document document = SAXReaderUtil.read(xml);
+		Document document = UnsecureSAXReaderUtil.read(xml);
 
 		return document.formattedString();
 	}

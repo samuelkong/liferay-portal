@@ -19,8 +19,10 @@ import com.liferay.portal.kernel.util.HashCodeFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, replaced by {@link com.liferay.shopping.util.State)}
  */
+@Deprecated
 public class State {
 
 	public State(String id, String name) {

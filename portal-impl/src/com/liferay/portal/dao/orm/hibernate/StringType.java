@@ -15,13 +15,14 @@
 package com.liferay.portal.dao.orm.hibernate;
 
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.util.Objects;
 
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -52,7 +53,7 @@ public class StringType implements CompositeUserType, Serializable {
 
 	@Override
 	public boolean equals(Object x, Object y) {
-		if (Validator.equals(x, y)) {
+		if (Objects.equals(x, y)) {
 			return true;
 		}
 		else if (((x == null) || x.equals(StringPool.BLANK)) &&
@@ -104,6 +105,14 @@ public class StringType implements CompositeUserType, Serializable {
 			PreparedStatement ps, Object target, int index,
 			SessionImplementor session)
 		throws SQLException {
+
+		if (target instanceof String) {
+			String targetString = (String)target;
+
+			if (targetString.isEmpty()) {
+				target = null;
+			}
+		}
 
 		StandardBasicTypes.STRING.nullSafeSet(ps, target, index, session);
 	}

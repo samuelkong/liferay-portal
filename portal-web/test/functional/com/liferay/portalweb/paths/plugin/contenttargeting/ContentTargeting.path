@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>ContentTargeting</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ContentTargeting</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>PLUS_LINK</td>
+	<td>xpath=(//div[contains(@class,'lfr-form-row')]//button[contains(@class,'add-row')])[${key_indexNumber}]</td>
+	<td></td>
+</tr>
+<!--FORM-->
+<tr>
+	<td>FORM_SEARCH_FIELD</td>
+	<td>//input[contains(@id,'ContentTargetingPortlet_searchPanel')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_BUILDER</td>
+	<td>//div[contains(@class,'form-builder-drop-container')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_FIELD_COLLAPSED</td>
+	<td>//div[contains(@class,'field-header') and contains(@class,'collapsed')]//h2[contains(.,'${key_fieldName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CARD-->
+<tr>
+	<td>CARD_CONTENT_TITLE_GENERIC</td>
+	<td>//span[contains(@class,'lfr-card-title-text')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CARD_CONTENT_TITLE_GENERIC_LINK</td>
+	<td>//span[contains(@class,'lfr-card-title-text')]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CARD_CONTENT_TITLE</td>
+	<td>//span[contains(@class,'lfr-card-title-text') and contains(.,'${key_contentTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CARD_CONTENT_TITLE_LINK</td>
+	<td>//span[contains(@class,'lfr-card-title-text') and contains(.,'${key_contentTitle}')]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CARD_CONTENT_TYPE</td>
+	<td>//span[contains(@class,'lfr-card-subtitle-text') and contains(.,'${key_contentType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--OTHERWISE_PANEL-->
+<tr>
+	<td>OTHERWISE_PANEL</td>
+	<td>//div[contains(@class,'field-row')]//div[contains(.,'Otherwise')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OTHERWISE_PANEL_DONT_DISPLAY_ANYTHING_RADIO</td>
+	<td>//input[contains(@id,'DefaultValueDont')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OTHERWISE_PANEL_DISPLAY_THIS_CONTENT_RADIO</td>
+	<td>//label[contains(.,'Display this content')]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OTHERWISE_PANEL_SELECT_CONTENT</td>
+	<td>//div[contains(@class,'field-row')]//div[contains(.,'Otherwise')]//div/a[@title='Select Content']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OTHERWISE_PANEL_SELECTED_CONTENT_TITLE</td>
+	<td>//div[contains(@class,'field-row')]//div[contains(.,'Otherwise')]//span[contains(@class,'lfr-card-title-text') and contains(.,'${key_contentTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OTHERWISE_PANEL_SELECTED_CONTENT_TYPE</td>
+	<td>//div[contains(@class,'field-row')]//div[contains(.,'Otherwise')]//span[contains(@class,'lfr-card-subtitle-text') and contains(.,'${key_contentType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PREVIEW-->
+<tr>
+	<td>PREVIEW</td>
+	<td>//div[//li[contains(@id,'PreviewContent')] and contains(@class,'open')]//a[contains(.,'${key_previewEntry}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_BUTTON</td>
+	<td>//div[contains(@class,'portlet-content') and contains(.,'${key_portletName}')]//div[contains(@class,'preview-button')]/button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_BUTTON_STAGING_LIVE_MODE</td>
+	<td>//div/h2[contains(@class,'portlet-title') and contains(.,'${key_portletName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VIEW_ENTRY_CONTENT</td>
+	<td>//div[contains(@id,'content_targeting') and contains(.,'${key_portletName}')]//div[@class='full-content']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_BUTTON_EXPANDED</td>
+	<td>//div[h2[contains(.,'${key_portletName}')]]//button[@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIEW_ENTRY_SELECTED</td>
+	<td>//div[contains(@class,'open')]//li[@class='active' and contains(.,'${key_viewEntrySelected}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--REPORT_TABLE-->
+<tr>
+	<td>REPORT_TABLE_CONTENT</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_reportTitle}')]/td[normalize-space(.//text())='${key_contentReports}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPORT_TABLE_TITLE</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_reportTitle}')]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPORT_TABLE_TYPE</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_reportTitle}')]/td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPORT_TABLE_EVENT</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_reportTitle}')]/td[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPORT_TABLE_COUNT</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_reportTitle}')]/td[4]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

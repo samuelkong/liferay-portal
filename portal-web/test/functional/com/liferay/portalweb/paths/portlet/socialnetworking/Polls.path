@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>Polls</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Polls</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ACTIONS_DROPDOWN_PERMISSIONS</td>
+	<td>//ul[contains(@class,'dropdown-menu')]//span[contains(.,'Permissions')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOICE_FIELD</td>
+	<td>//input[contains(@id,'choiceDescription${key_choiceField}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOICE_A_FIELD</td>
+	<td>//input[contains(@id,'choiceDescriptiona')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOICE_B_FIELD</td>
+	<td>//input[contains(@id,'choiceDescriptionb')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOICE_C_FIELD</td>
+	<td>//input[contains(@id,'choiceDescriptionc')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOICE_D_FIELD</td>
+	<td>//input[contains(@id,'choiceDescriptiond')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOICE_E_FIELD</td>
+	<td>//input[contains(@id,'choiceDescriptione')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_CHOICE_BUTTON</td>
+	<td>//button[contains(.,'Add Choice')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_NEW_POLL</td>
+	<td>//span[contains(@class,'lfr-icon-action')]/a[contains(.,'Add')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_QUESTION</td>
+	<td>//div[contains(@class,'lfr-icon-actions')]/span[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>POLL_QUESTION</td>
+	<td>//form[contains(@id,'PollsDisplayPortlet') and contains(.,'${key_pollsQuestion}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>POLL_QUESTION_CHOICE</td>
+	<td>//label[contains(.,'${key_pollsQuestionChoice}')]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_QUESTION</td>
+	<td>//span[contains(@class,'taglib-text') and contains(.,'Select Poll')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TITLE_DROPDOWN_SELECT</td>
+	<td>//select[contains(@id,'questionId')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--POLLS_TABLE-->
+<tr>
+	<td>POLLS_TABLE_TITLE</td>
+	<td>//tr[contains(.,'${key_pollsQuestionTitle}')]/td[1]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>POLLS_TABLE_ACTION</td>
+	<td>//tr[contains(.,'${key_pollsQuestionTitle}')]/td[5]//div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>POLLS_TABLE_ACTIONS_GENERIC</td>
+	<td>//tr/td[5]//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--VOTES-->
+<tr>
+	<td>VOTES_PERCENTAGE</td>
+	<td>//tr[contains(.,'${key_pollsQuestionChoice}')]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VOTES_NUMBER</td>
+	<td>//tr[contains(.,'${key_pollsQuestionChoice}')]/td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VOTES_TOTAL</td>
+	<td>//form[contains(@id,'PollsDisplayPortlet')]//div[contains(.,'Total Votes: ${key_pollsQuestionTotalVotes}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CHART-->
+<tr>
+	<td>CHART_AREA</td>
+	<td>//a[contains(@href,'area')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHART_IMAGE</td>
+	<td>//img[1]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

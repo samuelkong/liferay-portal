@@ -17,14 +17,16 @@ package com.liferay.portlet.usersadmin.search;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.PortalPreferences;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
+import com.liferay.users.admin.kernel.util.UsersAdminUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,9 +44,8 @@ public class OrganizationSearch extends SearchContainer<Organization> {
 	public static final String EMPTY_RESULTS_MESSAGE =
 		"no-organizations-were-found";
 
-	public static List<String> headerNames = new ArrayList<String>();
-	public static Map<String, String> orderableHeaders =
-		new HashMap<String, String>();
+	public static List<String> headerNames = new ArrayList<>();
+	public static Map<String, String> orderableHeaders = new HashMap<>();
 
 	static {
 		headerNames.add("name");
@@ -101,6 +102,9 @@ public class OrganizationSearch extends SearchContainer<Organization> {
 				PortletPreferencesFactoryUtil.getPortalPreferences(
 					portletRequest);
 
+			String portletId = PortletProviderUtil.getPortletId(
+				User.class.getName(), PortletProvider.Action.VIEW);
+
 			String orderByCol = ParamUtil.getString(
 				portletRequest, "orderByCol");
 			String orderByType = ParamUtil.getString(
@@ -110,19 +114,15 @@ public class OrganizationSearch extends SearchContainer<Organization> {
 				Validator.isNotNull(orderByType)) {
 
 				preferences.setValue(
-					PortletKeys.USERS_ADMIN, "organizations-order-by-col",
-					orderByCol);
+					portletId, "organizations-order-by-col", orderByCol);
 				preferences.setValue(
-					PortletKeys.USERS_ADMIN, "organizations-order-by-type",
-					orderByType);
+					portletId, "organizations-order-by-type", orderByType);
 			}
 			else {
 				orderByCol = preferences.getValue(
-					PortletKeys.USERS_ADMIN, "organizations-order-by-col",
-					"name");
+					portletId, "organizations-order-by-col", "name");
 				orderByType = preferences.getValue(
-					PortletKeys.USERS_ADMIN, "organizations-order-by-type",
-					"asc");
+					portletId, "organizations-order-by-type", "asc");
 			}
 
 			OrderByComparator<Organization> orderByComparator =

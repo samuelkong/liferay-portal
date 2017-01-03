@@ -14,11 +14,11 @@
 
 package com.liferay.portlet.asset.service.permission;
 
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portlet.asset.model.AssetTag;
-import com.liferay.portlet.asset.service.AssetTagLocalServiceUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
  * @author Eduardo Lundgren
@@ -30,7 +30,9 @@ public class AssetTagPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, tag, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, AssetTag.class.getName(), tag.getTagId(),
+				actionId);
 		}
 	}
 
@@ -39,7 +41,8 @@ public class AssetTagPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, tagId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, AssetTag.class.getName(), tagId, actionId);
 		}
 	}
 

@@ -16,11 +16,12 @@ package com.liferay.portlet.documentlibrary.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.document.library.kernel.model.DLContent;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.documentlibrary.model.DLContent;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,30 @@ import java.io.ObjectOutput;
 @ProviderType
 public class DLContentCacheModel implements CacheModel<DLContent>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof DLContentCacheModel)) {
+			return false;
+		}
+
+		DLContentCacheModel dlContentCacheModel = (DLContentCacheModel)obj;
+
+		if (contentId == dlContentCacheModel.contentId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, contentId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(15);
@@ -93,11 +118,15 @@ public class DLContentCacheModel implements CacheModel<DLContent>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		contentId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		repositoryId = objectInput.readLong();
 		path = objectInput.readUTF();
 		version = objectInput.readUTF();
+
 		size = objectInput.readLong();
 	}
 
@@ -105,8 +134,11 @@ public class DLContentCacheModel implements CacheModel<DLContent>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(contentId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(repositoryId);
 
 		if (path == null) {

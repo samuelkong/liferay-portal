@@ -17,7 +17,7 @@
 <%@ include file="/html/portal/init.jsp" %>
 
 <%
-if (themeDisplay.isFacebook() || themeDisplay.isStatePopUp() || themeDisplay.isWidget() || layoutTypePortlet.hasStateMax()) {
+if (themeDisplay.isStatePopUp() || themeDisplay.isWidget() || layoutTypePortlet.hasStateMax()) {
 	String ppid = ParamUtil.getString(request, "p_p_id");
 
 	String velocityTemplateId = null;
@@ -62,4 +62,4 @@ else {
 }
 %>
 
-<%@ include file="/html/portal/layout/view/common.jspf" %>
+<liferay-ui:layout-common />

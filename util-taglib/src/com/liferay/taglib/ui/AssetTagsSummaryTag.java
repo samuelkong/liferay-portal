@@ -14,7 +14,11 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.taglib.util.IncludeTag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.portlet.PortletURL;
 
@@ -23,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Brian Wing Shun Chan
  */
-public class AssetTagsSummaryTag extends IncludeTag {
+public class AssetTagsSummaryTag<R> extends IncludeTag {
 
 	public String getAssetTagNames() {
 		return _assetTagNames;
@@ -49,6 +53,10 @@ public class AssetTagsSummaryTag extends IncludeTag {
 		_message = message;
 	}
 
+	public void setParamName(String paramName) {
+		_paramName = paramName;
+	}
+
 	public void setPortletURL(PortletURL portletURL) {
 		_portletURL = portletURL;
 	}
@@ -59,6 +67,7 @@ public class AssetTagsSummaryTag extends IncludeTag {
 		_className = null;
 		_classPK = 0;
 		_message = null;
+		_paramName = null;
 		_portletURL = null;
 	}
 
@@ -69,6 +78,19 @@ public class AssetTagsSummaryTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
+		List<AssetTag> assetTags = new ArrayList<>();
+
+		AssetTagsAvailableTag<R> assetTagsAvailableTag =
+			(AssetTagsAvailableTag<R>)findAncestorWithClass(
+				this, AssetTagsAvailableTag.class);
+
+		if (assetTagsAvailableTag != null) {
+			assetTags = assetTagsAvailableTag.getAssetTags();
+		}
+
+		request.setAttribute(
+			"liferay-ui:asset-categories-summary:assetTags", assetTags);
+
 		request.setAttribute(
 			"liferay-ui:asset-tags-summary:assetTagNames", _assetTagNames);
 		request.setAttribute(
@@ -76,6 +98,8 @@ public class AssetTagsSummaryTag extends IncludeTag {
 		request.setAttribute(
 			"liferay-ui:asset-tags-summary:classPK", String.valueOf(_classPK));
 		request.setAttribute("liferay-ui:asset-tags-summary:message", _message);
+		request.setAttribute(
+			"liferay-ui:asset-tags-summary:paramName", _paramName);
 		request.setAttribute(
 			"liferay-ui:asset-tags-summary:portletURL", _portletURL);
 	}
@@ -87,6 +111,7 @@ public class AssetTagsSummaryTag extends IncludeTag {
 	private String _className;
 	private long _classPK;
 	private String _message;
+	private String _paramName;
 	private PortletURL _portletURL;
 
 }

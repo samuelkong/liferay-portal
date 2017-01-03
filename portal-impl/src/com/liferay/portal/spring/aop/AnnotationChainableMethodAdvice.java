@@ -80,8 +80,7 @@ public abstract class AnnotationChainableMethodAdvice<T extends Annotation>
 			methodInvocation,
 			annotations.toArray(new Annotation[annotations.size()]));
 
-		Set<Class<? extends Annotation>> annotationClasses =
-			new HashSet<Class<? extends Annotation>>();
+		Set<Class<? extends Annotation>> annotationClasses = new HashSet<>();
 
 		annotation = _nullAnnotation;
 
@@ -101,9 +100,10 @@ public abstract class AnnotationChainableMethodAdvice<T extends Annotation>
 				serviceBeanAopCacheManager.
 					getRegisteredAnnotationChainableMethodAdvices();
 
-		for (Map.Entry<Class<? extends Annotation>,
-				AnnotationChainableMethodAdvice<?>[]> entry :
-					annotationChainableMethodAdvices.entrySet()) {
+		for (Map.Entry
+				<Class<? extends Annotation>,
+					AnnotationChainableMethodAdvice<?>[]> entry :
+						annotationChainableMethodAdvices.entrySet()) {
 
 			Class<? extends Annotation> annotationClass = entry.getKey();
 			AnnotationChainableMethodAdvice<?>[]

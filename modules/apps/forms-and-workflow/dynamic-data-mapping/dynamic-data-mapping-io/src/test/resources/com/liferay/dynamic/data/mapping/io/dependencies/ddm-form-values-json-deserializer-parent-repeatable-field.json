@@ -1,0 +1,45 @@
+{
+	"availableLanguageIds": ["en_US", "pt_BR"],
+	"defaultLanguageId": "en_US",
+	"fieldValues": [
+		{
+			"instanceId": "baht",
+			"name": "Separator7211",
+			"nestedFieldValues": [
+				{
+					"name": "Text_Box6748",
+					"value": {
+						"en_US": "Content 0",
+						"pt_BR": "Conteudo 0"
+					}
+				}
+			]
+		},
+		{
+			"instanceId": "ywhr",
+			"name": "Separator7211",
+			"nestedFieldValues": [
+				{
+					"name": "Text_Box6748",
+					"value": {
+						"en_US": "Content 1",
+						"pt_BR": "Conteudo 1"
+					}
+				}
+			]
+		},
+		{
+			"instanceId": "mahr",
+			"name": "Separator7211",
+			"nestedFieldValues": [
+				{
+					"name": "Text_Box6748",
+					"value": {
+						"en_US": "Content 2",
+						"pt_BR": "Conteudo 2"
+					}
+				}
+			]
+		}
+	]
+}

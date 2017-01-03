@@ -14,14 +14,15 @@
 
 package com.liferay.portlet.messageboards.service.impl;
 
+import com.liferay.message.boards.kernel.model.MBCategory;
+import com.liferay.message.boards.kernel.model.MBCategoryConstants;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portlet.messageboards.model.MBCategory;
-import com.liferay.portlet.messageboards.model.MBCategoryConstants;
 import com.liferay.portlet.messageboards.service.base.MBCategoryServiceBaseImpl;
 import com.liferay.portlet.messageboards.service.permission.MBCategoryPermission;
 
@@ -178,6 +179,83 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 	}
 
 	@Override
+	public List<Object> getCategoriesAndThreads(long groupId, long categoryId) {
+		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
+			WorkflowConstants.STATUS_ANY);
+
+		return mbCategoryFinder.filterFindC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public List<Object> getCategoriesAndThreads(
+		long groupId, long categoryId, int status) {
+
+		QueryDefinition<?> queryDefinition = new QueryDefinition<>(status);
+
+		return mbCategoryFinder.filterFindC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public List<Object> getCategoriesAndThreads(
+		long groupId, long categoryId, int status, int start, int end) {
+
+		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
+			status, start, end, null);
+
+		return mbCategoryFinder.filterFindC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public List<Object> getCategoriesAndThreads(
+		long groupId, long categoryId, int status, int start, int end,
+		OrderByComparator<?> obc) {
+
+		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
+			status, start, end, obc);
+
+		return mbCategoryFinder.filterFindC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public List<Object> getCategoriesAndThreads(
+		long groupId, long categoryId, QueryDefinition<?> queryDefinition) {
+
+		return mbCategoryFinder.filterFindC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public int getCategoriesAndThreadsCount(long groupId, long categoryId) {
+		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
+			WorkflowConstants.STATUS_ANY);
+
+		return mbCategoryFinder.filterCountC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public int getCategoriesAndThreadsCount(
+		long groupId, long categoryId, int status) {
+
+		QueryDefinition<?> queryDefinition = new QueryDefinition<>(status);
+
+		return mbCategoryFinder.filterCountC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
+	public int getCategoriesAndThreadsCount(
+		long groupId, long categoryId, QueryDefinition<?> queryDefinition) {
+
+		return mbCategoryFinder.filterCountC_T_ByG_C(
+			groupId, categoryId, queryDefinition);
+	}
+
+	@Override
 	public int getCategoriesCount(long groupId, long parentCategoryId) {
 		return mbCategoryPersistence.filterCountByG_P(
 			groupId, parentCategoryId);
@@ -256,7 +334,7 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 
 	@Override
 	public long[] getCategoryIds(long groupId, long categoryId) {
-		List<Long> categoryIds = new ArrayList<Long>();
+		List<Long> categoryIds = new ArrayList<>();
 
 		categoryIds.add(categoryId);
 
@@ -298,11 +376,10 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 			return Collections.emptyList();
 		}
 
-		QueryDefinition<MBCategory> queryDefinition =
-			new QueryDefinition<MBCategory>(
-				WorkflowConstants.STATUS_ANY, start, end, null);
+		QueryDefinition<MBCategory> queryDefinition = new QueryDefinition<>(
+			WorkflowConstants.STATUS_ANY, start, end, null);
 
-		return mbCategoryFinder.filterFindByS_G_U_P(
+		return mbCategoryFinder.filterFindC_ByS_G_U_P(
 			groupId, userId, categoryIds, queryDefinition);
 	}
 
@@ -315,10 +392,10 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 			return 0;
 		}
 
-		QueryDefinition<MBCategory> queryDefinition =
-			new QueryDefinition<MBCategory>(WorkflowConstants.STATUS_ANY);
+		QueryDefinition<MBCategory> queryDefinition = new QueryDefinition<>(
+			WorkflowConstants.STATUS_ANY);
 
-		return mbCategoryFinder.filterCountByS_G_U_P(
+		return mbCategoryFinder.filterCountC_ByS_G_U_P(
 			groupId, userId, categoryIds, queryDefinition);
 	}
 

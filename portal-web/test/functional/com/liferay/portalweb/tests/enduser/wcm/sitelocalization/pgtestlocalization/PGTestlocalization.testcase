@@ -1,0 +1,95 @@
+<definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="portlet.plugins.includes" value="test-localized-portlet" />
+	<property name="testray.main.component.name" value="Site Localization" />
+
+	<var name="pageName" value="Test Localization" />
+	<var name="portletName" value="Test Localized Portlet" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="${pageName}" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="pageName" value="${pageName}" />
+			<var name="portletName" value="${portletName}" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="CheckLocalizationChinese" priority="4">
+		<execute function="Click" locator1="TestLocalized#CHINESE_LOCALIZATION" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_1" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_2" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_3" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_4" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_5" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_6" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_7" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_8" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_9" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_10" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_11" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_12" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_13" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_14" value1="PASSED" />
+		<execute function="AssertTextNotPresent" value1="FAILED" />
+	</command>
+
+	<command name="CheckLocalizationFrench" priority="4">
+		<execute function="Click" locator1="TestLocalized#FRENCH_LOCALIZATION" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_1" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_2" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_3" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_4" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_5" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_6" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_7" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_8" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_9" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_10" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_11" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_12" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_13" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_14" value1="PASSED" />
+		<execute function="AssertTextNotPresent" value1="FAILED" />
+	</command>
+
+	<command name="CheckLocalizationSpanish" priority="4">
+		<execute function="Click" locator1="TestLocalized#SPANISH_LOCALIZATION" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_1" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_2" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_3" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_4" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_5" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_6" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_7" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_8" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_9" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_10" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_11" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_12" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_13" value1="PASSED" />
+		<execute function="AssertTextEquals" locator1="TestLocalized#LOCALIZATION_TEST_14" value1="PASSED" />
+		<execute function="AssertTextNotPresent" value1="FAILED" />
+	</command>
+</definition>

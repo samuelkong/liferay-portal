@@ -1,0 +1,10 @@
+Bundle-SymbolicName: javax.servlet.jsp.jstl
+Bundle-Version: 1.2.3.LIFERAY-PATCHED-2
+Export-Package: org.apache.taglibs.standard.*;version=1.2.3
+Implementation-Version: 1.2.3
+Import-Package:\
+	!com.sun.*,\
+	\
+	org.apache.taglibs.standard.*;version=1.2.3,\
+	*
+-includeresource: javax.servlet.jsp.jstl-[0-9]*.jar

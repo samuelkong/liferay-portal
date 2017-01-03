@@ -16,16 +16,16 @@ package com.liferay.portlet.announcements.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.announcements.kernel.service.AnnouncementsDeliveryServiceUtil;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUtil} service utility. The
+ * {@link AnnouncementsDeliveryServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -33,10 +33,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portlet.announcements.model.AnnouncementsDeliverySoap}.
+ * is translated to an array of {@link com.liferay.announcements.kernel.model.AnnouncementsDeliverySoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portlet.announcements.model.AnnouncementsDelivery}, that is translated to a
- * {@link com.liferay.portlet.announcements.model.AnnouncementsDeliverySoap}. Methods that SOAP cannot
+ * {@link com.liferay.announcements.kernel.model.AnnouncementsDelivery}, that is translated to a
+ * {@link com.liferay.announcements.kernel.model.AnnouncementsDeliverySoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -59,21 +59,21 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see AnnouncementsDeliveryServiceHttp
- * @see com.liferay.portlet.announcements.model.AnnouncementsDeliverySoap
- * @see com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUtil
+ * @see com.liferay.announcements.kernel.model.AnnouncementsDeliverySoap
+ * @see AnnouncementsDeliveryServiceUtil
  * @generated
  */
 @ProviderType
 public class AnnouncementsDeliveryServiceSoap {
-	public static com.liferay.portlet.announcements.model.AnnouncementsDeliverySoap updateDelivery(
+	public static com.liferay.announcements.kernel.model.AnnouncementsDeliverySoap updateDelivery(
 		long userId, java.lang.String type, boolean email, boolean sms,
 		boolean website) throws RemoteException {
 		try {
-			com.liferay.portlet.announcements.model.AnnouncementsDelivery returnValue =
+			com.liferay.announcements.kernel.model.AnnouncementsDelivery returnValue =
 				AnnouncementsDeliveryServiceUtil.updateDelivery(userId, type,
 					email, sms, website);
 
-			return com.liferay.portlet.announcements.model.AnnouncementsDeliverySoap.toSoapModel(returnValue);
+			return com.liferay.announcements.kernel.model.AnnouncementsDeliverySoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

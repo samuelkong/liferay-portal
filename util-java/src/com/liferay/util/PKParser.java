@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class PKParser {
 
 	public PKParser(String pk) {
@@ -79,6 +81,6 @@ public class PKParser {
 		}
 	}
 
-	private final Map<String, String> _fields = new HashMap<String, String>();
+	private final Map<String, String> _fields = new HashMap<>();
 
 }

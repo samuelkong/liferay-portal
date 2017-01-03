@@ -17,6 +17,12 @@ package com.liferay.util.bean;
 import com.liferay.portal.kernel.bean.BeanLocator;
 import com.liferay.portal.kernel.bean.BeanLocatorException;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
+import com.liferay.portal.kernel.test.CaptureHandler;
+import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -42,16 +48,28 @@ public class PortalBeanLocatorUtilTest extends PowerMockito {
 
 	@Test
 	public void testBeanLocatorHasNotBeenSet() {
-		try {
-			PortalBeanLocatorUtil.locate("beanName");
-		}
-		catch (BeanLocatorException ble) {
-			Assert.assertTrue(true);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					PortalBeanLocatorUtil.class.getName(), Level.SEVERE)) {
 
-			return;
-		}
+			try {
+				PortalBeanLocatorUtil.locate("beanName");
 
-		Assert.fail("No bean locator should be inyected");
+				Assert.fail();
+			}
+			catch (BeanLocatorException ble) {
+				Assert.assertEquals("BeanLocator is not set", ble.getMessage());
+
+				List<LogRecord> logRecords = captureHandler.getLogRecords();
+
+				Assert.assertEquals(1, logRecords.size());
+
+				LogRecord logRecord = logRecords.get(0);
+
+				Assert.assertEquals(
+					"BeanLocator is null", logRecord.getMessage());
+			}
+		}
 	}
 
 	@Test
@@ -64,7 +82,7 @@ public class PortalBeanLocatorUtilTest extends PowerMockito {
 
 		PortalBeanLocatorUtil.setBeanLocator(_beanLocator);
 
-		String bean = (String) PortalBeanLocatorUtil.locate("existingBean");
+		String bean = (String)PortalBeanLocatorUtil.locate("existingBean");
 
 		Assert.assertNotNull(bean);
 		Assert.assertEquals("existingBean", bean);
@@ -82,7 +100,7 @@ public class PortalBeanLocatorUtilTest extends PowerMockito {
 
 		PortalBeanLocatorUtil.setBeanLocator(_beanLocator);
 
-		String bean = (String) PortalBeanLocatorUtil.locate("nonExistingBean");
+		String bean = (String)PortalBeanLocatorUtil.locate("nonExistingBean");
 
 		Assert.assertNull(bean);
 

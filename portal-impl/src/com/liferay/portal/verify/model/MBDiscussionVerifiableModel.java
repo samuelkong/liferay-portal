@@ -14,6 +14,10 @@
 
 package com.liferay.portal.verify.model;
 
+import com.liferay.portal.kernel.verify.model.VerifiableAuditedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableGroupedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
+
 /**
  * @author Miguel Pastor
  */
@@ -54,6 +58,11 @@ public class MBDiscussionVerifiableModel
 	@Override
 	public String getTableName() {
 		return "MBDiscussion";
+	}
+
+	@Override
+	public boolean isAnonymousUserAllowed() {
+		return false;
 	}
 
 	@Override

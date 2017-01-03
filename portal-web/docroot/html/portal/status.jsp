@@ -53,7 +53,7 @@ if (Validator.isNotNull(exception)) {
 %>
 
 <c:choose>
-	<c:when test="<%= SessionErrors.contains(request, PrincipalException.class.getName()) %>">
+	<c:when test="<%= SessionErrors.contains(request, PrincipalException.getNestedClasses()) %>">
 		<h3 class="alert alert-danger">
 			<liferay-ui:message key="forbidden" />
 		</h3>
@@ -93,7 +93,7 @@ if (Validator.isNotNull(exception)) {
 		%>
 
 		<div>
-			<%= StringUtil.replace(te.getMessage(), new String[] {"<", "\n"}, new String[] {"&lt;", "<br />\n"}) %>
+			<%= StringUtil.replace(te.getMessage(), new char[] {'<', '\n'}, new String[] {"&lt;", "<br />\n"}) %>
 		</div>
 	</c:when>
 	<c:when test="<%= noSuchResourceException %>">
@@ -101,7 +101,7 @@ if (Validator.isNotNull(exception)) {
 			<liferay-ui:message key="not-found" />
 		</h3>
 
-		<liferay-ui:message key="the-requested-resource-was-not-found" />
+		<liferay-ui:message key="the-requested-resource-could-not-be-found" />
 
 		<br /><br />
 
@@ -142,5 +142,5 @@ if (Validator.isNotNull(exception)) {
 <a href="javascript:history.go(-1);">&laquo; <liferay-ui:message key="back" /></a>
 
 <%!
-private static Log _log = LogFactoryUtil.getLog("portal-web.docroot.html.portal.status_jsp");
+private static Log _log = LogFactoryUtil.getLog("portal_web.docroot.html.portal.status_jsp");
 %>

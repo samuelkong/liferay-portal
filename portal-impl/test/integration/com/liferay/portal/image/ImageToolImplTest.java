@@ -17,14 +17,16 @@ package com.liferay.portal.image;
 import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.image.ImageTool;
 import com.liferay.portal.kernel.image.ImageToolUtil;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 
 import java.io.File;
@@ -35,16 +37,20 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Shuyang Zhou
  * @author Sampsa Sohlman
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class ImageToolImplTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@Test
 	public void testCropBMP() throws Exception {
@@ -96,6 +102,19 @@ public class ImageToolImplTest {
 		read("liferay.png");
 	}
 
+	@Test
+	public void testRotation90Degrees() throws Exception {
+		ImageBag imageBag = ImageToolUtil.read(
+			getFile("rotation_90_degrees.jpg"));
+
+		RenderedImage originalImage = imageBag.getRenderedImage();
+
+		RenderedImage rotatedImage = ImageToolUtil.rotate(originalImage, 90);
+
+		Assert.assertEquals(originalImage.getHeight(), rotatedImage.getWidth());
+		Assert.assertEquals(originalImage.getWidth(), rotatedImage.getHeight());
+	}
+
 	protected void crop(String fileName) throws Exception {
 
 		// Crop bottom right
@@ -104,7 +123,7 @@ public class ImageToolImplTest {
 
 		ImageBag imageBag = ImageToolUtil.read(file);
 
-		RenderedImage image =  imageBag.getRenderedImage();
+		RenderedImage image = imageBag.getRenderedImage();
 
 		testCrop(
 			image, image.getHeight() / 2, image.getWidth() / 2,
@@ -142,8 +161,8 @@ public class ImageToolImplTest {
 
 	protected File getFile(String fileName) {
 		fileName =
-			"portal-impl/test/integration/com/liferay/portal/image/" +
-				"dependencies/" + fileName;
+			"portal-impl/test/integration/com/liferay/portal/image" +
+				"/dependencies/" + fileName;
 
 		return new File(fileName);
 	}
@@ -155,10 +174,9 @@ public class ImageToolImplTest {
 
 		Assert.assertNotNull(expectedImage);
 
-		DataBufferByte expectedDataBufferByte =
-			(DataBufferByte)expectedImage.getData().getDataBuffer();
+		Raster raster = expectedImage.getData();
 
-		byte[][] expectedData = expectedDataBufferByte.getBankData();
+		DataBuffer expectedDataBuffer = raster.getDataBuffer();
 
 		String expectedType = FileUtil.getExtension(fileName);
 
@@ -178,16 +196,40 @@ public class ImageToolImplTest {
 
 		Assert.assertNotNull(resultImage);
 
-		DataBufferByte resultDataBufferByte =
-			(DataBufferByte)resultImage.getData().getDataBuffer();
+		raster = resultImage.getData();
 
-		byte[][] resultData = resultDataBufferByte.getBankData();
+		DataBuffer resultDataBuffer = raster.getDataBuffer();
 
 		String resultType = imageBag.getType();
 
 		Assert.assertTrue(
 			StringUtil.equalsIgnoreCase(expectedType, resultType));
-		Assert.assertTrue(Arrays.deepEquals(expectedData, resultData));
+
+		Assert.assertTrue(
+			expectedDataBuffer instanceof DataBufferByte ||
+			expectedDataBuffer instanceof DataBufferInt);
+
+		if (expectedDataBuffer instanceof DataBufferByte) {
+			DataBufferByte expectedDataBufferByte =
+				(DataBufferByte)expectedDataBuffer;
+			DataBufferByte resultDataBufferByte =
+				(DataBufferByte)resultDataBuffer;
+
+			Assert.assertTrue(
+				Arrays.deepEquals(
+					expectedDataBufferByte.getBankData(),
+					resultDataBufferByte.getBankData()));
+		}
+		else if (expectedDataBuffer instanceof DataBufferInt) {
+			DataBufferInt expectedDataBufferInt =
+				(DataBufferInt)expectedDataBuffer;
+			DataBufferInt resultDataBufferInt = (DataBufferInt)resultDataBuffer;
+
+			Assert.assertTrue(
+				Arrays.deepEquals(
+					expectedDataBufferInt.getBankData(),
+					resultDataBufferInt.getBankData()));
+		}
 	}
 
 	protected void testCrop(

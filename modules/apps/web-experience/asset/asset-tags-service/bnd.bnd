@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Asset Tags Service
+Bundle-SymbolicName: com.liferay.asset.tags.service
+Bundle-Version: 2.0.3
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Asset

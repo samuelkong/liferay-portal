@@ -23,7 +23,8 @@ import java.util.HashSet;
 public class FooBean {
 
 	public FooBean() {
-		_collection = new HashSet<Object>();
+		_collection = new HashSet<>();
+
 		_collection.add("element");
 	}
 

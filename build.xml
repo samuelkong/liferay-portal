@@ -1,237 +1,7 @@
 <?xml version="1.0"?>
 
-<project name="portal" basedir="." default="compile" xmlns:antelope="antlib:ise.antelope.tasks">
+<project basedir="." default="compile" name="portal" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<import file="build-common.xml" />
-
-	<macrodef name="setup-jrebel">
-		<sequential>
-			<echo file="${app.server.lib.global.dir}/rebel.xml"><![CDATA[<?xml version="1.0"?>
-
-<application
-	xmlns="http://www.zeroturnaround.com"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd"
->
-	<classpath>
-		<dir name="${basedir}/portal-service/classes" />
-	</classpath>
-</application>]]></echo>
-
-		<echo file="${app.server.classes.portal.dir}/rebel.xml"><![CDATA[<?xml version="1.0"?>
-
-<application
-	xmlns="http://www.zeroturnaround.com"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd"
->
-	<classpath>
-		<dir name="${basedir}/portal-impl/classes" />
-		<dir name="${basedir}/portal-pacl/classes" />
-		<dir name="${basedir}/util-java/classes" />
-		<dir name="${basedir}/util-bridges/classes" />
-		<dir name="${basedir}/util-taglib/classes" />
-		<dir name="${basedir}/util-slf4j/classes" />
-	</classpath>
-	<web>
-		<link target="/">
-			<dir name="${basedir}/portal-web/docroot/" />
-		</link>
-	</web>
-</application>]]></echo>
-
-			<if>
-				<not>
-					<resourcecontains
-						resource="portal-impl/src/system-ext.properties"
-						substring="liferay.lib.portal.dir"
-					/>
-				</not>
-				<then>
-					<echo
-						append="true"
-						file="portal-impl/src/system-ext.properties"
-					>
-						liferay.lib.portal.dir=${app.server.lib.portal.dir}
-					</echo>
-
-					<copy
-						file="portal-impl/src/system-ext.properties"
-						overwrite="true"
-						tofile="portal-impl/classes/system-ext.properties"
-					/>
-				</then>
-			</if>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="setup-sdk">
-		<sequential>
-			<delete dir="${project.dir}/tools/sdk" />
-
-			<unzip
-				dest="${project.dir}/tools"
-				src="${project.dir}/tools/liferay-plugins-sdk-7.0.0.zip"
-			>
-				<mapper
-					type="glob"
-					from="liferay-plugins-sdk-7.0.0/*"
-					to="sdk/*"
-				/>
-			</unzip>
-
-			<propertyselector
-				casesensitive="false"
-				delimiter=","
-				distinct="true"
-				match="app\.(server\.(geronimo|glassfish|jboss|jetty|jonas|resin|tcat|tcserver|tomcat|weblogic|websphere).+)\.dir"
-				override="true"
-				property="app.server.dir.property.list"
-				select="\1"
-			/>
-
-			<sortlist
-				delimiter=","
-				override="true"
-				property="app.server.dir.property.list"
-				value="${app.server.dir.property.list}"
-			/>
-
-			<for list="${app.server.dir.property.list}" param="app.server.dir.property">
-				<sequential>
-					<propertycopy
-						from="app.@{app.server.dir.property}.dir"
-						name="temp.app.server.dir"
-					/>
-
-					<echo
-						append="true"
-						file="${project.dir}/tools/sdk/build.${env.COMPUTERNAME}.properties"
-					>
-						app.@{app.server.dir.property}.dir=${temp.app.server.dir}
-					</echo>
-
-					<var name="temp.app.server.dir" unset="true" />
-				</sequential>
-			</for>
-
-			<propertyselector
-				casesensitive="false"
-				delimiter="," match="ivy.pom.(.+)"
-				property="ivy.pom.property.list"
-				select="\1"
-			/>
-
-			<sortlist
-				delimiter=","
-				override="true"
-				property="ivy.pom.property.list"
-				value="${ivy.pom.property.list}"
-			/>
-
-			<if>
-				<not>
-					<equals arg1="${ivy.pom.property.list}" arg2="$${ivy.pom.property.list}" />
-				</not>
-				<then>
-					<for list="${ivy.pom.property.list}" param="ivy.pom.property">
-						<sequential>
-							<propertycopy
-								from="ivy.pom.@{ivy.pom.property}"
-								name="temp.ivy.pom"
-							/>
-
-							<echo
-								append="true"
-								file="${project.dir}/tools/sdk/build.${env.COMPUTERNAME}.properties"
-							>
-								ivy.pom.@{ivy.pom.property}=${temp.ivy.pom}
-							</echo>
-
-							<var name="temp.ivy.pom" unset="true" />
-						</sequential>
-					</for>
-				</then>
-			</if>
-
-			<propertyselector
-				casesensitive="false"
-				delimiter="," match="sonatype.(.+)"
-				property="sonatype.property.list"
-				select="\1"
-			/>
-
-			<sortlist
-				delimiter=","
-				override="true"
-				property="sonatype.property.list"
-				value="${sonatype.property.list}"
-			/>
-
-			<if>
-				<not>
-					<equals arg1="${sonatype.property.list}" arg2="$${sonatype.property.list}" />
-				</not>
-				<then>
-					<for list="${sonatype.property.list}" param="sonatype.property">
-						<sequential>
-							<propertycopy
-								from="sonatype.@{sonatype.property}"
-								name="temp.sonatype"
-							/>
-
-							<echo
-								append="true"
-								file="${project.dir}/tools/sdk/build.${env.COMPUTERNAME}.properties"
-							>
-								sonatype.@{sonatype.property}=${temp.sonatype}
-							</echo>
-
-							<var name="temp.sonatype" unset="true" />
-						</sequential>
-					</for>
-				</then>
-			</if>
-
-			<echo
-				append="true"
-				file="${project.dir}/tools/sdk/build.${env.COMPUTERNAME}.properties"
-			>
-				app.server.type=${app.server.type}
-				auto.deploy.dir=${liferay.home}/osgi/apps
-				clean.delete.ivy.md5=true
-				clean.delete.lib=true
-				ivy.home=${project.dir}/.ivy
-				liferay.home=${liferay.home}
-				module.framework.base.dir=${liferay.home}/osgi
-			</echo>
-
-			<copy file="${project.dir}/tools/sdk/build.${env.COMPUTERNAME}.properties" tofile="${project.dir}/tools/sdk/build.${env.HOST}.properties" />
-			<copy file="${project.dir}/tools/sdk/build.${env.COMPUTERNAME}.properties" tofile="${project.dir}/tools/sdk/build.${env.HOSTNAME}.properties" />
-
-			<if>
-				<not>
-					<available file="${app.server.dir}" />
-				</not>
-				<then>
-					<if>
-						<equals arg1="${app.server.type}" arg2="tomcat" />
-						<then>
-							<ant antfile="build-dist.xml" target="unzip-tomcat" inheritAll="false" />
-						</then>
-					</if>
-				</then>
-			</if>
-
-			<!--
-			This is a temporary workaround needed so that registry-api can
-			compile because the SDK assumes a deployed portal, but we are
-			compiling registry-api before the portal is deployed.
-			-->
-
-			<mkdir dir="${app.server.lib.global.dir}" />
-			<mkdir dir="${app.server.lib.portal.dir}" />
-		</sequential>
-	</macrodef>
 
 	<target name="all">
 		<antcall target="clean" />
@@ -240,205 +10,171 @@
 	</target>
 
 	<target name="clean">
-		<ant dir="classes" target="clean" inheritAll="false" />
+		<parallel failonany="true" threadcount="${parallel.thread.count}">
+			<ant dir="benchmarks" inheritAll="false" target="clean" />
 
-		<ant dir="portal-service" target="clean" inheritAll="false" />
+			<ant dir="classes" inheritAll="false" target="clean" />
 
-		<ant dir="util-bridges" target="clean" inheritAll="false" />
-		<ant dir="util-java" target="clean" inheritAll="false" />
-		<ant dir="util-slf4j" target="clean" inheritAll="false" />
-		<ant dir="util-taglib" target="clean" inheritAll="false" />
+			<ant dir="portal-kernel" inheritAll="false" target="clean" />
 
-		<ant dir="portal-impl" target="clean" inheritAll="false" />
-		<ant dir="portal-pacl" target="clean" inheritAll="false" />
-		<ant dir="portal-test" target="clean" inheritAll="false" />
-		<ant dir="portal-test-internal" target="clean" inheritAll="false" />
+			<ant dir="util-bridges" inheritAll="false" target="clean" />
+			<ant dir="util-java" inheritAll="false" target="clean" />
+			<ant dir="util-slf4j" inheritAll="false" target="clean" />
+			<ant dir="util-taglib" inheritAll="false" target="clean" />
 
-		<ant dir="portal-web" target="clean" inheritAll="false" />
+			<ant dir="portal-impl" inheritAll="false" target="clean" />
+			<ant dir="portal-test" inheritAll="false" target="clean" />
+			<ant dir="portal-test-integration" inheritAll="false" target="clean" />
 
-		<ant dir="sql" target="clean" inheritAll="false" />
+			<ant dir="sql" inheritAll="false" target="clean" />
 
-		<delete dir="${doc.dir}" />
+			<sequential>
+				<delete dir="${sdk.dir}" />
 
-		<delete>
-			<fileset dir="." includes="*.ear,*.jar,*.war,*.zip" />
-		</delete>
+				<setup-sdk />
 
-		<delete failonerror="false" includeemptydirs="true">
-			<fileset
-				dir="${app.server.bin.dir}"
-				includes="*.log*"
-			/>
-		</delete>
+				<gradle-execute dir="${project.dir}/modules" task="clean">
+					<arg value="-Dbuild.profile=${build.profile}" />
+				</gradle-execute>
+			</sequential>
 
-		<delete dir="${liferay.home}/data/elasticsearch" />
+			<delete failonerror="false" includeemptydirs="true">
+				<fileset dir="." includes="*.ear,*.jar,*.war,*.zip" />
+				<fileset dir="test-coverage" />
+				<fileset dir="test-results" />
+				<fileset dir="tmp" />
+				<fileset dir="${doc.dir}" />
+				<fileset dir="${app.server.bin.dir}" includes="*.log*" />
+				<fileset dir="${app.server.classes.portal.dir}" includes="portal-*.properties,system-*.properties" />
+				<fileset dir="${app.server.deploy.dir}" includes="*-ext/**,*-ext.war/**,*-hook/**,*-hook.war/**,*-layouttpl/**,*-layouttpl.war/**,*-portlet/**,*-portlet.war/**,*-theme/**,*-theme.war/**,*-web/**,*-web.war/**" />
+				<fileset dir="${app.server.lib.global.dir}" excludes="${jdbc.drivers}" />
+				<fileset dir="${liferay.home}" includes=".liferay-home" />
+				<fileset dir="${liferay.home}/data/elasticsearch" />
+				<fileset dir="${liferay.home}/data/hypersonic" includes="${database.name}.*" />
+				<fileset dir="${liferay.home}/deploy" />
+				<fileset dir="${liferay.home}/osgi" />
+				<fileset dir="${liferay.home}/work" />
+			</delete>
 
-		<delete failonerror="false">
-			<fileset
-				dir="${liferay.home}/data/hsql"
-				includes="${database.name}.*"
-			/>
-		</delete>
+			<if>
+				<available file="support-${app.server.type}" />
+				<then>
+					<ant dir="support-${app.server.type}" inheritAll="false" target="clean" />
+				</then>
+			</if>
 
-		<delete dir="${liferay.home}/osgi" />
+			<if>
+				<equals arg1="${clean.log.dir}" arg2="true" />
+				<then>
+					<delete dir="${app.server.log.dir}" />
+				</then>
+			</if>
 
-		<delete dir="test-coverage" />
+			<if>
+				<not>
+					<and>
+						<equals arg1="${app.server.type}" arg2="tomcat" />
+						<antelope:endswith string="${app.server.portal.dir}" with="/portal-web/docroot" />
+					</and>
+				</not>
+				<then>
+					<delete dir="${app.server.portal.dir}" failonerror="false" />
+					<delete failonerror="false" file="${app.server.portal.dir}" />
+				</then>
+				<else>
+					<delete failonerror="false">
+						<fileset
+							dir="${app.server.lib.portal.dir}"
+							excludes="${jdbc.drivers}"
+						/>
+					</delete>
+				</else>
+			</if>
 
-		<if>
-			<equals arg1="${app.server.type}" arg2="glassfish" />
-			<then>
-				<delete dir="${app.server.instance.dir}/applications/liferay-portal" />
-			</then>
-		</if>
+			<if>
+				<equals arg1="${clean.temp.dir}" arg2="true" />
+				<then>
+					<delete dir="${app.server.temp.dir}" />
+				</then>
+			</if>
 
-		<if>
-			<equals arg1="${app.server.type}" arg2="resin" />
-			<then>
-				<ant dir="support-resin" target="clean" inheritAll="false" />
-			</then>
-		</if>
+			<if>
+				<equals arg1="${clean.work.dir}" arg2="true" />
+				<then>
+					<delete dir="${app.server.work.dir}" />
+				</then>
+			</if>
+		</parallel>
 
-		<if>
-			<equals arg1="${app.server.type}" arg2="tomcat" />
-			<then>
-				<delete failonerror="false">
-					<fileset
-						dir="${app.server.dir}/conf/Catalina/localhost"
-						includes="*-hook.xml,*-portlet.xml"
-					/>
-				</delete>
+		<ant dir="portal-web" inheritAll="false" target="clean" />
 
-				<ant dir="support-tomcat" target="clean" inheritAll="false" />
-			</then>
-		</if>
-
-		<if>
-			<equals arg1="${app.server.type}" arg2="websphere" />
-			<then>
-				<ant dir="support-websphere" target="clean" inheritAll="false" />
-			</then>
-		</if>
-
-		<delete failonerror="false">
-			<fileset
-				dir="${app.server.classes.portal.dir}"
-				includes="portal-*.properties,system-*.properties"
-			/>
-		</delete>
-
-		<delete failonerror="false" includeemptydirs="true">
-			<fileset
-				dir="${app.server.deploy.dir}"
-				includes="*-ext/**,*-ext.war/**,*-hook/**,*-hook.war/**,*-layouttpl/**,*-layouttpl.war/**,*-portlet/**,*-portlet.war/**,*-theme/**,*-theme.war/**,*-web/**,*-web.war/**"
-			/>
-		</delete>
-
-		<delete failonerror="false">
-			<fileset
-				dir="${app.server.lib.global.dir}"
-				excludes="${jdbc.drivers}"
-			/>
-		</delete>
-
-		<delete failonerror="false">
-			<fileset
-				dir="${app.server.lib.portal.dir}"
-				excludes="${jdbc.drivers}"
-			/>
-		</delete>
-
-		<if>
-			<equals arg1="${clean.log.dir}" arg2="true" />
-			<then>
-				<delete dir="${app.server.log.dir}" />
-			</then>
-		</if>
-
-		<if>
-			<not>
-				<and>
-					<equals arg1="${app.server.type}" arg2="tomcat" />
-					<antelope:endswith string="${app.server.portal.dir}" with="/portal-web/docroot" />
-				</and>
-			</not>
-			<then>
-				<delete dir="${app.server.portal.dir}" />
-				<delete file="${app.server.portal.dir}" />
-			</then>
-		</if>
-
-		<if>
-			<equals arg1="${clean.temp.dir}" arg2="true" />
-			<then>
-				<delete dir="${app.server.temp.dir}" />
-			</then>
-		</if>
-
-		<if>
-			<equals arg1="${clean.work.dir}" arg2="true" />
-			<then>
-				<delete dir="${app.server.work.dir}" />
-			</then>
-		</if>
-
-		<setup-sdk />
-
-		<ant-execute
-			ant.dir="${project.dir}/modules"
-			ant.target="clean"
-		/>
-
-		<antcall target="print-current-time" />
+		<print-current-time />
 	</target>
 
 	<target name="compile">
 		<setup-sdk />
 
-		<ant-execute
-			ant.dir="${project.dir}/modules/core/registry-api"
-			ant.target="compile"
-		/>
+		<delete file="javac.output.txt" />
 
-		<ant dir="portal-service" target="compile" inheritAll="false" />
+		<gradle-execute dir="modules" task="deploy">
+			<arg value="--parallel" />
+			<arg value="-Dbuild.profile=portal-pre" />
+			<arg value="-Pforced.deploy.dir=${project.dir}/tmp/lib-pre" />
+		</gradle-execute>
 
-		<ant dir="util-bridges" target="compile" inheritAll="false" />
-		<ant dir="util-java" target="compile" inheritAll="false" />
-		<ant dir="util-slf4j" target="compile" inheritAll="false" />
-		<ant dir="util-taglib" target="compile" inheritAll="false" />
+		<ant dir="portal-kernel" inheritAll="false" target="compile" />
 
-		<ant dir="portal-impl" target="compile" inheritAll="false" />
-		<ant dir="portal-pacl" target="compile" inheritAll="false" />
-		<ant dir="portal-test" target="compile" inheritAll="false" />
-		<ant dir="portal-test-internal" target="compile" inheritAll="false" />
+		<parallel failonany="true" threadcount="${parallel.thread.count}">
+			<ant dir="portal-test" inheritAll="false" target="compile" />
+			<ant dir="support-tomcat" inheritAll="false" target="compile" />
+			<ant dir="util-bridges" inheritAll="false" target="compile" />
 
-		<ant dir="util-taglib" target="jar" inheritAll="false" />
+			<sequential>
+				<ant dir="util-java" inheritAll="false" target="compile" />
+				<ant dir="util-taglib" inheritAll="false" target="compile" />
+			</sequential>
 
-		<ant dir="sql" target="build-db" inheritAll="false" />
-		<ant dir="sql" target="rebuild-hypersonic" inheritAll="false" />
+			<ant dir="util-slf4j" inheritAll="false" target="compile" />
+		</parallel>
 
-		<ant dir="portal-impl" target="build-themes" inheritAll="false" />
+		<ant dir="portal-impl" inheritAll="false" target="compile" />
 
-		<antcall target="jar" />
+		<parallel failonany="true" threadcount="${parallel.thread.count}">
+			<ant dir="portal-test-integration" inheritAll="false" target="compile" />
 
-		<antcall target="print-current-time" />
+			<sequential>
+				<ant dir="sql" inheritAll="false" target="build-db" />
+				<ant dir="sql" inheritAll="false" target="rebuild-hypersonic" />
+			</sequential>
+		</parallel>
+
+		<if>
+			<available file="javac.output.txt" />
+			<then>
+				<fail message="Deprecated APIs detected. Please see javac.output.txt for details." />
+			</then>
+		</if>
+
+		<print-current-time />
 	</target>
 
 	<target name="compile-test">
-		<ant dir="portal-impl" target="compile-test" inheritAll="false" />
-		<ant dir="portal-service" target="compile-test" inheritAll="false" />
-		<ant dir="portal-web" target="compile-test" inheritAll="false" />
-		<ant dir="util-java" target="compile-test" inheritAll="false" />
+		<ant dir="portal-impl" inheritAll="false" target="compile-test" />
+		<ant dir="portal-kernel" inheritAll="false" target="compile-test" />
+		<ant dir="portal-web" inheritAll="false" target="compile-test" />
+		<ant dir="util-java" inheritAll="false" target="compile-test" />
 	</target>
 
 	<target name="deploy">
+		<setup-sdk />
+
 		<if>
 			<or>
 				<equals arg1="${app.server.type}" arg2="glassfish" />
 				<equals arg1="${app.server.type}" arg2="websphere" />
 			</or>
 			<then>
-				<delete dir="${app.server.portal.dir}" />
-				<delete file="${app.server.portal.dir}" />
+				<delete file="${app.server.portal.war.name}" />
 			</then>
 		</if>
 
@@ -450,39 +186,33 @@
 				</not>
 			</and>
 			<then>
-				<fail>
-.
-
-Tomcat is not installed in ${app.server.tomcat.dir}. If you already have Tomcat
-installed, make sure the property "$${app.server.tomcat.dir}" points to your
-Tomcat installation. If you wish to automatically install Tomcat into
-${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
-				</fail>
+				<ant antfile="build-dist.xml" target="unzip-tomcat" />
 			</then>
 		</if>
 
-		<ant dir="portal-service" target="deploy" inheritAll="false" />
+		<ant dir="portal-kernel" inheritAll="false" target="deploy" />
 
-		<ant dir="util-bridges" target="deploy" inheritAll="false" />
-		<ant dir="util-java" target="deploy" inheritAll="false" />
-		<ant dir="util-slf4j" target="deploy" inheritAll="false" />
-		<ant dir="util-taglib" target="deploy" inheritAll="false" />
+		<ant dir="util-bridges" inheritAll="false" target="deploy" />
+		<ant dir="util-java" inheritAll="false" target="deploy" />
+		<ant dir="util-slf4j" inheritAll="false" target="deploy" />
+		<ant dir="util-taglib" inheritAll="false" target="deploy" />
 
-		<ant dir="portal-impl" target="deploy" inheritAll="false" />
-		<ant dir="portal-pacl" target="deploy" inheritAll="false" />
-		<ant dir="portal-test" target="deploy" inheritAll="false" />
-		<ant dir="portal-test-internal" target="deploy" inheritAll="false" />
+		<ant dir="portal-impl" inheritAll="false" target="deploy" />
+		<ant dir="portal-test" inheritAll="false" target="deploy" />
+		<ant dir="portal-test-integration" inheritAll="false" target="deploy" />
 
-		<ant dir="portal-web" target="deploy" inheritAll="false" />
+		<ant dir="portal-web" inheritAll="false" target="deploy" />
 
-		<copy todir="${liferay.home}/data/hsql">
+		<touch file="${liferay.home}/.liferay-home" />
+
+		<copy todir="${liferay.home}/data/hypersonic">
 			<fileset dir="sql">
 				<include name="${database.name}.properties" />
 				<include name="${database.name}.script" />
 			</fileset>
 		</copy>
 
-		<antcall target="deploy-properties" />
+		<deploy-properties />
 
 		<antcall target="deploy-additional-jars" />
 
@@ -492,22 +222,162 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 		<mkdir dir="${app.server.temp.dir}" />
 		<mkdir dir="${app.server.work.dir}" />
 
-		<ant-execute
-			ant.dir="${project.dir}/modules/core/registry-api"
-			ant.target="deploy"
-		/>
+		<if>
+			<and>
+				<equals arg1="${app.server.type}" arg2="glassfish" />
+				<not>
+					<available file="${app.server.portal.dir}" type="dir" />
+				</not>
+			</and>
+			<then>
+				<move file="${app.server.portal.war.name}" tofile="${app.server.portal.war.name}-tmp" />
 
-		<ant-execute
-			ant.dir="${project.dir}/modules"
-			ant.target="deploy"
-		/>
+				<mkdir dir="${app.server.portal.dir}" />
 
-		<antcall target="print-current-time" />
+				<unzip dest="${app.server.portal.dir}" src="${app.server.portal.war.name}-tmp" />
+			</then>
+		</if>
+
+		<ant dir="portal-web" inheritAll="false" target="war" />
+
+		<antcall target="install-portal-snapshots" />
+
+		<stopwatch name="modules.stopwatch" />
+
+		<if>
+			<equals arg1="${build.marketplace.apps.enabled}" arg2="true" />
+			<then>
+				<gradle-execute dir="${project.dir}/modules" task="deploy">
+					<arg value="--parallel" />
+					<arg value="-Dbuild.profile=portal-pre" />
+				</gradle-execute>
+
+				<if>
+					<equals arg1="${jsp.precompile}" arg2="on" />
+					<then>
+						<if>
+							<equals arg1="${jsp.precompile.parallel}" arg2="on" />
+							<then>
+								<gradle-execute dir="${project.dir}/modules" task="compileJSP">
+									<arg value="deploy" />
+									<arg value="--parallel" />
+									<arg value="-Dbuild.profile=${build.profile}" />
+									<env key="WAS_HOME" value="${app.server.websphere.dir}" />
+								</gradle-execute>
+							</then>
+							<else>
+								<gradle-execute dir="${project.dir}/modules" task="deploy">
+									<arg value="--parallel" />
+									<arg value="-Dbuild.profile=${build.profile}" />
+									<env key="WAS_HOME" value="${app.server.websphere.dir}" />
+								</gradle-execute>
+
+								<gradle-execute dir="${project.dir}/modules" task="compileJSP">
+									<arg value="-Dbuild.profile=${build.profile}" />
+								</gradle-execute>
+							</else>
+						</if>
+					</then>
+					<else>
+						<gradle-execute dir="${project.dir}/modules" task="deploy">
+							<arg value="--parallel" />
+							<arg value="-Dbuild.profile=${build.profile}" />
+							<env key="WAS_HOME" value="${app.server.websphere.dir}" />
+						</gradle-execute>
+					</else>
+				</if>
+			</then>
+			<else>
+				<gradle-execute dir="${project.dir}/modules/core" task="deploy">
+					<arg value="--parallel" />
+					<arg value="-Dbuild.profile=${build.profile}" />
+				</gradle-execute>
+
+				<pathconvert property="build.app.server.lib.marker.files" setonempty="false">
+					<fileset dir="${project.dir}/modules" includes="**/.lfrbuild-app-server-lib" />
+				</pathconvert>
+
+				<if>
+					<isset property="build.app.server.lib.marker.files" />
+					<then>
+						<gradle-execute dir="${project.dir}/modules" task="deployTool">
+							<arg value="--parallel" />
+							<arg value="-Dbuild.profile=${build.profile}" />
+							<arg value="deployAppServerLib" />
+							<arg value="deployConfigs" />
+						</gradle-execute>
+					</then>
+					<else>
+						<gradle-execute dir="${project.dir}/modules" task="deployTool">
+							<arg value="--parallel" />
+							<arg value="-Dbuild.profile=${build.profile}" />
+							<arg value="deployConfigs" />
+						</gradle-execute>
+					</else>
+				</if>
+
+				<if>
+					<equals arg1="${jsp.precompile}" arg2="on" />
+					<then>
+						<if>
+							<equals arg1="${jsp.precompile.parallel}" arg2="on" />
+							<then>
+								<gradle-execute dir="${project.dir}/modules" task="compileJSP">
+									<arg value="--parallel" />
+									<arg value="-Dbuild.profile=${build.profile}" />
+								</gradle-execute>
+							</then>
+							<else>
+								<gradle-execute dir="${project.dir}/modules" task="compileJSP">
+									<arg value="-Dbuild.profile=${build.profile}" />
+								</gradle-execute>
+							</else>
+						</if>
+					</then>
+				</if>
+			</else>
+		</if>
+
+		<if>
+			<isset property="env.JENKINS_HOME" />
+			<then>
+				<if>
+					<resourcecount count="0" when="gt">
+						<fileset dir="${project.dir}/modules" includes="**/.lfrbuild-ci" />
+					</resourcecount>
+					<then>
+						<gradle-execute dir="${project.dir}/modules" task="deploy">
+							<arg value="--parallel" />
+							<arg value="-Dbuild.profile=ci" />
+						</gradle-execute>
+					</then>
+				</if>
+			</then>
+		</if>
+
+		<stopwatch action="elapsed" name="modules.stopwatch" />
+
+		<if>
+			<and>
+				<available file="${app.server.portal.dir}" type="dir" />
+				<available file="${app.server.portal.war.name}-tmp" type="file" />
+				<equals arg1="${app.server.type}" arg2="glassfish" />
+			</and>
+			<then>
+				<delete dir="${app.server.portal.dir}" />
+
+				<move file="${app.server.portal.war.name}-tmp" tofile="${app.server.portal.war.name}" />
+			</then>
+		</if>
+
+		<copy file="tools/osgi-marketplace-override-README.markdown" tofile="${liferay.home}/osgi/marketplace/override/README.markdown" />
+
+		<print-current-time />
 	</target>
 
 	<target name="deploy-additional-jars">
 		<copy todir="${app.server.lib.global.dir}">
-			<fileset dir="lib/development" includes="hsql.jar,jtds.jar,mysql.jar,postgresql.jar" />
+			<fileset dir="lib/development" includes="hsql.jar,mariadb.jar,mysql.jar,postgresql.jar" />
 			<fileset dir="lib/global" />
 		</copy>
 
@@ -523,71 +393,18 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 			</then>
 		</if>
 
-		<copy todir="${app.server.lib.portal.dir}">
-			<fileset dir="lib/portal" />
-		</copy>
-
 		<if>
-			<and>
-				<equals arg1="${app.server.type}" arg2="geronimo" />
-				<equals arg1="${app.server.geronimo.version}" arg2="2.2.1" />
-				<not>
-					<available file="${app.server.geronimo.dir}/repository/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3/geronimo-el_2.2_spec-1.0.3.jar" />
-				</not>
-			</and>
+			<equals arg1="${build.profile}" arg2="slim" />
 			<then>
-				<mkdir dir="${app.server.geronimo.dir}/repository/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3" />
-
-				<get
-					dest="${app.server.geronimo.dir}/repository/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3/geronimo-el_2.2_spec-1.0.3.jar"
-					src="http://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-el_2.2_spec/1.0.3/geronimo-el_2.2_spec-1.0.3.jar"
-					verbose="true"
-				/>
-
-				<concat
-					append="true"
-					destfile="${app.server.geronimo.dir}/var/config/artifact_aliases.properties"
-				>
-					org.apache.geronimo.specs/geronimo-el_1.0_spec/1.0.2/jar=org.apache.geronimo.specs/geronimo-el_2.2_spec/1.0.3/jar
-				</concat>
+				<copy todir="${app.server.lib.portal.dir}">
+					<fileset dir="lib/portal" includes="aopalliance.jar,asm-debug-all.jar,aspectj-rt.jar,aspectj-weaver.jar,bnd.jar,c3p0.jar,cglib-nodep.jar,com.liferay.portal.slim.runtime.jar,commons-beanutils.jar,commons-chain.jar,commons-codec.jar,commons-collections.jar,commons-compress.jar,commons-configuration.jar,commons-dbcp.jar,commons-digester.jar,commons-discovery.jar,commons-email.jar,commons-fileupload.jar,commons-httpclient.jar,commons-io.jar,commons-lang.jar,commons-logging.jar,commons-math.jar,commons-pool.jar,commons-validator.jar,concurrent.jar,dom4j.jar,easyconf.jar,hibernate-commons-annotations.jar,hibernate-core.jar,hikaricp.jar,httpclient.jar,httpcore.jar,httpmime.jar,jabsorb.jar,jakarta-regexp.jar,javassist.jar,jaxb-impl.jar,jaxen.jar,jcl-over-slf4j.jar,jdom.jar,jna.jar,jodconverter.jar,jodd.jar,json-java.jar,jsr107cache.jar,kxml2.jar,liferay-icu4j.jar,log4j.jar,log4j-extras.jar,mchange-commons-java.jar,netty-all.jar,portal-impl.jar,rome.jar,saaj-api.jar,saaj-impl.jar,serializer.jar,slf4j-api.jar,spring-aop.jar,spring-aspects.jar,spring-beans.jar,spring-context.jar,spring-context-support.jar,spring-core.jar,spring-expression.jar,spring-jdbc.jar,spring-jms.jar,spring-orm.jar,spring-oxm.jar,spring-tx.jar,spring-web.jar,spring-webmvc.jar,stax.jar,stax-ex.jar,streambuffer.jar,stringtemplate.jar,tomcat-jdbc.jar,tomcat-juli.jar,util-java.jar,util-slf4j.jar,util-taglib.jar,wstx.jar,xalan.jar,xbean.jar,xbean-spring.jar,xercesImpl.jar,xml-apis.jar,xmlsec.jar,xmpcore.jar,xpp3.jar,xstream.jar,xz.jar" />
+				</copy>
 			</then>
-		</if>
-
-		<if>
-			<equals arg1="${app.server.type}" arg2="jboss" />
-			<then>
-				<if>
-					<equals arg1="${app.server.jboss.major.version}" arg2="5" />
-					<then>
-						<move
-							failonerror="false"
-							file="${app.server.dir}/common/lib/hibernate-validator.jar"
-							tofile="${app.server.dir}/common/lib/hibernate-validator.jar.bak"
-						/>
-
-						<move
-							failonerror="false"
-							file="${app.server.dir}/common/lib/slf4j-jboss-logging.jar"
-							tofile="${app.server.dir}/common/lib/slf4j-jboss-logging.jar.bak"
-						/>
-
-						<delete>
-							<fileset
-								dir="${app.server.lib.portal.dir}"
-								includes="jaxrpc.jar,log4j.jar,stax.jar,xercesImpl.jar,xml-apis.jar"
-							/>
-						</delete>
-					</then>
-					<else>
-						<delete>
-							<fileset
-								dir="${app.server.lib.portal.dir}"
-								includes="eclipselink.jar"
-							/>
-						</delete>
-					</else>
-				</if>
-			</then>
+			<else>
+				<copy todir="${app.server.lib.portal.dir}">
+					<fileset dir="lib/portal" />
+				</copy>
+			</else>
 		</if>
 
 		<if>
@@ -617,7 +434,7 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 		<if>
 			<equals arg1="${app.server.type}" arg2="resin" />
 			<then>
-				<ant dir="support-resin" target="deploy" inheritAll="false" />
+				<ant dir="support-resin" inheritAll="false" target="deploy" />
 
 				<copy todir="${app.server.lib.global.dir}">
 					<fileset
@@ -637,11 +454,11 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 				<if>
 					<equals arg1="${app.server.type}" arg2="tomcat" />
 					<then>
-						<ant dir="support-tomcat" target="deploy" inheritAll="false" />
+						<ant dir="support-tomcat" inheritAll="false" target="deploy" />
 					</then>
 				</if>
 
-				<copy todir="${app.server.lib.endorsed.dir}" flatten="true">
+				<copy flatten="true" todir="${app.server.lib.endorsed.dir}">
 					<fileset
 						dir="lib"
 						includes="${endorsed.libraries}"
@@ -669,15 +486,8 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 					/>
 				</copy>
 
-				<copy todir="${app.server.temp.dir}/liferay/com/liferay/portal/deploy/dependencies">
-					<fileset
-						dir="lib/development"
-						includes="resin.jar,script-10.jar"
-					/>
-				</copy>
-
 				<if>
-					<equals arg1="${app.server.type}" arg2="tomcat" />
+					<equals arg1="${app.server.type}" arg2="tcserver" />
 					<then>
 						<delete>
 							<fileset
@@ -697,7 +507,7 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 			</or>
 			<then>
 				<tstamp>
-					<format property="tstamp.value" pattern="yyyyMMddkkmmssSSS" />
+					<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
 				</tstamp>
 
 				<jar
@@ -707,47 +517,27 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 
 				<delete dir="${app.server.portal.dir}" />
 
-				<move file="${tstamp.value}" tofile="${app.server.portal.dir}" />
+				<move file="${tstamp.value}" tofile="${app.server.portal.war.name}" />
 			</then>
 		</if>
 
 		<if>
 			<equals arg1="${app.server.type}" arg2="websphere" />
 			<then>
-				<ant dir="support-websphere" target="deploy" inheritAll="false" />
+				<ant dir="support-websphere" inheritAll="false" target="deploy" />
 			</then>
-		</if>
-	</target>
-
-	<target name="deploy-properties">
-		<if>
-			<and>
-				<equals arg1="${app.server.bundled}" arg2="true" />
-				<equals arg1="${app.server.type}" arg2="glassfish" />
-			</and>
-			<then>
-				<war destfile="${app.server.glassfish.portal.dir}" update="true">
-					<classes dir="portal-impl/src" includes="portal-*.properties,system-*.properties" />
-				</war>
-			</then>
-			<else>
-				<copy todir="${app.server.classes.portal.dir}" overwrite="true">
-					<fileset dir="portal-impl/src" includes="portal-*.properties,system-*.properties" />
-				</copy>
-			</else>
 		</if>
 	</target>
 
 	<target name="dist">
-		<ant antfile="build-dist.xml" target="dist" inheritAll="false" />
+		<ant antfile="build-dist.xml" inheritAll="false" target="dist" />
 	</target>
 
 	<target name="doc">
 		<antcall target="dtddoc" />
 		<antcall target="javadoc" />
-		<antcall target="javadoc-all" />
 		<antcall target="propertiesdoc" />
-		<ant dir="util-taglib" target="taglibdoc" inheritAll="false" />
+		<ant dir="util-taglib" inheritAll="false" target="taglibdoc" />
 	</target>
 
 	<target name="dtddoc">
@@ -765,31 +555,82 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 			showFixmeTags="false"
 			showHiddenTags="false"
 			sourceDir="${definitions.dir}"
+			stylesheet="${project.dir}/tools/styles/dtddoc.css"
 		>
 			<include name="liferay-*${lp.version.dtd}.dtd" />
 		</DTDDoc>
 	</target>
 
+	<target name="install-portal-snapshots">
+		<ant dir="portal-impl" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="portal-kernel" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="portal-test" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="portal-test-integration" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="portal-web" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="util-bridges" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="util-java" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="util-slf4j" inheritAll="false" target="install-portal-snapshot" />
+		<ant dir="util-taglib" inheritAll="false" target="install-portal-snapshot" />
+	</target>
+
 	<target name="jar">
-		<ant dir="portal-service" target="jar" inheritAll="false" />
+		<ant dir="portal-kernel" inheritAll="false" target="jar" />
 
-		<ant dir="util-bridges" target="jar" inheritAll="false" />
-		<ant dir="util-java" target="jar" inheritAll="false" />
-		<ant dir="util-slf4j" target="jar" inheritAll="false" />
-		<ant dir="util-taglib" target="jar" inheritAll="false" />
+		<ant dir="util-bridges" inheritAll="false" target="jar" />
+		<ant dir="util-java" inheritAll="false" target="jar" />
+		<ant dir="util-slf4j" inheritAll="false" target="jar" />
+		<ant dir="util-taglib" inheritAll="false" target="jar" />
 
-		<ant dir="portal-impl" target="jar" inheritAll="false" />
-		<ant dir="portal-pacl" target="jar" inheritAll="false" />
-		<ant dir="portal-test" target="jar" inheritAll="false" />
-		<ant dir="portal-test-internal" target="jar" inheritAll="false" />
+		<ant dir="portal-impl" inheritAll="false" target="jar" />
+		<ant dir="portal-test" inheritAll="false" target="jar" />
+		<ant dir="portal-test-integration" inheritAll="false" target="jar" />
 
-		<ant dir="portal-web" target="war" inheritAll="false" />
+		<ant dir="portal-web" inheritAll="false" target="war" />
 
-		<ant dir="support-tomcat" target="jar" inheritAll="false" />
+		<ant dir="support-tomcat" inheritAll="false" target="jar" />
 	</target>
 
 	<target name="javadoc">
-		<property name="doc.java.dir" value="${doc.dir}/javadocs" />
+		<remake-dir dir="${doc.dir}/javadocs" />
+
+		<antcall target="javadoc-portal-cmd">
+			<param name="generated.description" value="" />
+			<param name="module.dir" value="portal-impl" />
+		</antcall>
+
+		<antcall target="javadoc-portal-cmd">
+			<param name="generated.description" value="ServiceBuilder generated this class. Modifications in this class will be overwritten the next time it is generated." />
+			<param name="module.dir" value="portal-kernel" />
+		</antcall>
+
+		<antcall target="javadoc-portal-cmd">
+			<param name="generated.description" value="" />
+			<param name="module.dir" value="portal-test" />
+		</antcall>
+
+		<antcall target="javadoc-portal-cmd">
+			<param name="generated.description" value="" />
+			<param name="module.dir" value="portal-test-integration" />
+		</antcall>
+
+		<antcall target="javadoc-cmd">
+			<param name="generated.description" value="" />
+			<param name="module.dir" value="util-bridges" />
+		</antcall>
+
+		<antcall target="javadoc-cmd">
+			<param name="generated.description" value="" />
+			<param name="module.dir" value="util-java" />
+		</antcall>
+
+		<antcall target="javadoc-cmd">
+			<param name="generated.description" value="" />
+			<param name="module.dir" value="util-slf4j" />
+		</antcall>
+	</target>
+
+	<target name="javadoc-cmd">
+		<property name="doc.java.dir" value="${doc.dir}/javadocs/${module.dir}" />
 
 		<mkdir dir="${doc.java.dir}" />
 
@@ -797,86 +638,63 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 			breakiterator="yes"
 			classpathref="project.classpath"
 			destdir="${doc.java.dir}"
-			doctitle="Liferay ${lp.version} Public API Documentation"
+			doctitle="Liferay ${lp.version} ${module.dir} API"
 			encoding="UTF-8"
-			header="&lt;b&gt;Liferay ${lp.version}&lt;/b&gt;"
+			header="&lt;b&gt;Liferay ${lp.version} ${module.dir}&lt;/b&gt;"
 			maxmemory="2048m"
 			noqualifier="java.*"
-			overview="portal-service/src/portal-service-overview.html"
-			stylesheetfile="${project.dir}/tools/javadoc.css"
+			overview="${module.dir}/src/overview.html"
+			stylesheetfile="${project.dir}/tools/styles/javadoc.css"
 			useexternalfile="yes"
 			use="yes"
-			windowtitle="Liferay ${lp.version} API"
+			windowtitle="Liferay ${lp.version} ${module.dir} API"
 		>
-			<doclet name="com.liferay.tools.doclets.standard.Standard" path="${project.dir}/lib/development/liferay-doclet.jar">
-				<param name="-linksource" />
-			</doclet>
+			<link href="http://docs.liferay.com/portlet-api/2.0/javadocs" />
+			<link href="http://java.sun.com/javase/6/docs/api" />
+			<link href="http://docs.liferay.com/portal/${lp.version.major}/javadocs" />
 
-			<group title="Portal Services" packages="com.liferay.portal*:com.liferay.counter*:com.liferay.documentlibrary*:com.liferay.mail*" />
-			<group title="Portal Kernel" packages="com.liferay.portal.kernel*" />
-			<group title="Portlet Services" packages="com.liferay.portlet*" />
-			<group title="Portlet Bridges" packages="com.liferay.util.bridges*" />
+			<packageset dir="${module.dir}/src" />
+
+			<tag description="{$generated.description}" name="generated" />
+		</javadoc>
+	</target>
+
+	<target name="javadoc-portal-cmd">
+		<property name="doc.java.dir" value="${doc.dir}/javadocs/${module.dir}" />
+
+		<mkdir dir="${doc.java.dir}" />
+
+		<javadoc
+			breakiterator="yes"
+			classpathref="project.classpath"
+			destdir="${doc.java.dir}"
+			doctitle="Liferay ${lp.version} ${module.dir} API"
+			encoding="UTF-8"
+			header="&lt;b&gt;Liferay ${lp.version} ${module.dir}&lt;/b&gt;"
+			maxmemory="2048m"
+			noqualifier="java.*"
+			overview="${module.dir}/src/overview.html"
+			stylesheetfile="${project.dir}/tools/styles/javadoc.css"
+			useexternalfile="yes"
+			use="yes"
+			windowtitle="Liferay ${lp.version} ${module.dir} API"
+		>
+			<group packages="com.liferay.portal.*:com.liferay.counter.*:com.liferay.mail.*" title="Portal Services" />
+			<group packages="com.liferay.portal.kernel.*" title="Portal Kernel" />
+			<group packages="com.liferay.*" title="Portlet Services" />
 
 			<link href="http://docs.liferay.com/portlet-api/2.0/javadocs" />
 			<link href="http://java.sun.com/javase/6/docs/api" />
 			<link href="http://docs.liferay.com/portal/${lp.version.major}/javadocs" />
 
-			<packageset dir="portal-service/src" />
-			<packageset dir="portal-test/src" />
-			<packageset dir="portal-test-internal/src" />
-			<packageset dir="util-bridges/src" />
-			<packageset dir="util-java/src" />
-			<packageset dir="util-slf4j/src" />
+			<packageset dir="${module.dir}/src" />
 
-			<tag name="generated" description="" />
-		</javadoc>
-	</target>
-
-	<target name="javadoc-all">
-		<property name="doc.java.dir" value="${doc.dir}/javadocs-all" />
-
-		<mkdir dir="${doc.java.dir}" />
-
-		<javadoc
-			breakiterator="yes"
-			classpathref="project.classpath"
-			destdir="${doc.java.dir}"
-			doctitle="Liferay ${lp.version} Internal API Documentation"
-			encoding="UTF-8"
-			header="&lt;b&gt;Liferay ${lp.version}&lt;/b&gt;"
-			maxmemory="2048m"
-			noqualifier="java.*"
-			overview="portal-impl/src/portal-impl-overview.html"
-			stylesheetfile="${project.dir}/tools/javadoc.css"
-			useexternalfile="yes"
-			use="yes"
-			windowtitle="Liferay ${lp.version} Internal API"
-		>
-			<doclet name="com.liferay.tools.doclets.standard.Standard" path="${project.dir}/lib/development/liferay-doclet.jar">
-				<param name="-linksource" />
-			</doclet>
-
-			<group title="Portal Services" packages="com.liferay.portal.service*" />
-			<group title="Portlet Services" packages="com.liferay.portlet*" />
-
-			<link href="http://docs.liferay.com/portlet-api/2.0/javadocs" />
-			<link href="http://java.sun.com/javase/6/docs/api" />
-
-			<packageset dir="portal-impl/src" />
-			<packageset dir="portal-service/src" />
-			<packageset dir="portal-test/src" />
-			<packageset dir="portal-test-internal/src" />
-			<packageset dir="util-bridges/src" />
-			<packageset dir="util-java/src" />
-			<packageset dir="util-slf4j/src" />
-			<packageset dir="util-taglib/src" />
-
-			<tag name="generated" description="ServiceBuilder generated this class. Modifications in this class will be overwritten the next time it is generated." />
+			<tag description="{$generated.description}" name="generated" />
 		</javadoc>
 	</target>
 
 	<target name="prepare-generated-files">
-		<ant antfile="build-dist.xml" target="prepare-generated-files" inheritAll="false" />
+		<ant antfile="build-dist.xml" inheritAll="false" target="prepare-generated-files" />
 	</target>
 
 	<target name="propertiesdoc">
@@ -943,92 +761,34 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 		</java>
 	</target>
 
-	<target name="record-git-commit-plugins">
-		<script classpathref="project.classpath" language="beanshell">
-			<![CDATA[
-				File pluginsDir = null;
+	<target depends="setup-jrebel-properties" name="setup-jrebel">
+		<copy file="tools/jrebel/rebel.xml_GLOBAL" tofile="${app.server.lib.global.dir}/rebel.xml">
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
 
-				String lpPluginsDirName = project.getProperty("lp.plugins.dir");
-
-				if ((lpPluginsDirName == null) || lpPluginsDirName.equals("")) {
-					File projectDir = new File(project.getProperty("project.dir"));
-
-					String projectDirName = projectDir.getName();
-
-					String pluginsDirName = "liferay-plugins" + projectDirName.substring("liferay-portal".length());
-
-					pluginsDir = new File(projectDir.getParent(), pluginsDirName);
-				}
-				else {
-					if (lpPluginsDirName.contains("${basedir.name}")) {
-						lpPluginsDirName = lpPluginsDirName.substring(0, lpPluginsDirName.lastIndexOf("/"));
-					}
-
-					pluginsDir = new File(lpPluginsDirName);
-				}
-
-				project.setProperty("git.plugins.dir", pluginsDir.toString());
-			]]>
-		</script>
-
-		<exec dir="${git.plugins.dir}" executable="git" outputproperty="git.commit.plugins.rev.parse">
-			<arg line="rev-parse HEAD" />
-		</exec>
-
-		<echo>Recording ${git.plugins.dir} with ${git.commit.plugins.rev.parse}.</echo>
-
-		<var name="git.plugins.dir" unset="true" />
-
-		<echo file="git-commit-plugins">${git.commit.plugins.rev.parse}</echo>
-
-		<if>
-			<isset property="env.JENKINS_HOME" />
-			<then>
-				<copy
-					file="git-commit-plugins"
-					todir="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/builds/${env.BUILD_NUMBER}"
-				/>
-			</then>
-		</if>
+		<copy file="tools/jrebel/rebel.xml_PORTAL" tofile="${app.server.classes.portal.dir}/rebel.xml">
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
 	</target>
 
-	<target name="record-git-commit-portal">
-		<exec dir="${project.dir}" executable="git" outputproperty="git.commit.portal.rev.parse">
-			<arg line="rev-parse HEAD" />
-		</exec>
-
-		<echo file="git-commit-portal">${git.commit.portal.rev.parse}</echo>
-
-		<if>
-			<isset property="env.JENKINS_HOME" />
-			<then>
-				<copy
-					file="git-commit-portal"
-					todir="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/builds/${env.BUILD_NUMBER}"
-				/>
-			</then>
-		</if>
+	<target name="setup-jrebel-init">
+		<condition property="liferay.lib.portal.dir.isset">
+			<resourcecontains resource="portal-impl/src/system-ext.properties" substring="liferay.lib.portal.dir" />
+		</condition>
 	</target>
 
-	<target name="setup-jrebel">
-		<setup-jrebel />
+	<target depends="setup-jrebel-init" name="setup-jrebel-properties" unless="liferay.lib.portal.dir.isset">
+		<echo append="true" file="portal-impl/src/system-ext.properties" message="liferay.lib.portal.dir=${app.server.lib.portal.dir}" />
+
+		<copy file="portal-impl/src/system-ext.properties" overwrite="true" tofile="portal-impl/classes/system-ext.properties" />
 	</target>
 
 	<target name="setup-sdk">
 		<setup-sdk />
-	</target>
-
-	<target name="sort-xml-attributes">
-		<java
-			classname="com.liferay.portal.tools.XMLAttributesSorter"
-			classpathref="project.classpath"
-			fork="true"
-			newenvironment="true"
-		>
-			<jvmarg value="-Xmx512m" />
-			<jvmarg value="-Xss2048k" />
-			<arg value="sort.xml.file.name=${sort.xml.file.name}" />
-		</java>
 	</target>
 
 	<target name="start">
@@ -1037,79 +797,35 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 		<echo>The "start" target is now deprecated. Please use the "compile" target instead.</echo>
 	</target>
 
-	<target name="test">
-		<ant antfile="build-test.xml" target="test" inheritAll="false" />
-	</target>
-
 	<target name="test-integration">
-		<ant antfile="build-test.xml" target="test-integration" inheritAll="false" />
+		<ant antfile="build-test.xml" inheritAll="false" target="test-integration" />
 	</target>
 
 	<target name="test-package">
-		<ant antfile="build-test.xml" target="test-package" inheritAll="false" />
+		<ant antfile="build-test.xml" inheritAll="false" target="test-package" />
 	</target>
 
 	<target name="test-unit">
-		<ant antfile="build-test.xml" target="test-unit" inheritAll="false" />
+		<ant antfile="build-test.xml" inheritAll="false" target="test-unit" />
 	</target>
 
 	<target name="update-app-server-scripts">
 		<if>
-			<equals arg1="${app.server.type}" arg2="jboss" />
+			<or>
+				<equals arg1="${app.server.type}" arg2="jboss" />
+				<equals arg1="${app.server.type}" arg2="wildfly" />
+			</or>
 			<then>
 				<if>
-					<equals arg1="${app.server.jboss.major.version}" arg2="5" />
+					<not>
+						<available file="${app.server.lib.global.dir}/module.xml" />
+					</not>
 					<then>
-						<loadfile property="run.conf.content" srcfile="${app.server.bin.dir}/run.conf" />
-
-						<antelope:stringutil string="${run.conf.content}" property="run.conf.content.index">
-							<indexof string="-Dfile.encoding=UTF-8" fromindex="0" />
-						</antelope:stringutil>
-
-						<if>
-							<equals arg1="${run.conf.content.index}" arg2="-1" />
-							<then>
-								<echo file="${app.server.bin.dir}/run.conf" append="true">
-		JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -Djboss.vfs.forceVfsJar=true -Dorg.jboss.logging.Log4jService.catchSystemOut=false -Duser.timezone=GMT -Xmx1024m -XX:MaxPermSize=384m"</echo>
-							</then>
-						</if>
-
-						<loadfile property="run.conf.bat.content" srcfile="${app.server.bin.dir}/run.conf.bat" />
-
-						<antelope:stringutil string="${run.conf.bat.content}" property="run.conf.bat.content.index">
-							<indexof string="-Dfile.encoding=UTF-8" fromindex="0" />
-						</antelope:stringutil>
-
-						<if>
-							<equals arg1="${run.conf.bat.content.index}" arg2="-1" />
-							<then>
-								<replace file="${app.server.bin.dir}/run.conf.bat">
-									<replacetoken><![CDATA[:JAVA_OPTS_SET]]></replacetoken>
-									<replacevalue><![CDATA[set "JAVA_OPTS=%JAVA_OPTS% -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -Djboss.vfs.forceVfsJar=true -Dorg.jboss.logging.Log4jService.catchSystemOut=false -Duser.timezone=GMT -Xmx1024m -XX:MaxPermSize=384m"
-
-		:JAVA_OPTS_SET]]></replacevalue>
-								</replace>
-							</then>
-						</if>
-
-						<replace file="${app.server.deploy.dir}/jbossweb.sar/server.xml">
-							<replacetoken><![CDATA[redirectPort="8443" />]]></replacetoken>
-							<replacevalue><![CDATA[redirectPort="8443" URIEncoding="UTF-8" />]]></replacevalue>
-						</replace>
+						<copy
+							file="tools/servers/jboss/modules/module.xml"
+							tofile="${app.server.lib.global.dir}/module.xml"
+						/>
 					</then>
-					<else>
-						<if>
-							<not>
-								<available file="${app.server.lib.global.dir}/module.xml" />
-							</not>
-							<then>
-								<copy
-									file="tools/servers/jboss/modules/module.xml"
-									tofile="${app.server.lib.global.dir}/module.xml"
-								/>
-							</then>
-						</if>
-					</else>
 				</if>
 			</then>
 		</if>
@@ -1152,13 +868,26 @@ ${app.server.tomcat.dir}, then run "ant -buildfile build-dist.xml unzip-tomcat".
 		<if>
 			<equals arg1="${app.server.type}" arg2="websphere" />
 			<then>
-				<exec dir="${app.server.websphere.bin.dir}" executable="/bin/sh" os="${os.unix}">
-					<arg line="startServer.sh server1" />
-				</exec>
+				<if>
+					<os family="unix" />
+					<then>
+						<chmod file="${app.server.websphere.bin.dir}/startServer.sh" perm="a+x" />
 
-				<exec dir="${app.server.websphere.bin.dir}" executable="cmd.exe" os="${os.windows}">
-					<arg line="/c startServer.bat server1" />
-				</exec>
+						<exec dir="${app.server.websphere.bin.dir}" executable="/bin/sh">
+							<arg value="-c" />
+							<arg value="./startServer.sh server1" />
+						</exec>
+					</then>
+					<elseif>
+						<os family="windows" />
+						<then>
+							<exec dir="${app.server.websphere.bin.dir}" executable="cmd.exe">
+								<arg value="/c" />
+								<arg value="startServer.bat server1" />
+							</exec>
+						</then>
+					</elseif>
+				</if>
 
 				<echo>Installing liferay-portal.war.</echo>
 
@@ -1187,76 +916,72 @@ if isAppInstalled('liferay-portal'):
 
 	print AdminApp.update('liferay-portal', 'app', '[-contents ${app.server.websphere.instance.dir}/wsadmin-deploy/liferay-portal.war -contextroot / -operation update]')
 else:
-	print AdminApp.install('${app.server.websphere.instance.dir}/wsadmin-deploy/liferay-portal.war', '[-appname liferay-portal -contextroot /]')
+	print AdminApp.install('${app.server.websphere.instance.dir}/wsadmin-deploy/liferay-portal.war', '[-appname liferay-portal -contextroot / -defaultbinding.virtual.host default_host -usedefaultbindings]')
 
 print AdminConfig.save()
 
 print AdminControl.invoke(appManager, 'startApplication', 'liferay-portal')
 				</echo>
 
-				<exec dir="${app.server.websphere.bin.dir}" executable="/bin/sh" os="${os.unix}">
-					<arg line="wsadmin.sh -f ${basedir}/wsadmin.py" />
-				</exec>
+				<if>
+					<os family="unix" />
+					<then>
+						<exec dir="${app.server.websphere.bin.dir}" executable="/bin/sh">
+							<arg value="-c" />
+							<arg value="./wsadmin.sh -f ${basedir}/wsadmin.py" />
+						</exec>
 
-				<exec dir="${app.server.websphere.bin.dir}" executable="cmd.exe" os="${os.windows}">
-					<arg line="/c wsadmin.bat -f ${basedir}\wsadmin.py" />
-				</exec>
+						<exec dir="${app.server.websphere.bin.dir}" executable="/bin/sh">
+							<arg value="-c" />
+							<arg value="./stopServer.sh server1" />
+						</exec>
+					</then>
+					<elseif>
+						<os family="windows" />
+						<then>
+							<exec dir="${app.server.websphere.bin.dir}" executable="cmd.exe">
+								<arg value="/c" />
+								<arg value="wsadmin.bat -f ${basedir}\wsadmin.py" />
+							</exec>
+
+							<exec dir="${app.server.websphere.bin.dir}" executable="cmd.exe">
+								<arg value="/c" />
+								<arg value="stopServer.bat server1" />
+							</exec>
+						</then>
+					</elseif>
+				</if>
 
 				<delete file="wsadmin.py" />
-
-				<exec dir="${app.server.websphere.bin.dir}" executable="/bin/sh" os="${os.unix}">
-					<arg line="stopServer.sh server1" />
-				</exec>
-
-				<exec dir="${app.server.websphere.bin.dir}" executable="cmd.exe" os="${os.windows}">
-					<arg line="/c stopServer.bat server1" />
-				</exec>
 			</then>
 		</if>
 	</target>
 
-	<target name="update-ivy-cache">
+	<target name="update-gradle-cache">
 		<execute>
 			git reset --hard HEAD
 			git clean -d -f
-
-			rm -fr .ivy
-
-			ant setup-sdk
-
-			ant -f modules/build.xml clean
-
-			ant -f modules/core/registry-api/build.xml deploy
-			ant -f modules/core/registry-test/build.xml compile-test
-
-			ant -f modules/build.xml compile
-
-			ant -f modules/sdk/ant-arquillian/build.xml clean compile
-
-			ant -f portal-service/build.xml test-class -Dtest.class=StringUtilTest
 		</execute>
-	</target>
 
-	<target name="update-plugins-to-svn-revision">
-		<loadfile property="svn.info.revision.valid" srcfile="svn-revision" />
+		<delete dir="${basedir}/.gradle" />
 
-		<script classpathref="project.classpath" language="beanshell">
-			String svnInfoOutput = project.getProperty("svn.info.revision.valid");
+		<setup-sdk />
 
-			int x = svnInfoOutput.indexOf("Revision: ");
+		<gradle-execute dir="modules" forcedcacheenabled="false" task="clean">
+			<arg value="-Dmaven.local.ignore=true" />
+		</gradle-execute>
 
-			x = svnInfoOutput.indexOf(" ", x);
+		<gradle-execute dir="modules" forcedcacheenabled="false" task="classes">
+			<arg value="-Dmaven.local.ignore=true" />
+			<arg value="testClasses" />
+			<arg value="testIntegrationClasses" />
+		</gradle-execute>
 
-			int y = svnInfoOutput.indexOf("Username:", x);
+		<gradle-execute dir="modules/sdk/gradle-util" failonerror="false" forcedcacheenabled="false" task="findbugsMain">
+			<arg value="-Dmaven.local.ignore=true" />
+		</gradle-execute>
 
-			String revision = svnInfoOutput.substring(x, y).trim();
-
-			project.setProperty("svn.info.revision", revision);
-		</script>
-
-		<exec dir="${lp.plugins.dir}" executable="cmd.exe" os="${os.windows}">
-			<arg line="/c svn --username ${svn.username} --password ${svn.password} update -r ${svn.info.revision}" />
-		</exec>
+		<ant dir="portal-web" inheritAll="false" target="update-gradle-cache" />
 	</target>
 
 	<target name="validate-xml">
@@ -1265,7 +990,125 @@ print AdminControl.invoke(appManager, 'startApplication', 'liferay-portal')
 				excludes="**/dependencies/**,**/ehcache/**"
 				includes="**/liferay-*.xml,**/web.xml"
 			/>
-			<xmlcatalog refid="dtd.catalog" />
+			<xmlcatalog>
+				<dtd location="datatypes.dtd" publicId="datatypes" />
+				<dtd location="${definitions.dir}/facelet-taglib_1_0.dtd" publicId="-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_2_0_0.dtd" publicId="-//Liferay//DTD DISPLAY 2.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_3_5_0.dtd" publicId="-//Liferay//DTD Display 3.5.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_4_0_0.dtd" publicId="-//Liferay//DTD Display 4.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_5_0_0.dtd" publicId="-//Liferay//DTD Display 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_5_1_0.dtd" publicId="-//Liferay//DTD Display 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_5_2_0.dtd" publicId="-//Liferay//DTD Display 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_6_0_0.dtd" publicId="-//Liferay//DTD Display 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_6_1_0.dtd" publicId="-//Liferay//DTD Display 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_6_2_0.dtd" publicId="-//Liferay//DTD Display 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-display_7_0_0.dtd" publicId="-//Liferay//DTD Display 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-friendly-url-routes_6_0_0.dtd" publicId="-//Liferay//DTD Friendly URL Routes 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-friendly-url-routes_6_1_0.dtd" publicId="-//Liferay//DTD Friendly URL Routes 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-friendly-url-routes_6_2_0.dtd" publicId="-//Liferay//DTD Friendly URL Routes 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-friendly-url-routes_7_0_0.dtd" publicId="-//Liferay//DTD Friendly URL Routes 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-hook_5_1_0.dtd" publicId="-//Liferay//DTD Hook 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-hook_5_2_0.dtd" publicId="-//Liferay//DTD Hook 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-hook_6_0_0.dtd" publicId="-//Liferay//DTD Hook 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-hook_6_1_0.dtd" publicId="-//Liferay//DTD Hook 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-hook_6_2_0.dtd" publicId="-//Liferay//DTD Hook 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-hook_7_0_0.dtd" publicId="-//Liferay//DTD Hook 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_3_6_0.dtd" publicId="-//Liferay//DTD Layout Templates 3.6.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_4_0_0.dtd" publicId="-//Liferay//DTD Layout Templates 4.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_4_3_0.dtd" publicId="-//Liferay//DTD Layout Templates 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_5_0_0.dtd" publicId="-//Liferay//DTD Layout Templates 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_5_1_0.dtd" publicId="-//Liferay//DTD Layout Templates 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_5_2_0.dtd" publicId="-//Liferay//DTD Layout Templates 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_6_0_0.dtd" publicId="-//Liferay//DTD Layout Templates 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_6_1_0.dtd" publicId="-//Liferay//DTD Layout Templates 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_6_2_0.dtd" publicId="-//Liferay//DTD Layout Templates 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-layout-templates_7_0_0.dtd" publicId="-//Liferay//DTD Layout Templates 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_3_5_0.dtd" publicId="-//Liferay//DTD Look and Feel 3.5.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_4_0_0.dtd" publicId="-//Liferay//DTD Look and Feel 4.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_4_3_0.dtd" publicId="-//Liferay//DTD Look and Feel 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_5_0_0.dtd" publicId="-//Liferay//DTD Look and Feel 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_5_1_0.dtd" publicId="-//Liferay//DTD Look and Feel 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_5_2_0.dtd" publicId="-//Liferay//DTD Look and Feel 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_6_0_0.dtd" publicId="-//Liferay//DTD Look and Feel 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_6_1_0.dtd" publicId="-//Liferay//DTD Look and Feel 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_6_2_0.dtd" publicId="-//Liferay//DTD Look and Feel 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-look-and-feel_7_0_0.dtd" publicId="-//Liferay//DTD Look and Feel 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_4_3_0.dtd" publicId="-//Liferay//DTD Plugin Package 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_5_0_0.dtd" publicId="-//Liferay//DTD Plugin Package 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_5_1_0.dtd" publicId="-//Liferay//DTD Plugin Package 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_5_2_0.dtd" publicId="-//Liferay//DTD Plugin Package 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_6_0_0.dtd" publicId="-//Liferay//DTD Plugin Package 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_6_1_0.dtd" publicId="-//Liferay//DTD Plugin Package 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_6_2_0.dtd" publicId="-//Liferay//DTD Plugin Package 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-package_7_0_0.dtd" publicId="-//Liferay//DTD Plugin Package 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_4_3_0.dtd" publicId="-//Liferay//DTD Plugin Repository 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_5_0_0.dtd" publicId="-//Liferay//DTD Plugin Repository 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_5_1_0.dtd" publicId="-//Liferay//DTD Plugin Repository 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_5_2_0.dtd" publicId="-//Liferay//DTD Plugin Repository 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_6_0_0.dtd" publicId="-//Liferay//DTD Plugin Repository 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_6_1_0.dtd" publicId="-//Liferay//DTD Plugin Repository 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_6_2_0.dtd" publicId="-//Liferay//DTD Plugin Repository 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-plugin-repository_7_0_0.dtd" publicId="-//Liferay//DTD Plugin Repository 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet_2_0_0.dtd" publicId="-//Liferay//DTD PORTLET 2.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet_2_2_0.dtd" publicId="-//Liferay//DTD PORTLET 2.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_3_5_0.dtd" publicId="-//Liferay//DTD Portlet Application 3.5.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_0_0.dtd" publicId="-//Liferay//DTD Portlet Application 4.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_1_0.dtd" publicId="-//Liferay//DTD Portlet Application 4.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_2_0.dtd" publicId="-//Liferay//DTD Portlet Application 4.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_3_0.dtd" publicId="-//Liferay//DTD Portlet Application 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_3_1.dtd" publicId="-//Liferay//DTD Portlet Application 4.3.1//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_3_2.dtd" publicId="-//Liferay//DTD Portlet Application 4.3.2//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_3_3.dtd" publicId="-//Liferay//DTD Portlet Application 4.3.3//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_4_4_0.dtd" publicId="-//Liferay//DTD Portlet Application 4.4.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_5_0_0.dtd" publicId="-//Liferay//DTD Portlet Application 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_5_1_0.dtd" publicId="-//Liferay//DTD Portlet Application 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_5_2_0.dtd" publicId="-//Liferay//DTD Portlet Application 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_6_0_0.dtd" publicId="-//Liferay//DTD Portlet Application 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_6_1_0.dtd" publicId="-//Liferay//DTD Portlet Application 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_6_2_0.dtd" publicId="-//Liferay//DTD Portlet Application 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_7_0_0.dtd" publicId="-//Liferay//DTD Portlet Application 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-portlet-app_7_1_0.dtd" publicId="-//Liferay//DTD Portlet Application 7.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-resource-action-mapping_6_0_0.dtd" publicId="-//Liferay//DTD Resource Action Mapping 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-resource-action-mapping_6_1_0.dtd" publicId="-//Liferay//DTD Resource Action Mapping 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-resource-action-mapping_6_2_0.dtd" publicId="-//Liferay//DTD Resource Action Mapping 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-resource-action-mapping_7_0_0.dtd" publicId="-//Liferay//DTD Resource Action Mapping 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_3_5_0.dtd" publicId="-//Liferay//DTD Service Builder 3.5.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_3_6_1.dtd" publicId="-//Liferay//DTD Service Builder 3.6.1//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_4_0_0.dtd" publicId="-//Liferay//DTD Service Builder 4.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_4_2_0.dtd" publicId="-//Liferay//DTD Service Builder 4.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_4_3_0.dtd" publicId="-//Liferay//DTD Service Builder 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_4_3_3.dtd" publicId="-//Liferay//DTD Service Builder 4.3.3//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_4_4_0.dtd" publicId="-//Liferay//DTD Service Builder 4.4.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_5_0_0.dtd" publicId="-//Liferay//DTD Service Builder 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_5_1_0.dtd" publicId="-//Liferay//DTD Service Builder 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_5_2_0.dtd" publicId="-//Liferay//DTD Service Builder 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_6_0_0.dtd" publicId="-//Liferay//DTD Service Builder 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_6_1_0.dtd" publicId="-//Liferay//DTD Service Builder 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_6_2_0.dtd" publicId="-//Liferay//DTD Service Builder 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-service-builder_7_0_0.dtd" publicId="-//Liferay//DTD Service Builder 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-skin_2_0_0.dtd" publicId="-//Liferay//DTD SKIN 2.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-social_6_1_0.dtd" publicId="-//Liferay//DTD Social 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-social_6_2_0.dtd" publicId="-//Liferay//DTD Social 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-social_7_0_0.dtd" publicId="-//Liferay//DTD Social 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_4_3_0.dtd" publicId="-//Liferay//DTD Theme Loader 4.3.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_5_0_0.dtd" publicId="-//Liferay//DTD Theme Loader 5.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_5_1_0.dtd" publicId="-//Liferay//DTD Theme Loader 5.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_5_2_0.dtd" publicId="-//Liferay//DTD Theme Loader 5.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_6_0_0.dtd" publicId="-//Liferay//DTD Theme Loader 6.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_6_1_0.dtd" publicId="-//Liferay//DTD Theme Loader 6.1.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_6_2_0.dtd" publicId="-//Liferay//DTD Theme Loader 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-theme-loader_7_0_0.dtd" publicId="-//Liferay//DTD Theme Loader 7.0.0//EN" />
+				<dtd location="${definitions.dir}/liferay-user-notification-definitions_6_2_0.dtd" publicId="-//Liferay//DTD User Notification Definition 6.2.0//EN" />
+				<dtd location="${definitions.dir}/liferay-user-notification-definitions_7_0_0.dtd" publicId="-//Liferay//DTD User Notification Definition 7.0.0//EN" />
+				<dtd location="${definitions.dir}/mule-configuration.dtd" publicId="-//MuleSource //DTD mule-configuration XML V1.0//EN" />
+				<dtd location="${definitions.dir}/spring-beans.dtd" publicId="-//SPRING//DTD BEAN//EN" />
+				<dtd location="${definitions.dir}/struts-config_1_2.dtd" publicId="-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" />
+				<dtd location="${definitions.dir}/tiles-config_1_1.dtd" publicId="-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN" />
+				<dtd location="${definitions.dir}/web-app_2_3.dtd" publicId="-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" />
+				<dtd location="${definitions.dir}/web-facesconfig_1_0.dtd" publicId="-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN" />
+				<dtd location="${definitions.dir}/web-facesconfig_1_1.dtd" publicId="-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN" />
+				<dtd location="${definitions.dir}/XMLSchema.dtd" publicId="-//W3C//DTD XMLSCHEMA 200102//EN" />
+			</xmlcatalog>
 		</xmlvalidate>
 	</target>
 </project>

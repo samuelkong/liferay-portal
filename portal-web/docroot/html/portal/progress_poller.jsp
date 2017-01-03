@@ -36,20 +36,16 @@ if (progressTracker != null) {
 %>
 
 <html>
+	<body>
+		<script type="text/javascript">
+			;(function() {
+				var progressId = parent['<%= HtmlUtil.escapeJS(progressId) %>'];
 
-<body>
-
-<script type="text/javascript">
-	;(function() {
-		var progressId = parent['<%= HtmlUtil.escapeJS(progressId) %>'];
-
-		if (progressId && (typeof progressId.set == 'function')) {
-			progressId.set('message', '<%= LanguageUtil.get(request, message) %>');
-			progressId.set('value', <%= percent %>);
-		}
-	}());
-</script>
-
-</body>
-
+				if (progressId && (typeof progressId.set == 'function')) {
+					progressId.set('message', '<%= LanguageUtil.get(request, message) %>');
+					progressId.set('value', <%= percent %>);
+				}
+			}());
+		</script>
+	</body>
 </html>

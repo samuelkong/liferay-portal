@@ -64,7 +64,7 @@ public class GZipResponse extends MetaInfoCacheServletResponse {
 	}
 
 	@Override
-	public void finishResponse() throws IOException {
+	public void finishResponse(boolean reapplyMetaData) throws IOException {
 
 		// Is the response committed?
 
@@ -83,7 +83,7 @@ public class GZipResponse extends MetaInfoCacheServletResponse {
 
 				// Reapply meta data
 
-				super.finishResponse();
+				super.finishResponse(reapplyMetaData);
 			}
 		}
 
@@ -164,6 +164,15 @@ public class GZipResponse extends MetaInfoCacheServletResponse {
 
 	@Override
 	public void setContentLength(int contentLength) {
+	}
+
+	@Override
+	public void setHeader(String name, String value) {
+		if (HttpHeaders.CONTENT_LENGTH.equals(name)) {
+			return;
+		}
+
+		super.setHeader(name, value);
 	}
 
 	private ServletOutputStream _createGZipServletOutputStream(

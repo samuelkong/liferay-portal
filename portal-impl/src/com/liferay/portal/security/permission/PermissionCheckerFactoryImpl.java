@@ -14,8 +14,11 @@
 
 package com.liferay.portal.security.permission;
 
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
-import com.liferay.portal.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.util.PropsValues;
 
 /**
@@ -24,6 +27,7 @@ import com.liferay.portal.util.PropsValues;
  * @author Shuyang Zhou
  */
 @DoPrivileged
+@OSGiBeanProperties(property = {"service.ranking:Integer=-1"})
 public class PermissionCheckerFactoryImpl implements PermissionCheckerFactory {
 
 	public PermissionCheckerFactoryImpl() throws Exception {

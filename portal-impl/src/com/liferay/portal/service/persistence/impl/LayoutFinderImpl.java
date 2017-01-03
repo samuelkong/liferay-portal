@@ -19,13 +19,15 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutReference;
-import com.liferay.portal.model.LayoutSoap;
-import com.liferay.portal.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutReference;
+import com.liferay.portal.kernel.model.LayoutSoap;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.service.persistence.LayoutFinder;
+import com.liferay.portal.kernel.service.persistence.LayoutUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.LayoutImpl;
-import com.liferay.portal.service.persistence.LayoutFinder;
-import com.liferay.portal.service.persistence.LayoutUtil;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  */
 public class LayoutFinderImpl
-	extends BasePersistenceImpl<Layout> implements LayoutFinder {
+	extends LayoutFinderBaseImpl implements LayoutFinder {
 
 	public static final String FIND_BY_NO_PERMISSIONS =
 		LayoutFinder.class.getName() + ".findByNoPermissions";
@@ -65,6 +67,7 @@ public class LayoutFinderImpl
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
+			qPos.add(Layout.class.getName());
 			qPos.add(ResourceConstants.SCOPE_INDIVIDUAL);
 			qPos.add(roleId);
 
@@ -90,6 +93,36 @@ public class LayoutFinderImpl
 			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("Layout", LayoutImpl.class);
+
+			return q.list(true);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	public List<Layout> findByScopeGroup(long groupId) {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_BY_SCOPE_GROUP);
+
+			sql = StringUtil.replace(
+				sql, "AND (Layout.privateLayout = ?)", StringPool.BLANK);
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			q.addEntity("Layout", LayoutImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
 
 			return q.list(true);
 		}
@@ -157,8 +190,7 @@ public class LayoutFinderImpl
 			qPos.add(portletId.concat("_INSTANCE_%"));
 			qPos.add(preferences);
 
-			List<LayoutReference> layoutReferences =
-				new ArrayList<LayoutReference>();
+			List<LayoutReference> layoutReferences = new ArrayList<>();
 
 			Iterator<Object[]> itr = q.iterate();
 

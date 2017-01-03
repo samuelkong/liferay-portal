@@ -1,0 +1,343 @@
+<definition component-name="portal-user-management-and-portal-configuration">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Custom Fields" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="CustomFields#tearDownCP" />
+
+				<execute macro="User#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddCustomFieldsSmoke" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Boolean" />
+			<var name="customFieldType" value="True/False" />
+			<var name="resourceName" value="Blogs Entry" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Date" />
+			<var name="customFieldType" value="Date" />
+			<var name="resourceName" value="Bookmarks Entry" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Decimal" />
+			<var name="customFieldType" value="Decimal Number (64-bit)" />
+			<var name="resourceName" value="Bookmarks Folder" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Decimal" />
+			<var name="customFieldType" value="Group of Decimal Numbers (64-bit)" />
+			<var name="resourceName" value="Document" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Decimal" />
+			<var name="customFieldType" value="Decimal Number (32-bit)" />
+			<var name="resourceName" value="Documents Folder" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Integer" />
+			<var name="customFieldType" value="Integer (64-bit)" />
+			<var name="resourceName" value="Message Boards Category" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Integer" />
+			<var name="customFieldType" value="Group of Integers (64-bit)" />
+			<var name="resourceName" value="Message Boards Message" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Number" />
+			<var name="customFieldType" value="Decimal Number or Integer (64-bit)" />
+			<var name="resourceName" value="Organization" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Integer" />
+			<var name="customFieldType" value="Integer (16-bit)" />
+			<var name="resourceName" value="Page" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Integer" />
+			<var name="customFieldType" value="Group of Integers (16-bit)" />
+			<var name="resourceName" value="Role" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Text" />
+			<var name="customFieldType" value="Text" />
+			<var name="resourceName" value="Site" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Text" />
+			<var name="customFieldType" value="Group of Text Values" />
+			<var name="resourceName" value="User" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Text" />
+			<var name="customFieldType" value="Group of Text Values" />
+			<var name="resourceName" value="User Group" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Text" />
+			<var name="customFieldType" value="Localized Text" />
+			<var name="resourceName" value="Web Content Article" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Number" />
+			<var name="customFieldType" value="Group of Decimal Numbers or Integers (64-bit)" />
+			<var name="resourceName" value="Wiki Page" />
+		</execute>
+	</command>
+
+	<command name="AddCustomFieldUserBoolean" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Boolean" />
+			<var name="customFieldType" value="True/False" />
+			<var name="resourceName" value="User" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#gotoEditCP">
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="User#viewUserMiscellaneousCustomFieldsCP">
+			<var name="customFieldName" value="Boolean" />
+			<var name="customFieldValue" value="False" />
+		</execute>
+	</command>
+
+	<command name="EditCustomFieldUserBoolean" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Boolean" />
+			<var name="customFieldType" value="True/False" />
+			<var name="resourceName" value="User" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#editCP">
+			<var name="customFieldName" value="Boolean" />
+			<var name="customFieldType" value="True/False" />
+			<var name="defaultValue" value="True" />
+			<var name="resourceName" value="User" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#gotoEditCP">
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="User#viewUserMiscellaneousCustomFieldsCP">
+			<var name="customFieldName" value="Boolean" />
+			<var name="customFieldValue" value="True" />
+		</execute>
+	</command>
+
+	<command name="EditRevertCustomFieldWikiPage" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Custom Fields" />
+		</execute>
+
+		<execute macro="CustomFields#addCP">
+			<var name="customFieldName" value="Text" />
+			<var name="customFieldType" value="Text" />
+			<var name="resourceName" value="Wiki Page" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Wiki Test Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Wiki Test Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Wiki" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Wiki Test Page" />
+		</execute>
+
+		<execute macro="WikiNavigator#gotoAllPagesPG" />
+
+		<execute macro="WikiPage#addPG">
+			<var name="customFieldText" value="Wiki Text Custom Field" />
+			<var name="wikiPageContent" value="Wiki Page Content" />
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+		</execute>
+
+		<execute macro="WikiPage#editPagePG">
+			<var name="customFieldTextEdit" value="Wiki Text Custom Field Edit" />
+			<var name="wikiPageContentEdit" value="Wiki Page Content Edit" />
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+		</execute>
+
+		<execute macro="WikiPage#viewPagePG">
+			<var name="customFieldText" value="Wiki Text Custom Field Edit" />
+			<var name="wikiPageContent" value="Wiki Page Content Edit" />
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Wiki Test Page" />
+		</execute>
+
+		<execute macro="WikiNavigator#gotoPG">
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+		</execute>
+
+		<execute macro="WikiPage#revertEditPG">
+			<var name="wikiPageRevisionNew" value="1.2" />
+			<var name="wikiPageRevisionOld" value="1.0" />
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+			<var name="wikiVersionSummary" value="Reverted to 1.0" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Wiki Test Page" />
+		</execute>
+
+		<execute macro="WikiNavigator#gotoPG">
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+		</execute>
+
+		<execute macro="WikiPage#viewPagePG">
+			<var name="customFieldText" value="Wiki Text Custom Field" />
+			<var name="wikiPageContent" value="Wiki Page Content" />
+			<var name="wikiPageTitle" value="Wiki Page Title" />
+		</execute>
+	</command>
+</definition>

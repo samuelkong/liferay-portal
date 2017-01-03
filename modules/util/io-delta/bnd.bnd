@@ -1,4 +1,0 @@
-Bundle-Name: Liferay IO Delta
-Bundle-SymbolicName: com.liferay.io.delta
-Bundle-Version: 1.0.0
-Export-Package: com.liferay.io.delta

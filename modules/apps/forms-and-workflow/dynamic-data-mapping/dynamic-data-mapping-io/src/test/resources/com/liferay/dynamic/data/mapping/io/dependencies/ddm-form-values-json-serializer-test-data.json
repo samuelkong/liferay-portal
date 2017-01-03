@@ -1,0 +1,83 @@
+{
+	"availableLanguageIds": ["en_US", "pt_BR"],
+	"defaultLanguageId": "en_US",
+	"fieldValues": [
+		{
+			"instanceId": "uayx",
+			"name": "Separator7211",
+			"nestedFieldValues": [
+				{
+					"instanceId": "xyz0",
+					"name": "Text_Box6748",
+					"value": {
+						"en_US": "Content 0",
+						"pt_BR": "Conteudo 0"
+					}
+				}
+			]
+		},
+		{
+			"instanceId": "lahy",
+			"name": "Separator7211",
+			"nestedFieldValues": [
+				{
+					"instanceId": "xyz1",
+					"name": "Text_Box6748",
+					"value": {
+						"en_US": "Content 1",
+						"pt_BR": "Conteudo 1"
+					}
+				}
+			]
+		},
+		{
+			"instanceId": "baht",
+			"name": "Text6513",
+			"value": {
+				"en_US": "Text",
+				"pt_BR": "Texto"
+			}
+		},
+		{
+			"instanceId": "uaht",
+			"name": "Image4751",
+			"value": "{\"alt\":\"This is a image description. 0\",\"data\":\"base64Value0\"}"
+		},
+		{
+			"instanceId": "pppj",
+			"name": "Image4751",
+			"value": "{\"alt\":\"This is a image description. 1\",\"data\":\"base64Value1\"}"
+		},
+		{
+			"instanceId": "nmab",
+			"name": "Image4751",
+			"value": "{\"alt\":\"This is a image description. 2\",\"data\":\"base64Value2\"}"
+		},
+		{
+			"instanceId": "njar",
+			"name": "Boolean2282",
+			"nestedFieldValues": [
+				{
+					"instanceId": "nabr",
+					"name": "HTML4512",
+					"value": {
+						"en_US": "<p>This is a test. 0<\/p>",
+						"pt_BR": "<p>Isto e um teste. 0<\/p>"
+					}
+				},
+				{
+					"instanceId": "uwyg",
+					"name": "HTML4512",
+					"value": {
+						"en_US": "<p>This is a test. 1<\/p>",
+						"pt_BR": "<p>Isto e um teste. 1<\/p>"
+					}
+				}
+			],
+			"value": {
+				"en_US": "false",
+				"pt_BR": "true"
+			}
+		}
+	]
+}

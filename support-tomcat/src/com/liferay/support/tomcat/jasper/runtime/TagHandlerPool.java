@@ -32,6 +32,7 @@ import org.apache.jasper.Constants;
  * </p>
  *
  * @author Shuyang Zhou
+ * @see com.liferay.portal.osgi.web.servlet.jsp.compiler.internal.JspTagHandlerPool
  */
 public class TagHandlerPool extends org.apache.jasper.runtime.TagHandlerPool {
 
@@ -47,6 +48,9 @@ public class TagHandlerPool extends org.apache.jasper.runtime.TagHandlerPool {
 			catch (Exception e) {
 				throw new JspException(e);
 			}
+		}
+		else {
+			_counter.getAndDecrement();
 		}
 
 		return tag;
@@ -81,6 +85,6 @@ public class TagHandlerPool extends org.apache.jasper.runtime.TagHandlerPool {
 
 	private final AtomicInteger _counter = new AtomicInteger();
 	private int _maxSize;
-	private final Queue<Tag> _tags = new ConcurrentLinkedQueue<Tag>();
+	private final Queue<Tag> _tags = new ConcurrentLinkedQueue<>();
 
 }

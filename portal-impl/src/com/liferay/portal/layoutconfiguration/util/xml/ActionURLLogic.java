@@ -14,11 +14,12 @@
 
 package com.liferay.portal.layoutconfiguration.util.xml;
 
+import com.liferay.portal.kernel.layoutconfiguration.util.xml.RuntimeLogic;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.RenderResponseImpl;
 
 import javax.portlet.PortletRequest;
@@ -45,7 +46,7 @@ public class ActionURLLogic extends RuntimeLogic {
 	}
 
 	public String getLifecycle() {
-		return _lifecycle;
+		return _LIFECYCLE;
 	}
 
 	@Override
@@ -84,7 +85,8 @@ public class ActionURLLogic extends RuntimeLogic {
 		return liferayPortletURL.toString();
 	}
 
-	private String _lifecycle = PortletRequest.ACTION_PHASE;
-	private RenderResponseImpl _renderResponseImpl;
+	private static final String _LIFECYCLE = PortletRequest.ACTION_PHASE;
+
+	private final RenderResponseImpl _renderResponseImpl;
 
 }

@@ -1,0 +1,2 @@
+contextPaths=/${artifactId}
+jaxRsServiceFilterStrings=(component.name=${package}.application.${className}Application)

@@ -15,10 +15,10 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.model.ResourceBlockConstants;
-import com.liferay.portal.model.ResourceBlockPermissionsContainer;
-import com.liferay.portal.model.ResourceTypePermission;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceBlockConstants;
+import com.liferay.portal.kernel.model.ResourceBlockPermissionsContainer;
+import com.liferay.portal.kernel.model.ResourceTypePermission;
 import com.liferay.portal.service.base.ResourceTypePermissionLocalServiceBaseImpl;
 
 import java.util.List;
@@ -70,8 +70,8 @@ public class ResourceTypePermissionLocalServiceImpl
 
 	@Override
 	public ResourceBlockPermissionsContainer
-			getResourceBlockPermissionsContainer(
-				long companyId, long groupId, String name) {
+		getResourceBlockPermissionsContainer(
+			long companyId, long groupId, String name) {
 
 		List<ResourceTypePermission> resourceTypePermissions =
 			resourceTypePermissionFinder.findByEitherScopeC_G_N(
@@ -146,6 +146,7 @@ public class ResourceTypePermissionLocalServiceImpl
 				companyId, groupId, name, roleId);
 
 		long actionIdsLong = resourceTypePermission.getActionIds();
+
 		long bitwiseValue = resourceAction.getBitwiseValue();
 
 		if ((actionIdsLong & bitwiseValue) == bitwiseValue) {

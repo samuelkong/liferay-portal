@@ -15,8 +15,8 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.ListTypeConstants;
-import com.liferay.portal.model.OrgLabor;
+import com.liferay.portal.kernel.model.ListTypeConstants;
+import com.liferay.portal.kernel.model.OrgLabor;
 import com.liferay.portal.service.base.OrgLaborLocalServiceBaseImpl;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class OrgLaborLocalServiceImpl extends OrgLaborLocalServiceBaseImpl {
 
 	@Override
 	public OrgLabor addOrgLabor(
-			long organizationId, int typeId, int sunOpen, int sunClose,
+			long organizationId, long typeId, int sunOpen, int sunClose,
 			int monOpen, int monClose, int tueOpen, int tueClose, int wedOpen,
 			int wedClose, int thuOpen, int thuClose, int friOpen, int friClose,
 			int satOpen, int satClose)
@@ -69,10 +69,10 @@ public class OrgLaborLocalServiceImpl extends OrgLaborLocalServiceBaseImpl {
 
 	@Override
 	public OrgLabor updateOrgLabor(
-			long orgLaborId, int typeId, int sunOpen, int sunClose, int monOpen,
-			int monClose, int tueOpen, int tueClose, int wedOpen, int wedClose,
-			int thuOpen, int thuClose, int friOpen, int friClose, int satOpen,
-			int satClose)
+			long orgLaborId, long typeId, int sunOpen, int sunClose,
+			int monOpen, int monClose, int tueOpen, int tueClose, int wedOpen,
+			int wedClose, int thuOpen, int thuClose, int friOpen, int friClose,
+			int satOpen, int satClose)
 		throws PortalException {
 
 		validate(typeId);
@@ -100,8 +100,8 @@ public class OrgLaborLocalServiceImpl extends OrgLaborLocalServiceBaseImpl {
 		return orgLabor;
 	}
 
-	protected void validate(int typeId) throws PortalException {
-		listTypeService.validate(
+	protected void validate(long typeId) throws PortalException {
+		listTypeLocalService.validate(
 			typeId, ListTypeConstants.ORGANIZATION_SERVICE);
 	}
 

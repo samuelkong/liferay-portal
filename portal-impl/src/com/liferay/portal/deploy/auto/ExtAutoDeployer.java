@@ -29,8 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 6.2.0
  */
+@Deprecated
 public class ExtAutoDeployer extends ExtDeployer implements AutoDeployer {
 
 	public ExtAutoDeployer() {
@@ -50,8 +52,11 @@ public class ExtAutoDeployer extends ExtDeployer implements AutoDeployer {
 			tomcatLibDir = PrefsPropsUtil.getString(
 				PropsKeys.AUTO_DEPLOY_TOMCAT_LIB_DIR,
 				PropsValues.AUTO_DEPLOY_TOMCAT_LIB_DIR);
+			wildflyPrefix = PrefsPropsUtil.getString(
+				PropsKeys.AUTO_DEPLOY_WILDFLY_PREFIX,
+				PropsValues.AUTO_DEPLOY_WILDFLY_PREFIX);
 
-			List<String> jars = new ArrayList<String>();
+			List<String> jars = new ArrayList<>();
 
 			addRequiredJar(jars, "util-bridges.jar");
 			addRequiredJar(jars, "util-java.jar");

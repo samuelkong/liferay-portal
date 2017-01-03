@@ -1,0 +1,127 @@
+import com.liferay.gradle.util.FileUtil
+import com.liferay.gradle.util.copy.StripPathSegmentsAction
+
+task expandMavenDistribution(type: Copy)
+task writeProjectTemplateVersions
+
+Set<Project> projectTemplateProjects = project.parent.subprojects.findAll {
+	it.name.startsWith "project-templates-"
+}
+
+bundle {
+	includeTransitiveDependencies = true
+}
+
+configurations {
+	mavenDistribution
+	projectTemplates
+}
+
+dependencies {
+	mavenDistribution classifier: "bin", ext: "tar.gz", group: "org.apache.maven", name: "apache-maven", version: "3.3.9"
+
+	projectTemplates project(":sdk:project-templates-activator")
+	projectTemplates project(":sdk:project-templates-api")
+	projectTemplates project(":sdk:project-templates-content-targeting-report")
+	projectTemplates project(":sdk:project-templates-content-targeting-rule")
+	projectTemplates project(":sdk:project-templates-content-targeting-tracking-action")
+	projectTemplates project(":sdk:project-templates-control-menu-entry")
+	projectTemplates project(":sdk:project-templates-fragment")
+	projectTemplates project(":sdk:project-templates-mvc-portlet")
+	projectTemplates project(":sdk:project-templates-panel-app")
+	projectTemplates project(":sdk:project-templates-portlet")
+	projectTemplates project(":sdk:project-templates-portlet-configuration-icon")
+	projectTemplates project(":sdk:project-templates-portlet-provider")
+	projectTemplates project(":sdk:project-templates-portlet-toolbar-contributor")
+	projectTemplates project(":sdk:project-templates-rest")
+	projectTemplates project(":sdk:project-templates-service")
+	projectTemplates project(":sdk:project-templates-service-builder")
+	projectTemplates project(":sdk:project-templates-service-wrapper")
+	projectTemplates project(":sdk:project-templates-simulation-panel-entry")
+	projectTemplates project(":sdk:project-templates-template-context-contributor")
+	projectTemplates project(":sdk:project-templates-theme")
+	projectTemplates project(":sdk:project-templates-theme-contributor")
+	projectTemplates project(":sdk:project-templates-workspace")
+
+	provided group: "com.beust", name: "jcommander", version: "1.48"
+	provided group: "org.apache.maven.archetype", name: "archetype-common", version: "2.4"
+
+	testCompile gradleTestKit()
+	testCompile group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "3.2.0"
+	testCompile group: "junit", name: "junit", version: "4.12"
+	testCompile group: "net.diibadaaba.zipdiff", name: "zipdiff", version: "1.0"
+}
+
+expandMavenDistribution {
+	eachFile new StripPathSegmentsAction(1)
+
+	from {
+		tarTree(configurations.mavenDistribution.singleFile)
+	}
+
+	includeEmptyDirs = false
+	into new File(buildDir, "maven-distribution")
+}
+
+processResources {
+	from configurations.projectTemplates
+}
+
+test {
+	dependsOn projectTemplateProjects.collect {
+		"${it.path}:install"
+	}
+
+	dependsOn expandMavenDistribution
+	dependsOn writeProjectTemplateVersions
+
+	doFirst {
+		Properties gradleWrapperProperties = new Properties()
+
+		File gradleWrapperPropertiesFile = file("src/main/resources/gradle-wrapper/gradle/wrapper/gradle-wrapper.properties")
+
+		gradleWrapperPropertiesFile.withInputStream {
+			gradleWrapperProperties.load it
+		}
+
+		String gradleDistributionUrl = gradleWrapperProperties["distributionUrl"]
+
+		File gradleDistributionFile = FileUtil.get(project, gradleDistributionUrl)
+
+		systemProperty "gradle.distribution", uri(gradleDistributionFile)
+	}
+
+	jvmArgs "-XX:MaxMetaspaceSize=256m"
+	maxHeapSize = "1024m"
+
+	systemProperty "repository.url", System.properties["repository.url"]
+	systemProperty "http.proxyHost", System.properties["http.proxyHost"]
+	systemProperty "http.proxyPort", System.properties["http.proxyPort"]
+	systemProperty "maven.distribution.dir", expandMavenDistribution.destinationDir
+}
+
+writeProjectTemplateVersions {
+	doLast {
+		Properties properties = new Properties()
+
+		for (Project projectTemplateProject in projectTemplateProjects) {
+			File bndFile = projectTemplateProject.file("bnd.bnd")
+
+			Properties bndProperties = new Properties()
+
+			bndFile.withInputStream {
+				bndProperties.load it
+			}
+
+			properties.setProperty projectTemplateProject.name.substring(18), bndProperties["Bundle-Version"]
+		}
+
+		File projectTemplateVersionsFile = new File(buildDir, "project-template-versions.properties")
+
+		projectTemplateVersionsFile.parentFile.mkdirs()
+
+		projectTemplateVersionsFile.withOutputStream {
+			properties.store it, null
+		}
+	}
+}

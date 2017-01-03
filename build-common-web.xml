@@ -1,11 +1,22 @@
 <?xml version="1.0"?>
 
-<project name="build-common-web" xmlns:antelope="antlib:ise.antelope.tasks">
+<project name="build-common-web" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<import file="build-common.xml" />
+
+	<macrodef name="manifest-macro">
+		<sequential>
+			<mkdir dir="docroot/WEB-INF/classes/META-INF" />
+
+			<manifest file="docroot/WEB-INF/classes/META-INF/MANIFEST.MF" mode="update">
+				<attribute name="Extension-List" value="crypto" />
+				<attribute name="crypto-Extension-Name" value="javax.crypto" />
+			</manifest>
+		</sequential>
+	</macrodef>
 
 	<target name="clean">
 		<delete dir="docroot/WEB-INF/classes" />
-		<delete file="${war.file}.war" failonerror="false" />
+		<delete failonerror="false" file="${war.file}.war" />
 
 		<delete>
 			<fileset dir="docroot" includes="**/.sprite.png" />
@@ -14,49 +25,9 @@
 		</delete>
 	</target>
 
-	<target name="compile">
-		<if>
-			<available file="docroot/WEB-INF/src" />
-			<then>
-				<if>
-					<available file="tmp" type="dir" />
-					<then>
-						<property name="compile.file.dest" value="tmp/WEB-INF/classes" />
-					</then>
-					<else>
-						<property name="compile.file.dest" value="docroot/WEB-INF/classes" />
-					</else>
-				</if>
+	<target name="deploy">
+		<manifest-macro />
 
-				<mkdir dir="${compile.file.dest}" />
-
-				<copy todir="${compile.file.dest}" preservelastmodified="true">
-					<fileset dir="docroot/WEB-INF/src" excludes="**/*.java" />
-				</copy>
-
-				<javac
-					classpathref="web.classpath"
-					compiler="${javac.compiler}"
-					debug="${javac.debug}"
-					deprecation="${javac.deprecation}"
-					destdir="${compile.file.dest}"
-					encoding="${javac.encoding}"
-					includeAntRuntime="false"
-					nowarn="${javac.nowarn}"
-					srcdir="docroot/WEB-INF/src"
-				/>
-			</then>
-		</if>
-
-		<mkdir dir="docroot/WEB-INF/classes/META-INF" />
-
-		<manifest file="docroot/WEB-INF/classes/META-INF/MANIFEST.MF">
-			<attribute name="Extension-List" value="crypto" />
-			<attribute name="crypto-Extension-Name" value="javax.crypto" />
-		</manifest>
-	</target>
-
-	<target name="deploy" depends="compile">
 		<if>
 			<equals arg1="${war.file}" arg2="portal-web" />
 			<then>
@@ -65,10 +36,10 @@
 			<else>
 				<if>
 					<or>
-						<equals arg1="${app.server.type}" arg2="geronimo" />
 						<equals arg1="${app.server.type}" arg2="glassfish" />
 						<equals arg1="${app.server.type}" arg2="jboss" />
 						<equals arg1="${app.server.type}" arg2="jonas" />
+						<equals arg1="${app.server.type}" arg2="wildfly" />
 					</or>
 					<then>
 						<property name="war.file.dest" value="${app.server.deploy.dir}/${war.file}.war" />
@@ -99,34 +70,44 @@
 				<if>
 					<available file="tmp" type="dir" />
 					<then>
-						<copy todir="${war.file.dest}" preservelastmodified="true">
+						<copy preservelastmodified="true" todir="${war.file.dest}">
 							<fileset dir="tmp" />
 						</copy>
 					</then>
 					<elseif>
+						<and>
+							<available file="docroot" type="dir" />
+							<equals arg1="${build.profile}" arg2="slim" />
+						</and>
+						<then>
+							<copy file="docroot/WEB-INF/slim-runtime-web.xml" preservelastmodified="true" tofile="${war.file.dest}/WEB-INF/web.xml" />
+						</then>
+					</elseif>
+					<elseif>
 						<available file="docroot" type="dir" />
 						<then>
-							<copy todir="${war.file.dest}" preservelastmodified="true">
-								<fileset dir="docroot" excludes="/html/themes/*/_diffs/**" />
+							<copy preservelastmodified="true" todir="${war.file.dest}">
+								<fileset dir="docroot">
+									<exclude name="**/css/*.scss" />
+								</fileset>
+								<filtermapper>
+									<replacestring from=".sass-cache" to="" />
+								</filtermapper>
 							</copy>
 						</then>
 					</elseif>
 					<else>
-						<unwar src="${war.file}.war" dest="${war.file.dest}" />
+						<unwar dest="${war.file.dest}" src="${war.file}.war" />
 					</else>
 				</if>
 			</else>
 		</if>
 
 		<if>
-			<and>
+			<or>
 				<equals arg1="${app.server.type}" arg2="jboss" />
-				<or>
-					<equals arg1="${app.server.major.version}" arg2="6" />
-					<equals arg1="${app.server.major.version}" arg2="7" />
-					<equals arg1="${app.server.major.version}" arg2="8" />
-				</or>
-			</and>
+				<equals arg1="${app.server.type}" arg2="wildfly" />
+			</or>
 			<then>
 				<echo file="${war.file.dest}.dodeploy" />
 			</then>
@@ -142,7 +123,7 @@
 			</and>
 			<then>
 				<tstamp>
-					<format property="tstamp.value" pattern="yyyyMMddkkmmssSSS" />
+					<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
 				</tstamp>
 
 				<jar
@@ -174,7 +155,25 @@
 		</if>
 	</target>
 
-	<target name="war" depends="compile">
+	<target depends="war" name="install-portal-release">
+		<install-portal-artifact packaging="war" />
+	</target>
+
+	<target depends="war" name="install-portal-snapshot">
+		<install-portal-artifact packaging="war" snapshot="true" />
+	</target>
+
+	<target depends="war" name="publish-portal-release">
+		<publish-portal-artifact packaging="war" />
+	</target>
+
+	<target depends="war" name="publish-portal-snapshot">
+		<publish-portal-artifact packaging="war" snapshot="true" />
+	</target>
+
+	<target name="war">
+		<manifest-macro />
+
 		<if>
 			<available file="docroot" />
 			<then>

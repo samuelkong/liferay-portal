@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -16,11 +15,13 @@
 package com.liferay.portal.fabric.netty.codec.serialization;
 
 import com.liferay.portal.fabric.netty.util.NettyUtil;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.test.AdviseWith;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.test.aspects.ReflectionUtilAdvice;
-import com.liferay.portal.test.runners.AspectJMockingNewClassLoaderJUnitTestRunner;
+import com.liferay.portal.test.rule.AdviseWith;
+import com.liferay.portal.test.rule.AspectJNewEnvTestRule;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
@@ -31,21 +32,21 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.testng.Assert;
 
 /**
  * @author Shuyang Zhou
  */
-@RunWith(AspectJMockingNewClassLoaderJUnitTestRunner.class)
 public class ObjectDecodeChannelInboundHandlerTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			CodeCoverageAssertor.INSTANCE, AspectJNewEnvTestRule.INSTANCE);
 
 	@Test
 	public void testChannelRead() throws Exception {
@@ -68,6 +69,7 @@ public class ObjectDecodeChannelInboundHandlerTest {
 
 		Assert.assertSame(
 			uuid, dateChannelHandler.channelRead(null, uuid, null));
+
 		Assert.assertNull(dateChannelHandler.getDate());
 
 		Date date = new Date();
@@ -85,6 +87,7 @@ public class ObjectDecodeChannelInboundHandlerTest {
 	}
 
 	@AdviseWith(adviceClasses = ReflectionUtilAdvice.class)
+	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testClassLoadingFailure() {
 		Throwable throwable = new Throwable();
@@ -143,6 +146,7 @@ public class ObjectDecodeChannelInboundHandlerTest {
 
 		Assert.assertEquals(1, map.size());
 		Assert.assertTrue(map.containsValue(annotatedObjectDecoder));
+
 		Assert.assertSame(
 			dateChannelHandler, annotatedObjectDecoder.removeLast());
 	}

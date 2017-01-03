@@ -50,8 +50,11 @@ public class WebAutoDeployer extends WebDeployer implements AutoDeployer {
 			tomcatLibDir = PrefsPropsUtil.getString(
 				PropsKeys.AUTO_DEPLOY_TOMCAT_LIB_DIR,
 				PropsValues.AUTO_DEPLOY_TOMCAT_LIB_DIR);
+			wildflyPrefix = PrefsPropsUtil.getString(
+				PropsKeys.AUTO_DEPLOY_WILDFLY_PREFIX,
+				PropsValues.AUTO_DEPLOY_WILDFLY_PREFIX);
 
-			List<String> jars = new ArrayList<String>();
+			List<String> jars = new ArrayList<>();
 
 			addExtJar(jars, "ext-util-bridges.jar");
 			addExtJar(jars, "ext-util-java.jar");

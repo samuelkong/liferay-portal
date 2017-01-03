@@ -14,6 +14,7 @@
 
 package com.liferay.mail.util;
 
+import com.liferay.mail.kernel.util.Hook;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceTracker;

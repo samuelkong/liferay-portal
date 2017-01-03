@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseNavTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseNavTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -67,54 +67,40 @@ public class BaseNavTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setAriaLabel(java.lang.String ariaLabel) {
 		_ariaLabel = ariaLabel;
-
-		setScopedAttribute("ariaLabel", ariaLabel);
 	}
 
 	public void setAriaRole(java.lang.String ariaRole) {
 		_ariaRole = ariaRole;
-
-		setScopedAttribute("ariaRole", ariaRole);
 	}
 
 	public void setCollapsible(boolean collapsible) {
 		_collapsible = collapsible;
-
-		setScopedAttribute("collapsible", collapsible);
 	}
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setIcon(java.lang.String icon) {
 		_icon = icon;
-
-		setScopedAttribute("icon", icon);
 	}
 
 	public void setId(java.lang.String id) {
 		_id = id;
-
-		setScopedAttribute("id", id);
 	}
 
 	public void setSearchContainer(com.liferay.portal.kernel.dao.search.SearchContainer<?> searchContainer) {
 		_searchContainer = searchContainer;
-
-		setScopedAttribute("searchContainer", searchContainer);
 	}
 
 	public void setUseNamespace(boolean useNamespace) {
 		_useNamespace = useNamespace;
-
-		setScopedAttribute("useNamespace", useNamespace);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_ariaLabel = null;
 		_ariaRole = null;
 		_collapsible = false;

@@ -1,0 +1,619 @@
+<definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Site Pages Administration" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="BlogsEntry#tearDownCP" />
+				<execute macro="Page#tearDownPG" />
+				<execute macro="Site#tearDownCP" />
+				<execute macro="User#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddPageMultiplePagesToSite" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page 1" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page 2" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page 3" />
+		</execute>
+
+		<execute macro="Page#tearDownPG">
+			<var name="site" value="Liferay" />
+		</execute>
+	</command>
+
+	<command name="AddPagesFullPageApplication" priority="4">
+		<for list="Blogs,Documents and Media,Wiki,Media Gallery,Message Boards,Dynamic Data Lists Form,Hello Soy Portlet" param="portlet">
+			<execute macro="Page#add">
+				<var name="pageName" value="${portlet} Full Page Application" />
+				<var name="portlet" value="${portlet}" />
+				<var name="sitePageType" value="Full Page Application" />
+			</execute>
+
+			<if>
+				<equals arg1="${portlet}" arg2="Dynamic Data Lists Form" />
+				<then>
+					<execute function="AssertTextEquals" locator1="Home#PAGE_COLUMN_PORTLET_COLUMN_1_PORTLET_TITLE" value1="Form">
+						<var name="key_portletTitleName" value="Form" />
+					</execute>
+				</then>
+				<else>
+					<execute function="AssertTextEquals" locator1="Home#PAGE_COLUMN_PORTLET_COLUMN_1_PORTLET_TITLE" value1="${portlet}">
+						<var name="key_portletTitleName" value="${portlet}" />
+					</execute>
+				</else>
+			</if>
+
+			<execute function="AssertElementNotPresent" locator1="ControlMenu#ADD" />
+			<execute function="AssertElementNotPresent" locator1="ControlMenu#EDIT_COG" />
+		</for>
+	</command>
+
+	<command name="AddPageWithEscapeCharacter" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Tester&apos;s Page" />
+		</execute>
+	</command>
+
+	<command name="AddPageWithMultipleChildPagesToSite" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<for list="Site Child Page 1,Site Child Page 2,Site Child Page 3" param="childPageName" >
+			<execute macro="ProductMenu#gotoControlPanelSites">
+				<var name="portlet" value="Sites" />
+			</execute>
+
+			<execute macro="Page#addChild">
+				<var name="page" value="Public Pages" />
+				<var name="pageName" value="Site Page" />
+				<var name="siteChildPageName" value="${childPageName}" />
+				<var name="siteName" value="Site Name" />
+			</execute>
+		</for>
+
+		<for list="Site Child Page 1,Site Child Page 2,Site Child Page 3" param="childPageName" >
+			<execute macro="Navigator#gotoSitePage">
+				<var name="pageName" value="Site Page" />
+				<var name="siteName" value="Site Name" />
+			</execute>
+
+			<execute macro="Page#viewChildPage">
+				<var name="pageName" value="${childPageName}" />
+			</execute>
+		</for>
+	</command>
+
+	<command name="AddSitePrivateChildPage" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+			<var name="sitePagePrivacy" value="Private" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#addChild">
+			<var name="page" value="Private Pages" />
+			<var name="pageName" value="Site Page" />
+			<var name="siteChildPageName" value="Site Child Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page" />
+			<var name="url" value="http://localhost:8080/group/site-name/site-child-page" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoPrivatePages" />
+
+		<execute macro="Page#viewChildPage">
+			<var name="pageName" value="Site Child Page" />
+		</execute>
+	</command>
+
+	<command name="AddSitePrivatePage" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+			<var name="sitePagePrivacy" value="Private" />
+		</execute>
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page" />
+			<var name="url" value="http://localhost:8080/group/site-name/site-page" />
+		</execute>
+
+		<execute macro="Page#view">
+			<var name="pageName" value="Site Page" />
+		</execute>
+	</command>
+
+	<command name="AddSitePrivatePagePortlet" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Blogs Page" />
+			<var name="siteName" value="Site Name" />
+			<var name="sitePagePrivacy" value="Private" />
+		</execute>
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Blogs Page" />
+			<var name="url" value="http://localhost:8080/group/site-name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="pageAccess" value="Private" />
+			<var name="pageName" value="Blogs Page" />
+			<var name="portletName" value="Blogs" />
+			<var name="siteName" value="Site Name" />
+			<var name="siteURL" value="true" />
+		</execute>
+	</command>
+
+	<command name="AddSitePublicChildPage" priority="5">
+		<property name="portal.acceptance" value="quarantine" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#addChild">
+			<var name="page" value="Public Pages" />
+			<var name="pageName" value="Site Page" />
+			<var name="siteChildPageName" value="Site Child Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page" />
+			<var name="url" value="${portalURL}/web/site-name/site-child-page" />
+		</execute>
+
+		<execute macro="Page#viewChildPage">
+			<var name="pageName" value="Site Child Page" />
+		</execute>
+	</command>
+
+	<command name="AddSitePublicPage" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page" />
+			<var name="url" value="${portalURL}/web/site-name/site-page" />
+		</execute>
+
+		<execute macro="Page#view">
+			<var name="pageName" value="Site Page" />
+		</execute>
+	</command>
+
+	<command name="AddSitePublicPagePortlet" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Blogs Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Blogs Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Blogs" />
+		</execute>
+	</command>
+
+	<command name="ChangePageLayout" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Web Content Display" />
+		</execute>
+
+		<execute macro="Page#viewPageLayout">
+			<var name="pageLayout" value="2 Column (30/70)" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Site Page Name" />
+		</execute>
+
+		<execute macro="Page#editPageTypeLayout">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Page#viewPageLayout">
+			<var name="pageLayout" value="1 Column" />
+		</execute>
+	</command>
+
+	<command name="CopyApplicationsFromPageToPage" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Blog Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Blog Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Blogs" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Blog Page" />
+		</execute>
+
+		<execute macro="Page#copyApplicationsFromPageToPage">
+			<var name="pageName" value="Blog Page" />
+			<var name="pageNameCopy" value="Site Page" />
+		</execute>
+	</command>
+
+	<command name="DeleteSitePages" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<for list="Site Page 1,Site Page 2,Site Page 3" param="pageName">
+			<execute macro="Navigator#openURL" />
+
+			<execute macro="ProductMenu#gotoControlPanelSites">
+				<var name="portlet" value="Sites" />
+			</execute>
+
+			<execute macro="Page#add">
+				<var name="page" value="Public Pages" />
+				<var name="pageName" value="${pageName}" />
+				<var name="siteName" value="Site Name" />
+			</execute>
+		</for>
+
+		<execute macro="Page#deletePG">
+			<var name="pageName" value="Site Page 2" />
+		</execute>
+	</command>
+
+	<command name="EditSitePage" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="SitePageNavigator#gotoPages" >
+			<var name="page" value="Public Pages" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Site Page" />
+		</execute>
+
+		<execute macro="Page#editName">
+			<var name="pageNameEdit" value="Site Page Edit" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoPages" >
+			<var name="page" value="Public Pages" />
+		</execute>
+
+		<execute macro="Page#view">
+			<var name="pageName" value="Site Page Edit" />
+		</execute>
+	</command>
+
+	<command name="SaveEmbeddedPageType" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Site Page" />
+		</execute>
+
+		<execute macro="Page#editSelectPageType">
+			<var name="page" value="Site Page" />
+			<var name="pageType" value="Embedded" />
+		</execute>
+
+		<execute macro="Navigator#gotoSpecificURLPage">
+			<var name="pageName" value="Site Page" />
+			<var name="url" value="http://localhost:8080/web/site-name" />
+		</execute>
+
+		<execute macro="Page#viewEmbeddedPagePG" />
+	</command>
+
+	<command name="SavePortletPageType" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="pageTemplateName" value="Blog" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Site Page" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Blogs#viewControlsPG" />
+	</command>
+
+	<command name="ViewNoInfoMessageWhenChangingSiteTemplateAsUser" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addCommunityCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesMembers">
+			<var name="portlet" value="Site Memberships" />
+		</execute>
+
+		<execute macro="Site#assignUserAsMemberCP">
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="User#firstLoginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#viewDefaultSiteTemplatePagesPG">
+			<var name="pageName" value="Home" />
+			<var name="siteName" value="Site Name" />
+			<var name="siteTemplate" value="Community" />
+			<var name="siteURL" value="true" />
+		</execute>
+
+		<execute macro="User#firstLoginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="test@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Home" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Blogs" />
+		</execute>
+
+		<execute macro="User#firstLoginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Home" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="SiteTemplates#viewNoInfoMessage" />
+
+		<execute macro="User#firstLoginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="test@liferay.com" />
+		</execute>
+	</command>
+</definition>

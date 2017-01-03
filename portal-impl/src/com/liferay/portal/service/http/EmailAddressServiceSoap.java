@@ -18,13 +18,13 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.service.EmailAddressServiceUtil;
+import com.liferay.portal.kernel.service.EmailAddressServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.service.EmailAddressServiceUtil} service utility. The
+ * {@link EmailAddressServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -32,10 +32,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portal.model.EmailAddressSoap}.
+ * is translated to an array of {@link com.liferay.portal.kernel.model.EmailAddressSoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portal.model.EmailAddress}, that is translated to a
- * {@link com.liferay.portal.model.EmailAddressSoap}. Methods that SOAP cannot
+ * {@link com.liferay.portal.kernel.model.EmailAddress}, that is translated to a
+ * {@link com.liferay.portal.kernel.model.EmailAddressSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -58,43 +58,22 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see EmailAddressServiceHttp
- * @see com.liferay.portal.model.EmailAddressSoap
- * @see com.liferay.portal.service.EmailAddressServiceUtil
+ * @see com.liferay.portal.kernel.model.EmailAddressSoap
+ * @see EmailAddressServiceUtil
  * @generated
  */
 @ProviderType
 public class EmailAddressServiceSoap {
-	/**
-	* @deprecated As of 6.2.0, replaced by {@link #addEmailAddress(String,
-	long, String, int, boolean, ServiceContext)}
-	*/
-	@Deprecated
-	public static com.liferay.portal.model.EmailAddressSoap addEmailAddress(
+	public static com.liferay.portal.kernel.model.EmailAddressSoap addEmailAddress(
 		java.lang.String className, long classPK, java.lang.String address,
-		int typeId, boolean primary) throws RemoteException {
-		try {
-			com.liferay.portal.model.EmailAddress returnValue = EmailAddressServiceUtil.addEmailAddress(className,
-					classPK, address, typeId, primary);
-
-			return com.liferay.portal.model.EmailAddressSoap.toSoapModel(returnValue);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	public static com.liferay.portal.model.EmailAddressSoap addEmailAddress(
-		java.lang.String className, long classPK, java.lang.String address,
-		int typeId, boolean primary,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		long typeId, boolean primary,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
-			com.liferay.portal.model.EmailAddress returnValue = EmailAddressServiceUtil.addEmailAddress(className,
+			com.liferay.portal.kernel.model.EmailAddress returnValue = EmailAddressServiceUtil.addEmailAddress(className,
 					classPK, address, typeId, primary, serviceContext);
 
-			return com.liferay.portal.model.EmailAddressSoap.toSoapModel(returnValue);
+			return com.liferay.portal.kernel.model.EmailAddressSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -115,12 +94,20 @@ public class EmailAddressServiceSoap {
 		}
 	}
 
-	public static com.liferay.portal.model.EmailAddressSoap getEmailAddress(
+	/**
+	* Returns the email address with the primary key.
+	*
+	* @param emailAddressId the primary key of the email address
+	* @return the email address with the primary key, or <code>null</code> if
+	an email address with the primary key could not be found or if
+	the user did not have permission to view the email address
+	*/
+	public static com.liferay.portal.kernel.model.EmailAddressSoap fetchEmailAddress(
 		long emailAddressId) throws RemoteException {
 		try {
-			com.liferay.portal.model.EmailAddress returnValue = EmailAddressServiceUtil.getEmailAddress(emailAddressId);
+			com.liferay.portal.kernel.model.EmailAddress returnValue = EmailAddressServiceUtil.fetchEmailAddress(emailAddressId);
 
-			return com.liferay.portal.model.EmailAddressSoap.toSoapModel(returnValue);
+			return com.liferay.portal.kernel.model.EmailAddressSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -129,13 +116,27 @@ public class EmailAddressServiceSoap {
 		}
 	}
 
-	public static com.liferay.portal.model.EmailAddressSoap[] getEmailAddresses(
+	public static com.liferay.portal.kernel.model.EmailAddressSoap getEmailAddress(
+		long emailAddressId) throws RemoteException {
+		try {
+			com.liferay.portal.kernel.model.EmailAddress returnValue = EmailAddressServiceUtil.getEmailAddress(emailAddressId);
+
+			return com.liferay.portal.kernel.model.EmailAddressSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.kernel.model.EmailAddressSoap[] getEmailAddresses(
 		java.lang.String className, long classPK) throws RemoteException {
 		try {
-			java.util.List<com.liferay.portal.model.EmailAddress> returnValue = EmailAddressServiceUtil.getEmailAddresses(className,
-					classPK);
+			java.util.List<com.liferay.portal.kernel.model.EmailAddress> returnValue =
+				EmailAddressServiceUtil.getEmailAddresses(className, classPK);
 
-			return com.liferay.portal.model.EmailAddressSoap.toSoapModels(returnValue);
+			return com.liferay.portal.kernel.model.EmailAddressSoap.toSoapModels(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -144,14 +145,14 @@ public class EmailAddressServiceSoap {
 		}
 	}
 
-	public static com.liferay.portal.model.EmailAddressSoap updateEmailAddress(
-		long emailAddressId, java.lang.String address, int typeId,
+	public static com.liferay.portal.kernel.model.EmailAddressSoap updateEmailAddress(
+		long emailAddressId, java.lang.String address, long typeId,
 		boolean primary) throws RemoteException {
 		try {
-			com.liferay.portal.model.EmailAddress returnValue = EmailAddressServiceUtil.updateEmailAddress(emailAddressId,
+			com.liferay.portal.kernel.model.EmailAddress returnValue = EmailAddressServiceUtil.updateEmailAddress(emailAddressId,
 					address, typeId, primary);
 
-			return com.liferay.portal.model.EmailAddressSoap.toSoapModel(returnValue);
+			return com.liferay.portal.kernel.model.EmailAddressSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

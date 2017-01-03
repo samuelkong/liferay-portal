@@ -1,0 +1,102 @@
+@import "bourbon";
+@import "mixins";
+
+.taglib-discussion {
+	.alloy-editor-placeholder {
+		min-height: 90px;
+
+		p {
+			margin-bottom: 0;
+		}
+	}
+
+	.add-comment {
+		.row {
+			margin-top: 30px;
+		}
+	}
+
+	.lfr-discussion {
+		.lfr-discussion-form-edit .alloy-editor-placeholder {
+			border-left: 2px solid transparent;
+
+			p {
+				margin-bottom: 10px;
+			}
+		}
+	}
+
+	.lfr-discussion-details {
+		@include sm {
+			float: left;
+		}
+	}
+
+	.lfr-discussion-body {
+		@include media-query(null, $screen-xs-max) {
+			margin-top: 15px;
+		}
+
+		@include sm {
+			margin-left: 65px;
+		}
+
+		.button-holder {
+			margin-bottom: 0;
+		}
+
+		.lfr-discussion-message {
+			.lfr-discussion-message-author {
+				margin-bottom: 12px;
+
+				.author-link {
+					display: block;
+				}
+			}
+		}
+	}
+
+	.taglib-ratings {
+		display: inline-block;
+		margin-right: 1em;
+	}
+}
+
+.lfr-discussion-reply.popover {
+	max-width: none;
+
+	.lfr-discussion-reply-user-avatar {
+		float: left;
+		padding-right: 20px;
+	}
+
+	.lfr-discussion-reply-content {
+		margin-top: 5px;
+	}
+}
+
+.lfr-discussion-controls {
+	.reply-action {
+		line-height: 32px;
+	}
+}
+
+@include sm {
+	.lfr-discussion-body {
+		.lfr-discussion-controls {
+			position: absolute;
+			right: 0;
+			top: 0;
+			width: 45%;
+
+			& > div {
+				float: right;
+				margin-right: 12px;
+			}
+		}
+
+		.lfr-discussion-message .lfr-discussion-message-author {
+			width: 40%;
+		}
+	}
+}

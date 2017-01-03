@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 	<filter>
 		<filter-name>Absolute Redirects Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.absoluteredirects.AbsoluteRedirectsFilter</filter-class>
@@ -12,6 +12,10 @@
 	<filter>
 		<filter-name>Aggregate Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.aggregate.AggregateFilter</filter-class>
+		<init-param>
+			<param-name>url-regex-ignore-pattern</param-name>
+			<param-value>^/ckeditor[^/]*/ckeditor\.js(\?.*)?$</param-value>
+		</init-param>
 	</filter>
 	<filter>
 		<filter-name>Aggregate Filter - JSP</filter-name>
@@ -27,14 +31,6 @@
 		<init-param>
 			<param-name>portal_property_prefix</param-name>
 			<param-value>atom.servlet.</param-value>
-		</init-param>
-	</filter>
-	<filter>
-		<filter-name>Audit Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.audit.AuditFilter</filter-class>
-		<init-param>
-			<param-name>url-regex-ignore-pattern</param-name>
-			<param-value>^/html/.+\.(css|gif|html|ico|jpg|js|png)(\?.*)?$</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -70,7 +66,7 @@
 		<filter-class>com.liferay.portal.servlet.filters.cache.CacheFilter</filter-class>
 		<init-param>
 			<param-name>url-regex-ignore-pattern</param-name>
-			<param-value>.+/-/.+</param-value>
+			<param-value>(.+/-/.+|/webdav/.*)</param-value>
 		</init-param>
 		<init-param>
 			<param-name>pattern</param-name>
@@ -88,14 +84,6 @@
 			<param-name>pattern</param-name>
 			<param-value>2</param-value>
 		</init-param>
-	</filter>
-	<filter>
-		<filter-name>Char Buffer Pool Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.charbufferpool.CharBufferPoolFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>Compound Session Id Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.compoundsessionid.CompoundSessionIdFilter</filter-class>
 	</filter>
 	<filter>
 		<filter-name>Dynamic CSS Filter</filter-name>
@@ -136,6 +124,10 @@
 			<param-name>url-regex-ignore-pattern</param-name>
 			<param-value>^(/c/document_library/get_file|/c/message_boards/get_message_attachment|/c/wiki/get_page_attachment)(\?.*)?$</param-value>
 		</init-param>
+		<init-param>
+			<param-name>Vary</param-name>
+			<param-value>Accept-Encoding</param-value>
+		</init-param>
 	</filter>
 	<filter>
 		<filter-name>GZip Filter - Theme PNG</filter-name>
@@ -143,6 +135,10 @@
 		<init-param>
 			<param-name>url-regex-pattern</param-name>
 			<param-value>.+/themes/.*/images/.*\.png</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Vary</param-name>
+			<param-value>Accept-Encoding</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -160,10 +156,6 @@
 			<param-name>Expires</param-name>
 			<param-value>315360000</param-value>
 		</init-param>
-		<init-param>
-			<param-name>Vary</param-name>
-			<param-value>Accept-Encoding</param-value>
-		</init-param>
 	</filter>
 	<filter>
 		<filter-name>Header Filter - JSP</filter-name>
@@ -174,7 +166,7 @@
 		</init-param>
 		<init-param>
 			<param-name>Cache-Control</param-name>
-			<param-value>max-age=315360000, no-cache="Set-Cookie", public</param-value>
+			<param-value>max-age=315360000, public</param-value>
 		</init-param>
 		<init-param>
 			<param-name>Expires</param-name>
@@ -250,15 +242,19 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>Monitoring Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.monitoring.MonitoringFilter</filter-class>
-	</filter>
-	<filter>
 		<filter-name>Remoting Servlet Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter</filter-class>
 		<init-param>
 			<param-name>portal_property_prefix</param-name>
 			<param-value>spring.remoting.servlet.</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>Secure Friendly URL Servlet Filter</filter-name>
+		<filter-class>com.liferay.portal.servlet.filters.secure.SecureFilter</filter-class>
+		<init-param>
+			<param-name>use_permission_checker</param-name>
+			<param-value>true</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -318,18 +314,6 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>SSO CAS Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.sso.cas.CASFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>SSO Ntlm Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.sso.ntlm.NtlmFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>SSO Ntlm Post Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.sso.ntlm.NtlmPostFilter</filter-class>
-	</filter>
-	<filter>
 		<filter-name>SSO Open SSO Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.sso.opensso.OpenSSOFilter</filter-class>
 	</filter>
@@ -366,8 +350,12 @@
 		<filter-class>com.liferay.portal.servlet.filters.unsyncprintwriterpool.UnsyncPrintWriterPoolFilter</filter-class>
 	</filter>
 	<filter>
+		<filter-name>Upload Servlet Request Filter</filter-name>
+		<filter-class>com.liferay.portal.servlet.filters.uploadservletrequest.UploadServletRequestFilter</filter-class>
+	</filter>
+	<filter>
 		<filter-name>URL Rewrite Filter</filter-name>
-		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+		<filter-class>com.liferay.portal.servlet.filters.urlrewrite.UrlRewriteFilter</filter-class>
 		<init-param>
 			<param-name>logLevel</param-name>
 			<param-value>ERROR</param-value>
@@ -378,7 +366,7 @@
 		</init-param>
 		<init-param>
 			<param-name>url-regex-ignore-pattern</param-name>
-			<param-value>^/html/.+\.(css|gif|html|ico|jpg|js|png)(\?.*)?$</param-value>
+			<param-value>(^/combo/)|(^/html/.+\.(css|gif|html|ico|jpg|js|png)(\?.*)?$)</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -413,6 +401,10 @@
 			<param-value>xml-rpc.servlet.</param-value>
 		</init-param>
 	</filter>
+	<filter>
+		<filter-name>WebLogic Include Filter</filter-name>
+		<filter-class>com.liferay.portal.servlet.filters.weblogic.WebLogicIncludeFilter</filter-class>
+	</filter>
 	<filter-mapping>
 		<filter-name>Ignore Filter - FTL</filter-name>
 		<url-pattern>*.ftl</url-pattern>
@@ -439,6 +431,11 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>Thread Local Filter</filter-name>
+		<url-pattern>/c/portal/j_login</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Thread Local Filter</filter-name>
 		<url-pattern>/c/portal/resiliency</url-pattern>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
@@ -455,14 +452,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>Compound Session Id Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>ERROR</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>INCLUDE</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
 		<filter-name>Session Id Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
@@ -471,10 +460,6 @@
 		<url-pattern>/*</url-pattern>
 		<dispatcher>ERROR</dispatcher>
 		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Audit Filter</filter-name>
-		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>Absolute Redirects Filter</filter-name>
@@ -503,28 +488,6 @@
 	<filter-mapping>
 		<filter-name>Sharepoint Filter</filter-name>
 		<url-pattern>/sharepoint/_vti_bin/owssvr.dll</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>SSO CAS Filter</filter-name>
-		<url-pattern>/c/portal/login</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>SSO CAS Filter</filter-name>
-		<url-pattern>/c/portal/logout</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>SSO Ntlm Filter</filter-name>
-		<url-pattern>/c/portal/login</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>SSO Ntlm Post Filter</filter-name>
-		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>SSO Open SSO Filter</filter-name>
@@ -707,30 +670,6 @@
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>Monitoring Filter</filter-name>
-		<url-pattern>/c/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Monitoring Filter</filter-name>
-		<url-pattern>/group/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Monitoring Filter</filter-name>
-		<url-pattern>/user/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Monitoring Filter</filter-name>
-		<url-pattern>/web/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
 		<filter-name>Cache Filter - Friendly</filter-name>
 		<url-pattern>/group/*</url-pattern>
 		<dispatcher>FORWARD</dispatcher>
@@ -795,26 +734,26 @@
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>Secure Main Servlet Filter</filter-name>
-		<url-pattern>/c/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Secure Main Servlet Filter</filter-name>
+		<filter-name>Secure Friendly URL Servlet Filter</filter-name>
 		<url-pattern>/group/*</url-pattern>
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>Secure Main Servlet Filter</filter-name>
+		<filter-name>Secure Friendly URL Servlet Filter</filter-name>
 		<url-pattern>/user/*</url-pattern>
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>Secure Main Servlet Filter</filter-name>
+		<filter-name>Secure Friendly URL Servlet Filter</filter-name>
 		<url-pattern>/web/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Secure Main Servlet Filter</filter-name>
+		<url-pattern>/c/*</url-pattern>
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
@@ -1033,6 +972,17 @@
 		<url-pattern>/xmlrpc/*</url-pattern>
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>WebLogic Include Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Upload Servlet Request Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 </web-app>

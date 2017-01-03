@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>Radio</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Radio</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ADVANCED</td>
+	<td>//input[contains(@id,'advanced') and @type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BASIC</td>
+	<td>//input[contains(@id,'basic') and @type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHOOSE_CONTENT_DATE_RANGE_CHANGE</td>
+	<td>//input[contains(@id,'rangeDateRange')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTENT_ALL_CONTENT</td>
+	<td>//input[contains(@id,'allContent')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTENT_CHOOSE_CONTENT</td>
+	<td>//input[contains(@id,'chooseContent')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_ABSTRACT</td>
+	<td>//label[contains(.,'Custom Abstract')]/input[contains(@id,'customAbstract')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIRST_400_ABSTRACT</td>
+	<td>//label[contains(.,'first 400 characters')]/input[contains(@id,'customAbstract')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>KEEP</td>
+	<td>//label[contains(.,'Keep')]/input[@type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LOCAL_LIVE</td>
+	<td>//label[contains(.,'Local Live')]/input[@type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MAJOR_VERSION</td>
+	<td>//input[contains(@id,'MajorVersion_1')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MINOR_VERSION</td>
+	<td>//input[contains(@id,'MajorVersion_3')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NONE</td>
+	<td>//label[contains(.,'None')]/input[@type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OVERWRITE</td>
+	<td>//label[contains(.,'Overwrite')]/input[@type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRIMARY</td>
+	<td>//label[contains(.,'Primary')]/input[@type='radio']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RANGE_ALL</td>
+	<td>//label[contains(.,'All')]/input[contains(@id,'rangeAll')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RANGE_LAST</td>
+	<td>//input[contains(@id,'rangeLast')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REMOTE_LIVE</td>
+	<td>//label[contains(.,'Remote Live')]/input[@type='radio']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

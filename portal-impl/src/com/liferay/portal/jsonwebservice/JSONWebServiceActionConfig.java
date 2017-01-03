@@ -15,7 +15,6 @@
 package com.liferay.portal.jsonwebservice;
 
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceActionMapping;
-import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MethodParameter;
 import com.liferay.portal.kernel.util.MethodParametersResolverUtil;
@@ -25,13 +24,15 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.lang.reflect.Method;
 
+import java.util.Objects;
+
 /**
  * @author Igor Spasic
  * @author Raymond Augé
  */
 public class JSONWebServiceActionConfig
 	implements Comparable<JSONWebServiceActionConfig>,
-	JSONWebServiceActionMapping {
+			   JSONWebServiceActionMapping {
 
 	public JSONWebServiceActionConfig(
 		String contextName, String contextPath, Class<?> actionClass,
@@ -57,12 +58,8 @@ public class JSONWebServiceActionConfig
 			try {
 				Class<?> actionObjectClass = actionObject.getClass();
 
-				Method actionObjectClassActionMethod =
-					actionObjectClass.getMethod(
-						actionMethod.getName(),
-						actionMethod.getParameterTypes());
-
-				newActionMethod = actionObjectClassActionMethod;
+				newActionMethod = actionObjectClass.getMethod(
+					actionMethod.getName(), actionMethod.getParameterTypes());
 			}
 			catch (NoSuchMethodException nsme) {
 				throw new IllegalArgumentException(nsme);
@@ -72,10 +69,14 @@ public class JSONWebServiceActionConfig
 		_actionMethod = newActionMethod;
 
 		if (Validator.isNotNull(_contextName)) {
-			path = path.substring(1);
+			StringBundler sb = new StringBundler(4);
 
-			path = StringPool.SLASH.concat(_contextName).concat(
-				StringPool.PERIOD).concat(path);
+			sb.append(StringPool.SLASH);
+			sb.append(_contextName);
+			sb.append(StringPool.PERIOD);
+			sb.append(path.substring(1));
+
+			path = sb.toString();
 		}
 
 		_path = path;
@@ -105,14 +106,14 @@ public class JSONWebServiceActionConfig
 
 		_realActionMethod = realActionMethod;
 
-		StringBundler sb = new StringBundler(_methodParameters.length * 2 + 4);
+		StringBundler sb = new StringBundler(_methodParameters.length * 2 + 3);
 
 		sb.append(_path);
-		sb.append(CharPool.MINUS);
+		sb.append(StringPool.MINUS);
 		sb.append(_methodParameters.length);
 
 		for (MethodParameter methodParameter : _methodParameters) {
-			sb.append(CharPool.MINUS);
+			sb.append(StringPool.MINUS);
 			sb.append(methodParameter.getName());
 		}
 
@@ -139,9 +140,7 @@ public class JSONWebServiceActionConfig
 		JSONWebServiceActionConfig jsonWebServiceActionConfig =
 			(JSONWebServiceActionConfig)object;
 
-		if (Validator.equals(
-				_signature, jsonWebServiceActionConfig._signature)) {
-
+		if (Objects.equals(_signature, jsonWebServiceActionConfig._signature)) {
 			return true;
 		}
 

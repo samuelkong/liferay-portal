@@ -40,12 +40,12 @@ public class PropsUtilAdvice {
 
 	@Around(
 		"execution(public static String com.liferay.portal.kernel.util." +
-			"PropsUtil.get(String)) && args(key)")
+			"PropsUtil.get(String)) && args(key)"
+	)
 	public String get(String key) {
 		return _propsMap.get(key);
 	}
 
-	private static Map<String, String> _propsMap =
-		new HashMap<String, String>();
+	private static Map<String, String> _propsMap = new HashMap<>();
 
 }

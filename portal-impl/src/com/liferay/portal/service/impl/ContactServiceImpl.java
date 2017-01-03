@@ -15,11 +15,11 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.permission.CommonPermissionUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.service.base.ContactServiceBaseImpl;
-import com.liferay.portal.service.permission.CommonPermissionUtil;
 
 import java.util.List;
 

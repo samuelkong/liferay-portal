@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.ScrollableResults;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
 import com.liferay.portal.kernel.security.pacl.NotPrivileged;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 
 import java.io.Serializable;
 
@@ -350,6 +351,21 @@ public class QueryImpl implements Query {
 		_query.setTimestamp(name, value);
 
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		StringBundler sb = new StringBundler(7);
+
+		sb.append("{names=");
+		sb.append(Arrays.toString(_names));
+		sb.append(", _query=");
+		sb.append(String.valueOf(_query));
+		sb.append(", _strictName=");
+		sb.append(_strictName);
+		sb.append("}");
+
+		return sb.toString();
 	}
 
 	@NotPrivileged

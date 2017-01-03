@@ -14,15 +14,15 @@
 
 package com.liferay.portal.resiliency.service;
 
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.process.ProcessCallable;
 import com.liferay.portal.kernel.process.ProcessException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.service.UserLocalServiceUtil;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,8 +37,8 @@ public class ServiceMethodProcessCallable
 	implements Externalizable, ProcessCallable<Serializable> {
 
 	/**
-	 * The empty constructor is required by {@link java.io.Externalizable}. Do
-	 * not use this for any other purpose.
+	 * The empty constructor is required by {@link Externalizable}. Do not use
+	 * this for any other purpose.
 	 */
 	public ServiceMethodProcessCallable() {
 	}

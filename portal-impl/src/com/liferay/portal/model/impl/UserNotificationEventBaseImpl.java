@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.UserNotificationEvent;
-import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
+import com.liferay.portal.kernel.model.UserNotificationEvent;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 
 /**
  * The extended model base implementation for the UserNotificationEvent service. Represents a row in the &quot;UserNotificationEvent&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see UserNotificationEventImpl
- * @see com.liferay.portal.model.UserNotificationEvent
+ * @see UserNotificationEvent
  * @generated
  */
 @ProviderType

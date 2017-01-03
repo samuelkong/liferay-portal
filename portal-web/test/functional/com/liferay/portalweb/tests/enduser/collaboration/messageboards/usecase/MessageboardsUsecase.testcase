@@ -1,0 +1,1785 @@
+<definition component-name="portal-collaboration">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="testray.main.component.name" value="Message Boards" />
+
+	<var name="pageName" value="Message Boards Page" />
+	<var name="portletName" value="Message Boards" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="MessageboardsPortlet#tearDownConfigurationEmailCP" />
+
+				<execute macro="MessageboardsCategory#tearDownCP" />
+
+				<execute macro="MessageboardsThread#tearDownCP" />
+
+				<execute macro="Site#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="CopyAndPasteTextInAlloyEditor" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute function="AssertClick" locator1="Button#POST_NEW_THREAD" value1="Post New Thread" />
+
+		<execute function="AssertElementPresent" locator1="TextInput#SUBJECT" />
+
+		<execute function="Type" locator1="TextInput#SUBJECT" value1="Message Boards Subject" />
+		<execute function="Type#typeEditor" locator1="AlloyEditor#CONTENT_FIELD" value1="Message Boards Body" />
+
+		<execute function="Copy" locator1="TextInput#SUBJECT" />
+
+		<execute function="Paste" locator1="AlloyEditor#CONTENT_FIELD" />
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="Message Boards Subject" />
+			<var name="threadSubject" value="Message Boards Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="Message Boards Subject" />
+			<var name="threadSubject" value="Message Boards Subject" />
+			<var name="userName" value="Test Test" />
+		</execute>
+	</command>
+
+	<command name="DeleteMessageboardsThread" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addCP">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#moveToRecycleBinCP">
+			<var name="assetName" value="MB Thread Message Subject" />
+			<var name="assetType" value="Message Boards Thread" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
+		</execute>
+
+		<execute macro="RecycleBin#deleteCP">
+			<var name="assetName" value="MB Thread Message Subject" />
+			<var name="assetType" value="Message Boards Thread" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
+		</execute>
+
+		<execute macro="RecycleBin#viewDefaultCP">
+			<var name="assetName" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewDefaultCP">
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+	</command>
+
+	<command name="RestoreMessageboardsThread" priority="5">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addCP">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#moveToRecycleBinCP">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
+		</execute>
+
+		<execute macro="RecycleBin#restoreCP">
+			<var name="assetName" value="MB Thread Message Subject" />
+			<var name="assetRestoreLocation" value="Home" />
+			<var name="assetType" value="Message Boards Thread" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
+		</execute>
+
+		<execute macro="RecycleBin#viewDefaultCP">
+			<var name="assetName" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewCP">
+			<var name="postsNumber" value="1" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+	</command>
+
+	<command name="SearchMessageBoardsAttachment" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPGWithAttachment">
+			<var name="mbThreadAttachment" value="Document_1.docx" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="This is a *.docx file." />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewSearchResultPG">
+			<var name="mbThreadAttachment" value="Document_1.docx" />
+			<var name="searchTerm" value="This is a *.doc x file." />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+			<var name="userName" value="Test Test" />
+		</execute>
+	</command>
+
+	<command name="SplitMBThread" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadReplyBody" value="MB Thread Reply Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="2" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#splitThreadPG">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadReplyBody" value="MB Thread Reply Body" />
+			<var name="threadSplitReplyBody" value="Split Reply Thread Body" />
+			<var name="threadSplitReplySubject" value="Split Reply Thread Subject" />
+			<var name="threadSplitSubject" value="MB Thread Split Subject" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewSplitThreadPG">
+			<var name="pageName" value="Message Boards Page" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadReplyBody" value="MB Thread Reply Body" />
+			<var name="threadSplitReplyBody" value="Split Reply Thread Body" />
+			<var name="threadSplitReplySubject" value="Split Reply Thread Subject" />
+			<var name="threadSplitSubject" value="MB Thread Split Subject" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+	</command>
+
+	<command name="ViewCategoriesAndThreadsOnTwoScopes" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#configureScopePG">
+			<var name="scopeName" value="Message Boards Page 2 (Create New)" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="Portlet#viewPG">
+			<var name="portletName" value="Message Boards (Message Boards Page 2)" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#configureScopePG">
+			<var name="scopeName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="Portlet#viewPG">
+			<var name="portletName" value="Message Boards (Message Boards Page 2)" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Root Thread Message Body" />
+			<var name="threadSubject" value="MB Root Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#addPG">
+			<var name="categoryDescription" value="MB Category1 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category1 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#addPG">
+			<var name="categoryDescription" value="MB Category2 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category2 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Root Thread Message Body" />
+			<var name="threadSubject" value="MB Root Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Root Thread Message Body" />
+			<var name="threadSubject" value="MB Root Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewPG">
+			<var name="categoryDescription" value="MB Category1 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category1 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewPG">
+			<var name="categoryDescription" value="MB Category2 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category2 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category1 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category1 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread1 Message Body" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category2 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category2 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread2 Message Body" />
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category1 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category1 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread1 Message Body" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Thread1 Message Body" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category2 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category2 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread2 Message Body" />
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Thread2 Message Body" />
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Root Thread2 Message Body" />
+			<var name="threadSubject" value="MB Root Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#addPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#addPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Root Thread2 Message Body" />
+			<var name="threadSubject" value="MB Root Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Root Thread2 Message Body" />
+			<var name="threadSubject" value="MB Root Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread4 Message Body" />
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread4 Message Body" />
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Thread4 Message Body" />
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Root Thread2 Message Body" />
+			<var name="threadSubject" value="MB Root Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Root Thread2 Message Body" />
+			<var name="threadsNumber" value="0" />
+			<var name="threadSubject" value="MB Root Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+			<var name="threadsNumber" value="0" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category4 Name" />
+			<var name="threadsNumber" value="0" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread4 Message Body" />
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="MB Thread4 Message Body" />
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 3" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoMessageBoardsCategoryPG">
+			<var name="categoryDescription" value="MB Category4 Description" />
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="Role#removePermissionPG">
+			<var name="permissionDefinitionKey" value="INLINE_PERMISSIONS_VIEW_CHECKBOX" />
+			<var name="roleTitle" value="Guest" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#viewNoPG">
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#gotoRecentPostsPG" />
+
+		<execute macro="MessageboardsCategory#viewNoPG">
+			<var name="categoryName" value="MB Category4 Name" />
+		</execute>
+
+		<execute macro="User#loginPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="mbThreadAttachment" value="Document_4.jpeg" />
+			<var name="threadReplyBody" value="MB Thread1 Reply Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryDescription" value="MB Category3 Description" />
+			<var name="categoryDescriptionEnabled" value="true" />
+			<var name="categoryName" value="MB Category3 Name" />
+		</execute>
+
+		<execute function="Pause" locator1="5000" />
+
+		<execute macro="MessageboardsThread#viewReplyPG">
+			<var name="mbThreadAttachment" value="Document_4.jpeg" />
+			<var name="postCount" value="2" />
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadReplyBody" value="MB Thread1 Reply Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewSearchResultPG">
+			<var name="threadBody" value="MB Thread3 Message Body" />
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+			<var name="userName" value="Test Test" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewSearchResultPG">
+			<var name="threadBody" value="MB Thread4 Message Body" />
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+			<var name="userName" value="Test Test" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewNoSearchResultSubjectPG">
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page 2" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewNoSearchResultSubjectPG">
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewSearchResultPG">
+			<var name="threadBody" value="MB Thread1 Message Body" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+			<var name="userName" value="Test Test" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewSearchResultPG">
+			<var name="threadBody" value="MB Thread2 Message Body" />
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+			<var name="userName" value="Test Test" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewNoSearchResultSubjectPG">
+			<var name="threadSubject" value="MB Thread3 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#searchPG">
+			<var name="searchTerm" value="MB Thread4 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewNoSearchResultSubjectPG">
+			<var name="threadSubject" value="MB Thread4 Message Subject" />
+		</execute>
+	</command>
+
+	<command name="ViewCorrectViewPermissionsInMessageBoardsQuickReplyInPrivateSite" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="membershipType" value="Private" />
+			<var name="siteName" value="Blank Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page Name" />
+			<var name="siteName" value="Blank Site Name" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Site Page Name" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Site Page Name" />
+			<var name="siteName" value="Blank Site Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Site Page Name" />
+			<var name="siteName" value="Blank Site Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPGWithPermissions">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+			<var name="viewableBySelection" value="Owner" />
+		</execute>
+
+		<execute macro="Navigator#gotoSitePage">
+			<var name="pageName" value="Site Page Name" />
+			<var name="siteName" value="Blank Site Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="threadReplyBody" value="MB Thread Message Subject Reply" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoMessageBoardsThreadReplyPG">
+			<var name="pageName" value="Site Page Name" />
+			<var name="siteName" value="Blank Site Name" />
+			<var name="siteURL" value="true" />
+			<var name="threadReplyBody" value="MB Thread Message Subject Reply" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<for list="Power User,User" param="roleTitle">
+			<execute macro="PermissionsInline#viewPermissionsRemoved">
+				<var name="permissionDefinitionKey" value="CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX" />
+				<var name="roleTitle" value="${roleTitle}" />
+			</execute>
+		</for>
+
+		<execute macro="PermissionsInline#viewPermissionsChecked">
+			<var name="permissionDefinitionKey" value="CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX" />
+			<var name="roleTitle" value="Owner" />
+		</execute>
+	</command>
+
+	<command name="ViewMBThreadAndReplyThreadInGmail" priority="4">
+		<property name="custom.properties" value="message.boards.message.formats.default=html${line.separator}pop.server.notifications.enabled=true${line.separator}pop.server.subdomain=${line.separator}mail.session.mail.smtp.auth=true${line.separator}mail.session.mail.store.protocol=pop3${line.separator}mail.session.mail.transport.protocol=smtp" />
+
+		<execute macro="TestCase#getSiteName">
+			<return from="siteName" name="siteName" />
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Server Administration" />
+		</execute>
+
+		<execute macro="ServerAdministration#configureMailServerSettings">
+			<var name="needsReply" value="true" />
+			<var method="TestPropsUtil#get('email.address.2')" name="userName" />
+			<var method="TestPropsUtil#get('email.password.2')" name="userPassword" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoControlPanelConfiguration">
+			<var name="portlet" value="Virtual Instances" />
+		</execute>
+
+		<execute macro="PortalInstances#editCP">
+			<var name="mailDomain" value="gmail.com" />
+			<var name="virtualHost" value="localhost" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var method="TestPropsUtil#get('email.address.3')" name="userEmailAddress" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var method="TestPropsUtil#get('email.address.3')" name="userEmailAddress" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editUserSiteCP">
+			<var name="siteName" value="${siteName}" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="User#editEmailViaMyAccount">
+			<var method="TestPropsUtil#get('email.address.4')" name="userEmailAddress" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#configureMessageEmailFromCP">
+			<var method="TestPropsUtil#get('email.address.2')" name="emailFromAddress" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#addPG">
+			<var name="categoryName" value="MB Category Name" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG">
+			<var name="password" value="test" />
+			<var method="TestPropsUtil#get('email.address.3')" name="userEmailAddress" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryName" value="MB Category Name" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#subscribePG" />
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG">
+			<var name="password" value="test" />
+			<var method="TestPropsUtil#get('email.address.4')" name="userEmailAddress" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryName" value="MB Category Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute function="Pause" locator1="30000" />
+
+		<execute macro="Gmail#login">
+			<var method="TestPropsUtil#get('email.address.3')" name="userEmailAddress" />
+			<var method="TestPropsUtil#get('email.password.3')" name="userPassword" />
+		</execute>
+
+		<execute macro="Gmail#gotoHtmlMode" />
+
+		<execute macro="Gmail#viewMail">
+			<var name="emailFromUserName" value="Test Test" />
+			<var name="gmailAssetType" value="MB Category Name New Message" />
+			<var name="gmailMessageBody" value="MB Thread Message Body" />
+			<var name="gmailMessageTitle" value="MB Category Name New Message: MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Gmail#replyMail">
+			<var name="gmailReplyMessage" value="MB Thread Message Subject Reply" />
+		</execute>
+
+		<execute function="Open" locator1="http://localhost:8080" />
+
+		<execute function="Pause" locator1="60000" />
+
+		<execute function="Refresh" />
+
+		<execute function="AssertVisible" locator1="Notifications#PROFILE_BADGE_COUNT" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#gotoPG">
+			<var name="categoryName" value="MB Category Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewReplyPG">
+			<var name="postCount" value="2" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadReplyBody" value="MB Thread Message Subject Reply" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+			<var name="userName" value="userfn userln" />
+		</execute>
+
+		<execute macro="Gmail#tearDown">
+			<var method="TestPropsUtil#get('email.address.3')" name="userEmailAddress" />
+			<var method="TestPropsUtil#get('email.password.3')" name="userPassword" />
+		</execute>
+	</command>
+
+	<command name="ViewMessageBoardsBannedUsers" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea1@liferay.com" />
+			<var name="userFirstName" value="userfn1" />
+			<var name="userLastName" value="userln1" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea1@liferay.com" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea2@liferay.com" />
+			<var name="userFirstName" value="userfn2" />
+			<var name="userLastName" value="userln2" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea2@liferay.com" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoMessageBoardsPG">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<for list="INLINE_PERMISSIONS_REPLY_TO_MESSAGE_CHECKBOX,INLINE_PERMISSIONS_VIEW_CHECKBOX" param="permissionDefinitionKey" >
+			<execute macro="Role#definePermissionPG">
+				<var name="permissionDefinitionKey" value="${permissionDefinitionKey}" />
+				<var name="roleTitle" value="User" />
+			</execute>
+		</for>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea1@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="threadReplyBody" value="MB Thread1 Reply Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea2@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="threadReplyBody" value="MB Thread2 Reply Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="userfn2 userln2" />
+			<var name="postCount" value="3" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#banUser">
+			<var name="threadReplyBody" value="MB Thread1 Reply Body" />
+			<var name="userName" value="userfn1 userln1" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="userfn2 userln2" />
+			<var name="postCount" value="3" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#banUser">
+			<var name="threadReplyBody" value="MB Thread2 Reply Body" />
+			<var name="userName" value="userfn2 userln2" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewBannedUserPG">
+			<var name="userScreenName" value="userfn1 userln1" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#viewBannedUserPG">
+			<var name="userScreenName" value="userfn2 userln2" />
+		</execute>
+	</command>
+
+	<command name="ViewMessageBoardsThreadStatistics" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread1 Message Body" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewStatisticsPostsCountPG">
+			<var name="threadPostNumber" value="1" />
+			<var name="userName" value="Test Test" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="MB Thread1 Message Body" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#editPG">
+			<var name="saveAsDraft" value="true" />
+			<var name="threadBodyEdit" value="MB Thread1 Message Body Edit" />
+			<var name="threadSubject" value="MB Thread1 Message Subject" />
+			<var name="threadSubjectEdit" value="MB Thread1 Message Subject Edit" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewStatisticsPostsCountDefaultPG" />
+
+		<execute macro="MessageboardsThread#editViaMyPosts">
+			<var name="threadSubject" value="MB Thread1 Message Subject Edit" />
+			<var name="threadSubjectEdit" value="true" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewStatisticsPostsCountPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="startedByUserName" value="Test Test" />
+			<var name="threadPostNumber" value="1" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread2 Message Body" />
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewStatisticsPostsCountPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="startedByUserName" value="Test Test" />
+			<var name="threadPostNumber" value="2" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#deletePG">
+			<var name="threadSubject" value="MB Thread2 Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewStatisticsPostsCountPG">
+			<var name="threadPostNumber" value="1" />
+			<var name="userName" value="Test Test" />
+		</execute>
+	</command>
+
+	<command name="ViewNoMBThreadXSS" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="source" value="true" />
+			<var name="threadBody" value="[img]asd[font= onerror=alert(/This is an XSS Message/.source)//]FF[/font][/img]" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewNoXSSPG">
+			<var name="threadBody" value="[img]asd[font= onerror=alert(/This is an XSS Message/.source)//]FF[/font][/img]" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+	</command>
+
+	<command name="ViewNoSubscribeLinksNoWithEmailNotificationsDisabled" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsCategory#addPG">
+			<var name="categoryName" value="MB Category Name" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<var name="key_categoryName" value="MB Category Name" />
+		<var name="key_threadSubject" value="MB Thread Message Subject" />
+
+		<execute function="AssertTextEquals" locator1="MessageBoards#SUBSCRIBE_LINK" value1="Subscribe" />
+		<execute function="Click" locator1="MessageBoards#CATEGORY_LIST_ACTIONS" />
+		<execute function="AssertTextEquals" locator1="MenuItem#SUBSCRIBE" value1="Subscribe" />
+		<execute function="AssertClick" locator1="MessageBoards#CATEGORY_LIST_CATEGORY" value1="MB Category Name" />
+		<execute function="AssertTextEquals" locator1="Link#SUBSCRIBE" value1="Subscribe" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute function="Click" locator1="MessageBoards#VERTICAL_ELLIPSIS" />
+		<execute function="AssertTextEquals" locator1="MenuItem#UNSUBSCRIBE" value1="Unsubscribe" />
+		<execute function="AssertClick" locator1="MessageBoards#THREAD_LIST_THREAD" value1="MB Thread Message Subject" />
+		<execute function="AssertTextEquals" locator1="MessageBoardsThread#THREAD_ACTIONS_UNSUBSCRIBE" value1="Unsubscribe" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#configureMessageAddedEmailCP">
+			<var name="messageAddedEmailEnabled" value="false" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#configureMessageUpdatedEmailCP">
+			<var name="messageUpdatedEmailEnabled" value="false" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute function="AssertElementNotPresent" locator1="MessageBoards#SUBSCRIBE_LINK" />
+		<execute function="Click" locator1="MessageBoards#CATEGORY_LIST_ACTIONS" />
+		<execute function="AssertElementNotPresent" locator1="MenuItem#SUBSCRIBE" />
+		<execute function="AssertClick" locator1="MessageBoards#CATEGORY_LIST_CATEGORY" value1="MB Category Name" />
+		<execute function="AssertElementNotPresent" locator1="Link#SUBSCRIBE" value1="Subscribe" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute function="Click" locator1="MessageBoards#VERTICAL_ELLIPSIS" />
+		<execute function="AssertElementNotPresent" locator1="MenuItem#UNSUBSCRIBE" />
+		<execute function="AssertClick" locator1="MessageBoards#THREAD_LIST_THREAD" value1="MB Thread Message Subject" />
+		<execute function="AssertElementNotPresent" locator1="MessageBoardsThread#THREAD_ACTIONS_UNSUBSCRIBE" value1="Unsubscribe" />
+	</command>
+
+	<command name="ViewQuestionOnSplitThread" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPGAsQuestion">
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewMarkedAsQuestionPG">
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="threadReplyBody" value="MB Thread Split Reply Body" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="2" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#splitThreadPG">
+			<var name="threadReplyBody" value="MB Thread Split Reply Body" />
+			<var name="threadSplitReplyBody" value="Split Reply Thread Body" />
+			<var name="threadSplitReplySubject" value="Split Reply Thread Subject" />
+			<var name="threadSplitSubject" value="MB Thread Split Subject" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewSplitThreadPG">
+			<var name="pageName" value="Message Boards Page" />
+			<var name="threadBody" value="MB Thread Message Body" />
+			<var name="threadReplyBody" value="MB Thread Split Reply Body" />
+			<var name="threadSplitReplyBody" value="Split Reply Thread Body" />
+			<var name="threadSplitReplySubject" value="Split Reply Thread Subject" />
+			<var name="threadSplitSubject" value="MB Thread Split Subject" />
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewMarkedAsQuestionPG">
+			<var name="threadSubject" value="MB Thread Message Subject" />
+		</execute>
+	</command>
+
+	<command name="ViewThreadDefaultQuestion" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewMarkAsQuestionNotCheckedCP" >
+			<var name="threadSubject" value="Thread Subject" />
+		</execute>
+
+		<execute macro="MessageboardsPortlet#configureGeneralCP">
+			<var name="threadAsQuestionByDefaultEnabled" value="true" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewMarkAsQuestionCheckedCP" >
+			<var name="threadSubject" value="Thread Subject" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addCP">
+			<var name="threadBody" value="Thread Body" />
+			<var name="threadSubject" value="Thread Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#replyPG">
+			<var name="markAsAnswer" value="true" />
+			<var name="markAsQuestion" value="true" />
+			<var name="threadReplyBody" value="Thread Reply Body" />
+			<var name="threadSubject" value="Thread Subject" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Message Boards Page" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewAnswerPG">
+			<var name="threadSubject" value="Thread Subject" />
+		</execute>
+	</command>
+</definition>

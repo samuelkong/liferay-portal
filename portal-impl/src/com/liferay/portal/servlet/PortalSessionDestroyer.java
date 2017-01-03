@@ -24,29 +24,36 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.security.auth.AuthenticatedUserUUIDStoreUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.PortalSessionContext;
 import com.liferay.portal.kernel.util.BasePortalLifecycle;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.auth.AuthenticatedUserUUIDStoreUtil;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
-
-import org.apache.struts.Globals;
 
 /**
  * @author Michael Young
  */
 public class PortalSessionDestroyer extends BasePortalLifecycle {
 
-	public PortalSessionDestroyer(HttpSessionEvent httpSessionEvent) {
-		_httpSessionEvent = httpSessionEvent;
+	public PortalSessionDestroyer(HttpSession httpSession) {
+		_httpSession = httpSession;
 
 		registerPortalLifecycle(METHOD_INIT);
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #PortalSessionDestroyer(HttpSession)}
+	 */
+	@Deprecated
+	public PortalSessionDestroyer(HttpSessionEvent httpSessionEvent) {
+		this(httpSessionEvent.getSession());
 	}
 
 	@Override
@@ -59,12 +66,10 @@ public class PortalSessionDestroyer extends BasePortalLifecycle {
 			return;
 		}
 
-		HttpSession session = _httpSessionEvent.getSession();
-
-		PortalSessionContext.remove(session.getId());
+		PortalSessionContext.remove(_httpSession.getId());
 
 		try {
-			Long userIdObj = (Long)session.getAttribute(WebKeys.USER_ID);
+			Long userIdObj = (Long)_httpSession.getAttribute(WebKeys.USER_ID);
 
 			if (userIdObj == null) {
 				if (_log.isWarnEnabled()) {
@@ -75,10 +80,6 @@ public class PortalSessionDestroyer extends BasePortalLifecycle {
 			if (userIdObj == null) {
 				return;
 			}
-
-			// Language
-
-			session.removeAttribute(Globals.LOCALE_KEY);
 
 			// Live users
 
@@ -101,14 +102,16 @@ public class PortalSessionDestroyer extends BasePortalLifecycle {
 					userId);
 
 				jsonObject.put("companyId", companyId);
-				jsonObject.put("sessionId", session.getId());
+
+				jsonObject.put("sessionId", _httpSession.getId());
 				jsonObject.put("userId", userId);
 
 				MessageBusUtil.sendMessage(
 					DestinationNames.LIVE_USERS, jsonObject.toString());
 			}
 
-			String userUUID = (String)session.getAttribute(WebKeys.USER_UUID);
+			String userUUID = (String)_httpSession.getAttribute(
+				WebKeys.USER_UUID);
 
 			if (Validator.isNotNull(userUUID)) {
 				AuthenticatedUserUUIDStoreUtil.unregister(userUUID);
@@ -129,7 +132,7 @@ public class PortalSessionDestroyer extends BasePortalLifecycle {
 		try {
 			EventsProcessorUtil.process(
 				PropsKeys.SERVLET_SESSION_DESTROY_EVENTS,
-				PropsValues.SERVLET_SESSION_DESTROY_EVENTS, session);
+				PropsValues.SERVLET_SESSION_DESTROY_EVENTS, _httpSession);
 		}
 		catch (ActionException ae) {
 			_log.error(ae, ae);
@@ -139,6 +142,6 @@ public class PortalSessionDestroyer extends BasePortalLifecycle {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortalSessionDestroyer.class);
 
-	private final HttpSessionEvent _httpSessionEvent;
+	private final HttpSession _httpSession;
 
 }

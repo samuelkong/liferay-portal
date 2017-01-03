@@ -83,8 +83,8 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 		String addedMarkerEnd, String deletedMarkerStart,
 		String deletedMarkerEnd, int margin) {
 
-		List<DiffResult> sourceResults = new ArrayList<DiffResult>();
-		List<DiffResult> targetResults = new ArrayList<DiffResult>();
+		List<DiffResult> sourceResults = new ArrayList<>();
+		List<DiffResult> targetResults = new ArrayList<>();
 
 		List<DiffResult>[] results = new List[] {sourceResults, targetResults};
 
@@ -113,16 +113,14 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 					difference.getAddedStart(), margin);
 
 				List<String> changedLines = _addMargins(
-					sourceResults, sourceStringList,
-					difference.getDeletedStart(), margin);
+					sourceStringList, difference.getDeletedStart(), margin);
 
 				_addResults(
 					sourceResults, sourceStringList, changedLines,
 					difference.getDeletedStart(), difference.getDeletedEnd());
 
 				changedLines = _addMargins(
-					targetResults, targetStringList, difference.getAddedStart(),
-					margin);
+					targetStringList, difference.getAddedStart(), margin);
 
 				int deletedLines =
 					difference.getDeletedEnd() + 1 -
@@ -150,8 +148,7 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 					difference.getAddedStart(), margin);
 
 				List<String> changedLines = _addMargins(
-					sourceResults, sourceStringList,
-					difference.getDeletedStart(), margin);
+					sourceStringList, difference.getDeletedStart(), margin);
 
 				int addedLines =
 					difference.getAddedEnd() + 1 - difference.getAddedStart();
@@ -166,8 +163,7 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 				sourceResults.add(diffResult);
 
 				changedLines = _addMargins(
-					targetResults, targetStringList, difference.getAddedStart(),
-					margin);
+					targetStringList, difference.getAddedStart(), margin);
 
 				_addResults(
 					targetResults, targetStringList, changedLines,
@@ -181,7 +177,7 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 				_checkCharDiffs(
 					sourceResults, targetResults, sourceStringList,
 					targetStringList, addedMarkerStart, addedMarkerEnd,
-					deletedMarkerStart, deletedMarkerEnd, difference, margin);
+					deletedMarkerStart, deletedMarkerEnd, difference);
 			}
 		}
 
@@ -189,10 +185,9 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 	}
 
 	private static List<String> _addMargins(
-		List<DiffResult> results, List<String> stringList, int startPos,
-		int margin) {
+		List<String> stringList, int startPos, int margin) {
 
-		List<String> changedLines = new ArrayList<String>();
+		List<String> changedLines = new ArrayList<>();
 
 		if ((margin == 0) || (startPos == 0)) {
 			return changedLines;
@@ -245,7 +240,7 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 		List<String> sourceStringList, List<String> targetStringList,
 		String addedMarkerStart, String addedMarkerEnd,
 		String deletedMarkerStart, String deletedMarkerEnd,
-		Difference difference, int margin) {
+		Difference difference) {
 
 		boolean aligned = false;
 
@@ -303,7 +298,7 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 		// Lines are aligned, check for differences of the following lines.
 
 		for (; i <= difference.getDeletedEnd() && j <= difference.getAddedEnd();
-				i++, j++) {
+			i++, j++) {
 
 			if (!_isMaxLineLengthExceeded(
 					sourceStringList.get(i), targetStringList.get(j))) {
@@ -461,14 +456,14 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 			for (Difference difference : differences) {
 				if (difference.getDeletedEnd() != Difference.NONE) {
 					deletedChars +=
-						(difference.getDeletedEnd() -
-							difference.getDeletedStart() + 1);
+						difference.getDeletedEnd() -
+							difference.getDeletedStart() + 1;
 				}
 
 				if (difference.getAddedEnd() != Difference.NONE) {
 					addedChars +=
-						(difference.getAddedEnd() - difference.getAddedStart() +
-							1);
+						difference.getAddedEnd() - difference.getAddedStart() +
+							1;
 				}
 			}
 		}
@@ -558,12 +553,10 @@ public class DiffImpl implements com.liferay.portal.kernel.diff.Diff {
 	}
 
 	private static List<String> _toList(String line) {
-		String[] lineParts = line.split(StringPool.BLANK);
+		List<String> result = new ArrayList<>(line.length());
 
-		List<String> result = new ArrayList<String>();
-
-		for (int i = 1; i < lineParts.length; i++) {
-			result.add(lineParts[i]);
+		for (int i = 0; i < line.length(); i++) {
+			result.add(line.substring(i, i + 1));
 		}
 
 		return result;

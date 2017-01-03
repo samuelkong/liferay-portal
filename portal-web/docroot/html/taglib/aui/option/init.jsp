@@ -28,7 +28,6 @@ boolean selected = GetterUtil.getBoolean(String.valueOf(request.getAttribute("au
 java.lang.String style = GetterUtil.getString((java.lang.String)request.getAttribute("aui:option:style"));
 java.lang.Object value = (java.lang.Object)request.getAttribute("aui:option:value");
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:option:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:option:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/option/init-ext.jspf" %>

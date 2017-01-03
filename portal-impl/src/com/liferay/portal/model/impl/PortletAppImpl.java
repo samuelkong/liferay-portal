@@ -14,17 +14,17 @@
 
 package com.liferay.portal.model.impl;
 
+import com.liferay.portal.kernel.model.EventDefinition;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.model.PortletFilter;
+import com.liferay.portal.kernel.model.PortletURLListener;
+import com.liferay.portal.kernel.model.PublicRenderParameter;
+import com.liferay.portal.kernel.model.SpriteImage;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.QName;
-import com.liferay.portal.model.EventDefinition;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletApp;
-import com.liferay.portal.model.PortletFilter;
-import com.liferay.portal.model.PortletURLListener;
-import com.liferay.portal.model.PublicRenderParameter;
-import com.liferay.portal.model.SpriteImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,7 +138,7 @@ public class PortletAppImpl implements PortletApp {
 
 	@Override
 	public List<Portlet> getPortlets() {
-		return new ArrayList<Portlet>(_portlets);
+		return new ArrayList<>(_portlets);
 	}
 
 	@Override
@@ -187,6 +187,11 @@ public class PortletAppImpl implements PortletApp {
 	}
 
 	@Override
+	public void removePortlet(Portlet portletModel) {
+		_portlets.remove(portletModel);
+	}
+
+	@Override
 	public void setDefaultNamespace(String defaultNamespace) {
 		_defaultNamespace = defaultNamespace;
 	}
@@ -223,32 +228,28 @@ public class PortletAppImpl implements PortletApp {
 	}
 
 	private final Map<String, String[]> _containerRuntimeOptions =
-		new HashMap<String, String[]>();
+		new HashMap<>();
 	private String _contextPath = StringPool.BLANK;
 	private final Map<String, String> _customUserAttributes =
-		new LinkedHashMap<String, String>();
+		new LinkedHashMap<>();
 	private String _defaultNamespace = XMLConstants.NULL_NS_URI;
 	private final Set<EventDefinition> _eventDefinitions =
-		new LinkedHashSet<EventDefinition>();
-	private final Set<PortletFilter> _portletFilters =
-		new LinkedHashSet<PortletFilter>();
+		new LinkedHashSet<>();
+	private final Set<PortletFilter> _portletFilters = new LinkedHashSet<>();
 	private final Map<String, PortletFilter> _portletFiltersByFilterName =
-		new HashMap<String, PortletFilter>();
-	private final Set<Portlet> _portlets = new LinkedHashSet<Portlet>();
+		new HashMap<>();
+	private final Set<Portlet> _portlets = new LinkedHashSet<>();
 	private final Set<PortletURLListener> _portletURLListeners =
-		new LinkedHashSet<PortletURLListener>();
+		new LinkedHashSet<>();
 	private final Map<String, PortletURLListener>
-		_portletURLListenersByListenerClass =
-			new HashMap<String, PortletURLListener>();
+		_portletURLListenersByListenerClass = new HashMap<>();
 	private final Map<String, PublicRenderParameter>
-		_publicRenderParametersByIdentifier =
-			new HashMap<String, PublicRenderParameter>();
+		_publicRenderParametersByIdentifier = new HashMap<>();
 	private ServletContext _servletContext;
 	private final String _servletContextName;
-	private final Set<String> _servletURLPatterns = new LinkedHashSet<String>();
-	private final Map<String, SpriteImage> _spriteImagesMap =
-		new HashMap<String, SpriteImage>();
-	private final Set<String> _userAttributes = new LinkedHashSet<String>();
+	private final Set<String> _servletURLPatterns = new LinkedHashSet<>();
+	private final Map<String, SpriteImage> _spriteImagesMap = new HashMap<>();
+	private final Set<String> _userAttributes = new LinkedHashSet<>();
 	private boolean _warFile;
 
 }

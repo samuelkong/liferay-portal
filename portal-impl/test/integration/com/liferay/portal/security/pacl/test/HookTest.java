@@ -14,28 +14,29 @@
 
 package com.liferay.portal.security.pacl.test;
 
+import com.liferay.message.boards.kernel.service.MBMessageLocalServiceUtil;
+import com.liferay.message.boards.kernel.service.MBStatsUserLocalServiceUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.security.pacl.test.hook.action.FailureStrutsAction;
 import com.liferay.portal.security.pacl.test.hook.action.SuccessStrutsAction;
 import com.liferay.portal.security.pacl.test.hook.indexer.OrganizationIndexerPostProcessor;
 import com.liferay.portal.security.pacl.test.hook.indexer.UserIndexerPostProcessor;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
-import com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil;
-import com.liferay.portlet.blogs.service.BlogsStatsUserLocalServiceUtil;
+import com.liferay.portal.test.rule.PACLTestRule;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class HookTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
 
 	@Test
 	public void testIndexer1() throws Exception {
@@ -50,37 +51,37 @@ public class HookTest {
 	@Test
 	public void testLanguage1() throws Exception {
 		Assert.assertEquals(
-			LanguageUtil.get(LocaleUtil.SPAIN, "stars"), "Estrellas");
+			"Estrellas", LanguageUtil.get(LocaleUtil.SPAIN, "stars"));
 	}
 
 	@Test
 	public void testLanguage2() throws Exception {
 		Assert.assertEquals(
-			LanguageUtil.get(LocaleUtil.GERMAN, "stars"), "Sterne");
+			"Sterne", LanguageUtil.get(LocaleUtil.GERMAN, "stars"));
 	}
 
 	@Test
 	public void testLanguage3() throws Exception {
 		Assert.assertEquals(
-			LanguageUtil.get(LocaleUtil.BRAZIL, "stars"), "Ricardo Kaka");
+			"Ricardo Kaka", LanguageUtil.get(LocaleUtil.BRAZIL, "stars"));
 	}
 
 	@Test
 	public void testLanguage4() throws Exception {
 		Assert.assertEquals(
-			LanguageUtil.get(LocaleUtil.PORTUGAL, "stars"),
-			"Cristiano Ronaldo");
+			"Cristiano Ronaldo",
+			LanguageUtil.get(LocaleUtil.PORTUGAL, "stars"));
 	}
 
 	@Test
 	public void testLanguage5() throws Exception {
 		Assert.assertEquals(
-			LanguageUtil.get(LocaleUtil.UK, "stars"), "David Beckham");
+			"David Beckham", LanguageUtil.get(LocaleUtil.UK, "stars"));
 	}
 
 	@Test
 	public void testLanguage6() throws Exception {
-		Assert.assertEquals(LanguageUtil.get(LocaleUtil.US, "stars"), "Stars");
+		Assert.assertEquals("Stars", LanguageUtil.get(LocaleUtil.US, "stars"));
 	}
 
 	@Test
@@ -90,14 +91,13 @@ public class HookTest {
 
 	@Test
 	public void testServices1() throws Exception {
-		Assert.assertTrue(
-			BlogsEntryLocalServiceUtil.getBlogsEntriesCount() < 0);
+		Assert.assertTrue(MBMessageLocalServiceUtil.getMBMessagesCount() < 0);
 	}
 
 	@Test
 	public void testServices2() throws Exception {
 		Assert.assertTrue(
-			BlogsStatsUserLocalServiceUtil.getBlogsStatsUsersCount() >= 0);
+			MBStatsUserLocalServiceUtil.getMBStatsUsersCount() >= 0);
 	}
 
 	@Test

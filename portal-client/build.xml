@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
 
-<project name="portal-client" basedir="." default="compile">
+<project basedir="." default="compile" name="portal-client">
 	<import file="../build-common-java.xml" />
 
 	<property name="jar.file" value="${ant.project.name}" />
 	<property name="client.url" value="http://localhost:8080/api/axis" />
 
-	<target name="build-client" depends="clean">
-		<echo message="Make sure the server is listening on ${client.url}." />
-		<echo message="" />
-
+	<target depends="clean" name="build-client">
 		<remake-dir dir="src" />
 
 		<!--
@@ -22,10 +19,10 @@
 		<java
 			classname="com.liferay.portal.tools.PortalClientBuilder"
 			classpathref="project.classpath"
-			failonerror="true"
 			fork="true"
 			newenvironment="true"
 			outputproperty="build-client.output"
+			resultproperty="build-client.result"
 		>
 			<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
 			<arg value="${project.dir}/portal-web/docroot/WEB-INF/server-config.wsdd" />
@@ -37,7 +34,12 @@
 		<echo>${build-client.output}</echo>
 
 		<if>
-			<contains string="${build-client.output}" substring="IOException" />
+			<or>
+				<contains string="${build-client.output}" substring="IOException" />
+				<not>
+					<equals arg1="${build-client.result}" arg2="0" />
+				</not>
+			</or>
 			<then>
 				<fail>Portal Client Builder generated exceptions.</fail>
 			</then>
@@ -46,7 +48,7 @@
 		<antcall target="jar" />
 	</target>
 
-	<target name="jar" depends="compile">
+	<target depends="compile" name="jar">
 		<jar
 			jarfile="${jar.file}.jar"
 		>
@@ -54,12 +56,12 @@
 			<fileset dir="src" />
 		</jar>
 
-		<copy file="portal-client.jar" todir="${project.dir}/lib/portal" preservelastmodified="true" />
+		<copy file="portal-client.jar" preservelastmodified="true" todir="${project.dir}/lib/portal" />
 	</target>
 
 	<target name="jar-sources">
 		<tstamp>
-			<format property="tstamp.value" pattern="yyyyMMddkkmmssSSS" />
+			<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
 		</tstamp>
 
 		<unzip
@@ -79,7 +81,7 @@
 	<target name="java2html">
 		<remake-dir dir="src" />
 
-		<unjar src="${jar.file}.jar" dest="src" />
+		<unjar dest="src" src="${jar.file}.jar" />
 
 		<antcall target="build-common-java.java2html" />
 	</target>
@@ -87,7 +89,7 @@
 	<target name="javadoc">
 		<remake-dir dir="src" />
 
-		<unjar src="${project.dir}/lib/portal/${jar.file}.jar" dest="src" />
+		<unjar dest="src" src="${project.dir}/lib/portal/${jar.file}.jar" />
 
 		<antcall target="build-common-java.javadoc" />
 	</target>

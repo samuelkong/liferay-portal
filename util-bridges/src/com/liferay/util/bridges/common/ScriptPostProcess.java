@@ -86,6 +86,7 @@ public class ScriptPostProcess {
 		String content = _sb.toString();
 
 		int startTagPos = content.indexOf(startTag);
+
 		int endTagPos = 0;
 
 		int startRefPos = 0;
@@ -182,7 +183,8 @@ public class ScriptPostProcess {
 		_sb = sb;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(ScriptPostProcess.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		ScriptPostProcess.class);
 
 	private StringBundler _sb;
 

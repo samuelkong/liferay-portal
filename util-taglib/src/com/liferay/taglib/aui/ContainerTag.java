@@ -16,6 +16,8 @@ package com.liferay.taglib.aui;
 
 import com.liferay.taglib.aui.base.BaseContainerTag;
 
+import javax.servlet.jsp.JspWriter;
+
 /**
  * @author Eduardo Lundgren
  * @author Bruno Basto
@@ -23,4 +25,14 @@ import com.liferay.taglib.aui.base.BaseContainerTag;
  * @author Julio Camarero
  */
 public class ContainerTag extends BaseContainerTag {
+
+	@Override
+	protected int processEndTag() throws Exception {
+		JspWriter jspWriter = pageContext.getOut();
+
+		jspWriter.write("</div>");
+
+		return EVAL_PAGE;
+	}
+
 }

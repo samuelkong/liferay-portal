@@ -15,222 +15,189 @@
 package com.liferay.portlet.social.service;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.comparator.UserScreenNameComparator;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portal.util.test.UserTestUtil;
-import com.liferay.portlet.social.model.SocialRelationConstants;
+import com.liferay.portal.kernel.util.comparator.UserScreenNameComparator;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.social.kernel.model.SocialRelationConstants;
+import com.liferay.social.kernel.service.SocialRelationLocalServiceUtil;
 
 import java.util.List;
+import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Brian Wing Shun Chan
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class SocialRelationLocalServiceTest {
 
-	@Before
-	public void setUp() throws Exception {
-		for (String screenNamePrefix : new String[] {"dlc", "fra"}) {
-			for (int i = 1; i <= 9; i++) {
-				UserTestUtil.addUser(screenNamePrefix + i, false, null);
-			}
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+
+		// Users
+
+		for (int i = 0; i < 9; i++) {
+			_dlcUsers[i] = UserTestUtil.addUser("dlc" + (i + 1), null);
 		}
-	}
 
-	@Test
-	public void testAddRelationWithBiType() throws Exception {
-		User dlc1User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc1");
-
-		User dlc2User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc2");
-
-		User dlc3User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc3");
-
-		User dlc4User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc4");
-
-		User dlc5User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc5");
-
-		User dlc6User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc6");
-
-		User dlc7User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc7");
-
-		User dlc8User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc8");
-
-		User dlc9User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "dlc9");
+		for (int i = 0; i < 9; i++) {
+			_fraUsers[i] = UserTestUtil.addUser("fra" + (i + 1), null);
+		}
 
 		// Friend
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc2User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[1].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc3User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[2].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc4User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[3].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc5User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[4].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc6User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[5].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc7User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[6].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc8User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[7].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		// Friend
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc2User.getUserId(), dlc3User.getUserId(),
+			_dlcUsers[1].getUserId(), _dlcUsers[2].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc2User.getUserId(), dlc4User.getUserId(),
+			_dlcUsers[1].getUserId(), _dlcUsers[3].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc2User.getUserId(), dlc5User.getUserId(),
+			_dlcUsers[1].getUserId(), _dlcUsers[4].getUserId(),
 			SocialRelationConstants.TYPE_BI_FRIEND);
 
 		// Coworker
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc9User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[8].getUserId(),
 			SocialRelationConstants.TYPE_BI_COWORKER);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc2User.getUserId(), dlc9User.getUserId(),
+			_dlcUsers[1].getUserId(), _dlcUsers[8].getUserId(),
 			SocialRelationConstants.TYPE_BI_COWORKER);
 
 		// Romantic partner
 
 		SocialRelationLocalServiceUtil.addRelation(
-			dlc1User.getUserId(), dlc2User.getUserId(),
+			_dlcUsers[0].getUserId(), _dlcUsers[1].getUserId(),
 			SocialRelationConstants.TYPE_BI_ROMANTIC_PARTNER);
-	}
-
-	@Test
-	public void testAddRelationWithUniType() throws Exception {
-		User fra1User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra1");
-
-		User fra2User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra2");
-
-		User fra3User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra3");
-
-		User fra4User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra4");
-
-		User fra5User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra5");
-
-		User fra6User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra6");
-
-		User fra7User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra7");
-
-		User fra8User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra8");
-
-		User fra9User = UserLocalServiceUtil.getUserByScreenName(
-			TestPropsValues.getCompanyId(), "fra9");
 
 		// Parent
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra2User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[1].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra3User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[2].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra4User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[3].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra5User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[4].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra6User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[5].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra7User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[6].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra8User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[7].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra1User.getUserId(), fra9User.getUserId(),
+			_fraUsers[0].getUserId(), _fraUsers[8].getUserId(),
 			SocialRelationConstants.TYPE_UNI_PARENT);
 
 		// Child
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra3User.getUserId(), fra1User.getUserId(),
+			_fraUsers[2].getUserId(), _fraUsers[0].getUserId(),
 			SocialRelationConstants.TYPE_UNI_CHILD);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra3User.getUserId(), fra2User.getUserId(),
+			_fraUsers[2].getUserId(), _fraUsers[1].getUserId(),
 			SocialRelationConstants.TYPE_UNI_CHILD);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra4User.getUserId(), fra1User.getUserId(),
+			_fraUsers[3].getUserId(), _fraUsers[0].getUserId(),
 			SocialRelationConstants.TYPE_UNI_CHILD);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra4User.getUserId(), fra2User.getUserId(),
+			_fraUsers[3].getUserId(), _fraUsers[1].getUserId(),
 			SocialRelationConstants.TYPE_UNI_CHILD);
 
 		SocialRelationLocalServiceUtil.addRelation(
-			fra5User.getUserId(), fra1User.getUserId(),
+			_fraUsers[4].getUserId(), _fraUsers[0].getUserId(),
 			SocialRelationConstants.TYPE_UNI_CHILD);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		for (User user : _dlcUsers) {
+			UserLocalServiceUtil.deleteUser(user);
+		}
+
+		for (User user : _fraUsers) {
+			UserLocalServiceUtil.deleteUser(user);
+		}
 	}
 
 	@Test
 	public void testGetMultipleGroups() throws Exception {
 		User dlc3User = UserLocalServiceUtil.getUserByScreenName(
 			TestPropsValues.getCompanyId(), "dlc3");
+
+		List<User> groupUsers = UserLocalServiceUtil.getGroupUsers(
+			TestPropsValues.getGroupId());
 
 		GroupLocalServiceUtil.addUserGroup(
 			dlc3User.getUserId(), TestPropsValues.getGroupId());
@@ -241,17 +208,22 @@ public class SocialRelationLocalServiceTest {
 		GroupLocalServiceUtil.addUserGroup(
 			dlc4User.getUserId(), TestPropsValues.getGroupId());
 
-		long[] groupIds = dlc4User.getGroupIds();
-
-		for (long groupId : dlc3User.getGroupIds()) {
-			ArrayUtil.remove(groupIds, groupId);
-		}
+		Set<Long> groupIds = SetUtil.intersect(
+			dlc3User.getGroupIds(), dlc4User.getGroupIds());
 
 		List<User> users = UserLocalServiceUtil.searchSocial(
-			TestPropsValues.getCompanyId(), groupIds, "dlc", QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
+			TestPropsValues.getCompanyId(),
+			ArrayUtil.toArray(groupIds.toArray(new Long[groupIds.size()])),
+			"dlc", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		users = ListUtil.remove(users, groupUsers);
 
 		Assert.assertEquals(2, users.size());
+
+		GroupLocalServiceUtil.deleteUserGroup(
+			dlc3User.getUserId(), TestPropsValues.getGroupId());
+		GroupLocalServiceUtil.deleteUserGroup(
+			dlc4User.getUserId(), TestPropsValues.getGroupId());
 	}
 
 	@Test
@@ -283,6 +255,11 @@ public class SocialRelationLocalServiceTest {
 			QueryUtil.ALL_POS);
 
 		Assert.assertEquals(5, users.size());
+
+		GroupLocalServiceUtil.deleteUserGroup(
+			dlc3User.getUserId(), TestPropsValues.getGroupId());
+		GroupLocalServiceUtil.deleteUserGroup(
+			dlc4User.getUserId(), TestPropsValues.getGroupId());
 	}
 
 	@Test
@@ -415,7 +392,7 @@ public class SocialRelationLocalServiceTest {
 
 		users = UserLocalServiceUtil.getSocialUsers(
 			dlc1User.getUserId(), SocialRelationConstants.TYPE_BI_COWORKER,
-			StringPool.EQUAL,  QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			StringPool.EQUAL, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			new UserScreenNameComparator(true));
 
 		Assert.assertEquals(1, users.size());
@@ -519,5 +496,8 @@ public class SocialRelationLocalServiceTest {
 
 		Assert.assertEquals(0, users.size());
 	}
+
+	private static final User[] _dlcUsers = new User[9];
+	private static final User[] _fraUsers = new User[9];
 
 }

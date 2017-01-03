@@ -14,42 +14,42 @@
 
 package com.liferay.portlet.messageboards.util;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.mail.Account;
-import com.liferay.portal.kernel.mail.SMTPAccount;
+import com.liferay.mail.kernel.model.Account;
+import com.liferay.mail.kernel.model.SMTPAccount;
+import com.liferay.message.boards.kernel.model.MBMailingList;
+import com.liferay.message.boards.kernel.service.MBMailingListLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupSubscriptionCheckSubscriptionSender;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.util.SubscriptionSender;
-import com.liferay.portlet.messageboards.NoSuchMailingListException;
-import com.liferay.portlet.messageboards.model.MBMailingList;
-import com.liferay.portlet.messageboards.service.MBMailingListLocalServiceUtil;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Thiago Moreira
+ * @author Roberto Díaz
  */
-public class MBSubscriptionSender extends SubscriptionSender {
+public class MBSubscriptionSender
+	extends GroupSubscriptionCheckSubscriptionSender {
 
-	public void addMailingListSubscriber(long groupId, long categoryId)
-		throws PortalException {
+	public MBSubscriptionSender(String resourceName) {
+		super(resourceName);
+	}
 
+	public void addMailingListSubscriber(long groupId, long categoryId) {
 		if (_calledAddMailingListSubscriber) {
-			throw new IllegalArgumentException();
+			throw new IllegalStateException("Method may only be called once");
 		}
 
 		_calledAddMailingListSubscriber = true;
 
-		MBMailingList mailingList = null;
-
-		try {
-			mailingList = MBMailingListLocalServiceUtil.getCategoryMailingList(
+		MBMailingList mailingList =
+			MBMailingListLocalServiceUtil.fetchCategoryMailingList(
 				groupId, categoryId);
-		}
-		catch (NoSuchMailingListException nsmle) {
-			return;
-		}
 
-		if (!mailingList.isActive()) {
+		if ((mailingList == null) || !mailingList.isActive()) {
 			return;
 		}
 
@@ -79,6 +79,14 @@ public class MBSubscriptionSender extends SubscriptionSender {
 			mailingList.getEmailAddress(), mailingList.getEmailAddress());
 	}
 
+	public void setAnonymous(boolean anonymous) {
+		_anonymous = anonymous;
+	}
+
+	public void setFullName(String fullName) {
+		_fullName = fullName;
+	}
+
 	protected String getMailingListSubject(String subject, String mailId) {
 		subject = GetterUtil.getString(subject);
 		mailId = GetterUtil.getString(mailId);
@@ -86,6 +94,36 @@ public class MBSubscriptionSender extends SubscriptionSender {
 		return subject.concat(StringPool.SPACE).concat(mailId);
 	}
 
+	@Override
+	protected void populateNotificationEventJSONObject(
+		JSONObject notificationEventJSONObject) {
+
+		notificationEventJSONObject.put("anonymous", _anonymous);
+		notificationEventJSONObject.put("fullName", _fullName);
+
+		super.populateNotificationEventJSONObject(notificationEventJSONObject);
+	}
+
+	@Override
+	protected void sendNotification(User user) throws Exception {
+		sendEmailNotification(user);
+
+		if (currentUserId == user.getUserId()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Skip notification for user " + currentUserId);
+			}
+
+			return;
+		}
+
+		sendUserNotification(user);
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		MBSubscriptionSender.class);
+
+	private boolean _anonymous;
 	private boolean _calledAddMailingListSubscriber;
+	private String _fullName;
 
 }

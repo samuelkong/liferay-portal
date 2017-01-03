@@ -1,0 +1,72 @@
+<definition>
+	<command name="configureSetupPG">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+		<if>
+			<isset var="directorySites" />
+			<then>
+				<execute function="Select" locator1="Select#SITES" value1="${directorySites}" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="directoryDisplayStyle" />
+			<then>
+				<execute function="Select" locator1="Select#DISPLAY_STYLE" value1="${directoryDisplayStyle}" />
+			</then>
+		</if>
+
+		<execute macro="Button#clickSave" />
+		<execute function="SelectFrameTop" />
+	</command>
+
+	<command name="viewDefaultConfigurationPG">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="${portletName}" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+		<execute function="AssertTextEquals" locator1="Select#SITES" value1="Top Level Parent Level Siblings Children" />
+		<execute function="AssertTextEquals" locator1="Select#DISPLAY_STYLE" value1="Icon Descriptive List List Hierarchy" />
+
+		<execute function="SelectFrameTop" />
+	</command>
+
+	<command name="viewDescriptivePG">
+		<var name="key_siteName" value="${siteName}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="SitesDirectory#DESCRIPTIVE_SITE_ENTRY" value1="${siteName}" />
+	</command>
+
+	<command name="viewListHierarchyPG">
+		<var name="key_siteName" value="${availableSiteName}" />
+
+		<execute function="AssertTextEquals" locator1="SitesDirectory#LIST_HIERARCHY_PARENT_SITE_AVAILABLE" value1="${availableSiteName}" />
+
+		<var name="key_siteName" value="${currentSiteName}" />
+
+		<execute function="AssertTextEquals" locator1="SitesDirectory#LIST_HIERARCHY_PARENT_SITE_CURRENT" value1="${currentSiteName}" />
+
+		<var name="key_childSiteName" value="${childSiteName1}" />
+		<var name="key_siteName" value="${currentSiteName}" />
+
+		<execute function="AssertTextEquals" locator1="SitesDirectory#LIST_HIERARCHY_CHILD_SITE" value1="${childSiteName1}" />
+
+		<var name="key_childSiteName" value="${childSiteName2}" />
+		<var name="key_siteName" value="${currentSiteName}" />
+
+		<execute function="AssertTextEquals" locator1="SitesDirectory#LIST_HIERARCHY_CHILD_SITE" value1="${childSiteName2}" />
+
+		<var name="key_childSiteName" value="${childSiteName3}" />
+		<var name="key_siteName" value="${currentSiteName}" />
+
+		<execute function="AssertTextEquals" locator1="SitesDirectory#LIST_HIERARCHY_CHILD_SITE" value1="${childSiteName3}" />
+	</command>
+</definition>

@@ -40,17 +40,19 @@ import java.util.Map;
  */
 public class PropertiesDocBuilder {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
+
 		try {
-			new PropertiesDocBuilder (args);
+			new PropertiesDocBuilder(arguments);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			ArgumentsUtil.processMainException(arguments, e);
 		}
 	}
 
-	public PropertiesDocBuilder(String[] args) throws IOException {
-		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
+	public PropertiesDocBuilder(Map<String, String> arguments)
+		throws IOException {
 
 		String propertiesDestDirName = GetterUtil.getString(
 			arguments.get("properties.dest.dir"));
@@ -63,7 +65,7 @@ public class PropertiesDocBuilder {
 
 		File propertiesFile = new File(propertiesFileName);
 
-		Map<String, Object> context = new HashMap<String, Object>();
+		Map<String, Object> context = new HashMap<>();
 
 		context.put("pageTitle", title);
 
@@ -104,8 +106,8 @@ public class PropertiesDocBuilder {
 
 			try {
 				FreeMarkerUtil.process(
-					"com/liferay/portal/tools/propertiesdoc/dependencies/" +
-						"properties.ftl",
+					"com/liferay/portal/tools/propertiesdoc/dependencies" +
+						"/properties.ftl",
 					context, writer);
 			}
 			catch (Exception e) {
@@ -130,7 +132,7 @@ public class PropertiesDocBuilder {
 	}
 
 	protected List<String> extractComments(String[] lines) {
-		List<String> comments = new ArrayList<String>();
+		List<String> comments = new ArrayList<>();
 
 		StringBundler sb = new StringBundler();
 
@@ -203,7 +205,7 @@ public class PropertiesDocBuilder {
 					previousLineIsExample = true;
 
 					String exampleProperty =
-						StringUtil.replaceFirst(line, "#", StringPool.BLANK) +
+						StringUtil.replaceFirst(line, '#', StringPool.BLANK) +
 							StringPool.NEW_LINE;
 
 					sb.append(exampleProperty);
@@ -228,8 +230,7 @@ public class PropertiesDocBuilder {
 	}
 
 	protected List<PropertyComment> extractPropertyComments(String[] lines) {
-		List<PropertyComment> propertyComments =
-			new ArrayList<PropertyComment>();
+		List<PropertyComment> propertyComments = new ArrayList<>();
 
 		StringBundler sb = new StringBundler();
 
@@ -248,7 +249,7 @@ public class PropertiesDocBuilder {
 				if (previousLineIsPreformatted) {
 					sb.append(
 						StringUtil.replaceFirst(
-							trimmedLine, "#", StringPool.BLANK));
+							trimmedLine, '#', StringPool.BLANK));
 				}
 				else {
 					addPropertyComment(propertyComments, sb.toString());
@@ -257,7 +258,7 @@ public class PropertiesDocBuilder {
 
 					sb.append(
 						StringUtil.replaceFirst(
-							trimmedLine, "#", StringPool.BLANK));
+							trimmedLine, '#', StringPool.BLANK));
 				}
 
 				sb.append(StringPool.NEW_LINE);
@@ -271,7 +272,7 @@ public class PropertiesDocBuilder {
 					sb = new StringBundler();
 
 					trimmedLine = StringUtil.replaceFirst(
-						trimmedLine, "#", StringPool.BLANK);
+						trimmedLine, '#', StringPool.BLANK);
 
 					sb.append(trimmedLine.trim());
 				}
@@ -280,7 +281,7 @@ public class PropertiesDocBuilder {
 						sb.append(StringPool.SPACE);
 					}
 
-					line = StringUtil.replaceFirst(line, "#", StringPool.BLANK);
+					line = StringUtil.replaceFirst(line, '#', StringPool.BLANK);
 
 					sb.append(line.trim());
 				}
@@ -331,8 +332,8 @@ public class PropertiesDocBuilder {
 
 		String[] sections = content.split("\n\n");
 
-		List<PropertiesSection> propertiesSections =
-			new ArrayList<PropertiesSection>(sections.length);
+		List<PropertiesSection> propertiesSections = new ArrayList<>(
+			sections.length);
 
 		for (String section : sections) {
 			section = StringUtil.trimLeading(section, CharPool.SPACE);
@@ -358,8 +359,8 @@ public class PropertiesDocBuilder {
 				else {
 					StringBundler sb = new StringBundler(8);
 
-					sb.append("Properties section should consist of 3 ");
-					sb.append("or more lines:");
+					sb.append("Properties section should consist of 3 or ");
+					sb.append("more lines:");
 					sb.append(StringPool.NEW_LINE);
 					sb.append("##");
 					sb.append(StringPool.NEW_LINE);

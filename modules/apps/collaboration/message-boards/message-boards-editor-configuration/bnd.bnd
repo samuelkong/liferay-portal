@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Message Boards Editor Configuration
+Bundle-SymbolicName: com.liferay.message.boards.editor.configuration
+Bundle-Version: 1.0.2
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Message Boards

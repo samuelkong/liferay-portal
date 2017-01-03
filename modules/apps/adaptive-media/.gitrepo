@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = 389e3f9a65d814b756f6c93e666eca69911f2bd4
+	mode = pull
+	parent = a1901e182a4bf9ac7136143bddadf35adc07f762
+	remote = git@github.com:liferay/com-liferay-adaptive-media.git

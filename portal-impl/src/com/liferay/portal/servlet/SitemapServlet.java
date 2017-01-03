@@ -16,8 +16,8 @@ package com.liferay.portal.servlet;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.util.Portal;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class SitemapServlet extends HttpServlet {
 		throws IOException, ServletException {
 
 		try {
-			String redirect = Portal.PATH_MAIN + "/layouts_admin/sitemap";
+			String redirect = Portal.PATH_MAIN + "/portal/sitemap";
 
 			ServletContext servletContext = getServletContext();
 

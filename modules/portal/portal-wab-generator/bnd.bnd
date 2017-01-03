@@ -1,5 +1,0 @@
-Bundle-Name: Liferay Portal WAB Generator
-Bundle-SymbolicName: com.liferay.portal.wab.generator
-Bundle-Version: 1.0.0
-Export-Package: com.liferay.portal.wab.generator
-Include-Resource: classes

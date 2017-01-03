@@ -14,24 +14,25 @@
 
 package com.liferay.portlet.expando.model.impl;
 
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoColumnServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoValueServiceUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.security.auth.CompanyThreadLocal;
-import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.expando.model.ExpandoBridge;
-import com.liferay.portlet.expando.model.ExpandoColumn;
-import com.liferay.portlet.expando.model.ExpandoColumnConstants;
-import com.liferay.portlet.expando.model.ExpandoTable;
-import com.liferay.portlet.expando.model.ExpandoTableConstants;
-import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoColumnServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoValueServiceUtil;
 
 import java.io.Serializable;
 
@@ -237,7 +238,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		List<String> columnNames = new ArrayList<String>();
+		List<String> columnNames = new ArrayList<>();
 
 		for (ExpandoColumn column : getAttributeColumns()) {
 			columnNames.add(column.getName());
@@ -274,8 +275,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public Map<String, Serializable> getAttributes(boolean secure) {
-		Map<String, Serializable> attributes =
-			new HashMap<String, Serializable>();
+		Map<String, Serializable> attributes = new HashMap<>();
 
 		for (ExpandoColumn column : getAttributeColumns()) {
 			attributes.put(
@@ -371,6 +371,19 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 	}
 
 	@Override
+	public int hashCode() {
+		int hash = 0;
+
+		try {
+			hash = HashUtil.hash(0, getTable());
+		}
+		catch (Exception e) {
+		}
+
+		return HashUtil.hash(hash, getAttributeColumns());
+	}
+
+	@Override
 	public boolean isIndexEnabled() {
 		if (_indexEnabled && (_classPK > 0)) {
 			return true;
@@ -384,15 +397,13 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 			return;
 		}
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(_className);
+		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(_className);
 
-		if (indexer != null) {
-			try {
-				indexer.reindex(_className, _classPK);
-			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+		try {
+			indexer.reindex(_className, _classPK);
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -634,7 +645,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 	}
 
 	protected List<ExpandoColumn> getAttributeColumns() {
-		List<ExpandoColumn> columns = new ArrayList<ExpandoColumn>();
+		List<ExpandoColumn> columns = new ArrayList<>();
 
 		try {
 			columns = ExpandoColumnLocalServiceUtil.getDefaultTableColumns(

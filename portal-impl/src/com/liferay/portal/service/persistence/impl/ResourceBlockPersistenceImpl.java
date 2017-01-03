@@ -16,27 +16,29 @@ package com.liferay.portal.service.persistence.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.NoSuchResourceBlockException;
-import com.liferay.portal.kernel.cache.CacheRegistryUtil;
+import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.exception.NoSuchResourceBlockException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ResourceBlock;
+import com.liferay.portal.kernel.service.persistence.CompanyProvider;
+import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
+import com.liferay.portal.kernel.service.persistence.ResourceBlockPersistence;
+import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.ResourceBlock;
 import com.liferay.portal.model.impl.ResourceBlockImpl;
 import com.liferay.portal.model.impl.ResourceBlockModelImpl;
-import com.liferay.portal.service.persistence.ResourceBlockPersistence;
 
 import java.io.Serializable;
 
@@ -46,6 +48,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -57,7 +60,7 @@ import java.util.Set;
  *
  * @author Brian Wing Shun Chan
  * @see ResourceBlockPersistence
- * @see ResourceBlockUtil
+ * @see com.liferay.portal.kernel.service.persistence.ResourceBlockUtil
  * @generated
  */
 @ProviderType
@@ -123,7 +126,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Returns a range of all the resource blocks where companyId = &#63; and name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.model.impl.ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param companyId the company ID
@@ -142,7 +145,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Returns an ordered range of all the resource blocks where companyId = &#63; and name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.model.impl.ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param companyId the company ID
@@ -155,6 +158,28 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	@Override
 	public List<ResourceBlock> findByC_N(long companyId, String name,
 		int start, int end, OrderByComparator<ResourceBlock> orderByComparator) {
+		return findByC_N(companyId, name, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the resource blocks where companyId = &#63; and name = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param start the lower bound of the range of resource blocks
+	 * @param end the upper bound of the range of resource blocks (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching resource blocks
+	 */
+	@Override
+	public List<ResourceBlock> findByC_N(long companyId, String name,
+		int start, int end, OrderByComparator<ResourceBlock> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -174,16 +199,20 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 				};
 		}
 
-		List<ResourceBlock> list = (List<ResourceBlock>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<ResourceBlock> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (ResourceBlock resourceBlock : list) {
-				if ((companyId != resourceBlock.getCompanyId()) ||
-						!Validator.equals(name, resourceBlock.getName())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<ResourceBlock>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (ResourceBlock resourceBlock : list) {
+					if ((companyId != resourceBlock.getCompanyId()) ||
+							!Objects.equals(name, resourceBlock.getName())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -193,7 +222,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -258,10 +287,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -280,7 +309,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param name the name
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a matching resource block could not be found
+	 * @throws NoSuchResourceBlockException if a matching resource block could not be found
 	 */
 	@Override
 	public ResourceBlock findByC_N_First(long companyId, String name,
@@ -336,7 +365,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param name the name
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a matching resource block could not be found
+	 * @throws NoSuchResourceBlockException if a matching resource block could not be found
 	 */
 	@Override
 	public ResourceBlock findByC_N_Last(long companyId, String name,
@@ -399,7 +428,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param name the name
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a resource block with the primary key could not be found
+	 * @throws NoSuchResourceBlockException if a resource block with the primary key could not be found
 	 */
 	@Override
 	public ResourceBlock[] findByC_N_PrevAndNext(long resourceBlockId,
@@ -439,11 +468,12 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_RESOURCEBLOCK_WHERE);
@@ -583,8 +613,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 		Object[] finderArgs = new Object[] { companyId, name };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -626,10 +655,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -694,7 +723,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Returns a range of all the resource blocks where companyId = &#63; and groupId = &#63; and name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.model.impl.ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param companyId the company ID
@@ -714,7 +743,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Returns an ordered range of all the resource blocks where companyId = &#63; and groupId = &#63; and name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.model.impl.ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param companyId the company ID
@@ -729,6 +758,31 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	public List<ResourceBlock> findByC_G_N(long companyId, long groupId,
 		String name, int start, int end,
 		OrderByComparator<ResourceBlock> orderByComparator) {
+		return findByC_G_N(companyId, groupId, name, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the resource blocks where companyId = &#63; and groupId = &#63; and name = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param start the lower bound of the range of resource blocks
+	 * @param end the upper bound of the range of resource blocks (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching resource blocks
+	 */
+	@Override
+	public List<ResourceBlock> findByC_G_N(long companyId, long groupId,
+		String name, int start, int end,
+		OrderByComparator<ResourceBlock> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -748,17 +802,21 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 				};
 		}
 
-		List<ResourceBlock> list = (List<ResourceBlock>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<ResourceBlock> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (ResourceBlock resourceBlock : list) {
-				if ((companyId != resourceBlock.getCompanyId()) ||
-						(groupId != resourceBlock.getGroupId()) ||
-						!Validator.equals(name, resourceBlock.getName())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<ResourceBlock>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (ResourceBlock resourceBlock : list) {
+					if ((companyId != resourceBlock.getCompanyId()) ||
+							(groupId != resourceBlock.getGroupId()) ||
+							!Objects.equals(name, resourceBlock.getName())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -768,7 +826,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 			if (orderByComparator != null) {
 				query = new StringBundler(5 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(5);
@@ -837,10 +895,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -860,7 +918,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param name the name
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a matching resource block could not be found
+	 * @throws NoSuchResourceBlockException if a matching resource block could not be found
 	 */
 	@Override
 	public ResourceBlock findByC_G_N_First(long companyId, long groupId,
@@ -921,7 +979,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param name the name
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a matching resource block could not be found
+	 * @throws NoSuchResourceBlockException if a matching resource block could not be found
 	 */
 	@Override
 	public ResourceBlock findByC_G_N_Last(long companyId, long groupId,
@@ -989,7 +1047,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param name the name
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a resource block with the primary key could not be found
+	 * @throws NoSuchResourceBlockException if a resource block with the primary key could not be found
 	 */
 	@Override
 	public ResourceBlock[] findByC_G_N_PrevAndNext(long resourceBlockId,
@@ -1030,10 +1088,11 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		query.append(_SQL_SELECT_RESOURCEBLOCK_WHERE);
@@ -1179,8 +1238,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 		Object[] finderArgs = new Object[] { companyId, groupId, name };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(4);
@@ -1226,10 +1284,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1267,14 +1325,14 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 			});
 
 	/**
-	 * Returns the resource block where companyId = &#63; and groupId = &#63; and name = &#63; and permissionsHash = &#63; or throws a {@link com.liferay.portal.NoSuchResourceBlockException} if it could not be found.
+	 * Returns the resource block where companyId = &#63; and groupId = &#63; and name = &#63; and permissionsHash = &#63; or throws a {@link NoSuchResourceBlockException} if it could not be found.
 	 *
 	 * @param companyId the company ID
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param permissionsHash the permissions hash
 	 * @return the matching resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a matching resource block could not be found
+	 * @throws NoSuchResourceBlockException if a matching resource block could not be found
 	 */
 	@Override
 	public ResourceBlock findByC_G_N_P(long companyId, long groupId,
@@ -1302,8 +1360,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 			msg.append(StringPool.CLOSE_CURLY_BRACE);
 
-			if (_log.isWarnEnabled()) {
-				_log.warn(msg.toString());
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
 			}
 
 			throw new NoSuchResourceBlockException(msg.toString());
@@ -1334,7 +1392,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param permissionsHash the permissions hash
-	 * @param retrieveFromCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching resource block, or <code>null</code> if a matching resource block could not be found
 	 */
 	@Override
@@ -1347,7 +1405,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_C_G_N_P,
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_C_G_N_P,
 					finderArgs, this);
 		}
 
@@ -1356,8 +1414,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 			if ((companyId != resourceBlock.getCompanyId()) ||
 					(groupId != resourceBlock.getGroupId()) ||
-					!Validator.equals(name, resourceBlock.getName()) ||
-					!Validator.equals(permissionsHash,
+					!Objects.equals(name, resourceBlock.getName()) ||
+					!Objects.equals(permissionsHash,
 						resourceBlock.getPermissionsHash())) {
 				result = null;
 			}
@@ -1426,7 +1484,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 				List<ResourceBlock> list = q.list();
 
 				if (list.isEmpty()) {
-					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_G_N_P,
+					finderCache.putResult(FINDER_PATH_FETCH_BY_C_G_N_P,
 						finderArgs, list);
 				}
 				else {
@@ -1443,13 +1501,13 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 							(resourceBlock.getPermissionsHash() == null) ||
 							!resourceBlock.getPermissionsHash()
 											  .equals(permissionsHash)) {
-						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_G_N_P,
+						finderCache.putResult(FINDER_PATH_FETCH_BY_C_G_N_P,
 							finderArgs, resourceBlock);
 					}
 				}
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_G_N_P,
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_C_G_N_P,
 					finderArgs);
 
 				throw processException(e);
@@ -1504,8 +1562,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 				companyId, groupId, name, permissionsHash
 			};
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(5);
@@ -1569,10 +1626,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1604,11 +1661,11 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 */
 	@Override
 	public void cacheResult(ResourceBlock resourceBlock) {
-		EntityCacheUtil.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 			ResourceBlockImpl.class, resourceBlock.getPrimaryKey(),
 			resourceBlock);
 
-		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_G_N_P,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_C_G_N_P,
 			new Object[] {
 				resourceBlock.getCompanyId(), resourceBlock.getGroupId(),
 				resourceBlock.getName(), resourceBlock.getPermissionsHash()
@@ -1625,7 +1682,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	@Override
 	public void cacheResult(List<ResourceBlock> resourceBlocks) {
 		for (ResourceBlock resourceBlock : resourceBlocks) {
-			if (EntityCacheUtil.getResult(
+			if (entityCache.getResult(
 						ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 						ResourceBlockImpl.class, resourceBlock.getPrimaryKey()) == null) {
 				cacheResult(resourceBlock);
@@ -1640,106 +1697,89 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Clears the cache for all resource blocks.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache() {
-		if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
-			CacheRegistryUtil.clear(ResourceBlockImpl.class.getName());
-		}
+		entityCache.clearCache(ResourceBlockImpl.class);
 
-		EntityCacheUtil.clearCache(ResourceBlockImpl.class);
-
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	/**
 	 * Clears the cache for the resource block.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(ResourceBlock resourceBlock) {
-		EntityCacheUtil.removeResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.removeResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 			ResourceBlockImpl.class, resourceBlock.getPrimaryKey());
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache(resourceBlock);
+		clearUniqueFindersCache((ResourceBlockModelImpl)resourceBlock, true);
 	}
 
 	@Override
 	public void clearCache(List<ResourceBlock> resourceBlocks) {
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (ResourceBlock resourceBlock : resourceBlocks) {
-			EntityCacheUtil.removeResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+			entityCache.removeResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 				ResourceBlockImpl.class, resourceBlock.getPrimaryKey());
 
-			clearUniqueFindersCache(resourceBlock);
+			clearUniqueFindersCache((ResourceBlockModelImpl)resourceBlock, true);
 		}
 	}
 
-	protected void cacheUniqueFindersCache(ResourceBlock resourceBlock) {
-		if (resourceBlock.isNew()) {
-			Object[] args = new Object[] {
-					resourceBlock.getCompanyId(), resourceBlock.getGroupId(),
-					resourceBlock.getName(), resourceBlock.getPermissionsHash()
-				};
-
-			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_C_G_N_P, args,
-				Long.valueOf(1));
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_G_N_P, args,
-				resourceBlock);
-		}
-		else {
-			ResourceBlockModelImpl resourceBlockModelImpl = (ResourceBlockModelImpl)resourceBlock;
-
-			if ((resourceBlockModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_C_G_N_P.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						resourceBlock.getCompanyId(), resourceBlock.getGroupId(),
-						resourceBlock.getName(),
-						resourceBlock.getPermissionsHash()
-					};
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_C_G_N_P, args,
-					Long.valueOf(1));
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_G_N_P, args,
-					resourceBlock);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(ResourceBlock resourceBlock) {
-		ResourceBlockModelImpl resourceBlockModelImpl = (ResourceBlockModelImpl)resourceBlock;
-
+	protected void cacheUniqueFindersCache(
+		ResourceBlockModelImpl resourceBlockModelImpl) {
 		Object[] args = new Object[] {
-				resourceBlock.getCompanyId(), resourceBlock.getGroupId(),
-				resourceBlock.getName(), resourceBlock.getPermissionsHash()
+				resourceBlockModelImpl.getCompanyId(),
+				resourceBlockModelImpl.getGroupId(),
+				resourceBlockModelImpl.getName(),
+				resourceBlockModelImpl.getPermissionsHash()
 			};
 
-		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_G_N_P, args);
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_G_N_P, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_C_G_N_P, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_C_G_N_P, args,
+			resourceBlockModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		ResourceBlockModelImpl resourceBlockModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					resourceBlockModelImpl.getCompanyId(),
+					resourceBlockModelImpl.getGroupId(),
+					resourceBlockModelImpl.getName(),
+					resourceBlockModelImpl.getPermissionsHash()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_C_G_N_P, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_C_G_N_P, args);
+		}
 
 		if ((resourceBlockModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_C_G_N_P.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					resourceBlockModelImpl.getOriginalCompanyId(),
 					resourceBlockModelImpl.getOriginalGroupId(),
 					resourceBlockModelImpl.getOriginalName(),
 					resourceBlockModelImpl.getOriginalPermissionsHash()
 				};
 
-			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_G_N_P, args);
-			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_G_N_P, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_C_G_N_P, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_C_G_N_P, args);
 		}
 	}
 
@@ -1756,6 +1796,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 		resourceBlock.setNew(true);
 		resourceBlock.setPrimaryKey(resourceBlockId);
 
+		resourceBlock.setCompanyId(companyProvider.getCompanyId());
+
 		return resourceBlock;
 	}
 
@@ -1764,7 +1806,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 *
 	 * @param resourceBlockId the primary key of the resource block
 	 * @return the resource block that was removed
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a resource block with the primary key could not be found
+	 * @throws NoSuchResourceBlockException if a resource block with the primary key could not be found
 	 */
 	@Override
 	public ResourceBlock remove(long resourceBlockId)
@@ -1777,7 +1819,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 *
 	 * @param primaryKey the primary key of the resource block
 	 * @return the resource block that was removed
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a resource block with the primary key could not be found
+	 * @throws NoSuchResourceBlockException if a resource block with the primary key could not be found
 	 */
 	@Override
 	public ResourceBlock remove(Serializable primaryKey)
@@ -1791,8 +1833,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 					primaryKey);
 
 			if (resourceBlock == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+				if (_log.isDebugEnabled()) {
+					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
 				throw new NoSuchResourceBlockException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
@@ -1845,8 +1887,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	}
 
 	@Override
-	public ResourceBlock updateImpl(
-		com.liferay.portal.model.ResourceBlock resourceBlock) {
+	public ResourceBlock updateImpl(ResourceBlock resourceBlock) {
 		resourceBlock = toUnwrappedModel(resourceBlock);
 
 		boolean isNew = resourceBlock.isNew();
@@ -1864,7 +1905,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 				resourceBlock.setNew(false);
 			}
 			else {
-				session.merge(resourceBlock);
+				resourceBlock = (ResourceBlock)session.merge(resourceBlock);
 			}
 		}
 		catch (Exception e) {
@@ -1874,10 +1915,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
 		if (isNew || !ResourceBlockModelImpl.COLUMN_BITMASK_ENABLED) {
-			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
 
 		else {
@@ -1888,8 +1929,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 						resourceBlockModelImpl.getOriginalName()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_N, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_N,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_C_N, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_N,
 					args);
 
 				args = new Object[] {
@@ -1897,8 +1938,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 						resourceBlockModelImpl.getName()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_N, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_N,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_C_N, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_N,
 					args);
 			}
 
@@ -1910,8 +1951,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 						resourceBlockModelImpl.getOriginalName()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_G_N, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_G_N,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_C_G_N, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_G_N,
 					args);
 
 				args = new Object[] {
@@ -1920,18 +1961,18 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 						resourceBlockModelImpl.getName()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_G_N, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_G_N,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_C_G_N, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_G_N,
 					args);
 			}
 		}
 
-		EntityCacheUtil.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 			ResourceBlockImpl.class, resourceBlock.getPrimaryKey(),
 			resourceBlock, false);
 
-		clearUniqueFindersCache(resourceBlock);
-		cacheUniqueFindersCache(resourceBlock);
+		clearUniqueFindersCache(resourceBlockModelImpl, false);
+		cacheUniqueFindersCache(resourceBlockModelImpl);
 
 		resourceBlock.resetOriginalValues();
 
@@ -1960,11 +2001,11 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	}
 
 	/**
-	 * Returns the resource block with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the resource block with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the resource block
 	 * @return the resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a resource block with the primary key could not be found
+	 * @throws NoSuchResourceBlockException if a resource block with the primary key could not be found
 	 */
 	@Override
 	public ResourceBlock findByPrimaryKey(Serializable primaryKey)
@@ -1972,8 +2013,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 		ResourceBlock resourceBlock = fetchByPrimaryKey(primaryKey);
 
 		if (resourceBlock == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			if (_log.isDebugEnabled()) {
+				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
 			throw new NoSuchResourceBlockException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
@@ -1984,11 +2025,11 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	}
 
 	/**
-	 * Returns the resource block with the primary key or throws a {@link com.liferay.portal.NoSuchResourceBlockException} if it could not be found.
+	 * Returns the resource block with the primary key or throws a {@link NoSuchResourceBlockException} if it could not be found.
 	 *
 	 * @param resourceBlockId the primary key of the resource block
 	 * @return the resource block
-	 * @throws com.liferay.portal.NoSuchResourceBlockException if a resource block with the primary key could not be found
+	 * @throws NoSuchResourceBlockException if a resource block with the primary key could not be found
 	 */
 	@Override
 	public ResourceBlock findByPrimaryKey(long resourceBlockId)
@@ -2004,12 +2045,14 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 */
 	@Override
 	public ResourceBlock fetchByPrimaryKey(Serializable primaryKey) {
-		ResourceBlock resourceBlock = (ResourceBlock)EntityCacheUtil.getResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 				ResourceBlockImpl.class, primaryKey);
 
-		if (resourceBlock == _nullResourceBlock) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		ResourceBlock resourceBlock = (ResourceBlock)serializable;
 
 		if (resourceBlock == null) {
 			Session session = null;
@@ -2024,12 +2067,12 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 					cacheResult(resourceBlock);
 				}
 				else {
-					EntityCacheUtil.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
-						ResourceBlockImpl.class, primaryKey, _nullResourceBlock);
+					entityCache.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+						ResourceBlockImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
-				EntityCacheUtil.removeResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.removeResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 					ResourceBlockImpl.class, primaryKey);
 
 				throw processException(e);
@@ -2079,18 +2122,20 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			ResourceBlock resourceBlock = (ResourceBlock)EntityCacheUtil.getResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
 					ResourceBlockImpl.class, primaryKey);
 
-			if (resourceBlock == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, resourceBlock);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (ResourceBlock)serializable);
+				}
 			}
 		}
 
@@ -2131,8 +2176,8 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 			}
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				EntityCacheUtil.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
-					ResourceBlockImpl.class, primaryKey, _nullResourceBlock);
+				entityCache.putResult(ResourceBlockModelImpl.ENTITY_CACHE_ENABLED,
+					ResourceBlockImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2159,7 +2204,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Returns a range of all the resource blocks.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.model.impl.ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of resource blocks
@@ -2175,7 +2220,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 * Returns an ordered range of all the resource blocks.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.model.impl.ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of resource blocks
@@ -2186,6 +2231,26 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	@Override
 	public List<ResourceBlock> findAll(int start, int end,
 		OrderByComparator<ResourceBlock> orderByComparator) {
+		return findAll(start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the resource blocks.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param start the lower bound of the range of resource blocks
+	 * @param end the upper bound of the range of resource blocks (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of resource blocks
+	 */
+	@Override
+	public List<ResourceBlock> findAll(int start, int end,
+		OrderByComparator<ResourceBlock> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -2201,8 +2266,12 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 			finderArgs = new Object[] { start, end, orderByComparator };
 		}
 
-		List<ResourceBlock> list = (List<ResourceBlock>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<ResourceBlock> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ResourceBlock>)finderCache.getResult(finderPath,
+					finderArgs, this);
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -2210,7 +2279,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 			if (orderByComparator != null) {
 				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_RESOURCEBLOCK);
 
@@ -2249,10 +2318,10 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2282,7 +2351,7 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
+		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -2295,11 +2364,11 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY, count);
+				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
+					count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY);
 
 				throw processException(e);
@@ -2312,6 +2381,11 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 		return count.intValue();
 	}
 
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return ResourceBlockModelImpl.TABLE_COLUMNS_MAP;
+	}
+
 	/**
 	 * Initializes the resource block persistence.
 	 */
@@ -2319,12 +2393,16 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	}
 
 	public void destroy() {
-		EntityCacheUtil.removeCache(ResourceBlockImpl.class.getName());
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		entityCache.removeCache(ResourceBlockImpl.class.getName());
+		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	@BeanReference(type = CompanyProviderWrapper.class)
+	protected CompanyProvider companyProvider;
+	protected EntityCache entityCache = EntityCacheUtil.getEntityCache();
+	protected FinderCache finderCache = FinderCacheUtil.getFinderCache();
 	private static final String _SQL_SELECT_RESOURCEBLOCK = "SELECT resourceBlock FROM ResourceBlock resourceBlock";
 	private static final String _SQL_SELECT_RESOURCEBLOCK_WHERE_PKS_IN = "SELECT resourceBlock FROM ResourceBlock resourceBlock WHERE resourceBlockId IN (";
 	private static final String _SQL_SELECT_RESOURCEBLOCK_WHERE = "SELECT resourceBlock FROM ResourceBlock resourceBlock WHERE ";
@@ -2333,36 +2411,5 @@ public class ResourceBlockPersistenceImpl extends BasePersistenceImpl<ResourceBl
 	private static final String _ORDER_BY_ENTITY_ALIAS = "resourceBlock.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ResourceBlock exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ResourceBlock exists with the key {";
-	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = com.liferay.portal.util.PropsValues.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE;
 	private static final Log _log = LogFactoryUtil.getLog(ResourceBlockPersistenceImpl.class);
-	private static final ResourceBlock _nullResourceBlock = new ResourceBlockImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<ResourceBlock> toCacheModel() {
-				return _nullResourceBlockCacheModel;
-			}
-		};
-
-	private static final CacheModel<ResourceBlock> _nullResourceBlockCacheModel = new NullCacheModel();
-
-	private static class NullCacheModel implements CacheModel<ResourceBlock>,
-		MVCCModel {
-		@Override
-		public long getMvccVersion() {
-			return 0;
-		}
-
-		@Override
-		public void setMvccVersion(long mvccVersion) {
-		}
-
-		@Override
-		public ResourceBlock toEntityModel() {
-			return _nullResourceBlock;
-		}
-	}
 }

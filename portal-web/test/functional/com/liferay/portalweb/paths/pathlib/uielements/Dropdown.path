@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>Dropdown</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Dropdown</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ENTRIES</td>
+	<td>//a[contains(@class,'dropdown') and contains(.,'Entries')]</td>
+	<td></td>
+</tr>
+<!--FILTER-->
+<tr>
+	<td>FILTER</td>
+	<td>//*[@data-qa-id='filter']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FILTER_STATUS</td>
+	<td>//*[@data-qa-id='filterstatus']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FILTER_ORDER</td>
+	<td>//*[@data-qa-id='filterorder-by']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FILTER_VALUES</td>
+	<td>//*[@data-qa-id='filterValues']/li[contains(.,'${key_filterValue}')]/a</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

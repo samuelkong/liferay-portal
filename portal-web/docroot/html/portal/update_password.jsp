@@ -21,6 +21,8 @@ String currentURL = PortalUtil.getCurrentURL(request);
 
 String referer = ParamUtil.getString(request, WebKeys.REFERER, currentURL);
 
+Ticket ticket = (Ticket)request.getAttribute(WebKeys.TICKET);
+
 String ticketKey = ParamUtil.getString(request, "ticketKey");
 
 if (referer.startsWith(themeDisplay.getPathMain() + "/portal/update_password") && Validator.isNotNull(ticketKey)) {
@@ -31,9 +33,35 @@ PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 %>
 
 <c:choose>
-	<c:when test="<%= SessionErrors.contains(request, UserLockoutException.class.getName()) %>">
+	<c:when test="<%= !themeDisplay.isSignedIn() && (ticket == null) %>">
+		<div class="alert alert-warning">
+			<liferay-ui:message key="your-password-reset-link-is-no-longer-valid" />
+
+			<%
+			PortletURL portletURL = PortletURLFactoryUtil.create(request, PortletKeys.LOGIN, PortletRequest.RENDER_PHASE);
+
+			portletURL.setParameter("mvcRenderCommandName", "/login/forgot_password");
+			portletURL.setWindowState(WindowState.MAXIMIZED);
+			%>
+
+			<div>
+				<aui:a href="<%= portletURL.toString() %>" label="request-a-new-password-reset-link"></aui:a>
+			</div>
+		</div>
+	</c:when>
+	<c:when test="<%= SessionErrors.contains(request, UserLockoutException.LDAPLockout.class.getName()) %>">
 		<div class="alert alert-danger">
-			<liferay-ui:message key="this-account-has-been-locked" />
+			<liferay-ui:message key="this-account-is-locked" />
+		</div>
+	</c:when>
+	<c:when test="<%= SessionErrors.contains(request, UserLockoutException.PasswordPolicyLockout.class.getName()) %>">
+		<div class="alert alert-danger">
+
+			<%
+			UserLockoutException.PasswordPolicyLockout ule = (UserLockoutException.PasswordPolicyLockout)SessionErrors.get(request, UserLockoutException.PasswordPolicyLockout.class.getName());
+			%>
+
+			<liferay-ui:message arguments="<%= ule.user.getUnlockDate() %>" key="this-account-is-locked-until-x" translateArguments="<%= false %>" />
 		</div>
 	</c:when>
 	<c:otherwise>
@@ -45,63 +73,69 @@ PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 			<aui:input name="<%= WebKeys.REFERER %>" type="hidden" value="<%= referer %>" />
 			<aui:input name="ticketKey" type="hidden" value="<%= ticketKey %>" />
 
-			<div class="alert alert-info">
-				<liferay-ui:message key="please-set-a-new-password" />
-			</div>
-
-			<c:if test="<%= SessionErrors.contains(request, UserPasswordException.class.getName()) %>">
-
-				<%
-				UserPasswordException upe = (UserPasswordException)SessionErrors.get(request, UserPasswordException.class.getName());
-				%>
-
+			<c:if test="<%= !SessionErrors.isEmpty(request) %>">
 				<div class="alert alert-danger">
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_ALREADY_USED %>">
-						<liferay-ui:message key="that-password-has-already-been-used-please-enter-in-a-different-password" />
-					</c:if>
+					<c:choose>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustBeLonger.class.getName()) %>">
 
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_CONTAINS_TRIVIAL_WORDS %>">
-						<liferay-ui:message key="that-password-uses-common-words-please-enter-in-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />
-					</c:if>
+							<%
+							UserPasswordException.MustBeLonger upe = (UserPasswordException.MustBeLonger)SessionErrors.get(request, UserPasswordException.MustBeLonger.class.getName());
+							%>
 
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_INVALID %>">
-						<liferay-ui:message key="that-password-is-invalid-please-enter-in-a-different-password" />
-					</c:if>
+							<liferay-ui:message arguments="<%= String.valueOf(upe.minLength) %>" key="that-password-is-too-short" translateArguments="<%= false %>" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithModelListeners.class.getName()) %>">
+							<liferay-ui:message key="that-password-is-invalid-please-enter-a-different-password" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustComplyWithRegex.class.getName()) %>">
 
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_LENGTH %>">
-						<%= LanguageUtil.format(request, "that-password-is-too-short-or-too-long-please-make-sure-your-password-is-between-x-and-512-characters", String.valueOf(passwordPolicy.getMinLength()), false) %>
-					</c:if>
+							<%
+							UserPasswordException.MustComplyWithRegex upe = (UserPasswordException.MustComplyWithRegex)SessionErrors.get(request, UserPasswordException.MustComplyWithRegex.class.getName());
+							%>
 
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_NOT_CHANGEABLE %>">
-						<liferay-ui:message key="your-password-cannot-be-changed" />
-					</c:if>
-
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_SAME_AS_CURRENT %>">
-						<liferay-ui:message key="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-in-a-different-password" />
-					</c:if>
-
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_TOO_TRIVIAL %>">
-						<liferay-ui:message key="that-password-is-too-trivial" />
-					</c:if>
-
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORD_TOO_YOUNG %>">
-						<%= LanguageUtil.format(request, "you-cannot-change-your-password-yet-please-wait-at-least-x-before-changing-your-password-again", LanguageUtil.getTimeDescription(request, passwordPolicy.getMinAge() * 1000), false) %>
-					</c:if>
-
-					<c:if test="<%= upe.getType() == UserPasswordException.PASSWORDS_DO_NOT_MATCH %>">
-						<liferay-ui:message key="the-passwords-you-entered-do-not-match-each-other-please-re-enter-your-password" />
-					</c:if>
+							<liferay-ui:message arguments="<%= upe.regex %>" key="that-password-does-not-comply-with-the-regular-expression" translateArguments="<%= false %>" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustMatch.class.getName()) %>">
+							<liferay-ui:message key="the-passwords-you-entered-do-not-match" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeEqualToCurrent.class.getName()) %>">
+							<liferay-ui:message key="your-new-password-cannot-be-the-same-as-your-old-password-please-enter-a-different-password" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeNull.class.getName()) %>">
+							<liferay-ui:message key="the-password-cannot-be-blank" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeRecentlyUsed.class.getName()) %>">
+							<liferay-ui:message key="that-password-has-already-been-used-please-enter-a-different-password" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotBeTrivial.class.getName()) %>">
+							<liferay-ui:message key="that-password-uses-common-words-please-enter-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />
+						</c:when>
+						<c:when test="<%= SessionErrors.contains(request, UserPasswordException.MustNotContainDictionaryWords.class.getName()) %>">
+							<liferay-ui:message key="that-password-uses-common-dictionary-words" />
+						</c:when>
+						<c:otherwise>
+							<liferay-ui:message key="your-request-failed-to-complete" />
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</c:if>
 
-			<aui:fieldset label="new-password">
-				<aui:input autoFocus="<%= true %>" class="lfr-input-text-container" label="password" name="password1" type="password" />
+			<aui:fieldset>
+				<aui:input autoFocus="<%= true %>" class="lfr-input-text-container" label="password" name="password1" showRequiredLabel="<%= false %>" type="password">
+					<aui:validator name="required" />
+				</aui:input>
 
-				<aui:input class="lfr-input-text-container" label="enter-again" name="password2" type="password" />
+				<aui:input class="lfr-input-text-container" label="enter-again" name="password2" showRequiredLabel="<%= false %>" type="password">
+					<aui:validator name="equalTo">
+						'#<portlet:namespace />password1'
+					</aui:validator>
+
+					<aui:validator name="required" />
+				</aui:input>
 			</aui:fieldset>
 
 			<aui:button-row>
-				<aui:button type="submit" />
+				<aui:button cssClass="btn-lg" type="submit" />
 			</aui:button-row>
 		</aui:form>
 	</c:otherwise>

@@ -14,7 +14,11 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.taglib.util.IncludeTag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.portlet.PortletURL;
 
@@ -24,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Brian Wing Shun Chan
  * @author Jorge Ferrer
  */
-public class AssetCategoriesSummaryTag extends IncludeTag {
+public class AssetCategoriesSummaryTag<R> extends IncludeTag {
 
 	public PortletURL getPortletURL() {
 		return _portletURL;
@@ -42,6 +46,10 @@ public class AssetCategoriesSummaryTag extends IncludeTag {
 		_message = message;
 	}
 
+	public void setParamName(String paramName) {
+		_paramName = paramName;
+	}
+
 	public void setPortletURL(PortletURL portletURL) {
 		_portletURL = portletURL;
 	}
@@ -51,6 +59,7 @@ public class AssetCategoriesSummaryTag extends IncludeTag {
 		_className = null;
 		_classPK = 0;
 		_message = null;
+		_paramName = null;
 		_portletURL = null;
 	}
 
@@ -61,6 +70,20 @@ public class AssetCategoriesSummaryTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
+		List<AssetCategory> assetCategories = new ArrayList<>();
+
+		AssetCategoriesAvailableTag<R> assetCategoriesAvailableTag =
+			(AssetCategoriesAvailableTag<R>)findAncestorWithClass(
+				this, AssetCategoriesAvailableTag.class);
+
+		if (assetCategoriesAvailableTag != null) {
+			assetCategories = assetCategoriesAvailableTag.getAssetCategories();
+		}
+
+		request.setAttribute(
+			"liferay-ui:asset-categories-summary:assetCategories",
+			assetCategories);
+
 		request.setAttribute(
 			"liferay-ui:asset-categories-summary:className", _className);
 		request.setAttribute(
@@ -68,6 +91,8 @@ public class AssetCategoriesSummaryTag extends IncludeTag {
 			String.valueOf(_classPK));
 		request.setAttribute(
 			"liferay-ui:asset-categories-summary:message", _message);
+		request.setAttribute(
+			"liferay-ui:asset-categories-summary:paramName", _paramName);
 		request.setAttribute(
 			"liferay-ui:asset-categories-summary:portletURL", _portletURL);
 	}
@@ -78,6 +103,7 @@ public class AssetCategoriesSummaryTag extends IncludeTag {
 	private String _className;
 	private long _classPK;
 	private String _message;
+	private String _paramName;
 	private PortletURL _portletURL;
 
 }

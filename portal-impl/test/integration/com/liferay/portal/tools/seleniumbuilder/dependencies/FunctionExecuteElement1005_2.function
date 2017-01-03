@@ -1,5 +1,0 @@
-<definition>
-	<command name="name">
-		<execute function="function" locator="locator" />
-	</command>
-</definition>

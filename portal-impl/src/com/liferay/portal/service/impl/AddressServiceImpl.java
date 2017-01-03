@@ -15,12 +15,12 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.Address;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.CommonPermissionUtil;
 import com.liferay.portal.service.base.AddressServiceBaseImpl;
-import com.liferay.portal.service.permission.CommonPermissionUtil;
 
 import java.util.List;
 
@@ -30,32 +30,11 @@ import java.util.List;
  */
 public class AddressServiceImpl extends AddressServiceBaseImpl {
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #addAddress(String, long,
-	 *             String, String, String, String, String, long, long, int,
-	 *             boolean, boolean, ServiceContext)}
-	 */
-	@Deprecated
 	@Override
 	public Address addAddress(
 			String className, long classPK, String street1, String street2,
 			String street3, String city, String zip, long regionId,
-			long countryId, int typeId, boolean mailing, boolean primary)
-		throws PortalException {
-
-		CommonPermissionUtil.check(
-			getPermissionChecker(), className, classPK, ActionKeys.UPDATE);
-
-		return addressLocalService.addAddress(
-			getUserId(), className, classPK, street1, street2, street3, city,
-			zip, regionId, countryId, typeId, mailing, primary);
-	}
-
-	@Override
-	public Address addAddress(
-			String className, long classPK, String street1, String street2,
-			String street3, String city, String zip, long regionId,
-			long countryId, int typeId, boolean mailing, boolean primary,
+			long countryId, long typeId, boolean mailing, boolean primary,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -105,7 +84,7 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 	@Override
 	public Address updateAddress(
 			long addressId, String street1, String street2, String street3,
-			String city, String zip, long regionId, long countryId, int typeId,
+			String city, String zip, long regionId, long countryId, long typeId,
 			boolean mailing, boolean primary)
 		throws PortalException {
 

@@ -16,8 +16,8 @@ package com.liferay.portal.servlet.filters.aggregate;
 
 import com.liferay.portal.kernel.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.test.CaptureHandler;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.SystemProperties;
@@ -51,8 +51,8 @@ import org.springframework.mock.web.MockServletContext;
 public class ServletPathsTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -69,7 +69,7 @@ public class ServletPathsTest {
 	}
 
 	@Test
-	public void testConstructor() throws MalformedURLException {
+	public void testConstructor() {
 		try {
 			new ServletPaths(null, null);
 
@@ -91,10 +91,8 @@ public class ServletPathsTest {
 		ServletContext servletContext = _prepareServletContext(
 			new MockServletContext());
 
-		String rootPath = ServletContextUtil.getRootPath(servletContext);
-
 		ServletPaths servletPaths = new ServletPaths(
-			servletContext, rootPath + "/test1/test2/");
+			servletContext, "/test1/test2/");
 
 		Assert.assertEquals("/test1/test2/", servletPaths.getResourcePath());
 
@@ -104,7 +102,7 @@ public class ServletPathsTest {
 	}
 
 	@Test
-	public void testDown() throws MalformedURLException {
+	public void testDown() {
 		ServletContext servletContext = _prepareServletContext(
 			new MockServletContext());
 
@@ -120,6 +118,12 @@ public class ServletPathsTest {
 		ServletPaths servletPaths3 = servletPaths1.down("/test2");
 
 		Assert.assertEquals("/test1/test2", servletPaths3.getResourcePath());
+
+		ServletPaths servletPaths4 = new ServletPaths(servletContext, "test1/");
+
+		ServletPaths servletPaths5 = servletPaths4.down("test2");
+
+		Assert.assertEquals("test1/test2", servletPaths5.getResourcePath());
 	}
 
 	@Test
@@ -158,15 +162,16 @@ public class ServletPathsTest {
 
 		Assert.assertNull(servletPaths.getContent());
 
-		CaptureHandler captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			ServletPaths.class.getName(), Level.SEVERE);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					ServletPaths.class.getName(), Level.SEVERE)) {
 
-		try {
 			List<LogRecord> logRecords = captureHandler.getLogRecords();
 
 			servletPaths = new ServletPaths(servletContext, file1.getName());
 
 			Assert.assertNull(servletPaths.getContent());
+
 			Assert.assertEquals(1, logRecords.size());
 
 			LogRecord logRecord = logRecords.get(0);
@@ -179,9 +184,6 @@ public class ServletPathsTest {
 			servletPaths = new ServletPaths(servletContext, file2.getName());
 
 			Assert.assertEquals(testContent, servletPaths.getContent());
-		}
-		finally {
-			captureHandler.close();
 		}
 	}
 

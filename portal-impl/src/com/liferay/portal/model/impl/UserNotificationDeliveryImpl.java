@@ -22,22 +22,12 @@ package com.liferay.portal.model.impl;
  * <p>
  * Helper methods and all application logic should be put in this class.
  * Whenever methods are added, rerun ServiceBuilder to copy their definitions
- * into the {@link com.liferay.portal.model.UserNotificationDelivery} interface.
+ * into the {@link com.liferay.portal.kernel.model.UserNotificationDelivery}
+ * interface.
  * </p>
  *
  * @author Brian Wing Shun Chan
  */
 public class UserNotificationDeliveryImpl
 	extends UserNotificationDeliveryBaseImpl {
-
-	/**
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. All methods that expect a user
-	 * notification delivery model instance should use the {@link
-	 * com.liferay.portal.model.UserNotificationDelivery} interface instead.
-	 */
-	public UserNotificationDeliveryImpl() {
-	}
-
 }

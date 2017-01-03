@@ -14,56 +14,79 @@
 
 package com.liferay.portal.util;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.service.GroupServiceUtil;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.listeners.ResetDatabaseExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.GroupTestUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.test.LayoutTestUtil;
-import com.liferay.portal.util.test.UserTestUtil;
-import com.liferay.portlet.sites.util.Sites;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Eduardo Garcia
  */
-@ExecutionTestListeners(
-	listeners = {
-		MainServletExecutionTestListener.class,
-		ResetDatabaseExecutionTestListener.class
-	})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class PortalImplGetSitesTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
+		_groups.add(_group);
+
 		_user = UserTestUtil.addGroupAdminUser(_group);
+
+		_users.add(_user);
 	}
 
 	@Test
 	public void testGetSharedContentSiteGroupIdsFromAncestors()
 		throws Exception {
 
-		testGetSharedContentSiteGroupIdsFromAncestors(true);
+		Group grandparentGroup = GroupTestUtil.addGroup();
+
+		Group parentGroup = GroupTestUtil.addGroup(
+			grandparentGroup.getGroupId());
+
+		_group = GroupTestUtil.addGroup(parentGroup.getGroupId());
+
+		_groups.add(_group);
+
+		_groups.add(parentGroup);
+		_groups.add(grandparentGroup);
+
+		_user = UserTestUtil.addGroupAdminUser(_group);
+
+		_users.add(_user);
+
+		long[] groupIds = getSharedContentSiteGroupIds();
+
+		Assert.assertTrue(
+			ArrayUtil.contains(groupIds, grandparentGroup.getGroupId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(groupIds, parentGroup.getGroupId()));
 	}
 
 	@Test
@@ -80,11 +103,13 @@ public class PortalImplGetSitesTest {
 	public void testGetSharedContentSiteGroupIdsFromDescendants()
 		throws Exception {
 
-		Group childGroup = GroupTestUtil.addGroup(
-			_group.getGroupId(), StringUtil.randomString());
+		Group childGroup = GroupTestUtil.addGroup(_group.getGroupId());
 
-		Group grandchildGroup = GroupTestUtil.addGroup(
-			childGroup.getGroupId(), StringUtil.randomString());
+		_groups.add(0, childGroup);
+
+		Group grandchildGroup = GroupTestUtil.addGroup(childGroup.getGroupId());
+
+		_groups.add(0, grandchildGroup);
 
 		long[] groupIds = getSharedContentSiteGroupIds();
 
@@ -98,7 +123,11 @@ public class PortalImplGetSitesTest {
 	public void testGetSharedContentSiteGroupIdsFromGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
+		_groups.add(group);
+
 		_user = UserTestUtil.addGroupAdminUser(group);
+
+		_users.add(_user);
 
 		Assert.assertTrue(
 			ArrayUtil.contains(
@@ -122,7 +151,7 @@ public class PortalImplGetSitesTest {
 
 		long[] groupIds = getSharedContentSiteGroupIds();
 
-		Set<Long> set = new HashSet<Long>(ListUtil.toList(groupIds));
+		Set<Long> set = new HashSet<>(ListUtil.toList(groupIds));
 
 		Assert.assertFalse(set.size() < groupIds.length);
 	}
@@ -132,53 +161,14 @@ public class PortalImplGetSitesTest {
 			_group.getCompanyId(), _group.getGroupId(), _user.getUserId());
 	}
 
-	protected void setContentSharingWithChildrenEnabled(
-			Group group, int contentSharingWithChildrenEnabled)
-		throws Exception {
-
-		UnicodeProperties typeSettingsProperties =
-			group.getTypeSettingsProperties();
-
-		typeSettingsProperties.setProperty(
-			"contentSharingWithChildrenEnabled",
-			String.valueOf(contentSharingWithChildrenEnabled));
-
-		GroupServiceUtil.updateGroup(
-			group.getGroupId(), typeSettingsProperties.toString());
-	}
-
-	protected void testGetSharedContentSiteGroupIdsFromAncestors(
-			boolean contentSharingWithChildrenEnabled)
-		throws Exception {
-
-		Group grandparentGroup = GroupTestUtil.addGroup();
-
-		Group parentGroup = GroupTestUtil.addGroup(
-			grandparentGroup.getGroupId(), StringUtil.randomString());
-
-		_group = GroupTestUtil.addGroup(
-			parentGroup.getGroupId(), StringUtil.randomString());
-
-		_user = UserTestUtil.addGroupAdminUser(_group);
-
-		if (!contentSharingWithChildrenEnabled) {
-			setContentSharingWithChildrenEnabled(
-				grandparentGroup, Sites.CONTENT_SHARING_WITH_CHILDREN_DISABLED);
-			setContentSharingWithChildrenEnabled(
-				parentGroup, Sites.CONTENT_SHARING_WITH_CHILDREN_DISABLED);
-		}
-
-		long[] groupIds = getSharedContentSiteGroupIds();
-
-		Assert.assertEquals(
-			contentSharingWithChildrenEnabled,
-			ArrayUtil.contains(groupIds, grandparentGroup.getGroupId()));
-		Assert.assertEquals(
-			contentSharingWithChildrenEnabled,
-			ArrayUtil.contains(groupIds, parentGroup.getGroupId()));
-	}
-
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private final List<Group> _groups = new ArrayList<>();
+
 	private User _user;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }

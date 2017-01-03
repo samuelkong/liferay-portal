@@ -1,0 +1,95 @@
+<definition component-name="portal-user-interface">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="User Interface" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+		</if>
+	</tear-down>
+
+	<command description="Ensure that a user can access portlet options and drag and drop portlets." name="Smoke" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Test Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Hello World" />
+		</execute>
+
+		<task summary="Close the Add Panel">
+			<execute function="Click" locator1="ControlMenuAddPanel#CLOSE_ADD_PANEL" />
+		</task>
+
+		<task summary="Assert the 'Configuration' iframe of the Hello World portlet">
+			<execute macro="Portlet#gotoPortletOptions">
+				<var name="portletName" value="Hello World" />
+				<var name="portletOption" value="Configuration" />
+			</execute>
+
+			<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+			<execute function="AssertTextEquals" locator1="NavBar#SHARING" value1="Sharing" />
+
+			<execute function="SelectFrame" value1="relative=top" />
+
+			<execute function="Click" locator1="Icon#CLOSE" />
+		</task>
+
+		<task summary="Assert the 'Look and Feel' modal of the Hello World portlet">
+			<execute macro="Portlet#gotoPortletOptions">
+				<var name="portletName" value="Hello World" />
+				<var name="portletOption" value="Look and Feel Configuration" />
+			</execute>
+
+			<execute function="AssertTextEquals" locator1="NavTab#LOOK_AND_FEEL_GENERAL" value1="General" />
+
+			<execute function="Click" locator1="Icon#CLOSE" />
+		</task>
+
+		<execute macro="Portlet#dragAndDropPortletToColumnPG">
+			<var name="columnNumberFrom" value="1" />
+			<var name="columnNumberTo" value="2" />
+			<var name="portletName" value="Hello World" />
+		</execute>
+
+		<execute macro="Portlet#dragAndDropPortletToColumnPG">
+			<var name="columnNumberFrom" value="2" />
+			<var name="columnNumberTo" value="1" />
+			<var name="portletName" value="Hello World" />
+		</execute>
+	</command>
+
+	<command name="ViewSuccessMessageText" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Blogs" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoAddEntry" />
+
+		<execute macro="BlogsEntry#addEntryContent">
+			<var name="entryContent" value="Blogs Content" />
+			<var name="entryTitle" value="Blogs Title" />
+		</execute>
+
+		<execute macro="Alert#viewSuccessMessageText">
+			<var name="sucessMessage" value="Your request completed successfully." />
+		</execute>
+	</command>
+</definition>

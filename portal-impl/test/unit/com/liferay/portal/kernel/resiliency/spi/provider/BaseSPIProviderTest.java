@@ -38,8 +38,9 @@ import com.liferay.portal.kernel.resiliency.spi.agent.SPIAgentFactoryUtil;
 import com.liferay.portal.kernel.resiliency.spi.remote.RemoteSPI;
 import com.liferay.portal.kernel.resiliency.spi.remote.RemoteSPIProxy;
 import com.liferay.portal.kernel.test.CaptureHandler;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
+import com.liferay.portal.kernel.test.SyncThrowableThread;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.resiliency.spi.SPIRegistryImpl;
@@ -49,6 +50,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import org.junit.Assert;
@@ -62,8 +64,8 @@ import org.junit.Test;
 public class BaseSPIProviderTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Before
 	public void setUp() {
@@ -95,10 +97,9 @@ public class BaseSPIProviderTest {
 
 	@Test
 	public void testCreateSPI() throws PortalResiliencyException {
-		CaptureHandler captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			MPIHelperUtil.class.getName(), Level.OFF);
-
-		try {
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					MPIHelperUtil.class.getName(), Level.OFF)) {
 
 			// Timeout
 
@@ -121,6 +122,8 @@ public class BaseSPIProviderTest {
 			SPI spi = _testSPIProvider.createSPI(_spiConfiguration);
 
 			Assert.assertSame(RemoteSPIProxy.class, spi.getClass());
+
+			_mockProcessExecutor.sync();
 
 			// Reject
 
@@ -175,9 +178,6 @@ public class BaseSPIProviderTest {
 				Assert.assertEquals("ProcessException", throwable.getMessage());
 			}
 		}
-		finally {
-			captureHandler.close();
-		}
 	}
 
 	private final MockProcessExecutor _mockProcessExecutor =
@@ -206,22 +206,20 @@ public class BaseSPIProviderTest {
 			if (_registerBack) {
 				final String spiUUID = ((RemoteSPI)processCallable).getUUID();
 
-				Thread notifyThread = new Thread() {
+				_syncThrowableThread = new SyncThrowableThread<>(
+					new Callable<Void>() {
 
-					@Override
-					public void run() {
-						try {
+						@Override
+						public Void call() throws InterruptedException {
 							SPISynchronousQueueUtil.notifySynchronousQueue(
 								spiUUID, mockSPI);
-						}
-						catch (InterruptedException ie) {
-							Assert.fail(ie.getMessage());
-						}
-					}
 
-				};
+							return null;
+						}
 
-				notifyThread.start();
+					});
+
+				_syncThrowableThread.start();
 			}
 
 			if (_throwException) {
@@ -229,7 +227,7 @@ public class BaseSPIProviderTest {
 			}
 
 			DefaultNoticeableFuture<T> defaultNoticeableFuture =
-				new DefaultNoticeableFuture<T>();
+				new DefaultNoticeableFuture<>();
 
 			defaultNoticeableFuture.set((T)mockSPI);
 
@@ -256,8 +254,15 @@ public class BaseSPIProviderTest {
 			_throwException = throwException;
 		}
 
+		public void sync() {
+			_syncThrowableThread.sync();
+
+			_syncThrowableThread = null;
+		}
+
 		private boolean _interrupt;
 		private boolean _registerBack;
+		private SyncThrowableThread<Void> _syncThrowableThread;
 		private boolean _throwException;
 
 	}

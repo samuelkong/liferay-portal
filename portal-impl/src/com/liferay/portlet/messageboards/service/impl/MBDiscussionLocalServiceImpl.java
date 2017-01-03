@@ -14,13 +14,11 @@
 
 package com.liferay.portlet.messageboards.service.impl;
 
+import com.liferay.message.boards.kernel.model.MBDiscussion;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portlet.messageboards.model.MBDiscussion;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portlet.messageboards.service.base.MBDiscussionLocalServiceBaseImpl;
-
-import java.util.Date;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,7 +33,6 @@ public class MBDiscussionLocalServiceImpl
 		throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		Date now = new Date();
 
 		long discussionId = counterLocalService.increment();
 
@@ -46,8 +43,6 @@ public class MBDiscussionLocalServiceImpl
 		discussion.setCompanyId(serviceContext.getCompanyId());
 		discussion.setUserId(userId);
 		discussion.setUserName(user.getFullName());
-		discussion.setCreateDate(serviceContext.getCreateDate(now));
-		discussion.setModifiedDate(serviceContext.getModifiedDate(now));
 		discussion.setClassNameId(classNameId);
 		discussion.setClassPK(classPK);
 		discussion.setThreadId(threadId);
@@ -86,6 +81,11 @@ public class MBDiscussionLocalServiceImpl
 	}
 
 	@Override
+	public MBDiscussion fetchThreadDiscussion(long threadId) {
+		return mbDiscussionPersistence.fetchByThreadId(threadId);
+	}
+
+	@Override
 	public MBDiscussion getDiscussion(long discussionId)
 		throws PortalException {
 
@@ -112,17 +112,12 @@ public class MBDiscussionLocalServiceImpl
 	public void subscribeDiscussion(
 			long userId, long groupId, String className, long classPK)
 		throws PortalException {
-
-		subscriptionLocalService.addSubscription(
-			userId, groupId, className, classPK);
 	}
 
 	@Override
 	public void unsubscribeDiscussion(
 			long userId, String className, long classPK)
 		throws PortalException {
-
-		subscriptionLocalService.deleteSubscription(userId, className, classPK);
 	}
 
 }

@@ -14,20 +14,21 @@
 
 package com.liferay.portlet.messageboards.service.permission;
 
+import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
+import com.liferay.message.boards.kernel.exception.NoSuchCategoryException;
+import com.liferay.message.boards.kernel.model.MBCategory;
+import com.liferay.message.boards.kernel.model.MBCategoryConstants;
+import com.liferay.message.boards.kernel.service.MBBanLocalServiceUtil;
+import com.liferay.message.boards.kernel.service.MBCategoryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.BaseModelPermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
-import com.liferay.portal.kernel.staging.permission.StagingPermissionUtil;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.BaseModelPermissionChecker;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.messageboards.NoSuchCategoryException;
-import com.liferay.portlet.messageboards.model.MBCategory;
-import com.liferay.portlet.messageboards.model.MBCategoryConstants;
-import com.liferay.portlet.messageboards.service.MBBanLocalServiceUtil;
-import com.liferay.portlet.messageboards.service.MBCategoryLocalServiceUtil;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,7 +36,7 @@ import com.liferay.portlet.messageboards.service.MBCategoryLocalServiceUtil;
  */
 @OSGiBeanProperties(
 	property = {
-		"model.class.name=com.liferay.portlet.messageboards.model.MBCategory"
+		"model.class.name=com.liferay.message.boards.kernel.model.MBCategory"
 	}
 )
 public class MBCategoryPermission implements BaseModelPermissionChecker {
@@ -46,7 +47,9 @@ public class MBCategoryPermission implements BaseModelPermissionChecker {
 		throws PortalException {
 
 		if (!contains(permissionChecker, groupId, categoryId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, MBCategory.class.getName(), categoryId,
+				actionId);
 		}
 	}
 
@@ -56,7 +59,9 @@ public class MBCategoryPermission implements BaseModelPermissionChecker {
 		throws PortalException {
 
 		if (!contains(permissionChecker, categoryId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, MBCategory.class.getName(), categoryId,
+				actionId);
 		}
 	}
 
@@ -66,7 +71,9 @@ public class MBCategoryPermission implements BaseModelPermissionChecker {
 		throws PortalException {
 
 		if (!contains(permissionChecker, category, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, MBCategory.class.getName(),
+				category.getCategoryId(), actionId);
 		}
 	}
 
@@ -119,10 +126,13 @@ public class MBCategoryPermission implements BaseModelPermissionChecker {
 			actionId = ActionKeys.ADD_SUBCATEGORY;
 		}
 
+		String portletId = PortletProviderUtil.getPortletId(
+			MBCategory.class.getName(), PortletProvider.Action.EDIT);
+
 		Boolean hasPermission = StagingPermissionUtil.hasPermission(
 			permissionChecker, category.getGroupId(),
-			MBCategory.class.getName(), category.getCategoryId(),
-			PortletKeys.MESSAGE_BOARDS, actionId);
+			MBCategory.class.getName(), category.getCategoryId(), portletId,
+			actionId);
 
 		if (hasPermission != null) {
 			return hasPermission.booleanValue();

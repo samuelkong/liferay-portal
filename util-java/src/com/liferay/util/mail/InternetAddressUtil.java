@@ -27,10 +27,11 @@ import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.validator.EmailValidator;
+import org.apache.commons.validator.routines.EmailValidator;
 
 /**
  * @author Alexander Chow
+ * @see    com.liferay.petra.mail.InternetAddressUtil
  */
 public class InternetAddressUtil {
 
@@ -57,7 +58,7 @@ public class InternetAddressUtil {
 
 		InternetAddress[] internetAddresses = (InternetAddress[])addresses;
 
-		List<InternetAddress> list = new ArrayList<InternetAddress>();
+		List<InternetAddress> list = new ArrayList<>();
 
 		if ((internetAddresses == null) || Validator.isNull(emailAddress)) {
 			return internetAddresses;

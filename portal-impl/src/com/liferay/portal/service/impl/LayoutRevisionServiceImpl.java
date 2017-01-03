@@ -15,12 +15,12 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.LayoutRevision;
-import com.liferay.portal.model.LayoutSetBranch;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.model.LayoutRevision;
+import com.liferay.portal.kernel.model.LayoutSetBranch;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.service.base.LayoutRevisionServiceBaseImpl;
-import com.liferay.portal.service.permission.GroupPermissionUtil;
 
 /**
  * @author Raymond Augé
@@ -35,8 +35,8 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 			long portletPreferencesPlid, boolean privateLayout, String name,
 			String title, String description, String keywords, String robots,
 			String typeSettings, boolean iconImage, long iconImageId,
-			String themeId, String colorSchemeId, String wapThemeId,
-			String wapColorSchemeId, String css, ServiceContext serviceContext)
+			String themeId, String colorSchemeId, String css,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		LayoutSetBranch layoutSetBranch =
@@ -50,8 +50,7 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 			userId, layoutSetBranchId, layoutBranchId, parentLayoutRevisionId,
 			head, plid, portletPreferencesPlid, privateLayout, name, title,
 			description, keywords, robots, typeSettings, iconImage, iconImageId,
-			themeId, colorSchemeId, wapThemeId, wapColorSchemeId, css,
-			serviceContext);
+			themeId, colorSchemeId, css, serviceContext);
 	}
 
 }

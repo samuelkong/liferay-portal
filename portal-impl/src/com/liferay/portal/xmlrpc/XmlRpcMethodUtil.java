@@ -20,10 +20,8 @@ import com.liferay.portal.kernel.xmlrpc.Method;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceReference;
-import com.liferay.registry.ServiceRegistration;
 import com.liferay.registry.ServiceTracker;
 import com.liferay.registry.ServiceTrackerCustomizer;
-import com.liferay.registry.collections.ServiceRegistrationMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,26 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class XmlRpcMethodUtil {
 
 	public static Method getMethod(String token, String methodName) {
-		return _instance._getMethod(token, methodName);
+		return _instance.doGetMethod(token, methodName);
 	}
 
-	public static void registerMethod(Method method) {
-		if (method == null) {
-			return;
-		}
-
-		_instance._registerMethod(method);
-	}
-
-	public static void unregisterMethod(Method method) {
-		if (method == null) {
-			return;
-		}
-
-		_instance._unregisterMethod(method);
-	}
-
-	protected Method _getMethod(String token, String methodName) {
+	protected Method doGetMethod(String token, String methodName) {
 		Method method = null;
 
 		Map<String, Method> methods = _methodRegistry.get(token);
@@ -75,33 +57,13 @@ public class XmlRpcMethodUtil {
 		_serviceTracker.open();
 	}
 
-	private void _registerMethod(Method method) {
-		Registry registry = RegistryUtil.getRegistry();
-
-		ServiceRegistration<Method> serviceRegistration =
-			registry.registerService(Method.class, method);
-
-		_serviceRegistrations.put(method, serviceRegistration);
-	}
-
-	private void _unregisterMethod(Method method) {
-		ServiceRegistration<Method> serviceRegistration =
-			_serviceRegistrations.remove(method);
-
-		if (serviceRegistration != null) {
-			serviceRegistration.unregister();
-		}
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		XmlRpcMethodUtil.class);
 
 	private static final XmlRpcMethodUtil _instance = new XmlRpcMethodUtil();
 
 	private final Map<String, Map<String, Method>> _methodRegistry =
-		new ConcurrentHashMap<String, Map<String, Method>>();
-	private final ServiceRegistrationMap<Method> _serviceRegistrations =
-		new ServiceRegistrationMap<Method>();
+		new ConcurrentHashMap<>();
 	private final ServiceTracker<Method, Method> _serviceTracker;
 
 	private class MethodServiceTrackerCustomizer
@@ -118,7 +80,7 @@ public class XmlRpcMethodUtil {
 			Map<String, Method> methods = _methodRegistry.get(token);
 
 			if (methods == null) {
-				methods = new HashMap<String, Method>();
+				methods = new HashMap<>();
 
 				_methodRegistry.put(token, methods);
 			}

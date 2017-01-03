@@ -1,0 +1,418 @@
+<definition component-name="portal-collaboration">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="testray.main.component.name" value="Bookmarks" />
+
+	<var name="pageName" value="Bookmarks Page" />
+	<var name="portletName" value="Bookmarks" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Bookmarks" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Bookmark#tearDownCP" />
+
+				<execute macro="BookmarksFolder#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddBookmark" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="AddFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+	</command>
+
+	<command name="AddFolderBookmark" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute function="Refresh" />
+
+		<execute function="Pause" locator1="3000" />
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="AddFolderBookmarkURLInvalid" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addInvalidURLPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURLInvalid" value="www.liferay.com" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+	</command>
+
+	<command name="DeleteFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#deletePG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+	</command>
+
+	<command name="DeleteFolderBookmark" priority="5">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#deletePG">
+			<var name="bookmarkName" value="Test Bookmark Name" />
+		</execute>
+	</command>
+
+	<command name="EditFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#editPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderDescriptionEdit" value="Test Folder Description Edit" />
+			<var name="folderName" value="Test Folder Name" />
+			<var name="folderNameEdit" value="Test Folder Name Edit" />
+		</execute>
+	</command>
+
+	<command name="EditFolderBookmark" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#editPG">
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkNameEdit" value="Test Bookmark Name Edit" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+			<var name="bookmarkURLEdit" value="https://dev.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="MoveFolderBookmarkToFolder" priority="4">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description 1" />
+			<var name="folderName" value="Test Folder Name 1" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name 1" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description 2" />
+			<var name="folderName" value="Test Folder Name 2" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Bookmark#moveToFolderPG">
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="folderName" value="Test Folder Name 1" />
+			<var name="folderName2" value="Test Folder Name 2" />
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<var name="key_assetName" value="Test Folder Name 2" />
+
+		<execute function="AssertClick#assertPartialTextClickAt" locator1="Bookmarks#DESCRIPTIVE_ENTRY_TITLE" value1="Test Folder Name 2" />
+
+		<var name="key_assetName" value="Test Bookmark Name" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="Bookmarks#DESCRIPTIVE_ENTRY_TITLE" value1="Test Bookmark Name" />
+	</command>
+
+	<command name="RemoveBookmarkPortlet" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Portlet#deletePG">
+			<var name="portletName" value="Bookmarks" />
+		</execute>
+	</command>
+
+	<command name="SearchFolderBookmark" priority="4">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Test Folder Description" />
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkDescription" value="Test Bookmark Description" />
+			<var name="bookmarkName" value="Test Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Search#searchPG">
+			<var name="searchTerm" value="Test Bookmark Name" />
+		</execute>
+
+		<execute macro="Search#viewSearchAssetTitle">
+			<var name="searchAssetTitle" value="Test Bookmark Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Search#searchPG">
+			<var name="searchTerm" value="asdf" />
+		</execute>
+
+		<execute macro="Search#viewSearchNoPG">
+			<var name="searchAssetTitle" value="Test Bookmark Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="asdf" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Test Folder Name" />
+		</execute>
+
+		<execute macro="Search#searchPG">
+			<var name="searchTerm"><![CDATA["Test Bookmark Name"]]></var>
+		</execute>
+
+		<execute macro="Search#viewSearchAssetTitle">
+			<var name="searchAssetTitle" value="Test Bookmark Name" />
+		</execute>
+	</command>
+</definition>

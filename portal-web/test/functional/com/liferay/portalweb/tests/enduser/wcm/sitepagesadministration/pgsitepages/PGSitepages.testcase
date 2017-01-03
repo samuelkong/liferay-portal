@@ -1,0 +1,108 @@
+<definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Site Pages Administration" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="WebContent#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddPageFromExistingPage" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Site Page" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page Name" />
+			<var name="pageTemplateName" value="Content Display Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Site Page Name" />
+		</execute>
+
+		<for list="Tags Navigation,Categories Navigation,Asset Publisher" param="portletName">
+			<execute macro="Portlet#viewSpecificPG">
+				<var name="portletName" value="${portletName}" />
+			</execute>
+		</for>
+	</command>
+
+	<command name="DeletePages" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Page1" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Page2" />
+		</execute>
+
+		<execute macro="Page#deletePG">
+			<var name="pageName" value="Page1" />
+		</execute>
+
+		<execute macro="Page#viewDeletedPage">
+			<var name="pageName" value="Page1" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#deleteViaX">
+			<var name="pageName" value="Page2" />
+		</execute>
+
+		<execute macro="Page#viewDeletedPage">
+			<var name="pageName" value="Page2" />
+		</execute>
+	</command>
+
+	<command name="EditSitePage" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Site Page" />
+		</execute>
+
+		<execute macro="Page#editName">
+			<var name="pageNameEdit" value="Site Page Edit" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Site Page Edit" />
+		</execute>
+
+		<execute macro="Page#view">
+			<var name="pageName" value="Site Page Edit" />
+		</execute>
+	</command>
+</definition>

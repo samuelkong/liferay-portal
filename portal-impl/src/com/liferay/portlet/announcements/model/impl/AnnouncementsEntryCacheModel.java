@@ -16,11 +16,12 @@ package com.liferay.portlet.announcements.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.announcements.kernel.model.AnnouncementsEntry;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.announcements.model.AnnouncementsEntry;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,6 +40,30 @@ import java.util.Date;
 @ProviderType
 public class AnnouncementsEntryCacheModel implements CacheModel<AnnouncementsEntry>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AnnouncementsEntryCacheModel)) {
+			return false;
+		}
+
+		AnnouncementsEntryCacheModel announcementsEntryCacheModel = (AnnouncementsEntryCacheModel)obj;
+
+		if (entryId == announcementsEntryCacheModel.entryId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, entryId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(35);
@@ -174,13 +199,18 @@ public class AnnouncementsEntryCacheModel implements CacheModel<AnnouncementsEnt
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		entryId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
 		title = objectInput.readUTF();
 		content = objectInput.readUTF();
@@ -188,7 +218,9 @@ public class AnnouncementsEntryCacheModel implements CacheModel<AnnouncementsEnt
 		type = objectInput.readUTF();
 		displayDate = objectInput.readLong();
 		expirationDate = objectInput.readLong();
+
 		priority = objectInput.readInt();
+
 		alert = objectInput.readBoolean();
 	}
 
@@ -203,7 +235,9 @@ public class AnnouncementsEntryCacheModel implements CacheModel<AnnouncementsEnt
 		}
 
 		objectOutput.writeLong(entryId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -215,7 +249,9 @@ public class AnnouncementsEntryCacheModel implements CacheModel<AnnouncementsEnt
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
 
 		if (title == null) {
@@ -248,7 +284,9 @@ public class AnnouncementsEntryCacheModel implements CacheModel<AnnouncementsEnt
 
 		objectOutput.writeLong(displayDate);
 		objectOutput.writeLong(expirationDate);
+
 		objectOutput.writeInt(priority);
+
 		objectOutput.writeBoolean(alert);
 	}
 

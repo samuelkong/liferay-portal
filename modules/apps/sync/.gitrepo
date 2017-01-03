@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = a6844964b6fcbdbec9274bda7ab842012cafe539
+	mode = push
+	parent = 612985529c37d39c532869934914eb1fbc3bb6b9
+	remote = git@github.com:liferay/com-liferay-sync.git

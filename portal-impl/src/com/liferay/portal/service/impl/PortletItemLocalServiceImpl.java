@@ -14,16 +14,17 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.NoSuchPortletItemException;
-import com.liferay.portal.PortletItemNameException;
+import com.liferay.portal.kernel.exception.NoSuchPortletItemException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.PortletItemNameException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.PortletItem;
+import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.PortletItem;
-import com.liferay.portal.model.PortletPreferences;
-import com.liferay.portal.model.User;
 import com.liferay.portal.service.base.PortletItemLocalServiceBaseImpl;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +41,6 @@ public class PortletItemLocalServiceImpl
 
 		User user = userPersistence.findByPrimaryKey(userId);
 		long classNameId = classNameLocalService.getClassNameId(className);
-		Date now = new Date();
 
 		validate(name);
 
@@ -52,8 +52,6 @@ public class PortletItemLocalServiceImpl
 		portletItem.setCompanyId(user.getCompanyId());
 		portletItem.setUserId(user.getUserId());
 		portletItem.setUserName(user.getFullName());
-		portletItem.setCreateDate(now);
-		portletItem.setModifiedDate(now);
 		portletItem.setName(name);
 		portletItem.setPortletId(portletId);
 		portletItem.setClassNameId(classNameId);
@@ -107,11 +105,17 @@ public class PortletItemLocalServiceImpl
 
 			portletItem.setUserId(userId);
 			portletItem.setUserName(user.getFullName());
-			portletItem.setModifiedDate(new Date());
 
 			portletItemPersistence.update(portletItem);
 		}
 		catch (NoSuchPortletItemException nspie) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(nspie, nspie);
+			}
+
 			portletItem = addPortletItem(
 				userId, groupId, name, portletId,
 				PortletPreferences.class.getName());
@@ -125,5 +129,8 @@ public class PortletItemLocalServiceImpl
 			throw new PortletItemNameException();
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortletItemLocalServiceImpl.class);
 
 }

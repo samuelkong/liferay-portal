@@ -14,6 +14,8 @@
 
 package com.liferay.portal.verify.model;
 
+import com.liferay.portal.kernel.verify.model.VerifiableAuditedModel;
+
 /**
  * @author Miguel Pastor
  */
@@ -42,6 +44,11 @@ public class LayoutFriendlyURLAuditedModel implements VerifiableAuditedModel {
 	@Override
 	public String getTableName() {
 		return "LayoutFriendlyURL";
+	}
+
+	@Override
+	public boolean isAnonymousUserAllowed() {
+		return false;
 	}
 
 	@Override

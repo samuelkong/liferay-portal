@@ -20,10 +20,10 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.service.persistence.PasswordPolicyFinder;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.model.PasswordPolicy;
 import com.liferay.portal.model.impl.PasswordPolicyImpl;
-import com.liferay.portal.service.persistence.PasswordPolicyFinder;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.Iterator;
@@ -33,8 +33,7 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  */
 public class PasswordPolicyFinderImpl
-	extends BasePersistenceImpl<PasswordPolicy>
-	implements PasswordPolicyFinder {
+	extends PasswordPolicyFinderBaseImpl implements PasswordPolicyFinder {
 
 	public static final String COUNT_BY_C_N =
 		PasswordPolicyFinder.class.getName() + ".countByC_N";

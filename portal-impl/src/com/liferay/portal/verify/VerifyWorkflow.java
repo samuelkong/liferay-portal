@@ -14,77 +14,60 @@
 
 package com.liferay.portal.verify;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.ClassName;
-import com.liferay.portal.service.ClassNameLocalServiceUtil;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
  * @author Shinn Lok
  */
 public class VerifyWorkflow extends VerifyProcess {
 
-	protected void deleteOrphanedWorkflowDefinitionLinks() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+	protected void deleteOrphaned() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			for (String[] orphanedAttachedModel : getOrphanedAttachedModels()) {
+				String tableName = orphanedAttachedModel[0];
+				String columnName = orphanedAttachedModel[1];
+				String columnValue = orphanedAttachedModel[2];
 
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
-				"select distinct classNameId from WorkflowDefinitionLink");
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				long classNameId = rs.getLong("classNameId");
-
-				ClassName className = ClassNameLocalServiceUtil.fetchClassName(
-					classNameId);
-
-				if (className == null) {
+				if (!hasTable(tableName) || !hasColumn(tableName, columnName)) {
 					continue;
 				}
 
-				String classNameValue = className.getValue();
+				String orphanedTableName = orphanedAttachedModel[3];
+				String orphanedColumnName = orphanedAttachedModel[4];
 
-				for (String[] orphanedAttachedModel :
-						getOrphanedAttachedModels()) {
+				if (!hasTable(orphanedTableName) ||
+					!hasColumn(orphanedTableName, orphanedColumnName)) {
 
-					String orphanedClassName = orphanedAttachedModel[0];
-
-					if (classNameValue.equals(orphanedClassName)) {
-						String orphanedTableName = orphanedAttachedModel[1];
-						String orphanedColumnName = orphanedAttachedModel[2];
-
-						deleteOrphanedWorkflowDefinitionLinks(
-							orphanedTableName, orphanedColumnName);
-					}
+					continue;
 				}
+
+				deleteOrphaned(
+					tableName, columnName, columnValue, orphanedTableName,
+					orphanedColumnName);
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 
-	protected void deleteOrphanedWorkflowDefinitionLinks(
-			String tableName, String columnName)
+	protected void deleteOrphaned(
+			String tableName, String columnName, String columnValue,
+			String orphanedTableName, String orphanedColumnName)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(11);
 
-		sb.append("delete from WorkflowDefinitionLink where classPK not ");
-		sb.append("in (select ");
-		sb.append(columnName);
-		sb.append(" from ");
+		sb.append("delete from ");
 		sb.append(tableName);
+		sb.append(" where ");
+		sb.append(columnName);
+		sb.append(" = ");
+		sb.append(columnValue);
+		sb.append(" and classPK not in (select ");
+		sb.append(orphanedColumnName);
+		sb.append(" from ");
+		sb.append(orphanedTableName);
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		runSQL(sb.toString());
@@ -92,17 +75,35 @@ public class VerifyWorkflow extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
-		deleteOrphanedWorkflowDefinitionLinks();
+		deleteOrphaned();
 	}
 
 	protected String[][] getOrphanedAttachedModels() {
 		return _ORPHANED_ATTACHED_MODELS;
 	}
 
+	private static final String _CLASS_NAME_ID = String.valueOf(
+		PortalUtil.getClassNameId(
+			"com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess"));
+
 	private static final String[][] _ORPHANED_ATTACHED_MODELS = new String[][] {
 		new String[] {
-			"com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess",
+			"KaleoInstance", "className",
+			"'com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess'",
+			"DDLRecord", "recordId"
+		},
+		new String[] {
+			"KaleoInstanceToken", "className",
+			"'com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess'",
+			"DDLRecord", "recordId"
+		},
+		new String[] {
+			"WorkflowDefinitionLink", "classNameId", _CLASS_NAME_ID,
 			"KaleoProcess", "kaleoProcessId"
+		},
+		new String[] {
+			"WorkflowInstanceLink", "classNameId", _CLASS_NAME_ID, "DDLRecord",
+			"recordId"
 		}
 	};
 

@@ -1,0 +1,230 @@
+<html>
+<head>
+<title>KnowledgeBaseArticle</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">KnowledgeBaseArticle</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>TITLE</td>
+	<td>//div[contains(@class,'panel-body')]/h1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTENT</td>
+	<td>//div[contains(@class,'panel-body')]//p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HTML_BOLD_CONTENT</td>
+	<td>//div[contains(@class,'panel-body')]//b</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HEADER_TITLE</td>
+	<td>//h3[@class='header-title']/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTENT_IMAGE</td>
+	<td>//p/img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_ON_GITHUB</td>
+	<td>//span[contains(.,'Edit on GitHub')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ARTICLE_TITLE</td>
+	<td>//div[@class='kb-article-container']//h1[@class='kb-title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ARTICLE_CONTENT</td>
+	<td>//div[@class='kb-article-container']//div[@class='kb-article-body']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBSCRIBE</td>
+	<td>//div[@class='kb-article-container']//div//a/span[contains(.,'Subscribe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY</td>
+	<td>//div[@class='kb-article-container']//div//a/span[contains(.,'History')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRINT</td>
+	<td>//div[@class='kb-article-container']//div//a/span[contains(.,'Print')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PREVIOUS</td>
+	<td>//div[@class='kb-article-container']//div/span[@class='kb-article-previous']/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEXT</td>
+	<td>//div[@class='kb-article-container']//div/span[@class='kb-article-next']/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DO_YOU_HAVE_ANY_SUGGESTIONS</td>
+	<td>//div[contains(.,'Do you have any suggestions?')]/h5</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--ADMIN_VIEW-->
+<tr>
+	<td>ADMIN_VIEW_CHILD_ARTICLE_TITLE</td>
+	<td>//div[@class='kb-elements']//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADMIN_VIEW_CHILD_ARTICLE_CONTENT</td>
+	<td>//div[@class='kb-element-body']//p</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--ATTACHMENTS-->
+<tr>
+	<td>ATTACHMENTS_HEADER_COLLAPSED</td>
+	<td>//a[contains(@class,'collapse-icon') and contains(@aria-expanded,'false') and contains(.,'Attachments')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ATTACHMENTS_HEADER_EXPANDED</td>
+	<td>//a[contains(@class,'collapse-icon') and contains(@aria-expanded,'true') and contains(.,'Attachments')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ATTACHMENTS_INVALID_SIZE_ERROR</td>
+	<td>//li[contains(@class,'upload-error')]//span[@class='error-message']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ATTACHMENTS_SELECT_FILES_BUTTON</td>
+	<td>//button[contains(.,'Select Files')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ATTACHMENTS_SAVED_ATTACHMENTS_CONTAINER</td>
+	<td>//div[contains(@id,'AttachmentsContainer')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--EDIT-->
+<tr>
+	<td>EDIT_FRIENDLY_URL_FIELD</td>
+	<td>//input[contains(@id,'knowledge_base_web') and contains(@id,'urlTitle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_SELECT_RELATED_ASSETS</td>
+	<td>//a[@role='menuitem' and contains(.,'${key_kbArticleRelatedAssetType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_TITLE_FIELD_REQUIRED</td>
+	<td>//span[contains(.,'Required')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_TITLE_FIELD_REQUIRED_ALERT</td>
+	<td>//div[contains(@class,'required') and contains(.,'This field is required.')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--HISTORY-->
+<tr>
+	<td>HISTORY_TITLE</td>
+	<td>//div[contains(@class,'taglib-diff')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_CONTENT</td>
+	<td>//div[contains(@class,'taglib-diff')]//p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_CONTENT_ADDED_DIFF</td>
+	<td>//div[@class='panel-body']//p//span[contains(@id,'added-diff')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_CONTENT_REMOVED_DIFF</td>
+	<td>//div[@class='panel-body']//p[contains(.,'${key_kbArticleContentRemovedDiff}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_VERSION_TABLE_SOURCE</td>
+	<td>//table[contains(@data-searchcontainerid,'knowledge_base_web')]//thead[contains(.,'Version')]/..//a[contains(.,'(Source)')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_VERSION_TABLE_TARGET</td>
+	<td>//table[contains(@data-searchcontainerid,'knowledge_base_web')]//thead[contains(.,'Version')]/..//a[contains(.,'(Target)')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_SELECT_VERSION_CHECKBOX</td>
+	<td>//input[(@type='checkbox' and @value='${key_versionNumber}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SECTIONS-->
+<tr>
+	<td>SECTIONS_SELECT</td>
+	<td>//select[contains(@id, 'knowledge_base_web') and contains(@id, 'sections')]//option[contains(.,'${key_kbArticleSection}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADMIN_KB_ARTICLE_SECTION</td>
+	<td>xpath=(//div[contains(@data-fieldname,'KBArticleSections')]//textarea)[${key_counter}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_HEADER</td>
+	<td>//span[@class='taglib-asset-categories-summary']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_LINKS</td>
+	<td>//div[@class='kb-article-assets']/span/a[contains(.,'${key_categoryName}')]</td>
+	<td></td>
+</tr>
+<!--SELECT_CATEGORIES-->
+<tr>
+	<td>SELECT_CATEGORIES_IFRAME</td>
+	<td>//div[contains(@id,'selectCategory')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

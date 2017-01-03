@@ -62,7 +62,7 @@ public class WAIAutoDeployer extends PortletAutoDeployer {
 			portletName = pluginPackage.getName();
 		}
 
-		Map<String, String> filterMap = new HashMap<String, String>();
+		Map<String, String> filterMap = new HashMap<>();
 
 		filterMap.put("portlet_name", displayName);
 		filterMap.put("portlet_title", portletName);
@@ -91,8 +91,8 @@ public class WAIAutoDeployer extends PortletAutoDeployer {
 				"friendly_url_routes",
 				deploymentSettings.getProperty(
 					"wai.friendly.url.routes",
-					"com/liferay/util/bridges/wai/" +
-						"wai-friendly-url-routes.xml"));
+					"com/liferay/util/bridges/wai" +
+						"/wai-friendly-url-routes.xml"));
 		}
 		else {
 			filterMap.put("portlet_class", WAIPortlet.class.getName());
@@ -142,12 +142,10 @@ public class WAIAutoDeployer extends PortletAutoDeployer {
 		}
 	}
 
-	private static final String[] _INIT_PARAM_DEFAULT_VALUES = new String[] {
-		"500"
-	};
+	private static final String[] _INIT_PARAM_DEFAULT_VALUES =
+		new String[] {"500"};
 
-	private static final String[] _INIT_PARAM_NAMES = new String[] {
-		"wai.connector.iframe.height.default"
-	};
+	private static final String[] _INIT_PARAM_NAMES =
+		new String[] {"wai.connector.iframe.height.default"};
 
 }

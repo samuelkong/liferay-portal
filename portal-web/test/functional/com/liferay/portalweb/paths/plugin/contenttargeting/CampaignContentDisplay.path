@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>CampaignContentDisplay</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">CampaignContentDisplay</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ENTRY_CONTENT</td>
+	<td>//div[contains(@id,'CampaignContentDisplayPortlet')]//div[@class='full-content']</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--RULE_PANEL-->
+<tr>
+	<td>RULE_PANEL_CAMPAIGN_SELECT</td>
+	<td>xpath=(//select[contains(@id,'PortletConfigurationPortlet')])[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_SELECT_CONTENT</td>
+	<td>xpath=(//div/a[@title='Select Content'])[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_PANEL_DELETE_ROW_BUTTON</td>
+	<td>xpath=(//button[contains(@class,'delete-row')])[${key_rowNumber}]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

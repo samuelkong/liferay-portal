@@ -17,9 +17,9 @@ package com.liferay.portlet.admin;
 /**
  * @author     Jorge Ferrer
  * @deprecated As of 6.2.0, replaced by {@link
- *             com.liferay.portlet.OmniadminControlPanelEntry}
+ *             com.liferay.portal.kernel.portlet.OmniadminControlPanelEntry}
  */
 @Deprecated
 public class OmniadminControlPanelEntry
-	extends com.liferay.portlet.OmniadminControlPanelEntry {
+	extends com.liferay.portal.kernel.portlet.OmniadminControlPanelEntry {
 }

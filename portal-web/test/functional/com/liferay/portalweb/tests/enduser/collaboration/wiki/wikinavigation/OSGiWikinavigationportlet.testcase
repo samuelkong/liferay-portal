@@ -1,0 +1,40 @@
+<definition component-name="portal-plugins-osgi">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="plugins.deployment.type" value="osgi" />
+	<property name="testray.main.component.name" value="Wiki" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Test Page" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<execute macro="Page#tearDownPG" />
+	</tear-down>
+
+	<command name="WikiNavigationPortletSmoke" priority="4">
+		<var name="appName" value="Wiki Navigation" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Test Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Page Menu" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Test Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Tree Menu" />
+		</execute>
+
+		<execute function="AntCommand#antCommand" locator1="build-test.xml" value1="remove-plugin -Dplugin.name=wiki-navigation-portlet" />
+	</command>
+</definition>

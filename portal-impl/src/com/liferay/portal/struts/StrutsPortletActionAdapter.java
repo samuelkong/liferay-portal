@@ -15,7 +15,7 @@
 package com.liferay.portal.struts;
 
 import com.liferay.portal.kernel.struts.BaseStrutsPortletAction;
-import com.liferay.portal.util.ClassLoaderUtil;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -41,6 +41,11 @@ public class StrutsPortletActionAdapter extends BaseStrutsPortletAction {
 		_portletAction = portletAction;
 		_actionMapping = actionMapping;
 		_actionForm = actionForm;
+	}
+
+	@Override
+	public boolean isCheckMethodOnProcessAction() {
+		return _portletAction.isCheckMethodOnProcessAction();
 	}
 
 	@Override

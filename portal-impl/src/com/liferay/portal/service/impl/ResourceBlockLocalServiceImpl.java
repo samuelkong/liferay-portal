@@ -14,42 +14,43 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.ResourceBlocksNotSupportedException;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnectionUtil;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.ResourceBlocksNotSupportedException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.AuditedModel;
+import com.liferay.portal.kernel.model.GroupedModel;
+import com.liferay.portal.kernel.model.PermissionedModel;
+import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceBlock;
+import com.liferay.portal.kernel.model.ResourceBlockConstants;
+import com.liferay.portal.kernel.model.ResourceBlockPermissionsContainer;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourceTypePermission;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.security.permission.ResourceBlockIdsBag;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackRegistryUtil;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.model.AuditedModel;
-import com.liferay.portal.model.GroupedModel;
-import com.liferay.portal.model.PermissionedModel;
-import com.liferay.portal.model.PersistedModel;
-import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.model.ResourceBlock;
-import com.liferay.portal.model.ResourceBlockConstants;
-import com.liferay.portal.model.ResourceBlockPermissionsContainer;
-import com.liferay.portal.model.ResourceTypePermission;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.model.impl.ResourceBlockImpl;
-import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
-import com.liferay.portal.security.permission.ResourceBlockIdsBag;
-import com.liferay.portal.service.PersistedModelLocalService;
-import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.service.base.ResourceBlockLocalServiceBaseImpl;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.util.dao.orm.CustomSQLUtil;
@@ -60,6 +61,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.sql.DataSource;
@@ -216,7 +218,9 @@ public class ResourceBlockLocalServiceImpl
 		resourceBlockPermissionLocalService.deleteResourceBlockPermissions(
 			resourceBlock.getPrimaryKey());
 
-		return resourceBlockPersistence.remove(resourceBlock);
+		resourceBlockPersistence.remove(resourceBlock);
+
+		return resourceBlock;
 	}
 
 	@Override
@@ -250,7 +254,7 @@ public class ResourceBlockLocalServiceImpl
 		List<ResourceAction> resourceActions =
 			resourceActionLocalService.getResourceActions(name);
 
-		List<String> actionIds = new ArrayList<String>();
+		List<String> actionIds = new ArrayList<>();
 
 		for (ResourceAction resourceAction : resourceActions) {
 			if ((actionIdsLong & resourceAction.getBitwiseValue()) ==
@@ -354,6 +358,34 @@ public class ResourceBlockLocalServiceImpl
 	}
 
 	@Override
+	public List<Role> getRoles(String name, long primKey, String actionId)
+		throws PortalException {
+
+		long actionIdLong = getActionId(name, actionId);
+
+		ResourceBlock resourceBlock = getResourceBlock(name, primKey);
+
+		ResourceBlockPermissionsContainer resourceBlockPermissionsContainer =
+			resourceBlockPermissionLocalService.
+				getResourceBlockPermissionsContainer(
+					resourceBlock.getResourceBlockId());
+
+		Set<Long> roleIds = resourceBlockPermissionsContainer.getRoleIds();
+
+		List<Role> roles = new ArrayList<>(roleIds.size());
+
+		for (long roleId : roleIds) {
+			if (resourceBlockPermissionsContainer.hasPermission(
+					roleId, actionIdLong)) {
+
+				roles.add(roleLocalService.getRole(roleId));
+			}
+		}
+
+		return roles;
+	}
+
+	@Override
 	public boolean hasPermission(
 			String name, long primKey, String actionId,
 			ResourceBlockIdsBag resourceBlockIdsBag)
@@ -387,7 +419,8 @@ public class ResourceBlockLocalServiceImpl
 	@Override
 	@Transactional(
 		isolation = Isolation.READ_COMMITTED,
-		propagation = Propagation.REQUIRES_NEW)
+		propagation = Propagation.REQUIRES_NEW
+	)
 	public void releasePermissionedModelResourceBlock(
 		PermissionedModel permissionedModel) {
 
@@ -409,12 +442,13 @@ public class ResourceBlockLocalServiceImpl
 	 * the database or deletes the resource block if the reference count reaches
 	 * zero.
 	 *
-	 * @param  resourceBlockId the primary key of the resource block
+	 * @param resourceBlockId the primary key of the resource block
 	 */
 	@Override
 	@Transactional(
 		isolation = Isolation.READ_COMMITTED,
-		propagation = Propagation.REQUIRES_NEW)
+		propagation = Propagation.REQUIRES_NEW
+	)
 	public void releaseResourceBlock(long resourceBlockId) {
 		Session session = resourceBlockPersistence.openSession();
 
@@ -442,6 +476,11 @@ public class ResourceBlockLocalServiceImpl
 						qPos.add(resourceBlockId);
 
 						sqlQuery.executeUpdate();
+
+						PermissionCacheUtil.clearResourceBlockCache(
+							resourceBlock.getCompanyId(),
+							resourceBlock.getGroupId(),
+							resourceBlock.getName());
 					}
 				}
 
@@ -464,12 +503,13 @@ public class ResourceBlockLocalServiceImpl
 	 * the database or deletes the resource block if the reference count reaches
 	 * zero.
 	 *
-	 * @param  resourceBlock the resource block
+	 * @param resourceBlock the resource block
 	 */
 	@Override
 	@Transactional(
 		isolation = Isolation.READ_COMMITTED,
-		propagation = Propagation.REQUIRES_NEW)
+		propagation = Propagation.REQUIRES_NEW
+	)
 	public void releaseResourceBlock(ResourceBlock resourceBlock) {
 		releaseResourceBlock(resourceBlock.getResourceBlockId());
 	}
@@ -671,9 +711,12 @@ public class ResourceBlockLocalServiceImpl
 			Map<Long, String[]> roleIdsToActionIds)
 		throws PortalException {
 
-		boolean flushEnabled = PermissionThreadLocal.isFlushEnabled();
+		boolean flushResourceBlockEnabled =
+			PermissionThreadLocal.isFlushResourceBlockEnabled(
+				companyId, groupId, name);
 
-		PermissionThreadLocal.setIndexEnabled(false);
+		PermissionThreadLocal.setFlushResourceBlockEnabled(
+			companyId, groupId, name, false);
 
 		try {
 			PermissionedModel permissionedModel = getPermissionedModel(
@@ -695,9 +738,15 @@ public class ResourceBlockLocalServiceImpl
 			}
 		}
 		finally {
-			PermissionThreadLocal.setIndexEnabled(flushEnabled);
+			PermissionThreadLocal.setFlushResourceBlockEnabled(
+				companyId, groupId, name, flushResourceBlockEnabled);
 
-			PermissionCacheUtil.clearCache();
+			PermissionCacheUtil.clearResourceBlockCache(
+				companyId, groupId, name);
+
+			PermissionCacheUtil.clearResourcePermissionCache(
+				ResourceConstants.SCOPE_INDIVIDUAL, name,
+				String.valueOf(primKey));
 		}
 	}
 
@@ -739,7 +788,7 @@ public class ResourceBlockLocalServiceImpl
 
 		updatePermissions(resourceBlocks, roleId, actionIdsLong, operator);
 
-		PermissionCacheUtil.clearCache();
+		PermissionCacheUtil.clearResourceCache();
 	}
 
 	@Override
@@ -756,7 +805,7 @@ public class ResourceBlockLocalServiceImpl
 
 		updatePermissions(resourceBlocks, roleId, actionIdsLong, operator);
 
-		PermissionCacheUtil.clearCache();
+		PermissionCacheUtil.clearResourceCache();
 	}
 
 	@Override
@@ -812,13 +861,14 @@ public class ResourceBlockLocalServiceImpl
 			companyId, groupId, name, permissionedModel, permissionsHash,
 			resourceBlockPermissionsContainer);
 
-		PermissionCacheUtil.clearCache();
+		PermissionCacheUtil.clearResourceBlockCache(companyId, groupId, name);
 	}
 
 	@Override
 	@Transactional(
 		isolation = Isolation.READ_COMMITTED,
-		propagation = Propagation.REQUIRES_NEW)
+		propagation = Propagation.REQUIRES_NEW
+	)
 	public ResourceBlock updateResourceBlockId(
 		long companyId, long groupId, String name,
 		final PermissionedModel permissionedModel, String permissionsHash,
@@ -845,7 +895,7 @@ public class ResourceBlockLocalServiceImpl
 				catch (SystemException se) {
 					if (_log.isWarnEnabled()) {
 						_log.warn(
-							"Unable to add a new resource block. Retrying");
+							"Unable to add a new resource block. Retrying", se);
 					}
 
 					// On failure, cancel all pending persistent entities
@@ -855,7 +905,7 @@ public class ResourceBlockLocalServiceImpl
 
 					session.clear();
 
-					DB db = DBFactoryUtil.getDB();
+					DB db = DBManagerUtil.getDB();
 
 					if (!db.isSupportsQueryingAfterException()) {
 						DataSource dataSource =
@@ -940,7 +990,7 @@ public class ResourceBlockLocalServiceImpl
 
 		};
 
-		TransactionCommitCallbackRegistryUtil.registerCallback(callable);
+		TransactionCommitCallbackUtil.registerCallback(callable);
 
 		return resourceBlock;
 	}
@@ -1032,7 +1082,8 @@ public class ResourceBlockLocalServiceImpl
 	protected void updatePermissionsHash(ResourceBlock resourceBlock) {
 		ResourceBlockPermissionsContainer resourceBlockPermissionsContainer =
 			resourceBlockPermissionLocalService.
-			getResourceBlockPermissionsContainer(resourceBlock.getPrimaryKey());
+				getResourceBlockPermissionsContainer(
+					resourceBlock.getPrimaryKey());
 
 		String permissionsHash =
 			resourceBlockPermissionsContainer.getPermissionsHash();
@@ -1043,18 +1094,15 @@ public class ResourceBlockLocalServiceImpl
 	}
 
 	private static final String _DELETE_RESOURCE_BLOCK =
-		ResourceBlockLocalServiceImpl.class.getName() +
-			".deleteResourceBlock";
+		ResourceBlockLocalServiceImpl.class.getName() + ".deleteResourceBlock";
 
 	private static final String _RELEASE_RESOURCE_BLOCK =
-		ResourceBlockLocalServiceImpl.class.getName() +
-			".releaseResourceBlock";
+		ResourceBlockLocalServiceImpl.class.getName() + ".releaseResourceBlock";
 
 	private static final String _RETAIN_RESOURCE_BLOCK =
-		ResourceBlockLocalServiceImpl.class.getName() +
-			".retainResourceBlock";
+		ResourceBlockLocalServiceImpl.class.getName() + ".retainResourceBlock";
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		ResourceBlockLocalServiceImpl.class);
 
 }

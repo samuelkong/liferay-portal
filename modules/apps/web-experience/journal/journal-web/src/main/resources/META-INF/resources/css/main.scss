@@ -1,0 +1,25 @@
+.portlet-journal {
+	.article-content-content {
+		.form-builder-field {
+			box-shadow: none;
+			margin: 0;
+			padding-bottom: 0;
+			padding-right: 0;
+		}
+	}
+
+	.article-content-description, .article-content-title {
+		.input-localized-content {
+			display: none;
+		}
+	}
+
+	.journal-article-preview {
+		padding: 0 20px;
+	}
+
+	.lfr-description-column, .lfr-title-column {
+		max-width: 150px;
+		min-width: 150px;
+	}
+}

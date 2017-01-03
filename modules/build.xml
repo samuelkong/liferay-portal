@@ -2,26 +2,7 @@
 <!DOCTYPE project>
 
 <project>
-	<path id="plugins.includes.path">
-		<dirset dir="apps/amazon-rankings" includes="*" />
-		<dirset dir="apps/currency-converter" includes="*" />
-		<dirset dir="apps/dictionary" includes="*" />
-		<dirset dir="apps/hello-velocity" includes="*" />
-		<dirset dir="apps/iframe" includes="*" />
-		<dirset dir="apps/invitation" includes="*" />
-		<dirset dir="apps/loan-calculator" includes="*" />
-		<dirset dir="apps/nested-portlets" includes="*" />
-		<dirset dir="apps/network-utilities" includes="*" />
-		<dirset dir="apps/password-generator" includes="*" />
-		<dirset dir="apps/polls" includes="*" />
-		<dirset dir="apps/social" includes="*" />
-		<dirset dir="apps/web-proxy" includes="*" />
-		<dirset dir="apps/xsl-content" includes="*" />
-		<dirset dir="core" includes="*" />
-		<dirset dir="portal" includes="*" />
-	</path>
+	<import file="build-common.xml" />
 
-	<pathconvert pathsep="," property="plugins.includes.path" refid="plugins.includes.path" targetos="unix" />
-
-	<import file="../tools/sdk/build-common.xml" />
+	<import file="build-app.xml" />
 </project>

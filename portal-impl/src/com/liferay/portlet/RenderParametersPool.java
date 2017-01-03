@@ -14,7 +14,7 @@
 
 package com.liferay.portlet;
 
-import com.liferay.portal.util.WebKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,18 +28,36 @@ import javax.servlet.http.HttpSession;
  */
 public class RenderParametersPool {
 
-	public static void clear(HttpServletRequest request, long plid) {
-		Map<String, Map<String, String[]>> plidPool = get(request, plid);
+	public static Map<String, Map<String, String[]>> clear(
+		HttpServletRequest request, long plid) {
 
-		plidPool.clear();
+		HttpSession session = request.getSession();
+
+		if (plid <= 0) {
+			return null;
+		}
+
+		Map<Long, Map<String, Map<String, String[]>>> pool =
+			(Map<Long, Map<String, Map<String, String[]>>>)session.getAttribute(
+				WebKeys.PORTLET_RENDER_PARAMETERS);
+
+		if (pool == null) {
+			return null;
+		}
+
+		return pool.remove(plid);
 	}
 
-	public static void clear(
+	public static Map<String, String[]> clear(
 		HttpServletRequest request, long plid, String portletId) {
 
-		Map<String, String[]> params = get(request, plid, portletId);
+		Map<String, Map<String, String[]>> plidPool = clear(request, plid);
 
-		params.clear();
+		if (plidPool == null) {
+			return null;
+		}
+
+		return plidPool.remove(portletId);
 	}
 
 	public static Map<String, Map<String, String[]>> get(
@@ -48,21 +66,18 @@ public class RenderParametersPool {
 		HttpSession session = request.getSession();
 
 		if (plid <= 0) {
-			return new ConcurrentHashMap<String, Map<String, String[]>>();
+			return null;
 		}
 
 		Map<Long, Map<String, Map<String, String[]>>> pool =
-			_getRenderParametersPool(session);
+			(Map<Long, Map<String, Map<String, String[]>>>)session.getAttribute(
+				WebKeys.PORTLET_RENDER_PARAMETERS);
 
-		Map<String, Map<String, String[]>> plidPool = pool.get(plid);
-
-		if (plidPool == null) {
-			plidPool = new ConcurrentHashMap<String, Map<String, String[]>>();
-
-			pool.put(plid, plidPool);
+		if (pool == null) {
+			return null;
 		}
 
-		return plidPool;
+		return pool.get(plid);
 	}
 
 	public static Map<String, String[]> get(
@@ -70,10 +85,46 @@ public class RenderParametersPool {
 
 		Map<String, Map<String, String[]>> plidPool = get(request, plid);
 
+		if (plidPool == null) {
+			return null;
+		}
+
+		return plidPool.get(portletId);
+	}
+
+	public static Map<String, Map<String, String[]>> getOrCreate(
+		HttpServletRequest request, long plid) {
+
+		HttpSession session = request.getSession();
+
+		if (plid <= 0) {
+			return new ConcurrentHashMap<>();
+		}
+
+		Map<Long, Map<String, Map<String, String[]>>> pool =
+			_getOrCreateRenderParametersPool(session);
+
+		Map<String, Map<String, String[]>> plidPool = pool.get(plid);
+
+		if (plidPool == null) {
+			plidPool = new ConcurrentHashMap<>();
+
+			pool.put(plid, plidPool);
+		}
+
+		return plidPool;
+	}
+
+	public static Map<String, String[]> getOrCreate(
+		HttpServletRequest request, long plid, String portletId) {
+
+		Map<String, Map<String, String[]>> plidPool = getOrCreate(
+			request, plid);
+
 		Map<String, String[]> params = plidPool.get(portletId);
 
 		if (params == null) {
-			params = new HashMap<String, String[]>();
+			params = new HashMap<>();
 
 			plidPool.put(portletId, params);
 		}
@@ -85,21 +136,25 @@ public class RenderParametersPool {
 		HttpServletRequest request, long plid, String portletId,
 		Map<String, String[]> params) {
 
-		Map<String, Map<String, String[]>> plidPool = get(request, plid);
+		if (params.isEmpty()) {
+			return;
+		}
+
+		Map<String, Map<String, String[]>> plidPool = getOrCreate(
+			request, plid);
 
 		plidPool.put(portletId, params);
 	}
 
 	private static Map<Long, Map<String, Map<String, String[]>>>
-		_getRenderParametersPool(HttpSession session) {
+		_getOrCreateRenderParametersPool(HttpSession session) {
 
 		Map<Long, Map<String, Map<String, String[]>>> renderParametersPool =
 			(Map<Long, Map<String, Map<String, String[]>>>)session.getAttribute(
 				WebKeys.PORTLET_RENDER_PARAMETERS);
 
 		if (renderParametersPool == null) {
-			renderParametersPool = new ConcurrentHashMap
-				<Long, Map<String, Map<String, String[]>>>();
+			renderParametersPool = new ConcurrentHashMap<>();
 
 			session.setAttribute(
 				WebKeys.PORTLET_RENDER_PARAMETERS, renderParametersPool);

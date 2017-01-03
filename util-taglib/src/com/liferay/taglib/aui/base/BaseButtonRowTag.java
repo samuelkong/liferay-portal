@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -43,25 +43,18 @@ public class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setId(java.lang.String id) {
 		_id = id;
-
-		setScopedAttribute("id", id);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_cssClass = null;
 		_id = null;
-	}
-
-	@Override
-	protected String getEndPage() {
-		return _END_PAGE;
 	}
 
 	@Override
@@ -76,9 +69,6 @@ public class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "aui:button-row:";
-
-	private static final String _END_PAGE =
-		"/html/taglib/aui/button_row/end.jsp";
 
 	private static final String _START_PAGE =
 		"/html/taglib/aui/button_row/start.jsp";

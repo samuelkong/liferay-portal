@@ -14,6 +14,8 @@
 
 package com.liferay.portal.layoutconfiguration.util.velocity;
 
+import com.liferay.portal.kernel.portlet.PortletProvider;
+
 import java.util.Map;
 
 /**
@@ -29,16 +31,15 @@ public interface ColumnProcessor {
 
 	public String processMax() throws Exception;
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #processMax()}
-	 */
-	@Deprecated
-	public String processMax(String classNames) throws Exception;
-
 	public String processPortlet(String portletId) throws Exception;
 
 	public String processPortlet(
 			String portletId, Map<String, ?> defaultSettingsMap)
+		throws Exception;
+
+	public String processPortlet(
+			String portletProviderClassName,
+			PortletProvider.Action portletProviderAction)
 		throws Exception;
 
 }

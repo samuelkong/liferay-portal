@@ -23,6 +23,7 @@ import org.junit.Test;
 
 /**
  * @author Miguel Pastor
+ * @see    com.liferay.petra.mail.InternetAddressUtilTest
  */
 public class InternetAddressUtilTest {
 

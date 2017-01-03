@@ -20,7 +20,7 @@
 long classNameId = GetterUtil.getLong((String)request.getAttribute("liferay-ui:asset-tags-navigation:classNameId"));
 String displayStyle = (String)request.getAttribute("liferay-ui:asset-tags-navigation:displayStyle");
 boolean hidePortletWhenEmpty = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:asset-tags-navigation:hidePortletWhenEmpty"));
-int maxAssetTags= GetterUtil.getInteger((String)request.getAttribute("liferay-ui:asset-tags-navigation:maxAssetTags"));
+int maxAssetTags = GetterUtil.getInteger((String)request.getAttribute("liferay-ui:asset-tags-navigation:maxAssetTags"));
 boolean showAssetCount = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:asset-tags-navigation:showAssetCount"));
 boolean showZeroAssetCount = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:asset-tags-navigation:showZeroAssetCount"));
 
@@ -28,7 +28,7 @@ String tag = ParamUtil.getString(request, "tag");
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
-String tagsNavigation = _buildTagsNavigation(scopeGroupId, themeDisplay.getSiteGroupId(), tag, portletURL, classNameId, displayStyle, maxAssetTags, showAssetCount, showZeroAssetCount);
+String tagsNavigation = _buildTagsNavigation(scopeGroupId, tag, portletURL, classNameId, displayStyle, maxAssetTags, showAssetCount, showZeroAssetCount);
 
 if (Validator.isNotNull(tagsNavigation)) {
 %>
@@ -53,19 +53,19 @@ else {
 }
 
 if (Validator.isNotNull(tag)) {
-	PortalUtil.addPortletBreadcrumbEntry(request, tag, currentURL);
+	PortalUtil.addPortletBreadcrumbEntry(request, tag, currentURL, null, false);
 }
 %>
 
 <%!
-private String _buildTagsNavigation(long scopeGroupId, long siteGroupId, String selectedTagName, PortletURL portletURL, long classNameId, String displayStyle, int maxAssetTags, boolean showAssetCount, boolean showZeroAssetCount) throws Exception {
+private String _buildTagsNavigation(long scopeGroupId, String selectedTagName, PortletURL portletURL, long classNameId, String displayStyle, int maxAssetTags, boolean showAssetCount, boolean showZeroAssetCount) throws Exception {
 	List<AssetTag> tags = null;
 
 	if (showAssetCount && (classNameId > 0)) {
 		tags = AssetTagServiceUtil.getTags(scopeGroupId, classNameId, null, 0, maxAssetTags, new AssetTagCountComparator());
 	}
 	else {
-		tags = AssetTagServiceUtil.getGroupTags(siteGroupId, 0, maxAssetTags, new AssetTagCountComparator());
+		tags = AssetTagServiceUtil.getGroupTags(scopeGroupId, 0, maxAssetTags, new AssetTagCountComparator());
 	}
 
 	if (tags.isEmpty()) {
@@ -78,7 +78,7 @@ private String _buildTagsNavigation(long scopeGroupId, long siteGroupId, String 
 
 	sb.append("<ul class=\"tag-items ");
 
-	if (showAssetCount && displayStyle.equals("cloud")) {
+	if (displayStyle.equals("cloud")) {
 		sb.append("tag-cloud");
 	}
 	else {
@@ -97,10 +97,10 @@ private String _buildTagsNavigation(long scopeGroupId, long siteGroupId, String 
 			int count = 0;
 
 			if (classNameId > 0) {
-				count = AssetTagServiceUtil.getTagsCount(scopeGroupId, classNameId, tagName);
+				count = AssetTagServiceUtil.getVisibleAssetsTagsCount(scopeGroupId, classNameId, tagName);
 			}
 			else {
-				count = AssetTagServiceUtil.getTagsCount(scopeGroupId, tagName);
+				count = AssetTagServiceUtil.getVisibleAssetsTagsCount(scopeGroupId, tagName);
 			}
 
 			if (!showZeroAssetCount && (count == 0)) {
@@ -124,10 +124,10 @@ private String _buildTagsNavigation(long scopeGroupId, long siteGroupId, String 
 		int count = 0;
 
 		if (classNameId > 0) {
-			count = AssetTagServiceUtil.getTagsCount(scopeGroupId, classNameId, tagName);
+			count = AssetTagServiceUtil.getVisibleAssetsTagsCount(scopeGroupId, classNameId, tagName);
 		}
 		else {
-			count = AssetTagServiceUtil.getTagsCount(scopeGroupId, tagName);
+			count = AssetTagServiceUtil.getVisibleAssetsTagsCount(scopeGroupId, tagName);
 		}
 
 		int popularity = (int)(1 + ((maxCount - (maxCount - (count - minCount))) * multiplier));
@@ -146,7 +146,6 @@ private String _buildTagsNavigation(long scopeGroupId, long siteGroupId, String 
 			sb.append("<a class=\"tag-selected\" href=\"");
 		}
 		else {
-			portletURL.setParameter("resetCur", Boolean.TRUE.toString());
 			portletURL.setParameter("tag", tagName);
 
 			sb.append("<a href=\"");
@@ -168,7 +167,7 @@ private String _buildTagsNavigation(long scopeGroupId, long siteGroupId, String 
 		sb.append("</a></span></li>");
 	}
 
-	sb.append("</ul><br style=\"clear: both;\" />");
+	sb.append("</ul>");
 
 	return sb.toString();
 }

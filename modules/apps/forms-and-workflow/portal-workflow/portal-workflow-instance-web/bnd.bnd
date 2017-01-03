@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Portal Workflow Instance Web
+Bundle-SymbolicName: com.liferay.portal.workflow.instance.web
+Bundle-Version: 1.0.8
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Workflow

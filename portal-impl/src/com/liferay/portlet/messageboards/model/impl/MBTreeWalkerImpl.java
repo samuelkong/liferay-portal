@@ -14,13 +14,16 @@
 
 package com.liferay.portlet.messageboards.model.impl;
 
+import com.liferay.message.boards.kernel.model.MBMessage;
+import com.liferay.message.boards.kernel.model.MBTreeWalker;
+import com.liferay.message.boards.kernel.service.MBMessageLocalService;
+import com.liferay.message.boards.kernel.util.comparator.MessageThreadComparator;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portlet.messageboards.model.MBMessage;
-import com.liferay.portlet.messageboards.model.MBTreeWalker;
-import com.liferay.portlet.messageboards.service.MBMessageLocalService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,17 +34,39 @@ import java.util.Map;
 public class MBTreeWalkerImpl implements MBTreeWalker {
 
 	public MBTreeWalkerImpl(
-		MBMessage message, int status,
-		MBMessageLocalService messageLocalService) {
+		long threadId, int status, MBMessageLocalService messageLocalService,
+		Comparator<MBMessage> comparator) {
 
-		_messageIdsMap = new HashMap<Long, Integer>();
+		this(0, threadId, status, messageLocalService, comparator);
+	}
+
+	public MBTreeWalkerImpl(
+		long userId, long threadId, int status,
+		MBMessageLocalService messageLocalService,
+		Comparator<MBMessage> comparator) {
+
+		_messageIdsMap = new HashMap<>();
+
+		List<MBMessage> messages = null;
+		MBMessage rootMessage = null;
 
 		try {
-			_messages = messageLocalService.getThreadMessages(
-				message.getThreadId(), status);
+			if (userId > 0) {
+				messages = messageLocalService.getThreadMessages(
+					userId, threadId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, comparator);
+			}
+			else {
+				messages = messageLocalService.getThreadMessages(
+					threadId, status, comparator);
+			}
 
-			for (int i = 0; i < _messages.size(); i++) {
-				MBMessage curMessage = _messages.get(i);
+			for (int i = 0; i < messages.size(); i++) {
+				MBMessage curMessage = messages.get(i);
+
+				if (curMessage.isRoot()) {
+					rootMessage = curMessage;
+				}
 
 				long parentMessageId = curMessage.getParentMessageId();
 
@@ -55,11 +80,28 @@ public class MBTreeWalkerImpl implements MBTreeWalker {
 		catch (Exception e) {
 			_log.error(e);
 		}
+
+		_messages = messages;
+		_rootMessage = rootMessage;
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #MBTreeWalkerImpl(long, int,
+	 *             MBMessageLocalService, Comparator)}
+	 */
+	@Deprecated
+	public MBTreeWalkerImpl(
+		MBMessage message, int status,
+		MBMessageLocalService messageLocalService) {
+
+		this(
+			message.getThreadId(), status, messageLocalService,
+			new MessageThreadComparator());
 	}
 
 	@Override
 	public List<MBMessage> getChildren(MBMessage message) {
-		List<MBMessage> children = new ArrayList<MBMessage>();
+		List<MBMessage> children = new ArrayList<>();
 
 		int[] range = getChildrenRange(message);
 
@@ -81,6 +123,7 @@ public class MBTreeWalkerImpl implements MBTreeWalker {
 		}
 
 		int[] range = new int[2];
+
 		range[0] = pos.intValue();
 
 		for (int i = range[0]; i < _messages.size(); i++) {
@@ -104,12 +147,12 @@ public class MBTreeWalkerImpl implements MBTreeWalker {
 
 	@Override
 	public MBMessage getRoot() {
-		return _messages.get(0);
+		return _rootMessage;
 	}
 
 	@Override
 	public boolean isLeaf(MBMessage message) {
-		Long messageIdObj = new Long(message.getMessageId());
+		Long messageIdObj = Long.valueOf(message.getMessageId());
 
 		if (_messageIdsMap.containsKey(messageIdObj)) {
 			return false;
@@ -126,10 +169,12 @@ public class MBTreeWalkerImpl implements MBTreeWalker {
 		return _odd;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(MBTreeWalkerImpl.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		MBTreeWalkerImpl.class);
 
-	private Map<Long, Integer> _messageIdsMap;
-	private List<MBMessage> _messages;
+	private final Map<Long, Integer> _messageIdsMap;
+	private final List<MBMessage> _messages;
 	private boolean _odd;
+	private final MBMessage _rootMessage;
 
 }

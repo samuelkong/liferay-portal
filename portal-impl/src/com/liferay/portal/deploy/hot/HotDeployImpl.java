@@ -25,22 +25,29 @@ import com.liferay.portal.kernel.portlet.PortletClassLoaderUtil;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.template.TemplateManagerUtil;
+import com.liferay.portal.kernel.url.ServletContextURLContainer;
+import com.liferay.portal.kernel.url.URLContainer;
 import com.liferay.portal.kernel.util.BasePortalLifecycle;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalLifecycle;
 import com.liferay.portal.kernel.util.PortalLifecycleUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.ClassLoaderUtil;
+
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.servlet.ServletContext;
 
@@ -54,12 +61,12 @@ public class HotDeployImpl implements HotDeploy {
 
 	public HotDeployImpl() {
 		if (_log.isDebugEnabled()) {
-			_log.debug("Initializing hot deploy manager " + this.hashCode());
+			_log.debug("Initializing hot deploy manager " + hashCode());
 		}
 
-		_dependentHotDeployEvents = new ArrayList<HotDeployEvent>();
-		_deployedServletContextNames = new HashSet<String>();
-		_hotDeployListeners = new ArrayList<HotDeployListener>();
+		_dependentHotDeployEvents = new ConcurrentLinkedQueue<>();
+		_deployedServletContextNames = new HashSet<>();
+		_hotDeployListeners = new ArrayList<>();
 	}
 
 	@Override
@@ -130,15 +137,17 @@ public class HotDeployImpl implements HotDeploy {
 	}
 
 	@Override
-	public synchronized boolean registerDependentPortalLifecycle(
+	public boolean registerDependentPortalLifecycle(
 		String servletContextName, PortalLifecycle portalLifecycle) {
 
 		for (HotDeployEvent hotDeployEvent : _dependentHotDeployEvents) {
-			if (Validator.equals(
+			if (Objects.equals(
 					servletContextName,
 					hotDeployEvent.getServletContextName())) {
 
-				hotDeployEvent.addPortalLifecycle(portalLifecycle);
+				synchronized (this) {
+					hotDeployEvent.addPortalLifecycle(portalLifecycle);
+				}
 
 				return true;
 			}
@@ -184,8 +193,8 @@ public class HotDeployImpl implements HotDeploy {
 	public interface PACL {
 
 		public void initPolicy(
-			String servletContextName, ClassLoader classLoader,
-			Properties properties);
+			String contextName, URLContainer urlContainer,
+			ClassLoader classLoader, Properties properties);
 
 		public void unregister(ClassLoader classLoader);
 
@@ -244,8 +253,8 @@ public class HotDeployImpl implements HotDeploy {
 			try {
 				setContextClassLoader(ClassLoaderUtil.getPortalClassLoader());
 
-				List<HotDeployEvent> dependentEvents =
-					new ArrayList<HotDeployEvent>(_dependentHotDeployEvents);
+				List<HotDeployEvent> dependentEvents = new ArrayList<>(
+					_dependentHotDeployEvents);
 
 				for (HotDeployEvent dependentEvent : dependentEvents) {
 					setContextClassLoader(
@@ -253,7 +262,9 @@ public class HotDeployImpl implements HotDeploy {
 
 					doFireDeployEvent(dependentEvent);
 
-					dependentEvent.flushInits();
+					if (!_dependentHotDeployEvents.contains(dependentEvent)) {
+						dependentEvent.flushInits();
+					}
 				}
 			}
 			finally {
@@ -302,7 +313,7 @@ public class HotDeployImpl implements HotDeploy {
 	protected String getRequiredServletContextNames(
 		HotDeployEvent hotDeployEvent) {
 
-		List<String> requiredServletContextNames = new ArrayList<String>();
+		List<String> requiredServletContextNames = new ArrayList<>();
 
 		for (String dependentServletContextName :
 				hotDeployEvent.getDependentServletContextNames()) {
@@ -323,30 +334,16 @@ public class HotDeployImpl implements HotDeploy {
 		ClassLoaderUtil.setContextClassLoader(contextClassLoader);
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(HotDeployImpl.class);
+	private static final Log _log = LogFactoryUtil.getLog(HotDeployImpl.class);
 
-	private static PACL _pacl = new NoPACL();
+	private static final PACL _pacl = new NoPACL();
 
 	private boolean _capturePrematureEvents = true;
-	private final List<HotDeployEvent> _dependentHotDeployEvents;
+	private final Queue<HotDeployEvent> _dependentHotDeployEvents;
 	private final Set<String> _deployedServletContextNames;
 	private final List<HotDeployListener> _hotDeployListeners;
 
-	private static class NoPACL implements PACL {
-
-		@Override
-		public void initPolicy(
-			String servletContextName, ClassLoader classLoader,
-			Properties properties) {
-		}
-
-		@Override
-		public void unregister(ClassLoader classLoader) {
-		}
-
-	}
-
-	private class HotDeployPortalLifecycle extends BasePortalLifecycle {
+	private static class HotDeployPortalLifecycle extends BasePortalLifecycle {
 
 		public HotDeployPortalLifecycle(HotDeployEvent hotDeployEvent) {
 			_servletContext = hotDeployEvent.getServletContext();
@@ -375,13 +372,35 @@ public class HotDeployImpl implements HotDeploy {
 				properties = new Properties();
 			}
 
+			File tempDir = (File)_servletContext.getAttribute(
+				JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR);
+
+			properties.put(
+				JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR,
+				tempDir.getAbsolutePath());
+
 			_pacl.initPolicy(
-				_servletContext.getServletContextName(), _classLoader,
+				_servletContext.getServletContextName(),
+				new ServletContextURLContainer(_servletContext), _classLoader,
 				properties);
 		}
 
-		private ClassLoader _classLoader;
-		private ServletContext _servletContext;
+		private final ClassLoader _classLoader;
+		private final ServletContext _servletContext;
+
+	}
+
+	private static class NoPACL implements PACL {
+
+		@Override
+		public void initPolicy(
+			String contextName, URLContainer urlContainer,
+			ClassLoader classLoader, Properties properties) {
+		}
+
+		@Override
+		public void unregister(ClassLoader classLoader) {
+		}
 
 	}
 

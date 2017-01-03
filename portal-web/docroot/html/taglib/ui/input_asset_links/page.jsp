@@ -16,53 +16,26 @@
 
 <%@ include file="/html/taglib/ui/input_asset_links/init.jsp" %>
 
-<liferay-ui:icon-menu
-	cssClass="select-existing-selector"
-	icon="../aui/search"
-	id='<%= inputAssetLinksDisplayContext.getRandomNamespace() + "inputAssetLinks" %>'
-	message="select"
-	showWhenSingleIcon="<%= true %>"
->
-
-	<%
-	for (Map<String, Object> selectorEntry : inputAssetLinksDisplayContext.getSelectorEntries()) {
-	%>
-
-		<liferay-ui:icon
-			cssClass="asset-selector"
-			data='<%= (Map<String, Object>)selectorEntry.get("data") %>'
-			iconCssClass='<%= (String)selectorEntry.get("iconCssClass") %>'
-			id='<%= (String)selectorEntry.get("id") %>'
-			message='<%= (String)selectorEntry.get("message") %>'
-			url="javascript:;"
-		/>
-
-	<%
-	}
-	%>
-
-</liferay-ui:icon-menu>
-
-<br />
-
 <liferay-util:buffer var="removeLinkIcon">
 	<liferay-ui:icon
-		iconCssClass="icon-remove"
-		label="<%= true %>"
+		icon="times"
+		markupView="lexicon"
 		message="remove"
 	/>
 </liferay-util:buffer>
 
 <liferay-ui:search-container
+	compactEmptyResultsMessage="<%= true %>"
+	emptyResultsMessage="none"
 	headerNames="type,title,scope,null"
+	total="<%= inputAssetLinksDisplayContext.getAssetLinksCount() %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= inputAssetLinksDisplayContext.getAssetLinks() %>"
-		total="<%= inputAssetLinksDisplayContext.getAssetLinksCount() %>"
 	/>
 
 	<liferay-ui:search-container-row
-		className="com.liferay.portlet.asset.model.AssetLink"
+		className="com.liferay.asset.kernel.model.AssetLink"
 		keyProperty="entryId2"
 		modelVar="assetLink"
 	>
@@ -78,6 +51,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="title"
+			truncate="<%= true %>"
 			value="<%= HtmlUtil.escape(assetLinkEntry.getTitle(locale)) %>"
 		/>
 
@@ -91,16 +65,56 @@
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 
-	<liferay-ui:search-iterator paginate="<%= false %>" />
+	<liferay-ui:search-iterator markupView="lexicon" paginate="<%= false %>" />
 </liferay-ui:search-container>
+
+<liferay-ui:icon-menu
+	cssClass="select-existing-selector"
+	direction="right"
+	id='<%= inputAssetLinksDisplayContext.getRandomNamespace() + "inputAssetLinks" %>'
+	message="select"
+	showArrow="<%= false %>"
+	showWhenSingleIcon="<%= true %>"
+>
+
+	<%
+	for (Map<String, Object> selectorEntry : inputAssetLinksDisplayContext.getSelectorEntries()) {
+	%>
+
+		<liferay-ui:icon
+			cssClass="asset-selector"
+			data='<%= (Map<String, Object>)selectorEntry.get("data") %>'
+			id='<%= (String)selectorEntry.get("id") %>'
+			message='<%= HtmlUtil.escape((String)selectorEntry.get("message")) %>'
+			url="javascript:;"
+		/>
+
+	<%
+	}
+	%>
+
+</liferay-ui:icon-menu>
 
 <aui:input name="assetLinkEntryIds" type="hidden" />
 
 <aui:script use="aui-base,escape,liferay-search-container">
-	A.getBody().delegate(
+	var assetSelectorHandle = A.getBody().delegate(
 		'click',
 		function(event) {
 			event.preventDefault();
+
+			var searchContainerName = '<portlet:namespace/>assetLinksSearchContainer';
+
+			var searchContainer = Liferay.SearchContainer.get(searchContainerName);
+
+			var searchContainerData = searchContainer.getData();
+
+			if (searchContainerData) {
+				searchContainerData = searchContainerData.split(',');
+			}
+			else {
+				searchContainerData = [];
+			}
 
 			Liferay.Util.selectEntity(
 				{
@@ -110,17 +124,16 @@
 					},
 					eventName: '<%= inputAssetLinksDisplayContext.getEventName() %>',
 					id: '<%= inputAssetLinksDisplayContext.getEventName() %>' + event.currentTarget.attr('id'),
+					selectedData: searchContainerData,
 					title: event.currentTarget.attr('data-title'),
 					uri: event.currentTarget.attr('data-href')
 				},
 				function(event) {
-					var searchContainerName = '<portlet:namespace/>assetLinksSearchContainer';
+					var entityId = event.entityid;
 
-					searchContainer = Liferay.SearchContainer.get(searchContainerName);
+					var entryLink = '<a class="modify-link" data-rowId="' + entityId + '" href="javascript:;"><%= UnicodeFormatter.toString(removeLinkIcon) %></a>';
 
-					var entryLink = '<a class="modify-link" data-rowId="' + event.assetentryid + '" href="javascript:;"><%= UnicodeFormatter.toString(removeLinkIcon) %></a>';
-
-					searchContainer.addRow([event.assettype, A.Escape.html(event.assettitle), A.Escape.html(event.groupdescriptivename), entryLink], event.assetentryid);
+					searchContainer.addRow([event.assettype, A.Escape.html(event.assettitle), A.Escape.html(event.groupdescriptivename), entryLink], entityId);
 
 					searchContainer.updateDataStore();
 				}
@@ -128,6 +141,16 @@
 		},
 		'.asset-selector a'
 	);
+
+	var clearAssetSelectorHandle = function(event) {
+		if (event.portletId === '<%= portletDisplay.getId() %>') {
+			assetSelectorHandle.detach();
+
+			Liferay.detach('destroyPortlet', clearAssetSelectorHandle);
+		}
+	};
+
+	Liferay.on('destroyPortlet', clearAssetSelectorHandle);
 </aui:script>
 
 <aui:script use="liferay-search-container">

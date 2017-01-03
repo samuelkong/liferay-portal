@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = 0479919bf6ee996dd5eb4eb04a26dcf37ea58574
+	mode = push
+	parent = 79231aecb7efc244f7b5d624004ce4b2ed0f3605
+	remote = git@github.com:liferay/com-liferay-flags.git

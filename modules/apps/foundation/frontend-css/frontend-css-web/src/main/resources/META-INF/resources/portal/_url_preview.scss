@@ -1,0 +1,26 @@
+.lfr-url-preview {
+	.lfr-url-preview-content {
+		background-color: #000;
+		border-radius: 0;
+		margin: 0 auto;
+		max-width: 900px;
+
+		.modal-body {
+			border-radius: 6px;
+		}
+
+		.modal-header {
+			background-color: #000;
+			border-width: 0;
+			color: #FFF;
+			padding-bottom: 40px;
+			padding-left: 0;
+			text-align: left;
+
+			a {
+				color: #FFF;
+				opacity: 0.5;
+			}
+		}
+	}
+}

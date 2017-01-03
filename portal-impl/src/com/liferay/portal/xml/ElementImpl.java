@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.QName;
 import com.liferay.portal.kernel.xml.Text;
 import com.liferay.portal.kernel.xml.Visitor;
-import com.liferay.util.xml.XMLFormatter;
+import com.liferay.util.xml.Dom4jUtil;
 
 import java.io.IOException;
 
@@ -362,19 +362,19 @@ public class ElementImpl extends BranchImpl implements Element {
 
 	@Override
 	public String formattedString() throws IOException {
-		return XMLFormatter.toString(_element);
+		return Dom4jUtil.toString(_element);
 	}
 
 	@Override
 	public String formattedString(String indent) throws IOException {
-		return XMLFormatter.toString(_element, indent);
+		return Dom4jUtil.toString(_element, indent);
 	}
 
 	@Override
 	public String formattedString(String indent, boolean expandEmptyElements)
 		throws IOException {
 
-		return XMLFormatter.toString(_element, indent, expandEmptyElements);
+		return Dom4jUtil.toString(_element, indent, expandEmptyElements);
 	}
 
 	@Override
@@ -557,7 +557,7 @@ public class ElementImpl extends BranchImpl implements Element {
 
 	@Override
 	public void sortAttributes(boolean recursive) {
-		Map<String, Attribute> attributesMap = new TreeMap<String, Attribute>();
+		Map<String, Attribute> attributesMap = new TreeMap<>();
 
 		List<Attribute> attributes = attributes();
 
@@ -588,7 +588,7 @@ public class ElementImpl extends BranchImpl implements Element {
 	public void sortElementsByAttribute(
 		String elementName, String attributeName) {
 
-		Map<String, Element> elementsMap = new TreeMap<String, Element>();
+		Map<String, Element> elementsMap = new TreeMap<>();
 
 		List<Element> elements = elements();
 
@@ -642,7 +642,7 @@ public class ElementImpl extends BranchImpl implements Element {
 	public void sortElementsByChildElement(
 		String elementName, String childElementName) {
 
-		Map<String, Element> elementsMap = new TreeMap<String, Element>();
+		Map<String, Element> elementsMap = new TreeMap<>();
 
 		List<Element> elements = elements();
 
@@ -698,6 +698,6 @@ public class ElementImpl extends BranchImpl implements Element {
 		return _element.toString();
 	}
 
-	private org.dom4j.Element _element;
+	private final org.dom4j.Element _element;
 
 }

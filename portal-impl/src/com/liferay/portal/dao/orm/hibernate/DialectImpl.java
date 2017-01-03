@@ -15,6 +15,7 @@
 package com.liferay.portal.dao.orm.hibernate;
 
 import com.liferay.portal.kernel.dao.orm.Dialect;
+import com.liferay.portal.kernel.util.StringBundler;
 
 /**
  * @author Brian Wing Shun Chan
@@ -32,6 +33,17 @@ public class DialectImpl implements Dialect {
 	@Override
 	public boolean supportsLimit() {
 		return _dialect.supportsLimit();
+	}
+
+	@Override
+	public String toString() {
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("{_dialect=");
+		sb.append(String.valueOf(_dialect));
+		sb.append("}");
+
+		return sb.toString();
 	}
 
 	private final org.hibernate.dialect.Dialect _dialect;

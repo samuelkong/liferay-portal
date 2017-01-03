@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = 3f2e5b45b19346d820842d9c34e7cd1e42ce93be
+	mode = push
+	parent = 8c19ee05e35609c98411e7e8271f04a7c2e5703d
+	remote = git@github.com:liferay/com-liferay-map.git

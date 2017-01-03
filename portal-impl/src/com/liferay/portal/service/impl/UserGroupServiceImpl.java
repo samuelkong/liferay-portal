@@ -14,19 +14,19 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroup;
-import com.liferay.portal.security.membershippolicy.UserGroupMembershipPolicyUtil;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.security.membershippolicy.UserGroupMembershipPolicyUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.portal.kernel.service.permission.TeamPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserGroupPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.service.base.UserGroupServiceBaseImpl;
-import com.liferay.portal.service.permission.GroupPermissionUtil;
-import com.liferay.portal.service.permission.PortalPermissionUtil;
-import com.liferay.portal.service.permission.TeamPermissionUtil;
-import com.liferay.portal.service.permission.UserGroupPermissionUtil;
-import com.liferay.portal.service.permission.UserPermissionUtil;
-import com.liferay.portlet.expando.model.ExpandoBridge;
 
 import java.io.Serializable;
 
@@ -45,11 +45,8 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	/**
 	 * Adds the user groups to the group.
 	 *
-	 * @param  groupId the primary key of the group
-	 * @param  userGroupIds the primary keys of the user groups
-	 * @throws PortalException if a group or user group with the primary key
-	 *         could not be found, or if the user did not have permission to
-	 *         assign group members
+	 * @param groupId the primary key of the group
+	 * @param userGroupIds the primary keys of the user groups
 	 */
 	@Override
 	public void addGroupUserGroups(long groupId, long[] userGroupIds)
@@ -64,11 +61,8 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	/**
 	 * Adds the user groups to the team
 	 *
-	 * @param  teamId the primary key of the team
-	 * @param  userGroupIds the primary keys of the user groups
-	 * @throws PortalException if a team or user group with the primary key
-	 *         could not be found, or if the user did not have permission to
-	 *         assign team members
+	 * @param teamId the primary key of the team
+	 * @param userGroupIds the primary keys of the user groups
 	 */
 	@Override
 	public void addTeamUserGroups(long teamId, long[] userGroupIds)
@@ -91,8 +85,6 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	 * @param      name the user group's name
 	 * @param      description the user group's description
 	 * @return     the user group
-	 * @throws     PortalException if the user group's information was invalid
-	 *             or if the user did not have permission to add the user group
 	 * @deprecated As of 6.2.0, replaced by {@link #addUserGroup(String, String,
 	 *             ServiceContext)}
 	 */
@@ -118,8 +110,6 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	 *         <code>null</code>). Can set expando bridge attributes for the
 	 *         user group.
 	 * @return the user group
-	 * @throws PortalException if the user group's information was invalid or if
-	 *         the user did not have permission to add the user group
 	 */
 	@Override
 	public UserGroup addUserGroup(
@@ -143,10 +133,7 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	/**
 	 * Deletes the user group.
 	 *
-	 * @param  userGroupId the primary key of the user group
-	 * @throws PortalException if a user group with the primary key could not be
-	 *         found, if the user did not have permission to delete the user
-	 *         group, or if the user group had a workflow in approved status
+	 * @param userGroupId the primary key of the user group
 	 */
 	@Override
 	public void deleteUserGroup(long userGroupId) throws PortalException {
@@ -157,13 +144,28 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	}
 
 	/**
+	 * Fetches the user group with the primary key.
+	 *
+	 * @param  userGroupId the primary key of the user group
+	 * @return the user group with the primary key
+	 */
+	@Override
+	public UserGroup fetchUserGroup(long userGroupId) throws PortalException {
+		UserGroup userGroup = userGroupLocalService.fetchUserGroup(userGroupId);
+
+		if (userGroup != null) {
+			UserGroupPermissionUtil.check(
+				getPermissionChecker(), userGroupId, ActionKeys.VIEW);
+		}
+
+		return userGroup;
+	}
+
+	/**
 	 * Returns the user group with the primary key.
 	 *
 	 * @param  userGroupId the primary key of the user group
-	 * @return Returns the user group with the primary key
-	 * @throws PortalException if a user group with the primary key could not be
-	 *         found or if the user did not have permission to view the user
-	 *         group
+	 * @return the user group with the primary key
 	 */
 	@Override
 	public UserGroup getUserGroup(long userGroupId) throws PortalException {
@@ -177,9 +179,7 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	 * Returns the user group with the name.
 	 *
 	 * @param  name the user group's name
-	 * @return Returns the user group with the name
-	 * @throws PortalException if a user group with the name could not be found
-	 *         or if the user did not have permission to view the user group
+	 * @return the user group with the name
 	 */
 	@Override
 	public UserGroup getUserGroup(String name) throws PortalException {
@@ -196,13 +196,18 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 		return userGroup;
 	}
 
+	@Override
+	public List<UserGroup> getUserGroups(long companyId)
+		throws PortalException {
+
+		return filterUserGroups(userGroupLocalService.getUserGroups(companyId));
+	}
+
 	/**
 	 * Returns all the user groups to which the user belongs.
 	 *
 	 * @param  userId the primary key of the user
 	 * @return the user groups to which the user belongs
-	 * @throws PortalException if the current user did not have permission to
-	 *         view the user or any one of the user group members
 	 */
 	@Override
 	public List<UserGroup> getUserUserGroups(long userId)
@@ -220,10 +225,8 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	/**
 	 * Removes the user groups from the group.
 	 *
-	 * @param  groupId the primary key of the group
-	 * @param  userGroupIds the primary keys of the user groups
-	 * @throws PortalException if the user did not have permission to assign
-	 *         group members
+	 * @param groupId the primary key of the group
+	 * @param userGroupIds the primary keys of the user groups
 	 */
 	@Override
 	public void unsetGroupUserGroups(long groupId, long[] userGroupIds)
@@ -238,10 +241,8 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	/**
 	 * Removes the user groups from the team.
 	 *
-	 * @param  teamId the primary key of the team
-	 * @param  userGroupIds the primary keys of the user groups
-	 * @throws PortalException if the user did not have permission to assign
-	 *         team members
+	 * @param teamId the primary key of the team
+	 * @param userGroupIds the primary keys of the user groups
 	 */
 	@Override
 	public void unsetTeamUserGroups(long teamId, long[] userGroupIds)
@@ -260,9 +261,6 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	 * @param      name the user group's name
 	 * @param      description the the user group's description
 	 * @return     the user group
-	 * @throws     PortalException if a user group with the primary key was not
-	 *             found, if the new information was invalid, or if the user did
-	 *             not have permission to update the user group information
 	 * @deprecated As of 6.2.0, replaced by {@link #updateUserGroup(long,
 	 *             String, String, ServiceContext)}
 	 */
@@ -299,9 +297,6 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	 *         <code>null</code>). Can set expando bridge attributes for the
 	 *         user group.
 	 * @return the user group
-	 * @throws PortalException if a user group with the primary key was not
-	 *         found, if the new information was invalid, or if the user did not
-	 *         have permission to update the user group information
 	 */
 	@Override
 	public UserGroup updateUserGroup(
@@ -322,7 +317,7 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 	protected List<UserGroup> filterUserGroups(List<UserGroup> userGroups)
 		throws PortalException {
 
-		List<UserGroup> filteredGroups = new ArrayList<UserGroup>();
+		List<UserGroup> filteredGroups = new ArrayList<>();
 
 		for (UserGroup userGroup : userGroups) {
 			if (UserGroupPermissionUtil.contains(

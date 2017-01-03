@@ -16,13 +16,15 @@ package com.liferay.portal.dao.orm.hibernate;
 
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.test.TransactionalTestRule;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.util.List;
 
@@ -30,39 +32,55 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Laszlo Csontos
  */
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class DB2DialectTest {
 
 	@ClassRule
-	public static TransactionalTestRule transactionalTestRule =
-		new TransactionalTestRule();
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(), TransactionalTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
-		DB db = DBFactoryUtil.getDB();
+		DB db = DBManagerUtil.getDB();
 
-		String dbType = db.getType();
+		Assume.assumeTrue(db.getDBType() == DBType.DB2);
+	}
 
-		Assume.assumeTrue(dbType.equals(DB.TYPE_DB2));
+	@Test
+	public void testPagingWithNegativeStart() {
+		testPaging(_SQL, -10, 20, 20);
+	}
+
+	@Test
+	public void testPagingWithNegativeStartAndNegativeEnd() {
+		testPaging(_SQL, -10, -5, 0);
 	}
 
 	@Test
 	public void testPagingWithOffset() {
-		testPaging(_SQL, 10, 20);
+		testPaging(_SQL, 10, 30, 20);
 	}
 
 	@Test
 	public void testPagingWithoutOffset() {
-		testPaging(_SQL, 0, 20);
+		testPaging(_SQL, 0, 20, 20);
 	}
 
-	protected void testPaging(String sql, int offset, int limit) {
+	@Test
+	public void testPagingWithStartAfterEnd() {
+		testPaging(_SQL, 10, 5, 0);
+	}
+
+	protected void testPaging(
+		String sql, int start, int end, int expectedResultSize) {
+
 		Session session = null;
 
 		try {
@@ -71,10 +89,10 @@ public class DB2DialectTest {
 			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			List<?> result = QueryUtil.list(
-				q, _sessionFactory.getDialect(), offset, offset + limit);
+				q, _sessionFactory.getDialect(), start, end);
 
 			Assert.assertNotNull(result);
-			Assert.assertEquals(limit, result.size());
+			Assert.assertEquals(expectedResultSize, result.size());
 		}
 		finally {
 			_sessionFactory.closeSession(session);

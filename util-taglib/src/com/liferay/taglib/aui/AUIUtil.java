@@ -14,12 +14,17 @@
 
 package com.liferay.taglib.aui;
 
+import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,33 +33,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AUIUtil {
 
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public static final String BUTTON_INPUT_PREFIX = "btn-input";
-
 	public static final String BUTTON_PREFIX = "btn";
 
 	public static final String FIELD_PREFIX = "field";
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public static final String INPUT_PREFIX = "field-input";
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public static final String LABEL_CHOICE_PREFIX = "choice-label";
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public static final String LABEL_FIELD_PREFIX = "field-label";
 
 	public static String buildControlGroupCss(
 		boolean inlineField, String inlineLabel, String wrapperCssClass,
@@ -119,37 +100,8 @@ public class AUIUtil {
 		return sb.toString();
 	}
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #buildCss(String, boolean,
-	 *             boolean, boolean, String)}
-	 */
-	@Deprecated
-	public static String buildCss(
-		String prefix, String baseTypeCss, boolean disabled, boolean first,
-		boolean last, String cssClass) {
-
-		return buildCss(prefix, disabled, first, last, cssClass);
-	}
-
 	public static String buildData(Map<String, Object> data) {
-		if ((data == null) || data.isEmpty()) {
-			return StringPool.BLANK;
-		}
-
-		StringBundler sb = new StringBundler(data.size() * 5);
-
-		for (Map.Entry<String, Object> entry : data.entrySet()) {
-			String dataKey = entry.getKey();
-			String dataValue = String.valueOf(entry.getValue());
-
-			sb.append("data-");
-			sb.append(dataKey);
-			sb.append("=\"");
-			sb.append(HtmlUtil.escapeAttribute(dataValue));
-			sb.append("\" ");
-		}
-
-		return sb.toString();
+		return HtmlUtil.buildData(data);
 	}
 
 	public static String buildLabel(
@@ -166,8 +118,7 @@ public class AUIUtil {
 			if (inlineField) {
 				sb.append("class=\"");
 				sb.append(baseType);
-				sb.append("-inline");
-				sb.append("\" ");
+				sb.append("-inline\" ");
 			}
 		}
 		else {
@@ -183,37 +134,97 @@ public class AUIUtil {
 		return sb.toString();
 	}
 
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #buildLabel(String, boolean,
-	 *             boolean, String)}
-	 */
-	@Deprecated
-	public static String buildLabel(
-		String inlineLabel, boolean showForLabel, String forLabel,
-		boolean choiceField) {
-
-		return buildLabel(StringPool.BLANK, false, showForLabel, forLabel);
-	}
-
 	public static Object getAttribute(
 		HttpServletRequest request, String namespace, String key) {
 
 		Map<String, Object> dynamicAttributes =
 			(Map<String, Object>)request.getAttribute(
 				namespace.concat("dynamicAttributes"));
-		Map<String, Object> scopedAttributes =
-			(Map<String, Object>)request.getAttribute(
-				namespace.concat("scopedAttributes"));
 
-		if (((dynamicAttributes != null) &&
-			 dynamicAttributes.containsKey(key)) ||
-			((scopedAttributes != null) &&
-			 scopedAttributes.containsKey(key))) {
-
+		if ((dynamicAttributes != null) && dynamicAttributes.containsKey(key)) {
 			return request.getAttribute(namespace.concat(key));
 		}
 
 		return null;
+	}
+
+	public static String getNamespace(HttpServletRequest request) {
+		return GetterUtil.getString(
+			request.getAttribute("aui:form:portletNamespace"));
+	}
+
+	public static String getNamespace(
+		PortletRequest portletRequest, PortletResponse portletResponse) {
+
+		String namespace = StringPool.BLANK;
+
+		if (portletRequest == null) {
+			return namespace;
+		}
+
+		boolean auiFormUseNamespace = GetterUtil.getBoolean(
+			(String)portletRequest.getAttribute("aui:form:useNamespace"), true);
+
+		if ((portletResponse != null) && auiFormUseNamespace) {
+			namespace = GetterUtil.getString(
+				portletRequest.getAttribute("aui:form:portletNamespace"),
+				portletResponse.getNamespace());
+		}
+
+		return namespace;
+	}
+
+	public static boolean isOpensNewWindow(String target) {
+		if ((target != null) &&
+			(target.equals("_blank") || target.equals("_new"))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static String normalizeId(String name) {
+		char[] chars = null;
+
+		for (int i = 0; i < name.length(); i++) {
+			char c = name.charAt(i);
+
+			if ((_VALID_CHARS.length <= c) || !_VALID_CHARS[c]) {
+				if (chars == null) {
+					chars = new char[name.length()];
+
+					name.getChars(0, chars.length, chars, 0);
+				}
+
+				chars[i] = CharPool.DASH;
+			}
+		}
+
+		if (chars == null) {
+			return name;
+		}
+
+		return new String(chars);
+	}
+
+	private static final boolean[] _VALID_CHARS = new boolean[128];
+
+	static {
+		for (int i = 'a'; i <= 'z'; i++) {
+			_VALID_CHARS[i] = true;
+		}
+
+		for (int i = 'A'; i <= 'Z'; i++) {
+			_VALID_CHARS[i] = true;
+		}
+
+		for (int i = '0'; i <= '9'; i++) {
+			_VALID_CHARS[i] = true;
+		}
+
+		_VALID_CHARS['-'] = true;
+		_VALID_CHARS['_'] = true;
 	}
 
 }

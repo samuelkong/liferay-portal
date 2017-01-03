@@ -180,18 +180,18 @@ public abstract class BaseJSONWebServiceTestCase extends PowerMockito {
 				jsonWebServiceInvokerAction.new InvokerResult(
 					invokerResult.getResult()) {
 
-				@Override
-				protected JSONSerializer createJSONSerializer() {
-					JSONSerializer jsonSerializer =
-						JSONFactoryUtil.createJSONSerializer();
+					@Override
+					protected JSONSerializer createJSONSerializer() {
+						JSONSerializer jsonSerializer =
+							JSONFactoryUtil.createJSONSerializer();
 
-					jsonSerializer.transform(
-						new SortedHashMapJSONTransformer(), HashMap.class);
+						jsonSerializer.transform(
+							new SortedHashMapJSONTransformer(), HashMap.class);
 
-					return jsonSerializer;
-				}
+						return jsonSerializer;
+					}
 
-			};
+				};
 
 			object = newInvokerResult;
 		}
@@ -201,6 +201,7 @@ public abstract class BaseJSONWebServiceTestCase extends PowerMockito {
 		}
 
 		JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
+
 		return jsonSerializer.serialize(object);
 	}
 
@@ -210,6 +211,7 @@ public abstract class BaseJSONWebServiceTestCase extends PowerMockito {
 		}
 
 		JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
+
 		jsonSerializer.include(includes);
 
 		return jsonSerializer.serialize(object);

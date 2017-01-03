@@ -15,81 +15,47 @@
 package com.liferay.portlet.documentlibrary.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.staging.permission.StagingPermissionUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.ResourceLocalServiceUtil;
-import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 
 /**
  * @author Jorge Ferrer
  */
-public class DLPermission {
+@OSGiBeanProperties(property = {"resource.name=" + DLPermission.RESOURCE_NAME})
+public class DLPermission extends BaseResourcePermissionChecker {
 
-	public static final String RESOURCE_NAME =
-		"com.liferay.portlet.documentlibrary";
+	public static final String RESOURCE_NAME = "com.liferay.document.library";
 
 	public static void check(
 			PermissionChecker permissionChecker, long groupId, String actionId)
 		throws PortalException {
 
 		if (!contains(permissionChecker, groupId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, RESOURCE_NAME, groupId, actionId);
 		}
 	}
 
 	public static boolean contains(
-			PermissionChecker permissionChecker, long classPK, String actionId)
-		throws PortalException {
+		PermissionChecker permissionChecker, long classPK, String actionId) {
 
-		Group group = GroupLocalServiceUtil.fetchGroup(classPK);
+		String portletId = PortletProviderUtil.getPortletId(
+			FileEntry.class.getName(), PortletProvider.Action.EDIT);
 
-		if (group == null) {
-			Folder folder = DLAppLocalServiceUtil.getFolder(classPK);
-
-			return DLFolderPermission.contains(
-				permissionChecker, folder, actionId);
-		}
-
-		Boolean hasPermission = StagingPermissionUtil.hasPermission(
-			permissionChecker, classPK, RESOURCE_NAME, classPK,
-			PortletKeys.DOCUMENT_LIBRARY, actionId);
-
-		if (hasPermission != null) {
-			return hasPermission.booleanValue();
-		}
-
-		try {
-			int count =
-				ResourcePermissionLocalServiceUtil.getResourcePermissionsCount(
-					permissionChecker.getCompanyId(), RESOURCE_NAME,
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(classPK));
-
-			if (count == 0) {
-				ResourceLocalServiceUtil.addResources(
-					permissionChecker.getCompanyId(), classPK, 0, RESOURCE_NAME,
-					classPK, false, true, true);
-			}
-		}
-		catch (Exception e) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(e, e);
-			}
-		}
-
-		return permissionChecker.hasPermission(
-			classPK, RESOURCE_NAME, classPK, actionId);
+		return contains(
+			permissionChecker, RESOURCE_NAME, portletId, classPK, actionId);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(DLPermission.class);
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, classPK, actionId);
+	}
 
 }

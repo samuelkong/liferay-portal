@@ -40,9 +40,9 @@ for (String portletId : portletIds) {
 		if (portletApp.isWARFile() && Validator.isNull(externalPortletCategory)) {
 			PortletConfig curPortletConfig = PortletConfigFactoryUtil.create(portlet, application);
 
-			ResourceBundle resourceBundle = curPortletConfig.getResourceBundle(locale);
+			ResourceBundle portletResourceBundle = curPortletConfig.getResourceBundle(locale);
 
-			externalPortletCategory = ResourceBundleUtil.getString(resourceBundle, portletCategory.getName());
+			externalPortletCategory = ResourceBundleUtil.getString(portletResourceBundle, portletCategory.getName());
 		}
 	}
 }
@@ -72,7 +72,7 @@ if (!portletCategories.isEmpty() || !portlets.isEmpty()) {
 				<c:if test="<%= !portlet.isInstanceable() %>">
 
 					<%
-					PortletURL portletURL = new PortletURLImpl(request, portlet.getRootPortletId(), plid, PortletRequest.ACTION_PHASE);
+					PortletURL portletURL = PortletURLFactoryUtil.create(request, portlet.getRootPortletId(), PortletRequest.ACTION_PHASE);
 
 					portletURL.setPortletMode(PortletMode.VIEW);
 					portletURL.setWindowState(WindowState.MAXIMIZED);

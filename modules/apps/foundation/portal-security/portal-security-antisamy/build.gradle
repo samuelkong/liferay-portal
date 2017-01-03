@@ -1,0 +1,97 @@
+import com.liferay.gradle.util.FileUtil
+
+task processSanitizerConfiguration(type: Copy)
+
+String sanitizerConfigurationUrl = "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owaspantisamy/antisamy-ebay-1.4.4.xml"
+
+dependencies {
+	provided group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	provided group: "com.liferay", name: "com.liferay.portal.configuration.metatype", version: "2.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
+	provided group: "commons-httpclient", name: "commons-httpclient", version: "3.1"
+	provided group: "net.sourceforge.nekohtml", name: "nekohtml", version: "1.9.16"
+	provided group: "org.apache.xmlgraphics", name: "batik-css", version: "1.7"
+	provided group: "org.apache.xmlgraphics", name: "batik-ext", version: "1.7"
+	provided group: "org.apache.xmlgraphics", name: "batik-util", version: "1.7"
+	provided group: "org.osgi", name: "org.osgi.core", version: "5.0.0"
+	provided group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+	provided group: "org.owasp.antisamy", name: "antisamy", version: "1.5.3"
+	provided group: "xerces", name: "xercesImpl", version: "2.9.1"
+	provided group: "xml-apis", name: "xml-apis", version: "1.3.04"
+	provided group: "xml-apis", name: "xml-apis-ext", version: "1.3.04"
+}
+
+processResources {
+	dependsOn processSanitizerConfiguration
+}
+
+processSanitizerConfiguration {
+	File sanitizerConfigurationFile = new File("src/main/resources/META-INF/resources/sanitizer-configuration.xml")
+
+	ext {
+		autoClean = false
+	}
+
+	filter {
+		String line ->
+
+		if (line.contains('<directive name="maxInputSize" value="20000"/>')) {
+			line = line.replace "20000", "200000"
+		}
+		else if (line.contains('<tag-rules>')) {
+			line = """
+				|	<allowed-empty-tags>
+				|		<literal-list>
+				|			<literal value="br"/>
+				|			<literal value="hr"/>
+				|			<literal value="a"/>
+				|			<literal value="img"/>
+				|			<literal value="param"/>
+				|			<literal value="input"/>
+				|			<literal value="textarea"/>
+				|			<literal value="basefont"/>
+				|			<literal value="col"/>
+				|			<literal value="div"/>
+				|			<literal value="source"/>
+				|		</literal-list>
+				|	</allowed-empty-tags>
+				|
+				|${line}
+				|		<tag name="picture" action="validate" />
+				|		<tag name="source" action="validate">
+				|			<attribute name="srcset">
+				|				<regexp-list>
+				|					<regexp name="onsiteURL"/>
+				|					<regexp name="offsiteURL"/>
+				|				</regexp-list>
+				|			</attribute>
+				|			<attribute name="media">
+				|				<regexp-list>
+				|					<regexp name="anything" />
+				|				</regexp-list>
+				|			</attribute>
+				|			<attribute name="type">
+				|				<regexp-list>
+				|					<regexp value="[a-zA-Z0-9\\-]+/[a-zA-Z0-9\\-]+" />
+				|				</regexp-list>
+				|			</attribute>
+				|		</tag>""".stripMargin()
+		}
+
+		return line
+	}
+
+	from {
+		FileUtil.get(project, sanitizerConfigurationUrl)
+	}
+
+	into sanitizerConfigurationFile.parentFile
+
+	onlyIf {
+		!sanitizerConfigurationFile.exists()
+	}
+
+	rename {
+		sanitizerConfigurationFile.name
+	}
+}

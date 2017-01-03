@@ -20,8 +20,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.tools.servicebuilder.ServiceBuilder;
+import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 
 import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
@@ -58,7 +57,7 @@ public class InstanceWrapperBuilder {
 		try {
 			File file = new File(xml);
 
-			Document document = SAXReaderUtil.read(file);
+			Document document = UnsecureSAXReaderUtil.read(file);
 
 			Element rootElement = document.getRootElement();
 
@@ -104,9 +103,7 @@ public class InstanceWrapperBuilder {
 
 		sb.append("public static ");
 		sb.append(javaClass.getName());
-		sb.append("_IW getInstance() {");
-		sb.append("return _instance;");
-		sb.append("}\n");
+		sb.append("_IW getInstance() {return _instance;}\n");
 
 		for (JavaMethod javaMethod : javaMethods) {
 			String methodName = javaMethod.getName();
@@ -139,6 +136,7 @@ public class InstanceWrapperBuilder {
 					TypeVariable typeParameter = typeParameters[i];
 
 					sb.append(typeParameter.getName());
+
 					sb.append(", ");
 				}
 
@@ -147,7 +145,7 @@ public class InstanceWrapperBuilder {
 				sb.append("> ");
 			}
 
-			sb.append(_getTypeGenericsName(javaMethod.getReturns()));
+			sb.append(_getTypeGenericsName(javaMethod.getReturnType()));
 			sb.append(" ");
 			sb.append(methodName);
 			sb.append(StringPool.OPEN_PARENTHESIS);
@@ -176,7 +174,7 @@ public class InstanceWrapperBuilder {
 
 			Type[] thrownExceptions = javaMethod.getExceptions();
 
-			Set<String> newExceptions = new LinkedHashSet<String>();
+			Set<String> newExceptions = new LinkedHashSet<>();
 
 			for (int j = 0; j < thrownExceptions.length; j++) {
 				Type thrownException = thrownExceptions[j];
@@ -197,7 +195,11 @@ public class InstanceWrapperBuilder {
 
 			sb.append("{\n");
 
-			if (!javaMethod.getReturns().getValue().equals("void")) {
+			Type returnType = javaMethod.getReturnType();
+
+			String returnTypeValue = returnType.getValue();
+
+			if (!returnTypeValue.equals("void")) {
 				sb.append("return ");
 			}
 
@@ -210,6 +212,7 @@ public class InstanceWrapperBuilder {
 				JavaParameter javaParameter = javaParameters[j];
 
 				sb.append(javaParameter.getName());
+
 				sb.append(", ");
 			}
 
@@ -217,16 +220,14 @@ public class InstanceWrapperBuilder {
 				sb.setIndex(sb.index() - 1);
 			}
 
-			sb.append(");");
-			sb.append("}\n");
+			sb.append(");}\n");
 		}
 
 		// Private constructor
 
 		sb.append("private ");
 		sb.append(javaClass.getName());
-		sb.append("_IW() {");
-		sb.append("}");
+		sb.append("_IW() {}");
 
 		// Fields
 
@@ -244,10 +245,10 @@ public class InstanceWrapperBuilder {
 
 		File file = new File(
 			parentDir + "/" +
-				StringUtil.replace(javaClass.getPackage().getName(), ".", "/") +
+				StringUtil.replace(javaClass.getPackage().getName(), '.', '/') +
 					"/" + javaClass.getName() + "_IW.java");
 
-		ServiceBuilder.writeFile(file, sb.toString());
+		ToolsUtil.writeFile(file, sb.toString(), null);
 	}
 
 	private String _getDimensions(Type type) {
@@ -264,7 +265,7 @@ public class InstanceWrapperBuilder {
 		throws IOException {
 
 		String className = StringUtil.replace(
-			srcFile.substring(0, srcFile.length() - 5), "/", ".");
+			srcFile.substring(0, srcFile.length() - 5), '/', '.');
 
 		JavaDocBuilder builder = new JavaDocBuilder();
 

@@ -1,0 +1,45 @@
+<definition component-name="portal-util-misc">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="IFrame Portlet" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="IFrame Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="IFrame Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="IFrame" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+		</if>
+	</tear-down>
+
+	<command name="ViewIFramePortlet" priority="3">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="IFrame Page" />
+		</execute>
+
+		<execute macro="Portlet#viewPG">
+			<var name="portletBody" value="Please configure this portlet to make it visible to all users." />
+			<var name="portletName" value="IFrame" />
+		</execute>
+	</command>
+</definition>

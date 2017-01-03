@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseSelectTag extends com.liferay.taglib.BaseValidatorTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -51,6 +51,10 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 
 	public boolean getDisabled() {
 		return _disabled;
+	}
+
+	public java.lang.String getField() {
+		return _field;
 	}
 
 	public boolean getFirst() {
@@ -95,6 +99,10 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 
 	public boolean getLocalizeLabel() {
 		return _localizeLabel;
+	}
+
+	public java.lang.Class<?> getModel() {
+		return _model;
 	}
 
 	public boolean getMultiple() {
@@ -151,185 +159,138 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setBean(java.lang.Object bean) {
 		_bean = bean;
-
-		setScopedAttribute("bean", bean);
 	}
 
 	public void setChangesContext(boolean changesContext) {
 		_changesContext = changesContext;
-
-		setScopedAttribute("changesContext", changesContext);
 	}
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setData(java.util.Map<java.lang.String, java.lang.Object> data) {
 		_data = data;
-
-		setScopedAttribute("data", data);
 	}
 
 	public void setDisabled(boolean disabled) {
 		_disabled = disabled;
+	}
 
-		setScopedAttribute("disabled", disabled);
+	public void setField(java.lang.String field) {
+		_field = field;
 	}
 
 	public void setFirst(boolean first) {
 		_first = first;
-
-		setScopedAttribute("first", first);
 	}
 
 	public void setHelpMessage(java.lang.String helpMessage) {
 		_helpMessage = helpMessage;
-
-		setScopedAttribute("helpMessage", helpMessage);
 	}
 
 	public void setId(java.lang.String id) {
 		_id = id;
-
-		setScopedAttribute("id", id);
 	}
 
 	public void setIgnoreRequestValue(boolean ignoreRequestValue) {
 		_ignoreRequestValue = ignoreRequestValue;
-
-		setScopedAttribute("ignoreRequestValue", ignoreRequestValue);
 	}
 
 	public void setInlineField(boolean inlineField) {
 		_inlineField = inlineField;
-
-		setScopedAttribute("inlineField", inlineField);
 	}
 
 	public void setInlineLabel(java.lang.String inlineLabel) {
 		_inlineLabel = inlineLabel;
-
-		setScopedAttribute("inlineLabel", inlineLabel);
 	}
 
 	public void setLabel(java.lang.String label) {
 		_label = label;
-
-		setScopedAttribute("label", label);
 	}
 
 	public void setLast(boolean last) {
 		_last = last;
-
-		setScopedAttribute("last", last);
 	}
 
 	public void setListType(java.lang.String listType) {
 		_listType = listType;
-
-		setScopedAttribute("listType", listType);
 	}
 
 	public void setListTypeFieldName(java.lang.String listTypeFieldName) {
 		_listTypeFieldName = listTypeFieldName;
-
-		setScopedAttribute("listTypeFieldName", listTypeFieldName);
 	}
 
 	public void setLocalizeLabel(boolean localizeLabel) {
 		_localizeLabel = localizeLabel;
+	}
 
-		setScopedAttribute("localizeLabel", localizeLabel);
+	public void setModel(java.lang.Class<?> model) {
+		_model = model;
 	}
 
 	public void setMultiple(boolean multiple) {
 		_multiple = multiple;
-
-		setScopedAttribute("multiple", multiple);
 	}
 
 	public void setName(java.lang.String name) {
 		_name = name;
-
-		setScopedAttribute("name", name);
 	}
 
 	public void setOnChange(java.lang.String onChange) {
 		_onChange = onChange;
-
-		setScopedAttribute("onChange", onChange);
 	}
 
 	public void setOnClick(java.lang.String onClick) {
 		_onClick = onClick;
-
-		setScopedAttribute("onClick", onClick);
 	}
 
 	public void setPrefix(java.lang.String prefix) {
 		_prefix = prefix;
-
-		setScopedAttribute("prefix", prefix);
 	}
 
 	public void setRequired(boolean required) {
 		_required = required;
-
-		setScopedAttribute("required", required);
 	}
 
 	public void setShowEmptyOption(boolean showEmptyOption) {
 		_showEmptyOption = showEmptyOption;
-
-		setScopedAttribute("showEmptyOption", showEmptyOption);
 	}
 
 	public void setShowRequiredLabel(boolean showRequiredLabel) {
 		_showRequiredLabel = showRequiredLabel;
-
-		setScopedAttribute("showRequiredLabel", showRequiredLabel);
 	}
 
 	public void setSuffix(java.lang.String suffix) {
 		_suffix = suffix;
-
-		setScopedAttribute("suffix", suffix);
 	}
 
 	public void setTitle(java.lang.String title) {
 		_title = title;
-
-		setScopedAttribute("title", title);
 	}
 
 	public void setUseNamespace(boolean useNamespace) {
 		_useNamespace = useNamespace;
-
-		setScopedAttribute("useNamespace", useNamespace);
 	}
 
 	public void setValue(java.lang.Object value) {
 		_value = value;
-
-		setScopedAttribute("value", value);
 	}
 
 	public void setWrapperCssClass(java.lang.String wrapperCssClass) {
 		_wrapperCssClass = wrapperCssClass;
-
-		setScopedAttribute("wrapperCssClass", wrapperCssClass);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_bean = null;
 		_changesContext = false;
 		_cssClass = null;
 		_data = null;
 		_disabled = false;
+		_field = null;
 		_first = false;
 		_helpMessage = null;
 		_id = null;
@@ -341,6 +302,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		_listType = null;
 		_listTypeFieldName = null;
 		_localizeLabel = true;
+		_model = null;
 		_multiple = false;
 		_name = null;
 		_onChange = null;
@@ -373,6 +335,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		setNamespacedAttribute(request, "cssClass", _cssClass);
 		setNamespacedAttribute(request, "data", _data);
 		setNamespacedAttribute(request, "disabled", _disabled);
+		setNamespacedAttribute(request, "field", _field);
 		setNamespacedAttribute(request, "first", _first);
 		setNamespacedAttribute(request, "helpMessage", _helpMessage);
 		setNamespacedAttribute(request, "id", _id);
@@ -384,6 +347,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 		setNamespacedAttribute(request, "listType", _listType);
 		setNamespacedAttribute(request, "listTypeFieldName", _listTypeFieldName);
 		setNamespacedAttribute(request, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(request, "model", _model);
 		setNamespacedAttribute(request, "multiple", _multiple);
 		setNamespacedAttribute(request, "name", _name);
 		setNamespacedAttribute(request, "onChange", _onChange);
@@ -412,6 +376,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 	private java.lang.String _cssClass = null;
 	private java.util.Map<java.lang.String, java.lang.Object> _data = null;
 	private boolean _disabled = false;
+	private java.lang.String _field = null;
 	private boolean _first = false;
 	private java.lang.String _helpMessage = null;
 	private java.lang.String _id = null;
@@ -423,6 +388,7 @@ public class BaseSelectTag extends com.liferay.taglib.util.IncludeTag {
 	private java.lang.String _listType = null;
 	private java.lang.String _listTypeFieldName = null;
 	private boolean _localizeLabel = true;
+	private java.lang.Class<?> _model = null;
 	private boolean _multiple = false;
 	private java.lang.String _name = null;
 	private java.lang.String _onChange = null;

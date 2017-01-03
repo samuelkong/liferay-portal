@@ -28,7 +28,7 @@
 <aui:script use="liferay-form">
 	Liferay.Form.register(
 		{
-			id: '<%= namespace + name %>'
+			id: '<%= namespace + HtmlUtil.escapeJS(name) %>'
 
 			<c:if test="<%= validatorTagsMap != null %>">
 				, fieldRules: [
@@ -36,8 +36,9 @@
 					<%
 					int i = 0;
 
-					for (String fieldName : validatorTagsMap.keySet()) {
-						List<ValidatorTag> validatorTags = validatorTagsMap.get(fieldName);
+					for (Map.Entry<String, List<ValidatorTag>> entry : validatorTagsMap.entrySet()) {
+						String fieldName = entry.getKey();
+						List<ValidatorTag> validatorTags = entry.getValue();
 
 						for (ValidatorTag validatorTag : validatorTags) {
 					%>
@@ -47,7 +48,7 @@
 							{
 								body: <%= validatorTag.getBody() %>,
 								custom: <%= validatorTag.isCustom() %>,
-								errorMessage: '<%= UnicodeLanguageUtil.get(request, validatorTag.getErrorMessage()) %>',
+								errorMessage: '<%= UnicodeLanguageUtil.get(resourceBundle, validatorTag.getErrorMessage()) %>',
 								fieldName: '<%= namespace + HtmlUtil.escapeJS(fieldName) %>',
 								validatorName: '<%= validatorTag.getName() %>'
 							}
@@ -69,7 +70,17 @@
 		}
 	);
 
+	var onDestroyPortlet = function(event) {
+		if (event.portletId === '<%= portletDisplay.getRootPortletId() %>') {
+			delete Liferay.Form._INSTANCES['<%= namespace + HtmlUtil.escapeJS(name) %>'];
+		}
+	};
+
+	Liferay.on('destroyPortlet', onDestroyPortlet);
+
 	<c:if test="<%= Validator.isNotNull(onSubmit) %>">
-		A.all('#<%= namespace + name %> .input-container').removeAttribute('disabled');
+		A.all('#<%= namespace + HtmlUtil.escapeJS(name) %> .input-container').removeAttribute('disabled');
 	</c:if>
+
+	Liferay.fire('<portlet:namespace />formReady');
 </aui:script>

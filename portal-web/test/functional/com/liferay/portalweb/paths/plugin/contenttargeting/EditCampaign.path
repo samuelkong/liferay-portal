@@ -1,0 +1,222 @@
+<html>
+<head>
+<title>EditCampaign</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">EditCampaign</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>SELECT_USER_SEGMENT_CHECKBOX</td>
+	<td>//div[contains(.,'${key_userSegmentName}') and contains(@class,'tree-node')]//span[contains(@class,'checkbox-container')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_USER_SEGMENT_SELECT</td>
+	<td>//button[@title='Select User Segments']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_USER_SEGMENT_APPLIED</td>
+	<td>//div[contains(@id,'assetCategorySelector')]//span[contains(@class,'textboxlistentry')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_START_DATE_FIELD</td>
+	<td>//input[contains(@id,'ContentTargetingPortlet_startDate')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_START_TIME_FIELD</td>
+	<td>//input[contains(@id,'ContentTargetingPortlet_startDateTime')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_END_DATE_FIELD</td>
+	<td>//input[contains(@id,'ContentTargetingPortlet_endDate')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_END_TIME_FIELD</td>
+	<td>//input[contains(@id,'ContentTargetingPortlet_endDateTime')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_PRIORITY_FIELD</td>
+	<td>//input[contains(@id,'ContentTargetingPortlet_priority')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TABLE-->
+<tr>
+	<td>CAMPAIGN_TABLE_PRIORITY</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_rowEntry}')]/td[7]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TABLE_STATUS</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_rowEntry}')]/td[8]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS</td>
+	<td>//div[@class='property-builder-field-label']/h5[normalize-space(text())='${key_campaignTrackingAction}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_DELETE</td>
+	<td>//div[contains(@class,'${key_trackingAction}trackingaction') and contains(@class,'form-builder')]//button/span[contains(@class,'glyphicon-trash')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_APPLIED</td>
+	<td>//div[@class='field-info']/h2[contains(.,'${key_trackingAction}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS_PAGE-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_PAGE_ALIAS_FIELD</td>
+	<td>//div[contains(@class,'pagetrackingaction')]//input[contains(@id,'alias')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_PAGE_FRIENDLY_URL_FIELD</td>
+	<td>//div[contains(@class,'pagetrackingaction')]//input[contains(@id,'friendlyURL')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_PAGE_TRACKING_ACTION</td>
+	<td>//div[contains(@class,'pagetrackingaction')]//select</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS_CUSTOM_FORM-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_CUSTOM_FORM_NAME_FIELD</td>
+	<td>//div[contains(@class,'formtrackingaction')]//input[contains(@id,'alias')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_CUSTOM_FORM_FORM_ID_FIELD</td>
+	<td>//div[contains(@class,'formtrackingaction')]//input[contains(@id,'elementId')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_CUSTOM_FORM_TRACKING_ACTION_SELECT</td>
+	<td>//div[contains(@class,'formtrackingaction')]//select[contains(@id,'eventType')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS_DDL_FORM-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_DDL_FORM_NAME_FIELD</td>
+	<td>//div[contains(@class,'ddlformtrackingaction')]//input[contains(@id,'alias')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_DDL_FORM_SELECT_BUTTON</td>
+	<td>//div[contains(@class,'ddlformtrackingaction')]//button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_DDL_FORM_FORM_NAME_FIELD</td>
+	<td>//div[contains(@class,'ddlformtrackingaction')]//input[@readonly='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_DDL_FORM_TRACKING_ACTION_SELECT</td>
+	<td>//div[contains(@class,'ddlformtrackingaction')]//select[contains(@id,'eventType')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS_YOUTUBE_VIDEOS-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_YOUTUBE_VIDEOS_ALIAS_FIELD</td>
+	<td>//div[contains(@class,'youtubetrackingaction')]//input[contains(@id,'alias')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_YOUTUBE_VIDEOS_VIDEO_ID_FIELD</td>
+	<td>//div[contains(@class,'youtubetrackingaction')]//div[contains(.,'video id')]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_YOUTUBE_VIDEOS_TRACKING_ACTION_SELECT</td>
+	<td>//div[contains(@class,'youtubetrackingaction')]//select[contains(@id,'eventType')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS_CONTENT-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_CONTENT_NAME_FIELD</td>
+	<td>//div[contains(@class,'contenttrackingaction')]//input[contains(@id,'alias')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_CONTENT_SELECT_CONTENT_BUTTON</td>
+	<td>//div[contains(@class,'contenttrackingaction')]//a[@title='Select']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_CONTENT_TRACKING_ACTION</td>
+	<td>//div[contains(@class,'contenttrackingaction')]//select</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--CAMPAIGN_TRACKING_ACTIONS_LINK-->
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_LINK_ALIAS_FIELD</td>
+	<td>//div[contains(@class,'linktrackingaction')]//input[contains(@id,'alias')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_LINK_ID_FIELD</td>
+	<td>//div[contains(@class,'linktrackingaction')]//div[contains(.,'Link id')]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAMPAIGN_TRACKING_ACTIONS_LINK_TRACKING_ACTION</td>
+	<td>//div[contains(@class,'linktrackingaction')]//select</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

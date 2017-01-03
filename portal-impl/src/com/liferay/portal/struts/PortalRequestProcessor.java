@@ -14,53 +14,55 @@
 
 package com.liferay.portal.struts;
 
-import com.liferay.portal.LayoutPermissionException;
-import com.liferay.portal.PortletActiveException;
-import com.liferay.portal.UserActiveException;
+import com.liferay.portal.kernel.exception.LayoutPermissionException;
+import com.liferay.portal.kernel.exception.PortletActiveException;
+import com.liferay.portal.kernel.exception.UserActiveException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletPreferencesIds;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTracker;
+import com.liferay.portal.kernel.model.UserTrackerPath;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
+import com.liferay.portal.kernel.portlet.InvokerPortlet;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.security.auth.InterruptedPortletRequestWhitelistUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.UserTrackerPathUtil;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.LastPath;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.liveusers.LiveUsers;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutConstants;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletPreferencesIds;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserTracker;
-import com.liferay.portal.model.UserTrackerPath;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
-import com.liferay.portal.service.PortletLocalServiceUtil;
-import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
-import com.liferay.portal.service.permission.PortletPermissionUtil;
-import com.liferay.portal.service.persistence.UserTrackerPathUtil;
-import com.liferay.portal.setup.SetupWizardUtil;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
-import com.liferay.portlet.InvokerPortlet;
-import com.liferay.portlet.PortletConfigFactoryUtil;
-import com.liferay.portlet.PortletInstanceFactoryUtil;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portlet.PortletURLImpl;
 import com.liferay.portlet.RenderRequestFactory;
 import com.liferay.portlet.RenderRequestImpl;
 import com.liferay.portlet.RenderResponseFactory;
@@ -111,7 +113,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		// auth.forward.last.path.
 
-		_lastPaths = new HashSet<String>();
+		_lastPaths = new HashSet<>();
 
 		_lastPaths.add(_PATH_PORTAL_LAYOUT);
 
@@ -119,7 +121,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		// auth.public.path.
 
-		_publicPaths = new HashSet<String>();
+		_publicPaths = new HashSet<>();
 
 		_publicPaths.add(_PATH_C);
 		_publicPaths.add(_PATH_PORTAL_API_JSONWS);
@@ -131,11 +133,12 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 		_publicPaths.add(_PATH_PORTAL_RENDER_PORTLET);
 		_publicPaths.add(_PATH_PORTAL_RESILIENCY);
 		_publicPaths.add(_PATH_PORTAL_TCK);
+		_publicPaths.add(_PATH_PORTAL_UPDATE_LANGUAGE);
 		_publicPaths.add(_PATH_PORTAL_UPDATE_PASSWORD);
 		_publicPaths.add(_PATH_PORTAL_VERIFY_EMAIL_ADDRESS);
 		_publicPaths.add(PropsValues.AUTH_LOGIN_DISABLED_PATH);
 
-		_trackerIgnorePaths = new HashSet<String>();
+		_trackerIgnorePaths = new HashSet<>();
 
 		addPaths(_trackerIgnorePaths, PropsKeys.SESSION_TRACKER_IGNORE_PATHS);
 	}
@@ -145,15 +148,6 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 			HttpServletRequest request, HttpServletResponse response)
 		throws IOException, ServletException {
 
-		HttpSession session = request.getSession();
-
-		Boolean basicAuthEnabled = (Boolean)session.getAttribute(
-			WebKeys.BASIC_AUTH_ENABLED);
-
-		if (basicAuthEnabled != null) {
-			session.removeAttribute(WebKeys.BASIC_AUTH_ENABLED);
-		}
-
 		String path = super.processPath(request, response);
 
 		ActionMapping actionMapping =
@@ -161,9 +155,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		Action action = StrutsActionRegistryUtil.getAction(path);
 
-		if (((basicAuthEnabled != null) && basicAuthEnabled.booleanValue()) ||
-			((actionMapping == null) && (action == null))) {
-
+		if ((actionMapping == null) && (action == null)) {
 			String lastPath = getLastPath(request);
 
 			if (_log.isDebugEnabled()) {
@@ -261,6 +253,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		PortletConfig portletConfig = PortletConfigFactoryUtil.create(
 			portlet, servletContext);
+
 		PortletContext portletContext = portletConfig.getPortletContext();
 
 		RenderRequestImpl renderRequestImpl = RenderRequestFactory.create(
@@ -346,8 +339,8 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 				request.getQueryString());
 		}
 
-		PortletURLImpl portletURL = new PortletURLImpl(
-			request, portletId, plid, PortletRequest.RENDER_PHASE);
+		LiferayPortletURL portletURL = PortletURLFactoryUtil.create(
+			request, portletId, layout, PortletRequest.RENDER_PHASE);
 
 		Map<String, String[]> parameterMap = request.getParameterMap();
 
@@ -421,7 +414,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 			return sb.toString();
 		}
 
-		Map<String, String[]> parameterMap = lastPath.getParameterMap();
+		String parameters = lastPath.getParameters();
 
 		// Only test for existing mappings for last paths that were set when the
 		// user accessed a layout directly instead of through its friendly URL
@@ -431,7 +424,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 				(ActionMapping)moduleConfig.findActionConfig(
 					lastPath.getPath());
 
-			if ((actionMapping == null) || (parameterMap == null)) {
+			if ((actionMapping == null) || parameters.isEmpty()) {
 				return sb.toString();
 			}
 		}
@@ -441,14 +434,13 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 		lastPathSB.append(portalURL);
 		lastPathSB.append(lastPath.getContextPath());
 		lastPathSB.append(lastPath.getPath());
-		lastPathSB.append(HttpUtil.parameterMapToString(parameterMap));
+		lastPathSB.append(parameters);
 
 		return lastPathSB.toString();
 	}
 
 	protected boolean isPortletPath(String path) {
-		if ((path != null) &&
-			!path.equals(_PATH_C) &&
+		if ((path != null) && !path.equals(_PATH_C) &&
 			!path.startsWith(_PATH_COMMON) &&
 			!path.contains(_PATH_J_SECURITY_CHECK) &&
 			!path.startsWith(_PATH_PORTAL)) {
@@ -662,7 +654,8 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 				if (lastPath == null) {
 					lastPath = new LastPath(
 						themeDisplay.getPathMain(), path,
-						request.getParameterMap());
+						HttpUtil.parameterMapToString(
+							request.getParameterMap()));
 				}
 
 				session.setAttribute(WebKeys.LAST_PATH, lastPath);
@@ -671,7 +664,7 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		// Setup wizard
 
-		if (!SetupWizardUtil.isSetupFinished()) {
+		if (PropsValues.SETUP_WIZARD_ENABLED) {
 			if (!path.equals(_PATH_PORTAL_LICENSE) &&
 				!path.equals(_PATH_PORTAL_STATUS)) {
 
@@ -721,10 +714,17 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 			return _PATH_PORTAL_ERROR;
 		}
 
+		long companyId = PortalUtil.getCompanyId(request);
+		String portletId = ParamUtil.getString(request, "p_p_id");
+
 		if (!path.equals(_PATH_PORTAL_JSON_SERVICE) &&
 			!path.equals(_PATH_PORTAL_RENDER_PORTLET) &&
 			!ParamUtil.getBoolean(request, "wsrp") &&
-			!themeDisplay.isImpersonated()) {
+			!themeDisplay.isImpersonated() &&
+			!InterruptedPortletRequestWhitelistUtil.
+				isPortletInvocationWhitelisted(
+					companyId, portletId,
+					PortalUtil.getStrutsAction(request))) {
 
 			// Authenticated users should agree to Terms of Use
 
@@ -745,12 +745,25 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 			// Authenticated users must have a current password
 
 			if ((user != null) && user.isPasswordReset()) {
-				return _PATH_PORTAL_UPDATE_PASSWORD;
+				try {
+					PasswordPolicy passwordPolicy = user.getPasswordPolicy();
+
+					if ((passwordPolicy == null) ||
+						passwordPolicy.isChangeable()) {
+
+						return _PATH_PORTAL_UPDATE_PASSWORD;
+					}
+				}
+				catch (Exception e) {
+					_log.error(e, e);
+
+					return _PATH_PORTAL_UPDATE_PASSWORD;
+				}
 			}
 			else if ((user != null) && !user.isPasswordReset() &&
 					 path.equals(_PATH_PORTAL_UPDATE_PASSWORD)) {
 
-				return null;
+				return _PATH_PORTAL_LAYOUT;
 			}
 
 			// Authenticated users must have an email address
@@ -797,9 +810,6 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 		if (isPortletPath(path)) {
 			try {
 				Portlet portlet = null;
-
-				long companyId = PortalUtil.getCompanyId(request);
-				String portletId = ParamUtil.getString(request, "p_p_id");
 
 				if (Validator.isNotNull(portletId)) {
 					portlet = PortletLocalServiceUtil.getPortletById(
@@ -850,8 +860,8 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 		Map<String, String[]> oldParameterMap = request.getParameterMap();
 
-		Map<String, String[]> newParameterMap =
-			new LinkedHashMap<String, String[]>(oldParameterMap.size());
+		Map<String, String[]> newParameterMap = new LinkedHashMap<>(
+			oldParameterMap.size());
 
 		for (Map.Entry<String, String[]> entry : oldParameterMap.entrySet()) {
 			String name = entry.getKey();
@@ -920,7 +930,8 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 				if (portlet != null) {
 					if (!strutsPath.equals(portlet.getStrutsPath())) {
-						throw new PrincipalException();
+						throw new PrincipalException.MustBePortletStrutsPath(
+							strutsPath, portletId);
 					}
 				}
 				else {
@@ -943,7 +954,9 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 							permissionChecker, layout, portlet,
 							ActionKeys.VIEW)) {
 
-						throw new PrincipalException();
+						throw new PrincipalException.MustHavePermission(
+							permissionChecker, Portlet.class.getName(),
+							portlet.getPortletId(), ActionKeys.VIEW);
 					}
 				}
 				else if ((portlet != null) && !portlet.isActive()) {
@@ -1027,6 +1040,9 @@ public class PortalRequestProcessor extends TilesRequestProcessor {
 
 	private static final String _PATH_PORTAL_UPDATE_EMAIL_ADDRESS =
 		"/portal/update_email_address";
+
+	private static final String _PATH_PORTAL_UPDATE_LANGUAGE =
+		"/portal/update_language";
 
 	private static final String _PATH_PORTAL_UPDATE_PASSWORD =
 		"/portal/update_password";

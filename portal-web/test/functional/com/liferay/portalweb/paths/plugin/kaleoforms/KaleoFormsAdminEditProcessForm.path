@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>KaleoFormsAdminEditProcessForm</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">KaleoFormsAdminEditProcessForm</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ADD_FORM_BUTTON</td>
+	<td>//button[contains(.,'Add Form')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON</td>
+	<td>//button[contains(.,'Save') and contains(@onclick,'saveTemplate')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--FORM_TABLE-->
+<tr>
+	<td>FORM_TABLE_NAME</td>
+	<td>//tr[contains(.,'${key_kfFormName}')]/td[contains(.,'${key_kfFormName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_TABLE_NAME_2</td>
+	<td>xpath=(//div[contains(@id,'kaleoformsportlet_ddmTemplates')]//tr[contains(.,'${key_kfFormName}')]/td[1])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_TABLE_NAME_LINK</td>
+	<td>//table[contains(@data-searchcontainerid,'ddmTemplatesSearchContainer')]//a[@data-name='${key_kfFormName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_TABLE_ACTIONS</td>
+	<td>//tr[contains(.,'${key_kfFormName}')]//a[contains(@class,'dropdown-toggle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--FORM_MENULIST-->
+<tr>
+	<td>FORM_MENULIST_EDIT</td>
+	<td>//a[@role='menuitem' and contains(.,'Edit Form')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_MENULIST_CHOOSE</td>
+	<td>//a[@role='menuitem' and contains(.,'Choose')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_MENULIST_DELETE</td>
+	<td>//a[@role='menuitem' and contains(.,'Delete')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

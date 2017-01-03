@@ -14,15 +14,15 @@
 
 package com.liferay.taglib.util;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +32,12 @@ import java.util.List;
  */
 public class AssetCategoryUtil {
 
-	public static final String _CATEGORY_SEPARATOR = "_CATEGORY_";
+	public static final String CATEGORY_SEPARATOR = "_CATEGORY_";
 
 	public static long[] filterCategoryIds(
 		long vocabularyId, long[] categoryIds) {
 
-		List<Long> filteredCategoryIds = new ArrayList<Long>();
+		List<Long> filteredCategoryIds = new ArrayList<>();
 
 		for (long categoryId : categoryIds) {
 			AssetCategory category =
@@ -86,14 +86,12 @@ public class AssetCategoryUtil {
 						continue;
 					}
 
-					category = category.toEscapedModel();
-
 					categoryIdsSb.append(categoryId);
 					categoryIdsSb.append(StringPool.COMMA);
 
 					categoryNamesSb.append(
 						category.getTitle(themeDisplay.getLocale()));
-					categoryNamesSb.append(_CATEGORY_SEPARATOR);
+					categoryNamesSb.append(CATEGORY_SEPARATOR);
 				}
 
 				if (categoryIdsSb.index() > 0) {

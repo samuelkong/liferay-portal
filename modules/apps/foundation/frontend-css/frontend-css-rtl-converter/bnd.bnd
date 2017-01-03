@@ -1,0 +1,18 @@
+Bundle-Name: Liferay Frontend CSS RTL Converter
+Bundle-SymbolicName: com.liferay.frontend.css.rtl.converter
+Bundle-Version: 1.0.4
+Export-Package: com.liferay.frontend.css.rtl.converter
+Import-Package:\
+	!org.junit,\
+	!org.junit.*,\
+	\
+	!org.slf4j,\
+	!org.slf4j.*,\
+	*
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title:
+-includeresource:\
+	@annotations-[0-9]*.jar,\
+	@ph-commons-[0-9]*.jar,\
+	@ph-css-[0-9]*.jar,\
+	@slf4j-api-[0-9]*.jar

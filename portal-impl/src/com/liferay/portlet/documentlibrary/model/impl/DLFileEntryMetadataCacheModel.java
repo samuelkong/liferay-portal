@@ -16,11 +16,12 @@ package com.liferay.portlet.documentlibrary.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.documentlibrary.model.DLFileEntryMetadata;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -38,6 +39,30 @@ import java.io.ObjectOutput;
 public class DLFileEntryMetadataCacheModel implements CacheModel<DLFileEntryMetadata>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof DLFileEntryMetadataCacheModel)) {
+			return false;
+		}
+
+		DLFileEntryMetadataCacheModel dlFileEntryMetadataCacheModel = (DLFileEntryMetadataCacheModel)obj;
+
+		if (fileEntryMetadataId == dlFileEntryMetadataCacheModel.fileEntryMetadataId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, fileEntryMetadataId);
+	}
+
+	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(15);
 
@@ -45,12 +70,12 @@ public class DLFileEntryMetadataCacheModel implements CacheModel<DLFileEntryMeta
 		sb.append(uuid);
 		sb.append(", fileEntryMetadataId=");
 		sb.append(fileEntryMetadataId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", DDMStorageId=");
 		sb.append(DDMStorageId);
 		sb.append(", DDMStructureId=");
 		sb.append(DDMStructureId);
-		sb.append(", fileEntryTypeId=");
-		sb.append(fileEntryTypeId);
 		sb.append(", fileEntryId=");
 		sb.append(fileEntryId);
 		sb.append(", fileVersionId=");
@@ -72,9 +97,9 @@ public class DLFileEntryMetadataCacheModel implements CacheModel<DLFileEntryMeta
 		}
 
 		dlFileEntryMetadataImpl.setFileEntryMetadataId(fileEntryMetadataId);
+		dlFileEntryMetadataImpl.setCompanyId(companyId);
 		dlFileEntryMetadataImpl.setDDMStorageId(DDMStorageId);
 		dlFileEntryMetadataImpl.setDDMStructureId(DDMStructureId);
-		dlFileEntryMetadataImpl.setFileEntryTypeId(fileEntryTypeId);
 		dlFileEntryMetadataImpl.setFileEntryId(fileEntryId);
 		dlFileEntryMetadataImpl.setFileVersionId(fileVersionId);
 
@@ -86,11 +111,17 @@ public class DLFileEntryMetadataCacheModel implements CacheModel<DLFileEntryMeta
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		fileEntryMetadataId = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+
 		DDMStorageId = objectInput.readLong();
+
 		DDMStructureId = objectInput.readLong();
-		fileEntryTypeId = objectInput.readLong();
+
 		fileEntryId = objectInput.readLong();
+
 		fileVersionId = objectInput.readLong();
 	}
 
@@ -105,18 +136,23 @@ public class DLFileEntryMetadataCacheModel implements CacheModel<DLFileEntryMeta
 		}
 
 		objectOutput.writeLong(fileEntryMetadataId);
+
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(DDMStorageId);
+
 		objectOutput.writeLong(DDMStructureId);
-		objectOutput.writeLong(fileEntryTypeId);
+
 		objectOutput.writeLong(fileEntryId);
+
 		objectOutput.writeLong(fileVersionId);
 	}
 
 	public String uuid;
 	public long fileEntryMetadataId;
+	public long companyId;
 	public long DDMStorageId;
 	public long DDMStructureId;
-	public long fileEntryTypeId;
 	public long fileEntryId;
 	public long fileVersionId;
 }

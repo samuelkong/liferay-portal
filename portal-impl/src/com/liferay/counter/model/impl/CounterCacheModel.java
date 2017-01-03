@@ -16,11 +16,12 @@ package com.liferay.counter.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.counter.model.Counter;
+import com.liferay.counter.kernel.model.Counter;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -36,6 +37,30 @@ import java.io.ObjectOutput;
  */
 @ProviderType
 public class CounterCacheModel implements CacheModel<Counter>, Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof CounterCacheModel)) {
+			return false;
+		}
+
+		CounterCacheModel counterCacheModel = (CounterCacheModel)obj;
+
+		if (name.equals(counterCacheModel.name)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, name);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(5);
@@ -70,6 +95,7 @@ public class CounterCacheModel implements CacheModel<Counter>, Externalizable {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		name = objectInput.readUTF();
+
 		currentId = objectInput.readLong();
 	}
 

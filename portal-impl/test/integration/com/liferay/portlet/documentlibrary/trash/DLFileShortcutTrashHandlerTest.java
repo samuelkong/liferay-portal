@@ -14,67 +14,109 @@
 
 package com.liferay.portlet.documentlibrary.trash;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.model.DLFileShortcut;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileShortcutLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLTrashServiceUtil;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ClassedModel;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.model.BaseModel;
-import com.liferay.portal.model.ClassedModel;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.test.Sync;
-import com.liferay.portal.test.SynchronousDestinationExecutionTestListener;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.GroupTestUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portal.util.test.ServiceContextTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portlet.documentlibrary.model.DLFileShortcut;
-import com.liferay.portlet.documentlibrary.model.DLFolder;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLFileShortcutLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.documentlibrary.util.test.DLAppTestUtil;
-import com.liferay.portlet.trash.BaseTrashHandlerTestCase;
+import com.liferay.portlet.trash.test.BaseTrashHandlerTestCase;
+import com.liferay.portlet.trash.test.DefaultWhenIsAssetable;
+import com.liferay.portlet.trash.test.WhenHasGrandParent;
+import com.liferay.portlet.trash.test.WhenIsAssetable;
+import com.liferay.portlet.trash.test.WhenIsAssetableParentModel;
+import com.liferay.portlet.trash.test.WhenIsMoveableFromTrashBaseModel;
+import com.liferay.portlet.trash.test.WhenIsRestorableBaseModel;
+import com.liferay.portlet.trash.test.WhenIsUpdatableBaseModel;
 
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Zsolt Berentey
  * @author Eudaldo Alonso
  */
-@ExecutionTestListeners(
-	listeners = {
-		MainServletExecutionTestListener.class,
-		SynchronousDestinationExecutionTestListener.class
-	})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 @Sync
-public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
+public class DLFileShortcutTrashHandlerTest
+	extends BaseTrashHandlerTestCase
+	implements WhenHasGrandParent, WhenIsAssetableParentModel,
+			   WhenIsMoveableFromTrashBaseModel, WhenIsRestorableBaseModel,
+			   WhenIsUpdatableBaseModel {
 
-	@Ignore()
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			SynchronousDestinationTestRule.INSTANCE);
+
 	@Override
-	@Test
-	public void testTrashAndDeleteDraft() throws Exception {
+	public AssetEntry fetchAssetEntry(ClassedModel classedModel)
+		throws Exception {
+
+		return _whenIsAssetable.fetchAssetEntry(classedModel);
 	}
 
-	@Ignore()
 	@Override
-	@Test
-	public void testTrashAndRestoreDraft() throws Exception {
+	public String getParentBaseModelClassName() {
+		Class<DLFolder> dlFolderClass = DLFolder.class;
+
+		return dlFolderClass.getName();
 	}
 
-	@Ignore()
 	@Override
-	@Test
-	public void testTrashDuplicate() throws Exception {
+	public boolean isAssetEntryVisible(ClassedModel classedModel, long classPK)
+		throws Exception {
+
+		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
+			classedModel.getModelClassName(), classPK);
+
+		return assetEntry.isVisible();
+	}
+
+	@Override
+	public BaseModel<?> moveBaseModelFromTrash(
+			ClassedModel classedModel, Group group,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		BaseModel<?> parentBaseModel = getParentBaseModel(
+			group, serviceContext);
+
+		DLTrashServiceUtil.moveFileShortcutFromTrash(
+			(Long)classedModel.getPrimaryKeyObj(),
+			(Long)parentBaseModel.getPrimaryKeyObj(), serviceContext);
+
+		return parentBaseModel;
+	}
+
+	@Override
+	public void moveParentBaseModelToTrash(long primaryKey) throws Exception {
+		DLTrashServiceUtil.moveFolderToTrash(primaryKey);
 	}
 
 	@Test
@@ -82,46 +124,28 @@ public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
 		trashFileEntry();
 	}
 
-	@Ignore()
 	@Override
-	@Test
-	public void testTrashMyBaseModel() throws Exception {
-	}
+	public BaseModel<?> updateBaseModel(
+			long primaryKey, ServiceContext serviceContext)
+		throws Exception {
 
-	@Ignore()
-	@Override
-	@Test
-	public void testTrashRecentBaseModel() throws Exception {
-	}
+		DLFileShortcut dlFileShortcut =
+			DLFileShortcutLocalServiceUtil.getFileShortcut(primaryKey);
 
-	@Ignore()
-	@Override
-	@Test
-	public void testTrashVersionBaseModelAndDelete() throws Exception {
-	}
+		if (serviceContext.getWorkflowAction() ==
+				WorkflowConstants.ACTION_SAVE_DRAFT) {
 
-	@Ignore()
-	@Override
-	@Test
-	public void testTrashVersionBaseModelAndRestore() throws Exception {
-	}
+			DLFileShortcutLocalServiceUtil.updateStatus(
+				TestPropsValues.getUserId(), primaryKey,
+				WorkflowConstants.STATUS_DRAFT, serviceContext);
+		}
 
-	@Ignore()
-	@Override
-	@Test
-	public void testTrashVersionParentBaseModel() throws Exception {
-	}
-
-	@Ignore()
-	@Override
-	@Test
-	public void testTrashVersionParentBaseModelAndRestore() throws Exception {
+		return dlFileShortcut;
 	}
 
 	@Override
 	protected BaseModel<?> addBaseModelWithWorkflow(
-			BaseModel<?> parentBaseModel, boolean approved,
-			ServiceContext serviceContext)
+			BaseModel<?> parentBaseModel, ServiceContext serviceContext)
 		throws Exception {
 
 		DLFolder dlFolder = (DLFolder)parentBaseModel;
@@ -130,29 +154,29 @@ public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
 			dlFolder.getGroupId(), dlFolder.getFolderId(), serviceContext);
 	}
 
+	protected BaseModel<?> addBaseModelWithWorkflow(
+			long groupId, long folderId, ServiceContext serviceContext)
+		throws Exception {
+
+		FileEntry fileEntry = DLAppTestUtil.addFileEntryWithWorkflow(
+			TestPropsValues.getUserId(), groupId,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "Text.txt", "Text.txt",
+			true, serviceContext);
+
+		FileShortcut fileShortcut = DLAppServiceUtil.addFileShortcut(
+			groupId, folderId, fileEntry.getFileEntryId(), serviceContext);
+
+		return (BaseModel<?>)fileShortcut.getModel();
+	}
+
 	@Override
 	protected BaseModel<?> addBaseModelWithWorkflow(
-			boolean approved, ServiceContext serviceContext)
+			ServiceContext serviceContext)
 		throws Exception {
 
 		return addBaseModelWithWorkflow(
 			serviceContext.getScopeGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, serviceContext);
-	}
-
-	protected BaseModel<?> addBaseModelWithWorkflow(
-			long groupId, long folderId, ServiceContext serviceContext)
-		throws Exception {
-
-		serviceContext = (ServiceContext)serviceContext.clone();
-
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
-
-		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-			groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "Text.txt");
-
-		return DLAppServiceUtil.addFileShortcut(
-			groupId, folderId, fileEntry.getFileEntryId(), serviceContext);
 	}
 
 	@Override
@@ -208,56 +232,13 @@ public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
 	}
 
 	@Override
-	protected Class<?> getParentBaseModelClass() {
-		return DLFolder.class;
-	}
-
-	@Override
-	protected String getSearchKeywords() {
-		return "Title";
-	}
-
-	@Override
 	protected String getUniqueTitle(BaseModel<?> baseModel) {
 		return null;
 	}
 
 	@Override
-	protected boolean isAssetableModel() {
-		return false;
-	}
-
-	@Override
-	protected boolean isIndexableBaseModel() {
-		return false;
-	}
-
-	@Override
-	protected BaseModel<?> moveBaseModelFromTrash(
-			ClassedModel classedModel, Group group,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		BaseModel<?> parentBaseModel = getParentBaseModel(
-			group, serviceContext);
-
-		DLAppServiceUtil.moveFileShortcutFromTrash(
-			(Long)classedModel.getPrimaryKeyObj(),
-			(Long)parentBaseModel.getPrimaryKeyObj(), serviceContext);
-
-		return parentBaseModel;
-	}
-
-	@Override
 	protected void moveBaseModelToTrash(long primaryKey) throws Exception {
-		DLAppServiceUtil.moveFileShortcutToTrash(primaryKey);
-	}
-
-	@Override
-	protected void moveParentBaseModelToTrash(long primaryKey)
-		throws Exception {
-
-		DLAppServiceUtil.moveFolderToTrash(primaryKey);
+		DLTrashServiceUtil.moveFileShortcutToTrash(primaryKey);
 	}
 
 	protected void trashFileEntry() throws Exception {
@@ -271,10 +252,10 @@ public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
 
 		int initialBaseModelsCount = getNotInTrashBaseModelsCount(
 			parentBaseModel);
+
 		int initialTrashEntriesCount = getTrashEntriesCount(group.getGroupId());
 
-		BaseModel<?> baseModel = addBaseModel(
-			parentBaseModel, true, serviceContext);
+		BaseModel<?> baseModel = addBaseModel(parentBaseModel, serviceContext);
 
 		DLFileShortcut dlFileShortcut = (DLFileShortcut)baseModel;
 
@@ -287,7 +268,7 @@ public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
 		Assert.assertEquals(
 			initialTrashEntriesCount, getTrashEntriesCount(group.getGroupId()));
 
-		DLAppServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
+		DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
 
 		Assert.assertEquals(
 			initialBaseModelsCount,
@@ -296,30 +277,15 @@ public class DLFileShortcutTrashHandlerTest extends BaseTrashHandlerTestCase {
 			initialTrashEntriesCount + 1,
 			getTrashEntriesCount(group.getGroupId()));
 
-		DLAppServiceUtil.restoreFileEntryFromTrash(fileEntry.getFileEntryId());
+		DLTrashServiceUtil.restoreFileEntryFromTrash(
+			fileEntry.getFileEntryId());
 
 		Assert.assertEquals(
 			initialBaseModelsCount + 1,
 			getNotInTrashBaseModelsCount(parentBaseModel));
 	}
 
-	@Override
-	protected BaseModel<?> updateBaseModel(
-			long primaryKey, ServiceContext serviceContext)
-		throws Exception {
-
-		DLFileShortcut dlFileShortcut =
-			DLFileShortcutLocalServiceUtil.getFileShortcut(primaryKey);
-
-		if (serviceContext.getWorkflowAction() ==
-				WorkflowConstants.ACTION_SAVE_DRAFT) {
-
-			DLFileShortcutLocalServiceUtil.updateStatus(
-				TestPropsValues.getUserId(), primaryKey,
-				WorkflowConstants.STATUS_DRAFT, serviceContext);
-		}
-
-		return dlFileShortcut;
-	}
+	private final WhenIsAssetable _whenIsAssetable =
+		new DefaultWhenIsAssetable();
 
 }

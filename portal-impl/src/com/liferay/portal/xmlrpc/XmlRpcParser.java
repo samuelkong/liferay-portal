@@ -80,7 +80,8 @@ public class XmlRpcParser {
 			xmlStreamReader.next();
 
 			String methodName = xmlStreamReader.getText();
-			List<Object> arguments = new ArrayList<Object>();
+
+			List<Object> arguments = new ArrayList<>();
 
 			xmlStreamReader.nextTag();
 
@@ -277,12 +278,12 @@ public class XmlRpcParser {
 			sb.append(value.toString());
 			sb.append("</string>");
 		}
-		else if ((value instanceof Integer) || (value instanceof Short)) {
+		else if (value instanceof Integer || value instanceof Short) {
 			sb.append("<i4>");
 			sb.append(value.toString());
 			sb.append("</i4>");
 		}
-		else if ((value instanceof Double) || (value instanceof Float)) {
+		else if (value instanceof Double || value instanceof Float) {
 			sb.append("<double>");
 			sb.append(value.toString());
 			sb.append("</double>");

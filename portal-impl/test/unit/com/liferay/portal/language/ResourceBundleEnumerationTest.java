@@ -14,8 +14,7 @@
 
 package com.liferay.portal.language;
 
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,13 +33,12 @@ import org.junit.Test;
 public class ResourceBundleEnumerationTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Test
 	public void testWithEnumeration() {
-		Set<String> set = new LinkedHashSet<String>(
-			Arrays.asList("key1", "key2"));
+		Set<String> set = new LinkedHashSet<>(Arrays.asList("key1", "key2"));
 		Enumeration<String> enumeration = Collections.enumeration(
 			Arrays.asList("key2", "key3"));
 
@@ -49,10 +47,7 @@ public class ResourceBundleEnumerationTest {
 
 		Assert.assertTrue(resourceBundleEnumeration.hasMoreElements());
 		Assert.assertEquals("key1", resourceBundleEnumeration.nextElement());
-		Assert.assertEquals(
-			"key2",
-			ReflectionTestUtil.invokeBridge(
-				resourceBundleEnumeration, "nextElement", new Class<?>[0]));
+		Assert.assertEquals("key2", resourceBundleEnumeration.nextElement());
 		Assert.assertTrue(resourceBundleEnumeration.hasMoreElements());
 		Assert.assertEquals("key3", resourceBundleEnumeration.nextElement());
 
@@ -67,18 +62,14 @@ public class ResourceBundleEnumerationTest {
 
 	@Test
 	public void testWithoutEnumeration() {
-		Set<String> set = new LinkedHashSet<String>(
-			Arrays.asList("key1", "key2"));
+		Set<String> set = new LinkedHashSet<>(Arrays.asList("key1", "key2"));
 
 		ResourceBundleEnumeration resourceBundleEnumeration =
 			new ResourceBundleEnumeration(set, null);
 
 		Assert.assertTrue(resourceBundleEnumeration.hasMoreElements());
 		Assert.assertEquals("key1", resourceBundleEnumeration.nextElement());
-		Assert.assertEquals(
-			"key2",
-			ReflectionTestUtil.invokeBridge(
-				resourceBundleEnumeration, "nextElement", new Class<?>[0]));
+		Assert.assertEquals("key2", resourceBundleEnumeration.nextElement());
 
 		try {
 			resourceBundleEnumeration.nextElement();

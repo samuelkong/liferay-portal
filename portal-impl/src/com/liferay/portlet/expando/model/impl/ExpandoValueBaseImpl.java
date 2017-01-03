@@ -16,8 +16,8 @@ package com.liferay.portlet.expando.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.expando.model.ExpandoValue;
-import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
+import com.liferay.expando.kernel.model.ExpandoValue;
+import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
 
 /**
  * The extended model base implementation for the ExpandoValue service. Represents a row in the &quot;ExpandoValue&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see ExpandoValueImpl
- * @see com.liferay.portlet.expando.model.ExpandoValue
+ * @see ExpandoValue
  * @generated
  */
 @ProviderType

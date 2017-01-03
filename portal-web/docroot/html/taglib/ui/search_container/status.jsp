@@ -28,12 +28,15 @@ User statusByUser = UserLocalServiceUtil.fetchUser(statusByUserId);
 	<liferay-util:buffer var="buffer">
 		<div class="user-status-tooltip">
 			<span class="user-status-avatar">
-				<img alt="<%= HtmlUtil.escapeAttribute(statusByUser.getFullName()) %>" class="user-status-avatar-image" src="<%= HtmlUtil.escape(statusByUser.getPortraitURL(themeDisplay)) %>" />
+				<liferay-ui:user-portrait
+					userId="<%= statusByUser.getUserId() %>"
+				/>
 			</span>
 			<span class="user-status-info">
 				<div class="user-status-name">
-					<aui:a href="<%= statusByUser.getDisplayURL(themeDisplay) %>"><%= StringUtil.shorten(statusByUser.getFullName(), 20) %></aui:a>
+					<aui:a href="<%= statusByUser.isActive() ? statusByUser.getDisplayURL(themeDisplay) : null %>"><%= HtmlUtil.escape(StringUtil.shorten(statusByUser.getFullName(), 20)) %></aui:a>
 				</div>
+
 				<div class="user-status-date">
 					<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - statusDate.getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
 				</div>

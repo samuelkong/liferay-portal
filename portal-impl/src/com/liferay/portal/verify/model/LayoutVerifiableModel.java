@@ -14,7 +14,10 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portal.model.Layout;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.verify.model.VerifiableAuditedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
 
 /**
  * @author Miguel Pastor
@@ -51,6 +54,16 @@ public class LayoutVerifiableModel
 	@Override
 	public String getTableName() {
 		return "Layout";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
+	}
+
+	@Override
+	public boolean isAnonymousUserAllowed() {
+		return false;
 	}
 
 	@Override

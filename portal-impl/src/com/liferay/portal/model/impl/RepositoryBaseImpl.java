@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.Repository;
-import com.liferay.portal.service.RepositoryLocalServiceUtil;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
 
 /**
  * The extended model base implementation for the Repository service. Represents a row in the &quot;Repository&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.RepositoryLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see RepositoryImpl
- * @see com.liferay.portal.model.Repository
+ * @see Repository
  * @generated
  */
 @ProviderType

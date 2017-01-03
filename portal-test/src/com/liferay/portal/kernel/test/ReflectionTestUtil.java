@@ -14,13 +14,11 @@
 
 package com.liferay.portal.kernel.test;
 
-import static com.liferay.portal.kernel.util.ReflectionUtil.getDeclaredField;
-import static com.liferay.portal.kernel.util.ReflectionUtil.getDeclaredMethod;
-
 import com.liferay.portal.kernel.util.ReflectionUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import java.util.Arrays;
@@ -29,6 +27,40 @@ import java.util.Arrays;
  * @author Shuyang Zhou
  */
 public class ReflectionTestUtil {
+
+	public static <T> T getAndSetFieldValue(
+		Class<?> clazz, String fieldName, T newValue) {
+
+		Field field = getField(clazz, fieldName);
+
+		try {
+			T t = (T)field.get(null);
+
+			field.set(null, newValue);
+
+			return t;
+		}
+		catch (Exception e) {
+			return ReflectionUtil.throwException(e);
+		}
+	}
+
+	public static <T> T getAndSetFieldValue(
+		Object instance, String fieldName, T newValue) {
+
+		Field field = getField(instance.getClass(), fieldName);
+
+		try {
+			T t = (T)field.get(instance);
+
+			field.set(instance, newValue);
+
+			return t;
+		}
+		catch (Exception e) {
+			return ReflectionUtil.throwException(e);
+		}
+	}
 
 	public static Method getBridgeMethod(
 		Class<?> clazz, String methodName, Class<?>... parameterTypes) {
@@ -53,7 +85,7 @@ public class ReflectionTestUtil {
 				return bridgeMethod;
 			}
 
-			clazz =  clazz.getSuperclass();
+			clazz = clazz.getSuperclass();
 		}
 
 		return ReflectionUtil.throwException(
@@ -165,6 +197,9 @@ public class ReflectionTestUtil {
 		try {
 			return (T)method.invoke(null, parameters);
 		}
+		catch (InvocationTargetException ite) {
+			return ReflectionUtil.throwException(ite.getCause());
+		}
 		catch (Exception e) {
 			return ReflectionUtil.throwException(e);
 		}
@@ -180,6 +215,9 @@ public class ReflectionTestUtil {
 		try {
 			return (T)method.invoke(instance, parameters);
 		}
+		catch (InvocationTargetException ite) {
+			return ReflectionUtil.throwException(ite.getCause());
+		}
 		catch (Exception e) {
 			return ReflectionUtil.throwException(e);
 		}
@@ -194,6 +232,9 @@ public class ReflectionTestUtil {
 
 		try {
 			return (T)method.invoke(instance, parameters);
+		}
+		catch (InvocationTargetException ite) {
+			return ReflectionUtil.throwException(ite.getCause());
 		}
 		catch (Exception e) {
 			return ReflectionUtil.throwException(e);
@@ -229,18 +270,19 @@ public class ReflectionTestUtil {
 			Constructor<T> constructor = enumClass.getDeclaredConstructor(
 				parameterTypes);
 
-			Method acquireConstructorAccessorMethod = getDeclaredMethod(
-				Constructor.class, "acquireConstructorAccessor");
+			Method acquireConstructorAccessorMethod =
+				ReflectionUtil.getDeclaredMethod(
+					Constructor.class, "acquireConstructorAccessor");
 
 			acquireConstructorAccessorMethod.invoke(constructor);
 
-			Field constructorAccessorField = getDeclaredField(
+			Field constructorAccessorField = ReflectionUtil.getDeclaredField(
 				Constructor.class, "constructorAccessor");
 
 			Object constructorAccessor = constructorAccessorField.get(
 				constructor);
 
-			Method newInstanceMethod = getDeclaredMethod(
+			Method newInstanceMethod = ReflectionUtil.getDeclaredMethod(
 				constructorAccessor.getClass(), "newInstance", Object[].class);
 
 			Object[] parameters = null;

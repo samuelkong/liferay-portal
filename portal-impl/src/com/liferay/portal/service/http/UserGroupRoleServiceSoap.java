@@ -18,13 +18,13 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.service.UserGroupRoleServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.service.UserGroupRoleServiceUtil} service utility. The
+ * {@link UserGroupRoleServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -32,10 +32,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portal.model.UserGroupRoleSoap}.
+ * is translated to an array of {@link com.liferay.portal.kernel.model.UserGroupRoleSoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portal.model.UserGroupRole}, that is translated to a
- * {@link com.liferay.portal.model.UserGroupRoleSoap}. Methods that SOAP cannot
+ * {@link com.liferay.portal.kernel.model.UserGroupRole}, that is translated to a
+ * {@link com.liferay.portal.kernel.model.UserGroupRoleSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -58,8 +58,8 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see UserGroupRoleServiceHttp
- * @see com.liferay.portal.model.UserGroupRoleSoap
- * @see com.liferay.portal.service.UserGroupRoleServiceUtil
+ * @see com.liferay.portal.kernel.model.UserGroupRoleSoap
+ * @see UserGroupRoleServiceUtil
  * @generated
  */
 @ProviderType
@@ -106,6 +106,19 @@ public class UserGroupRoleServiceSoap {
 		try {
 			UserGroupRoleServiceUtil.deleteUserGroupRoles(userIds, groupId,
 				roleId);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void updateUserGroupRoles(long userId, long groupId,
+		long[] addedRoleIds, long[] deletedRoleIds) throws RemoteException {
+		try {
+			UserGroupRoleServiceUtil.updateUserGroupRoles(userId, groupId,
+				addedRoleIds, deletedRoleIds);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

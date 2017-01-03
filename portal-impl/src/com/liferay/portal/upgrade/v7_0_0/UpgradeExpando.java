@@ -15,9 +15,8 @@
 package com.liferay.portal.upgrade.v7_0_0;
 
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.upgrade.v7_0_0.util.ExpandoColumnTable;
 import com.liferay.portal.upgrade.v7_0_0.util.ExpandoValueTable;
-
-import java.sql.SQLException;
 
 /**
  * @author Tibor Lipusz
@@ -26,15 +25,12 @@ public class UpgradeExpando extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try {
-			runSQL("alter_column_type ExpandoValue data_ TEXT null");
-		}
-		catch (SQLException sqle) {
-			upgradeTable(
-				ExpandoValueTable.TABLE_NAME, ExpandoValueTable.TABLE_COLUMNS,
-				ExpandoValueTable.TABLE_SQL_CREATE,
-				ExpandoValueTable.TABLE_SQL_ADD_INDEXES);
-		}
+		alter(
+			ExpandoColumnTable.class,
+			new AlterColumnType("defaultData", "TEXT null"));
+
+		alter(
+			ExpandoValueTable.class, new AlterColumnType("data_", "TEXT null"));
 	}
 
 }

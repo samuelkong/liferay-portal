@@ -14,11 +14,12 @@
 
 package com.liferay.portlet.expando.service.permission;
 
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
+import com.liferay.expando.kernel.service.permission.ExpandoColumnPermission;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portlet.expando.model.ExpandoColumn;
-import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
  * @author Raymond Augé
@@ -32,7 +33,9 @@ public class ExpandoColumnPermissionImpl implements ExpandoColumnPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, column, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, ExpandoColumn.class.getName(),
+				column.getColumnId(), actionId);
 		}
 	}
 
@@ -42,7 +45,9 @@ public class ExpandoColumnPermissionImpl implements ExpandoColumnPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, columnId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, ExpandoColumn.class.getName(), columnId,
+				actionId);
 		}
 	}
 
@@ -53,12 +58,10 @@ public class ExpandoColumnPermissionImpl implements ExpandoColumnPermission {
 			String actionId)
 		throws PortalException {
 
-		if (!contains(
-				permissionChecker, companyId, className, tableName, columnName,
-				actionId)) {
+		ExpandoColumn column = ExpandoColumnLocalServiceUtil.getColumn(
+			companyId, className, tableName, columnName);
 
-			throw new PrincipalException();
-		}
+		check(permissionChecker, column, actionId);
 	}
 
 	@Override

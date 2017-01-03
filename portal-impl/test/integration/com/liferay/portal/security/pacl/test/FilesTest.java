@@ -15,83 +15,64 @@
 package com.liferay.portal.security.pacl.test;
 
 import com.liferay.portal.kernel.security.pacl.permission.PortalFilePermission;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.OSDetector;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
+import com.liferay.portal.test.rule.PACLTestRule;
 import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class FilesTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
 
 	@Test
 	public void testDelete1() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			PortalFilePermission.checkDelete(file.getPath());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		PortalFilePermission.checkDelete(file.getPath());
 	}
 
 	@Test
 	public void testDelete2() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			SecurityManager securityManager = System.getSecurityManager();
+		SecurityManager securityManager = System.getSecurityManager();
 
-			securityManager.checkDelete(file.getPath());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		securityManager.checkDelete(file.getPath());
 	}
 
 	@Test
 	public void testDelete3() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			file.delete();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		file.delete();
 	}
 
 	@Test
 	public void testDelete4() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			FileUtil.delete(file);
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		FileUtil.delete(file);
 	}
 
 	@Test
@@ -171,14 +152,9 @@ public class FilesTest {
 			return;
 		}
 
-		try {
-			Runtime runtime = Runtime.getRuntime();
+		Runtime runtime = Runtime.getRuntime();
 
-			runtime.exec("/bin/bash");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		runtime.exec("/bin/bash");
 	}
 
 	@Test
@@ -221,14 +197,9 @@ public class FilesTest {
 			return;
 		}
 
-		try {
-			Runtime runtime = Runtime.getRuntime();
+		Runtime runtime = Runtime.getRuntime();
 
-			runtime.exec("C:\\WINDOWS\\system32\\ping.exe");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		runtime.exec("C:\\WINDOWS\\system32\\ping.exe");
 	}
 
 	@Test
@@ -267,40 +238,25 @@ public class FilesTest {
 
 	@Test
 	public void testRead1() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			PortalFilePermission.checkRead(file.getPath());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		PortalFilePermission.checkRead(file.getPath());
 	}
 
 	@Test
 	public void testRead2() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			SecurityManager securityManager = System.getSecurityManager();
+		SecurityManager securityManager = System.getSecurityManager();
 
-			securityManager.checkRead(file.getPath());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		securityManager.checkRead(file.getPath());
 	}
 
 	@Test
 	public void testRead3() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file.canRead();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		file.canRead();
 	}
 
 	@Test
@@ -311,9 +267,6 @@ public class FilesTest {
 			FileUtil.read(file.getPath());
 		}
 		catch (FileNotFoundException fnfe) {
-		}
-		catch (SecurityException se) {
-			Assert.fail();
 		}
 	}
 
@@ -367,14 +320,9 @@ public class FilesTest {
 
 	@Test
 	public void testRead9() throws Exception {
-		try {
-			File file = new File(System.getProperty("java.home"));
+		File file = new File(System.getProperty("java.home"));
 
-			file.canRead();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		file.canRead();
 	}
 
 	@Test
@@ -392,22 +340,17 @@ public class FilesTest {
 
 	@Test
 	public void testRead11() throws Exception {
-		try {
-			String javaCommand = "java";
+		String javaCommand = "java";
 
-			if (OSDetector.isWindows()) {
-				javaCommand = "java.exe";
-			}
-
-			File file = new File(
-				System.getProperty("java.home"),
-				"bin" + File.separator + javaCommand);
-
-			file.canRead();
+		if (OSDetector.isWindows()) {
+			javaCommand = "java.exe";
 		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+
+		File file = new File(
+			System.getProperty("java.home"),
+			"bin" + File.separator + javaCommand);
+
+		file.canRead();
 	}
 
 	@Test
@@ -433,46 +376,31 @@ public class FilesTest {
 
 	@Test
 	public void testWrite1() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			PortalFilePermission.checkWrite(file.getPath());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		PortalFilePermission.checkWrite(file.getPath());
 	}
 
 	@Test
 	public void testWrite2() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			SecurityManager securityManager = System.getSecurityManager();
+		SecurityManager securityManager = System.getSecurityManager();
 
-			securityManager.checkWrite(file.getPath());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		securityManager.checkWrite(file.getPath());
 	}
 
 	@Test
 	public void testWrite3() throws Exception {
-		try {
-			File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
+		File file = new File(PropsValues.LIFERAY_HOME, "pacl-test");
 
-			file = new File(file, "file1");
+		file = new File(file, "file1");
 
-			file.canWrite();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		file.canWrite();
 	}
 
 	@Test
@@ -485,9 +413,6 @@ public class FilesTest {
 			FileUtil.write(file, new byte[0]);
 		}
 		catch (FileNotFoundException fnfe) {
-		}
-		catch (SecurityException se) {
-			Assert.fail();
 		}
 	}
 

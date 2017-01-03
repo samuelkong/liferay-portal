@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.PluginSetting;
-import com.liferay.portal.service.PluginSettingLocalServiceUtil;
+import com.liferay.portal.kernel.model.PluginSetting;
+import com.liferay.portal.kernel.service.PluginSettingLocalServiceUtil;
 
 /**
  * The extended model base implementation for the PluginSetting service. Represents a row in the &quot;PluginSetting&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.PluginSettingLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see PluginSettingImpl
- * @see com.liferay.portal.model.PluginSetting
+ * @see PluginSetting
  * @generated
  */
 @ProviderType

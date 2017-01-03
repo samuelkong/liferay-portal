@@ -1,0 +1,222 @@
+<definition>
+	<command name="changeDatabase">
+		<execute function="AssertClick" locator1="SetupWizard#DATABASE_CHANGE_LINK" value1="(Change)" />
+	</command>
+
+	<command name="configureAdministratorUserPG">
+		<execute function="Type" locator1="TextInput#FIRST_NAME" value1="${administratorFirstName}" />
+		<execute function="Type" locator1="TextInput#LAST_NAME" value1="${administratorLastName}" />
+		<execute function="Type" locator1="TextInput#EMAIL" value1="${administratorEmail}" />
+	</command>
+
+	<command name="configureDatabasePG">
+		<if>
+			<condition function="IsElementNotPresent" locator1="SetupWizard#DATABASE_CHANGE_USE_CONFIGURED_DATABASE_LINK" />
+			<then>
+				<execute function="AssertClick" locator1="SetupWizard#DATABASE_CHANGE_LINK" value1="(Change)" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="databaseName" />
+			<then>
+				<var method="StringUtil#replace('${jdbcURL}', 'lportal', '${databaseName}')" name="jdbcURL" />
+			</then>
+		</if>
+
+		<execute function="Select" locator1="SetupWizard#DATABASE_CHANGE_DATABASE_TYPE_SELECT" value1="${databaseType}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_JDBC_URL_FIELD" value1="${jdbcURL}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_JDBC_DRIVER_CLASS_NAME_FIELD" value1="${jdbcDriverClassName}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_USER_NAME_FIELD" value1="${databaseUserName}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_PASSWORD_FIELD" value1="${databasePassword}" />
+	</command>
+
+	<command name="configureDefaultPG">
+		<execute macro="SetupWizard#viewDefaultPortalNamePG" />
+
+		<execute macro="SetupWizard#configureSampleDataPG">
+			<var name="addSampleData" value="${addSampleData}" />
+		</execute>
+
+		<execute macro="SetupWizard#viewDefaultAdministratorUserPG" />
+
+		<execute macro="SetupWizard#viewDefaultDatabasePG" />
+
+		<execute macro="SetupWizard#finishConfigurationPG" />
+
+		<execute macro="SetupWizard#viewConfigurationSavedPG" />
+
+		<execute macro="Portlet#shutdownServer" />
+
+		<execute macro="Portlet#startServer">
+			<var name="base_branch" value="${base_branch}" />
+			<var name="deleteLiferayHome" value="false" />
+		</execute>
+
+		<execute macro="User#firstLoginPG">
+			<var name="setupWizardEnabled" value="true" />
+		</execute>
+	</command>
+
+	<command name="configurePG" summary="Configure JDBC to ${databaseType} for Liferay with the Setup Wizard">
+		<execute macro="SetupWizard#viewDefaultPortalNamePG" />
+
+		<execute macro="SetupWizard#configureSampleDataPG">
+			<var name="addSampleData" value="${addSampleData}" />
+		</execute>
+
+		<execute macro="SetupWizard#configureAdministratorUserPG">
+			<var name="administratorEmail" value="${administratorEmail}" />
+			<var name="administratorFirstName" value="${administratorFirstName}" />
+			<var name="administratorLastName" value="${administratorLastName}" />
+		</execute>
+
+		<execute macro="SetupWizard#configureDatabasePG">
+			<var name="databaseName" value="${databaseName}" />
+			<var name="databasePassword" value="${databasePassword}" />
+			<var name="databaseType" value="${databaseType}" />
+			<var name="databaseUserName" value="${databaseUserName}" />
+			<var name="jdbcDriverClassName" value="${jdbcDriverClassName}" />
+			<var name="jdbcURL" value="${jdbcURL}" />
+		</execute>
+
+		<execute macro="SetupWizard#finishConfigurationPG" />
+
+		<execute macro="SetupWizard#viewConfigurationSavedPG" />
+
+		<execute macro="Portlet#shutdownServer" />
+
+		<execute macro="Portlet#startServer">
+			<var name="base_branch" value="${base_branch}" />
+			<var name="deleteLiferayHome" value="false" />
+		</execute>
+
+		<execute macro="SetupWizard#viewConfiguredDatabaseInConsole">
+			<var name="databaseType" value="${databaseType}" />
+		</execute>
+
+		<execute macro="User#firstLoginPG">
+			<var name="setupWizardEnabled" value="true" />
+		</execute>
+	</command>
+
+	<command name="configureSampleDataPG">
+		<if>
+			<equals arg1="${addSampleData}" arg2="false" />
+			<then>
+				<execute function="Uncheck" locator1="Checkbox#ADD_SAMPLE_DATA" />
+			</then>
+		</if>
+	</command>
+
+	<command name="finishConfigurationPG">
+		<execute function="AssertClick" locator1="Button#FINISH_CONFIGURATION" value1="Finish Configuration" />
+	</command>
+
+	<command name="populateDatabaseConfiguration">
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_JDBC_URL_FIELD" value1="${jdbcURL}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_JDBC_DRIVER_CLASS_NAME_FIELD" value1="${jdbcDriverClassName}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_USER_NAME_FIELD" value1="${userName}" />
+		<execute function="Type" locator1="SetupWizard#DATABASE_CHANGE_PASSWORD_FIELD" value1="${password}" />
+	</command>
+
+	<command name="selectDatabase">
+		<execute function="Select" locator1="SetupWizard#DATABASE_CHANGE_DATABASE_TYPE_SELECT" value1="${databaseType}" />
+	</command>
+
+	<command name="viewConfigurationSavedPG">
+		<execute function="AssertElementPresent" locator1="Message#SUCCESS" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="SetupWizard#CONFIGURATION_SAVE_MESSAGE" value1="The configuration was saved in" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="SetupWizard#CONFIGURATION_SAVE_LOCATION" value1="portal-setup-wizard.properties" />
+		<execute function="AssertTextEquals" locator1="Message#INFO" value1="Changes will take effect once the portal is restarted. Please restart the portal now." />
+	</command>
+
+	<command name="viewConfiguredDatabaseInConsole">
+		<if>
+			<equals arg1="${databaseType}" arg2="DB2" />
+			<then>
+				<execute function="AssertConsoleTextPresent" value1="Using dialect com.liferay.portal.dao.orm.hibernate.DB2Dialect" />
+			</then>
+			<elseif>
+				<equals arg1="${databaseType}" arg2="HSQL" />
+				<then>
+					<execute function="AssertConsoleTextPresent" value1="Determine dialect for HSQL Database Engine 2" />
+					<execute function="AssertConsoleTextPresent" value1="Found dialect org.hibernate.dialect.HSQLDialect" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${databaseType}" arg2="MySQL" />
+				<then>
+					<execute function="AssertConsoleTextPresent" value1="Determine dialect for MySQL 5" />
+					<execute function="AssertConsoleTextPresent" value1="Found dialect org.hibernate.dialect.MySQLDialect" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${databaseType}" arg2="Oracle" />
+				<then>
+					<execute function="AssertConsoleTextPresent" value1="Determine dialect for Oracle 11" />
+					<execute function="AssertConsoleTextPresent" value1="Found dialect org.hibernate.dialect.Oracle10gDialect" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${databaseType}" arg2="PostgreSQL" />
+				<then>
+					<execute function="AssertConsoleTextPresent" value1="Determine dialect for PostgreSQL 9" />
+					<execute function="AssertConsoleTextPresent" value1="Found dialect org.hibernate.dialect.PostgreSQLDialect" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${databaseType}" arg2="Sybase" />
+				<then>
+					<execute function="AssertConsoleTextPresent" value1="Using dialect org.hibernate.dialect.SybaseDialect" />
+				</then>
+			</elseif>
+		</if>
+	</command>
+
+	<command name="viewDefaultAdministratorUserPG">
+		<execute function="AssertSelectedLabel" locator1="Select#DEFAULT_LANGUAGE" value1="English (United States)" />
+		<execute function="AssertTextEquals#assertValue" locator1="TextInput#FIRST_NAME" value1="Test" />
+		<execute function="AssertTextEquals#assertValue" locator1="TextInput#LAST_NAME" value1="Test" />
+		<execute function="AssertTextEquals#assertValue" locator1="TextInput#EMAIL" value1="test@liferay.com" />
+	</command>
+
+	<command name="viewDefaultDatabasePG">
+		<if>
+			<condition function="IsElementPresent" locator1="SetupWizard#DATABASE_DEFAULT_LABEL" />
+			<then>
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_DEFAULT_LABEL" value1="Default Database (Hypersonic)" />
+				<execute function="AssertTextEquals#assertPartialText" locator1="SetupWizard#DATABASE_DEFAULT_DESCRIPTION" value1="This database is useful for development and demo'ing purposes, but it is not recommended for production use." />
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CHANGE_LINK" value1="(Change)" />
+			</then>
+			<else>
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CONFIGURED_JDBC_DRIVER_CLASS_NAME_LABEL" value1="Configured Database" />
+				<execute function="AssertClick" locator1="SetupWizard#DATABASE_CHANGE_LINK" value1="(Change)" />
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CHANGE_DATABASE_TYPE_LABEL" value1="Database Type" />
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CHANGE_JDBC_URL_LABEL" value1="JDBC URL Required" />
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CHANGE_JDBC_DRIVER_CLASS_NAME_LABEL" value1="JDBC Driver Class Name Required" />
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CHANGE_USER_NAME_LABEL" value1="User Name" />
+				<execute function="AssertTextEquals#assertText" locator1="SetupWizard#DATABASE_CHANGE_PASSWORD_LABEL" value1="Password" />
+			</else>
+		</if>
+	</command>
+
+	<command name="viewDefaultPortalNamePG">
+		<var method="TestPropsUtil#get('liferay.portal.branch')" name="testPortalBranch" />
+
+		<if>
+			<equals arg1="${testPortalBranch}" arg2="ee-7.0.x" />
+			<then>
+				<execute function="AssertTextEquals#assertValue" locator1="TextInput#PORTAL_NAME" value1="Liferay DXP" />
+			</then>
+			<else>
+				<execute function="AssertTextEquals#assertValue" locator1="TextInput#PORTAL_NAME" value1="Liferay" />
+			</else>
+		</if>
+	</command>
+
+	<command name="viewSampleDataAddedInConsole">
+		<execute function="AssertConsoleTextPresent" value1="SetupWizardSampleDataUtil" />
+		<execute function="AssertConsoleTextPresent" value1="Adding sample data" />
+	</command>
+</definition>

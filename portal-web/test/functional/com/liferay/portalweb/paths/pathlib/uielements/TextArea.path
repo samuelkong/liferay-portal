@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>TextArea</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">TextArea</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ACE_EDITOR</td>
+	<td>//textarea[contains(@class,'ace_text')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHANGE_LOG</td>
+	<td>//textarea[contains(@id,'ChangeLog')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>COMMENTS</td>
+	<td>//textarea[contains(@id,'comments')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DESCRIPTION</td>
+	<td>//textarea[contains(@id,'description')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PIWIK</td>
+	<td>//textarea[contains(@id,'_analytics_piwik')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>POLLS_QUESTION</td>
+	<td>//textarea[contains(@id,'pollsweb_description')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUMMARY</td>
+	<td>//textarea[contains(@id,'description')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>URL</td>
+	<td>//textarea[contains(@id,'url')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WEB_EDITOR</td>
+	<td>//textarea[contains(@id,'contentEditor')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

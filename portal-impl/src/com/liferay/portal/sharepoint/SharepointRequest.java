@@ -16,12 +16,12 @@ package com.liferay.portal.sharepoint;
 
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.User;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -137,6 +137,7 @@ public class SharepointRequest {
 				String[] kvp = param.split(StringPool.EQUAL);
 
 				String key = HttpUtil.decodeURL(kvp[0]);
+
 				String value = StringPool.BLANK;
 
 				if (kvp.length > 1) {
@@ -171,8 +172,7 @@ public class SharepointRequest {
 	}
 
 	private byte[] _bytes;
-	private final Map<String, String[]> _params =
-		new HashMap<String, String[]>();
+	private final Map<String, String[]> _params = new HashMap<>();
 	private final HttpServletRequest _request;
 	private final HttpServletResponse _response;
 	private String _rootPath = StringPool.BLANK;

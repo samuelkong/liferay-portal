@@ -14,11 +14,11 @@
 
 package com.liferay.portal.webserver;
 
-import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.cache.MultiVMPoolUtil;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.kernel.webserver.WebServerServletToken;
 import com.liferay.portal.servlet.filters.cache.CacheUtil;
-import com.liferay.portlet.journalcontent.util.JournalContentUtil;
 
 /**
  * @author Brian Wing Shun Chan
@@ -28,8 +28,7 @@ import com.liferay.portlet.journalcontent.util.JournalContentUtil;
 public class WebServerServletTokenImpl implements WebServerServletToken {
 
 	public void afterPropertiesSet() {
-		_portalCache = (PortalCache<Long, String>)_multiVMPool.getCache(
-			_CACHE_NAME);
+		_portalCache = MultiVMPoolUtil.getPortalCache(_CACHE_NAME);
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class WebServerServletTokenImpl implements WebServerServletToken {
 		String token = _portalCache.get(key);
 
 		if (token == null) {
-			token = _createToken(imageId);
+			token = _createToken();
 
 			_portalCache.put(key, token);
 		}
@@ -51,27 +50,18 @@ public class WebServerServletTokenImpl implements WebServerServletToken {
 	public void resetToken(long imageId) {
 		_portalCache.remove(imageId);
 
-		// Journal content
-
-		JournalContentUtil.clearCache();
-
 		// Layout cache
 
 		CacheUtil.clearCache();
 	}
 
-	public void setMultiVMPool(MultiVMPool multiVMPool) {
-		_multiVMPool = multiVMPool;
-	}
-
-	private String _createToken(long imageId) {
+	private String _createToken() {
 		return String.valueOf(System.currentTimeMillis());
 	}
 
 	private static final String _CACHE_NAME =
 		WebServerServletToken.class.getName();
 
-	private MultiVMPool _multiVMPool;
 	private PortalCache<Long, String> _portalCache;
 
 }

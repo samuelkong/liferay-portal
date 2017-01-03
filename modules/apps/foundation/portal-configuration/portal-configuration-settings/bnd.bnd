@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Portal Configuration Settings
+Bundle-SymbolicName: com.liferay.portal.configuration.settings
+Bundle-Version: 2.0.7
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Configuration Framework

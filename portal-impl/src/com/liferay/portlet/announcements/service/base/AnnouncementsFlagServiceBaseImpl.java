@@ -14,19 +14,19 @@
 
 package com.liferay.portlet.announcements.service.base;
 
+import com.liferay.announcements.kernel.model.AnnouncementsFlag;
+import com.liferay.announcements.kernel.service.AnnouncementsFlagService;
+import com.liferay.announcements.kernel.service.persistence.AnnouncementsFlagPersistence;
+
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.service.BaseServiceImpl;
-import com.liferay.portal.util.PortalUtil;
-
-import com.liferay.portlet.announcements.model.AnnouncementsFlag;
-import com.liferay.portlet.announcements.service.AnnouncementsFlagService;
-import com.liferay.portlet.announcements.service.persistence.AnnouncementsFlagPersistence;
+import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
+import com.liferay.portal.kernel.service.BaseServiceImpl;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import javax.sql.DataSource;
 
@@ -39,15 +39,15 @@ import javax.sql.DataSource;
  *
  * @author Brian Wing Shun Chan
  * @see com.liferay.portlet.announcements.service.impl.AnnouncementsFlagServiceImpl
- * @see com.liferay.portlet.announcements.service.AnnouncementsFlagServiceUtil
+ * @see com.liferay.announcements.kernel.service.AnnouncementsFlagServiceUtil
  * @generated
  */
 public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
-	implements AnnouncementsFlagService, IdentifiableBean {
+	implements AnnouncementsFlagService, IdentifiableOSGiService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link com.liferay.portlet.announcements.service.AnnouncementsFlagServiceUtil} to access the announcements flag remote service.
+	 * Never modify or reference this class directly. Always use {@link com.liferay.announcements.kernel.service.AnnouncementsFlagServiceUtil} to access the announcements flag remote service.
 	 */
 
 	/**
@@ -55,7 +55,7 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the announcements flag local service
 	 */
-	public com.liferay.portlet.announcements.service.AnnouncementsFlagLocalService getAnnouncementsFlagLocalService() {
+	public com.liferay.announcements.kernel.service.AnnouncementsFlagLocalService getAnnouncementsFlagLocalService() {
 		return announcementsFlagLocalService;
 	}
 
@@ -65,7 +65,7 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	 * @param announcementsFlagLocalService the announcements flag local service
 	 */
 	public void setAnnouncementsFlagLocalService(
-		com.liferay.portlet.announcements.service.AnnouncementsFlagLocalService announcementsFlagLocalService) {
+		com.liferay.announcements.kernel.service.AnnouncementsFlagLocalService announcementsFlagLocalService) {
 		this.announcementsFlagLocalService = announcementsFlagLocalService;
 	}
 
@@ -74,7 +74,7 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the announcements flag remote service
 	 */
-	public com.liferay.portlet.announcements.service.AnnouncementsFlagService getAnnouncementsFlagService() {
+	public AnnouncementsFlagService getAnnouncementsFlagService() {
 		return announcementsFlagService;
 	}
 
@@ -84,7 +84,7 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	 * @param announcementsFlagService the announcements flag remote service
 	 */
 	public void setAnnouncementsFlagService(
-		com.liferay.portlet.announcements.service.AnnouncementsFlagService announcementsFlagService) {
+		AnnouncementsFlagService announcementsFlagService) {
 		this.announcementsFlagService = announcementsFlagService;
 	}
 
@@ -112,7 +112,7 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the counter local service
 	 */
-	public com.liferay.counter.service.CounterLocalService getCounterLocalService() {
+	public com.liferay.counter.kernel.service.CounterLocalService getCounterLocalService() {
 		return counterLocalService;
 	}
 
@@ -122,7 +122,7 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	 * @param counterLocalService the counter local service
 	 */
 	public void setCounterLocalService(
-		com.liferay.counter.service.CounterLocalService counterLocalService) {
+		com.liferay.counter.kernel.service.CounterLocalService counterLocalService) {
 		this.counterLocalService = counterLocalService;
 	}
 
@@ -133,23 +133,13 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 	}
 
 	/**
-	 * Returns the Spring bean ID for this bean.
+	 * Returns the OSGi service identifier.
 	 *
-	 * @return the Spring bean ID for this bean
+	 * @return the OSGi service identifier
 	 */
 	@Override
-	public String getBeanIdentifier() {
-		return _beanIdentifier;
-	}
-
-	/**
-	 * Sets the Spring bean ID for this bean.
-	 *
-	 * @param beanIdentifier the Spring bean ID for this bean
-	 */
-	@Override
-	public void setBeanIdentifier(String beanIdentifier) {
-		_beanIdentifier = beanIdentifier;
+	public String getOSGiServiceIdentifier() {
+		return AnnouncementsFlagService.class.getName();
 	}
 
 	protected Class<?> getModelClass() {
@@ -169,13 +159,13 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 		try {
 			DataSource dataSource = announcementsFlagPersistence.getDataSource();
 
-			DB db = DBFactoryUtil.getDB();
+			DB db = DBManagerUtil.getDB();
 
 			sql = db.buildSQL(sql);
 			sql = PortalUtil.transformSQL(sql);
 
 			SqlUpdate sqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(dataSource,
-					sql, new int[0]);
+					sql);
 
 			sqlUpdate.update();
 		}
@@ -184,13 +174,12 @@ public abstract class AnnouncementsFlagServiceBaseImpl extends BaseServiceImpl
 		}
 	}
 
-	@BeanReference(type = com.liferay.portlet.announcements.service.AnnouncementsFlagLocalService.class)
-	protected com.liferay.portlet.announcements.service.AnnouncementsFlagLocalService announcementsFlagLocalService;
-	@BeanReference(type = com.liferay.portlet.announcements.service.AnnouncementsFlagService.class)
-	protected com.liferay.portlet.announcements.service.AnnouncementsFlagService announcementsFlagService;
+	@BeanReference(type = com.liferay.announcements.kernel.service.AnnouncementsFlagLocalService.class)
+	protected com.liferay.announcements.kernel.service.AnnouncementsFlagLocalService announcementsFlagLocalService;
+	@BeanReference(type = AnnouncementsFlagService.class)
+	protected AnnouncementsFlagService announcementsFlagService;
 	@BeanReference(type = AnnouncementsFlagPersistence.class)
 	protected AnnouncementsFlagPersistence announcementsFlagPersistence;
-	@BeanReference(type = com.liferay.counter.service.CounterLocalService.class)
-	protected com.liferay.counter.service.CounterLocalService counterLocalService;
-	private String _beanIdentifier;
+	@BeanReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
+	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
 }

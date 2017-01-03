@@ -32,7 +32,7 @@ import javax.imageio.ImageIO;
  */
 public class ThumbnailBuilder {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
 
 		File originalFile = new File(arguments.get("thumbnail.original.file"));
@@ -43,37 +43,38 @@ public class ThumbnailBuilder {
 		boolean overwrite = GetterUtil.getBoolean(
 			arguments.get("thumbnail.overwrite"));
 
-		new ThumbnailBuilder(
-			originalFile, thumbnailFile, height, width, overwrite);
+		try {
+			new ThumbnailBuilder(
+				originalFile, thumbnailFile, height, width, overwrite);
+		}
+		catch (Exception e) {
+			ArgumentsUtil.processMainException(arguments, e);
+		}
 	}
 
 	public ThumbnailBuilder(
-		File originalFile, File thumbnailFile, int height, int width,
-		boolean overwrite) {
+			File originalFile, File thumbnailFile, int height, int width,
+			boolean overwrite)
+		throws Exception {
 
-		try {
-			if (!originalFile.exists()) {
+		if (!originalFile.exists()) {
+			return;
+		}
+
+		if (!overwrite) {
+			if (thumbnailFile.lastModified() >
+					originalFile.lastModified()) {
+
 				return;
 			}
-
-			if (!overwrite) {
-				if (thumbnailFile.lastModified() >
-						originalFile.lastModified()) {
-
-					return;
-				}
-			}
-
-			ImageBag imageBag = _imageToolUtil.read(originalFile);
-
-			RenderedImage renderedImage = _imageToolUtil.scale(
-				imageBag.getRenderedImage(), height, width);
-
-			ImageIO.write(renderedImage, imageBag.getType(), thumbnailFile);
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		ImageBag imageBag = _imageToolUtil.read(originalFile);
+
+		RenderedImage renderedImage = _imageToolUtil.scale(
+			imageBag.getRenderedImage(), height, width);
+
+		ImageIO.write(renderedImage, imageBag.getType(), thumbnailFile);
 	}
 
 	private static final ImageTool _imageToolUtil = ImageToolImpl.getInstance();

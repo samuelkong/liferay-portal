@@ -21,10 +21,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.Tuple;
-import com.liferay.portlet.social.model.SocialAchievement;
-import com.liferay.portlet.social.model.SocialActivityCounterDefinition;
-import com.liferay.portlet.social.model.SocialActivityDefinition;
-import com.liferay.portlet.social.util.SocialConfigurationUtil;
+import com.liferay.social.kernel.model.SocialAchievement;
+import com.liferay.social.kernel.model.SocialActivityCounterDefinition;
+import com.liferay.social.kernel.model.SocialActivityDefinition;
+import com.liferay.social.kernel.util.SocialConfigurationUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -157,7 +157,6 @@ public class SocialHotDeployListener extends BaseHotDeployListener {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SocialHotDeployListener.class);
 
-	private static final Map<String, Object> _objects =
-		new HashMap<String, Object>();
+	private static final Map<String, Object> _objects = new HashMap<>();
 
 }

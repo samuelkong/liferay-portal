@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>Activities</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Activities</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ACTIVITY_TITLE</td>
+	<td>//div[@class='activity-title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ACTIVITY_TITLE_ASSET_NAME</td>
+	<td>//div[contains(@class,'card-col-content')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENTRY_CONTENT</td>
+	<td>//div[contains(@class,'content')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENTRY_DATE</td>
+	<td>//div[contains(@class,'social-activities')]//li[contains(.,'${key_entryDate}')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

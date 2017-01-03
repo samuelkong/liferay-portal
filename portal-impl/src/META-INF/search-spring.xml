@@ -25,337 +25,41 @@
 
 	<!-- Proxy -->
 
-	<bean id="com.liferay.portal.kernel.search.IndexSearcherProxyBean" class="com.liferay.portal.kernel.search.IndexSearcherProxyBean">
-		<property name="messageSender" ref="com.liferay.portal.kernel.messaging.sender.MessageSender" />
-		<property name="synchronousMessageSender" ref="com.liferay.portal.kernel.messaging.sender.DirectSynchronousMessageSender" />
+	<bean class="com.liferay.portal.kernel.search.IndexSearcherProxyBean" id="com.liferay.portal.kernel.search.IndexSearcherProxyBean">
+		<property name="synchronousMessageSenderMode" value="DIRECT" />
 	</bean>
-	<bean id="com.liferay.portal.kernel.search.IndexWriterProxyBean" class="com.liferay.portal.kernel.search.IndexWriterProxyBean">
-		<property name="messageSender" ref="com.liferay.portal.kernel.messaging.sender.MessageSender" />
-		<property name="synchronousMessageSender" ref="com.liferay.portal.kernel.messaging.sender.DirectSynchronousMessageSender" />
+	<bean class="com.liferay.portal.kernel.search.IndexWriterProxyBean" id="com.liferay.portal.kernel.search.IndexWriterProxyBean">
+		<property name="synchronousMessageSenderMode" value="DIRECT" />
 	</bean>
 
 	<!-- Util -->
 
-	<bean id="com.liferay.portal.kernel.repository.cmis.search.CMISSearchQueryBuilder" class="com.liferay.portal.kernel.repository.cmis.search.BaseCmisSearchQueryBuilder" />
-	<bean id="com.liferay.portal.kernel.repository.cmis.search.CMISSearchQueryBuilderUtil" class="com.liferay.portal.kernel.repository.cmis.search.CMISSearchQueryBuilderUtil">
-		<property name="cmisSearchQueryBuilder" ref="com.liferay.portal.kernel.repository.cmis.search.CMISSearchQueryBuilder" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.repository.search.RepositorySearchQueryBuilder" class="com.liferay.portal.repository.search.RepositorySearchQueryBuilderImpl">
-		<property name="analyzer" ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.repository.search.RepositorySearchQueryBuilderUtil" class="com.liferay.portal.kernel.repository.search.RepositorySearchQueryBuilderUtil">
-		<property name="repositorySearchQueryBuilder" ref="com.liferay.portal.kernel.repository.search.RepositorySearchQueryBuilder" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.CollatorUtil" class="com.liferay.portal.kernel.search.CollatorUtil">
-		<property name="collator">
-			<bean class="com.liferay.portal.search.DefaultCollatorImpl" />
-		</property>
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.HitsProcessorRegistryUtil" class="com.liferay.portal.kernel.search.HitsProcessorRegistryUtil">
-		<property name="defaultHitsProcessor">
-			<bean class="com.liferay.portal.kernel.search.CompositeHitsProcessor">
-				<property name="hitsProcessors">
-					<util:list>
-						<bean class="com.liferay.portal.kernel.search.CollatedSpellCheckHitsProcessor" />
-						<bean class="com.liferay.portal.kernel.search.QueryIndexingHitsProcessor" />
-						<bean class="com.liferay.portal.kernel.search.QuerySuggestionHitsProcessor" />
-					</util:list>
-				</property>
-			</bean>
-		</property>
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.NGramHolderBuilderUtil" class="com.liferay.portal.kernel.search.NGramHolderBuilderUtil">
-		<property name="NGramHolderBuilder">
-			<bean class="com.liferay.portal.search.NGramHolderBuilderImpl" />
-		</property>
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.QueryTranslator" class="com.liferay.portal.search.lucene.QueryTranslatorImpl" />
-	<bean id="com.liferay.portal.kernel.search.QueryTranslatorUtil" class="com.liferay.portal.kernel.search.QueryTranslatorUtil">
-		<property name="queryTranslator" ref="com.liferay.portal.kernel.search.QueryTranslator" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.SearchEngineUtil" class="com.liferay.portal.kernel.search.SearchEngineUtil">
-		<property name="excludedEntryClassNames">
-			<list>
-				<value>com.liferay.portal.kernel.plugin.PluginPackage</value>
-				<value>com.liferay.portlet.asset.model.AssetEntry</value>
-			</list>
-		</property>
-		<property name="searchPermissionChecker" ref="com.liferay.portal.kernel.search.SearchPermissionChecker" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.SearchPermissionChecker" class="com.liferay.portal.search.SearchPermissionCheckerImpl" />
-	<bean id="com.liferay.portal.kernel.search.SortFactory" class="com.liferay.portal.kernel.search.SortFactoryImpl" />
-	<bean id="com.liferay.portal.kernel.search.SortFactoryUtil" class="com.liferay.portal.kernel.search.SortFactoryUtil">
-		<property name="sortFactory" ref="com.liferay.portal.kernel.search.SortFactory" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.StringDistanceCalculatorUtil" class="com.liferay.portal.kernel.search.StringDistanceCalculatorUtil">
-		<property name="stringDistanceCalculator">
-			<bean class="com.liferay.portal.search.lucene.StringDistanceCalculatorImpl">
-				<property name="stringDistance" ref="org.apache.lucene.search.spell.StringDistance" />
-			</bean>
-		</property>
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.StringQueryFactory" class="com.liferay.portal.kernel.search.StringQueryFactoryImpl" />
-	<bean id="com.liferay.portal.kernel.search.StringQueryFactoryUtil" class="com.liferay.portal.kernel.search.StringQueryFactoryUtil">
+	<bean class="com.liferay.portal.kernel.search.generic.StringQueryFactoryImpl" id="com.liferay.portal.kernel.search.StringQueryFactory" />
+	<bean class="com.liferay.portal.kernel.search.StringQueryFactoryUtil" id="com.liferay.portal.kernel.search.StringQueryFactoryUtil">
 		<property name="stringQueryFactory" ref="com.liferay.portal.kernel.search.StringQueryFactory" />
 	</bean>
-	<bean id="com.liferay.portal.kernel.search.TokenizerUtil" class="com.liferay.portal.kernel.search.TokenizerUtil">
-		<property name="tokenizer" ref="com.liferay.portal.search.lucene.PerFieldAnalyzer" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.search.facet.AssetEntriesFacetFactory" class="com.liferay.portal.kernel.search.facet.AssetEntriesFacetFactory" />
-	<bean id="com.liferay.portal.kernel.search.facet.ModifiedFacetFactory" class="com.liferay.portal.kernel.search.facet.ModifiedFacetFactory" />
-	<bean id="com.liferay.portal.kernel.search.facet.MultiValueFacetFactory" class="com.liferay.portal.kernel.search.facet.MultiValueFacetFactory" />
-	<bean id="com.liferay.portal.kernel.search.facet.RangeFacetFactory" class="com.liferay.portal.kernel.search.facet.RangeFacetFactory" />
-	<bean id="com.liferay.portal.kernel.search.facet.ScopeFacetFactory" class="com.liferay.portal.kernel.search.facet.ScopeFacetFactory" />
-	<bean id="com.liferay.portal.kernel.search.facet.SimpleFacetFactory" class="com.liferay.portal.kernel.search.facet.SimpleFacetFactory" />
-	<bean id="org.apache.lucene.search.spell.StringDistance" class="org.apache.lucene.search.spell.LevensteinDistance" />
+	<bean class="com.liferay.portal.kernel.search.facet.AssetEntriesFacetFactory" id="com.liferay.portal.kernel.search.facet.AssetEntriesFacetFactory" />
+	<bean class="com.liferay.portal.kernel.search.facet.ModifiedFacetFactory" id="com.liferay.portal.kernel.search.facet.ModifiedFacetFactory" />
+	<bean class="com.liferay.portal.kernel.search.facet.MultiValueFacetFactory" id="com.liferay.portal.kernel.search.facet.MultiValueFacetFactory" />
+	<bean class="com.liferay.portal.kernel.search.facet.RangeFacetFactory" id="com.liferay.portal.kernel.search.facet.RangeFacetFactory" />
+	<bean class="com.liferay.portal.kernel.search.facet.ScopeFacetFactory" id="com.liferay.portal.kernel.search.facet.ScopeFacetFactory" />
+	<bean class="com.liferay.portal.kernel.search.facet.SimpleFacetFactory" id="com.liferay.portal.kernel.search.facet.SimpleFacetFactory" />
 
 	<!-- Generic search engine -->
 
-	<bean id="com.liferay.portal.search.generic.GenericSearchEngineImpl" class="com.liferay.portal.kernel.search.BaseSearchEngine">
-		<property name="booleanClauseFactory" >
-			<bean class="com.liferay.portal.search.generic.BooleanClauseFactoryImpl" />
-		</property>
-		<property name="booleanQueryFactory" >
-			<bean class="com.liferay.portal.search.generic.BooleanQueryFactoryImpl" />
-		</property>
-		<property name="luceneBased" value="false" />
-		<property name="termQueryFactory">
-			<bean class="com.liferay.portal.search.generic.TermQueryFactoryImpl" />
-		</property>
-		<property name="termRangeQueryFactory">
-			<bean class="com.liferay.portal.search.generic.TermRangeQueryFactoryImpl" />
-		</property>
-	</bean>
-
-	<!-- Lucene search engine -->
-
-	<bean id="com.liferay.portal.search.lucene.LuceneIndexSearcher" class="com.liferay.portal.search.lucene.LuceneIndexSearcher">
-		<property name="querySuggester" ref="com.liferay.portal.search.lucene.LuceneQuerySuggester" />
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LuceneIndexWriter" class="com.liferay.portal.search.lucene.LuceneIndexWriter">
-		<property name="spellCheckIndexWriter" ref="com.liferay.portal.search.lucene.LuceneSpellCheckIndexWriter" />
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LuceneSearchEngineImpl" class="com.liferay.portal.search.lucene.LuceneSearchEngine">
-		<property name="booleanClauseFactory" >
-			<bean class="com.liferay.portal.search.generic.BooleanClauseFactoryImpl" />
-		</property>
-		<property name="booleanQueryFactory" >
-			<bean class="com.liferay.portal.search.lucene.BooleanQueryFactoryImpl" />
-		</property>
-		<property name="clusteredWrite">
-			<util:constant static-field="com.liferay.portal.util.PropsValues.LUCENE_REPLICATE_WRITE" />
-		</property>
-		<property name="clusteredWritePriority">
-			<util:constant static-field="com.liferay.portal.kernel.cluster.Priority.LEVEL5" />
-		</property>
-		<property name="indexSearcher" ref="com.liferay.portal.search.lucene.LuceneIndexSearcher" />
-		<property name="indexWriter" ref="com.liferay.portal.search.lucene.LuceneIndexWriter" />
-		<property name="luceneBased" value="true" />
-		<property name="termQueryFactory">
-			<bean class="com.liferay.portal.search.lucene.TermQueryFactoryImpl" />
-		</property>
-		<property name="termRangeQueryFactory">
-			<bean class="com.liferay.portal.search.lucene.TermRangeQueryFactoryImpl" />
-		</property>
-		<property name="vendor" value="Lucene" />
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LuceneHelperImpl" class="com.liferay.portal.search.lucene.LuceneHelperImpl">
-		<property name="analyzer" ref="com.liferay.portal.search.lucene.PerFieldAnalyzer" />
-		<property name="version" ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LuceneHelperUtil" class="com.liferay.portal.search.lucene.LuceneHelperUtil">
-		<property name="luceneHelper" ref="com.liferay.portal.search.lucene.LuceneHelperImpl" />
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LuceneQuerySuggester" class="com.liferay.portal.search.lucene.LuceneQuerySuggester">
-		<property name="stringDistance" ref="org.apache.lucene.search.spell.StringDistance" />
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LuceneSpellCheckIndexWriter" class="com.liferay.portal.search.lucene.LuceneSpellCheckIndexWriter" />
-
-	<!-- Lucene analyzers -->
-
-	<bean id="com.liferay.portal.search.lucene.PerFieldAnalyzer" class="com.liferay.portal.search.lucene.PerFieldAnalyzer">
-		<constructor-arg>
-			<ref bean="org.apache.lucene.analysis.standard.StandardAnalyzer" />
-		</constructor-arg>
-		<constructor-arg>
-			<util:map map-class="java.util.LinkedHashMap">
-				<entry key="articleId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="assetCategoryTitles?(_.+)?" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key="assetTagNames" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key="ddm/.*" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="emailAddress" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key="entryClassName" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="entryClassPK" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="extension" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="groupId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="groupRoleId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="installedVersion" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="layoutUuid" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="license" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<!--<entry key="path">
-					<bean id="org.apache.lucene.analysis.miscellaneous.PatternAnalyzer" class="org.apache.lucene.analysis.miscellaneous.PatternAnalyzer">
-						<constructor-arg ref="org.apache.lucene.util.Version" />
-						<constructor-arg>
-							<bean class="java.util.regex.Pattern" factory-method="compile">
-								<constructor-arg value="[-\\./]" />
-							</bean>
-						</constructor-arg>
-						<constructor-arg value="false" />
-						<constructor-arg>
-							<util:set></util:set>
-						</constructor-arg>
-					</bean>
-				</entry>-->
-				<entry key="path" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key="roleId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="rootEntryClassPK" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="status" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="structureId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="tag" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key="templateId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="treePath" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key="type" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="userId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
-				<entry key="userName" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-				<entry key=".*_ar_SA" value-ref="org.apache.lucene.analysis.ar.ArabicAnalyzer" />
-				<entry key=".*_bg_BG" value-ref="org.apache.lucene.analysis.bg.BulgarianAnalyzer" />
-				<entry key=".*_ca_[A-Z]{2}" value-ref="org.apache.lucene.analysis.ca.CatalanAnalyzer" />
-				<entry key=".*_cz_CZ" value-ref="org.apache.lucene.analysis.cz.CzechAnalyzer" />
-				<entry key=".*_da_DK" value-ref="org.apache.lucene.analysis.de.GermanAnalyzer" />
-				<entry key=".*_de_DE" value-ref="org.apache.lucene.analysis.de.GermanAnalyzer" />
-				<entry key=".*_el_GR" value-ref="org.apache.lucene.analysis.el.GreekAnalyzer" />
-				<entry key=".*_es_[A-Z]{2}" value-ref="org.apache.lucene.analysis.es.SpanishAnalyzer" />
-				<entry key=".*_eu_ES" value-ref="org.apache.lucene.analysis.eu.BasqueAnalyzer" />
-				<entry key=".*_fa_IR" value-ref="org.apache.lucene.analysis.fa.PersianAnalyzer" />
-				<entry key=".*_fi_FI" value-ref="org.apache.lucene.analysis.fi.FinnishAnalyzer" />
-				<entry key=".*_fr_[A-Z]{2}" value-ref="org.apache.lucene.analysis.fr.FrenchAnalyzer" />
-				<entry key=".*_gl_ES" value-ref="org.apache.lucene.analysis.gl.GalicianAnalyzer" />
-				<entry key=".*_hi_IN" value-ref="org.apache.lucene.analysis.hi.HindiAnalyzer" />
-				<entry key=".*_hu_HU" value-ref="org.apache.lucene.analysis.hu.HungarianAnalyzer" />
-				<entry key=".*_in_ID" value-ref="org.apache.lucene.analysis.id.IndonesianAnalyzer" />
-				<entry key=".*_it_IT" value-ref="org.apache.lucene.analysis.it.ItalianAnalyzer" />
-				<entry key=".*_ja_JP" value-ref="org.apache.lucene.analysis.cjk.CJKAnalyzer" />
-				<entry key=".*_ko_KR" value-ref="org.apache.lucene.analysis.cjk.CJKAnalyzer" />
-				<entry key=".*_nl_NL" value-ref="org.apache.lucene.analysis.nl.DutchAnalyzer" />
-				<entry key=".*_nb_NO" value-ref="org.apache.lucene.analysis.no.NorwegianAnalyzer" />
-				<entry key=".*_pt_BR" value-ref="org.apache.lucene.analysis.br.BrazilianAnalyzer" />
-				<entry key=".*_pt_PT" value-ref="org.apache.lucene.analysis.pt.PortugueseAnalyzer" />
-				<entry key=".*_ro_RO" value-ref="org.apache.lucene.analysis.ro.RomanianAnalyzer" />
-				<entry key=".*_ru_RU" value-ref="org.apache.lucene.analysis.ru.RussianAnalyzer" />
-				<entry key=".*_sv_SE" value-ref="org.apache.lucene.analysis.sv.SwedishAnalyzer" />
-				<entry key=".*_th_TH" value-ref="org.apache.lucene.analysis.th.ThaiAnalyzer" />
-				<entry key=".*_tr_TR" value-ref="org.apache.lucene.analysis.tr.TurkishAnalyzer" />
-				<entry key=".*_zh_CN" value-ref="org.apache.lucene.analysis.cjk.CJKAnalyzer" />
-				<entry key=".*_zh_TW" value-ref="org.apache.lucene.analysis.cjk.CJKAnalyzer" />
-			</util:map>
-		</constructor-arg>
-	</bean>
-	<bean id="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" class="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
-	<bean id="org.apache.lucene.analysis.KeywordAnalyzer" class="org.apache.lucene.analysis.KeywordAnalyzer" />
-	<bean id="org.apache.lucene.analysis.WhitespaceAnalyzer" class="org.apache.lucene.analysis.WhitespaceAnalyzer" />
-	<bean id="org.apache.lucene.analysis.ar.ArabicAnalyzer" class="org.apache.lucene.analysis.ar.ArabicAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.eu.BasqueAnalyzer" class="org.apache.lucene.analysis.eu.BasqueAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.br.BrazilianAnalyzer" class="org.apache.lucene.analysis.br.BrazilianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.bg.BulgarianAnalyzer" class="org.apache.lucene.analysis.bg.BulgarianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.ca.CatalanAnalyzer" class="org.apache.lucene.analysis.ca.CatalanAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.cjk.CJKAnalyzer" class="org.apache.lucene.analysis.cjk.CJKAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.cz.CzechAnalyzer" class="org.apache.lucene.analysis.cz.CzechAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.da.DanishAnalyzer" class="org.apache.lucene.analysis.da.DanishAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.nl.DutchAnalyzer" class="org.apache.lucene.analysis.nl.DutchAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.fi.FinnishAnalyzer" class="org.apache.lucene.analysis.fi.FinnishAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.fr.FrenchAnalyzer" class="org.apache.lucene.analysis.fr.FrenchAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.gl.GalicianAnalyzer" class="org.apache.lucene.analysis.gl.GalicianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.de.GermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.el.GreekAnalyzer" class="org.apache.lucene.analysis.el.GreekAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.hi.HindiAnalyzer" class="org.apache.lucene.analysis.hi.HindiAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.hu.HungarianAnalyzer" class="org.apache.lucene.analysis.hu.HungarianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.id.IndonesianAnalyzer" class="org.apache.lucene.analysis.id.IndonesianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.it.ItalianAnalyzer" class="org.apache.lucene.analysis.it.ItalianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.no.NorwegianAnalyzer" class="org.apache.lucene.analysis.no.NorwegianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.fa.PersianAnalyzer" class="org.apache.lucene.analysis.fa.PersianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.pt.PortugueseAnalyzer" class="org.apache.lucene.analysis.pt.PortugueseAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.ro.RomanianAnalyzer" class="org.apache.lucene.analysis.ro.RomanianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.ru.RussianAnalyzer" class="org.apache.lucene.analysis.ru.RussianAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.es.SpanishAnalyzer" class="org.apache.lucene.analysis.es.SpanishAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.standard.StandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.sv.SwedishAnalyzer" class="org.apache.lucene.analysis.sv.SwedishAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.th.ThaiAnalyzer" class="org.apache.lucene.analysis.th.ThaiAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.analysis.tr.TurkishAnalyzer" class="org.apache.lucene.analysis.tr.TurkishAnalyzer">
-		<constructor-arg ref="org.apache.lucene.util.Version" />
-	</bean>
-	<bean id="org.apache.lucene.util.Version" class="org.apache.lucene.util.Version" factory-method="valueOf">
-		<constructor-arg value="LUCENE_35" />
-	</bean>
+	<bean class="com.liferay.portal.kernel.search.BaseSearchEngine" id="com.liferay.portal.search.generic.GenericSearchEngineImpl" />
 
 	<!-- Configurator -->
 
-	<bean id="searchEngineConfigurator.core" class="com.liferay.portal.kernel.search.DefaultSearchEngineConfigurator">
+	<bean class="com.liferay.portal.kernel.search.DefaultSearchEngineConfigurator" id="searchEngineConfigurator.core">
 		<property name="defaultSearchEngineId" value="SYSTEM_ENGINE" />
 		<property name="indexSearcher" ref="com.liferay.portal.kernel.search.IndexSearcherProxyBean" />
 		<property name="indexWriter" ref="com.liferay.portal.kernel.search.IndexWriterProxyBean" />
-		<property name="messageBus" ref="com.liferay.portal.kernel.messaging.MessageBus" />
 		<property name="searchEngines">
 			<util:map>
 				<entry key="GENERIC_ENGINE" value-ref="com.liferay.portal.search.generic.GenericSearchEngineImpl" />
-				<entry key="SYSTEM_ENGINE" value-ref="com.liferay.portal.search.lucene.LuceneSearchEngineImpl" />
 			</util:map>
 		</property>
 	</bean>
-	<bean id="com.liferay.portal.resiliency.spi.search.SPISearchEngineConfigurator" class="com.liferay.portal.resiliency.spi.search.SPISearchEngineConfigurator">
-		<property name="messageBus" ref="com.liferay.portal.kernel.messaging.MessageBus" />
-	</bean>
+	<bean class="com.liferay.portal.resiliency.spi.search.SPISearchEngineConfigurator" id="com.liferay.portal.resiliency.spi.search.SPISearchEngineConfigurator" />
 </beans>

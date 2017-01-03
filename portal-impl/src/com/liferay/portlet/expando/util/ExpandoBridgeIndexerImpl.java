@@ -14,6 +14,14 @@
 
 package com.liferay.portlet.expando.util;
 
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
+import com.liferay.expando.kernel.model.ExpandoValue;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
+import com.liferay.expando.kernel.util.ExpandoBridgeIndexer;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -21,19 +29,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portlet.expando.model.ExpandoBridge;
-import com.liferay.portlet.expando.model.ExpandoColumn;
-import com.liferay.portlet.expando.model.ExpandoColumnConstants;
-import com.liferay.portlet.expando.model.ExpandoTableConstants;
-import com.liferay.portlet.expando.model.ExpandoValue;
 import com.liferay.portlet.expando.model.impl.ExpandoValueImpl;
-import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,7 @@ public class ExpandoBridgeIndexerImpl implements ExpandoBridgeIndexer {
 
 	@Override
 	public String encodeFieldName(String columnName) {
-		StringBundler sb = new StringBundler(3);
+		StringBundler sb = new StringBundler(5);
 
 		sb.append(FIELD_NAMESPACE);
 		sb.append(StringPool.DOUBLE_UNDERLINE);
@@ -163,6 +165,19 @@ public class ExpandoBridgeIndexerImpl implements ExpandoBridgeIndexer {
 				document.addKeyword(fieldName, new long[0]);
 			}
 		}
+		else if (type == ExpandoColumnConstants.NUMBER) {
+			document.addKeyword(fieldName, expandoValue.getNumber().toString());
+		}
+		else if (type == ExpandoColumnConstants.NUMBER_ARRAY) {
+			if (!defaultValue) {
+				document.addKeyword(
+					fieldName,
+					ArrayUtil.toStringArray(expandoValue.getNumberArray()));
+			}
+			else {
+				document.addKeyword(fieldName, new long[0]);
+			}
+		}
 		else if (type == ExpandoColumnConstants.SHORT) {
 			document.addKeyword(fieldName, expandoValue.getShort());
 		}
@@ -204,6 +219,18 @@ public class ExpandoBridgeIndexerImpl implements ExpandoBridgeIndexer {
 				}
 			}
 		}
+		else if (type == ExpandoColumnConstants.STRING_LOCALIZED) {
+			if (!defaultValue) {
+				if (indexType == ExpandoColumnConstants.INDEX_TYPE_KEYWORD) {
+					document.addLocalizedKeyword(
+						fieldName, expandoValue.getStringMap());
+				}
+				else {
+					document.addLocalizedText(
+						fieldName, expandoValue.getStringMap());
+				}
+			}
+		}
 	}
 
 	protected void doAddAttributes(
@@ -217,7 +244,7 @@ public class ExpandoBridgeIndexerImpl implements ExpandoBridgeIndexer {
 			return;
 		}
 
-		List<ExpandoColumn> indexedColumns = new ArrayList<ExpandoColumn>();
+		List<ExpandoColumn> indexedColumns = new ArrayList<>();
 
 		for (ExpandoColumn expandoColumn : expandoColumns) {
 			UnicodeProperties properties =

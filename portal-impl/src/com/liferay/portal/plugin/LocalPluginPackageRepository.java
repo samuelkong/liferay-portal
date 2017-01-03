@@ -83,13 +83,13 @@ public class LocalPluginPackageRepository {
 	}
 
 	public List<PluginPackage> getPluginPackages() {
-		return new ArrayList<PluginPackage>(_pluginPackages.values());
+		return new ArrayList<>(_pluginPackages.values());
 	}
 
 	public List<PluginPackage> getPluginPackages(
 		String groupId, String artifactId) {
 
-		List<PluginPackage> pluginPackages = new ArrayList<PluginPackage>();
+		List<PluginPackage> pluginPackages = new ArrayList<>();
 
 		for (PluginPackage pluginPackage : _pluginPackages.values()) {
 			if (pluginPackage.getGroupId().equals(groupId) &&
@@ -103,7 +103,7 @@ public class LocalPluginPackageRepository {
 	}
 
 	public List<PluginPackage> getSortedPluginPackages() {
-		List<PluginPackage> pluginPackages = new ArrayList<PluginPackage>();
+		List<PluginPackage> pluginPackages = new ArrayList<>();
 
 		pluginPackages.addAll(_pluginPackages.values());
 
@@ -153,7 +153,8 @@ public class LocalPluginPackageRepository {
 
 		_pluginPackages.remove(pluginPackage.getContext());
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(PluginPackage.class);
+		Indexer<PluginPackage> indexer = IndexerRegistryUtil.getIndexer(
+			PluginPackage.class);
 
 		indexer.delete(pluginPackage);
 	}
@@ -170,9 +171,7 @@ public class LocalPluginPackageRepository {
 	private static final Log _log = LogFactoryUtil.getLog(
 		LocalPluginPackageRepository.class);
 
-	private final Map<String, PluginPackage> _pendingPackages =
-		new HashMap<String, PluginPackage>();
-	private final Map<String, PluginPackage> _pluginPackages =
-		new HashMap<String, PluginPackage>();
+	private final Map<String, PluginPackage> _pendingPackages = new HashMap<>();
+	private final Map<String, PluginPackage> _pluginPackages = new HashMap<>();
 
 }

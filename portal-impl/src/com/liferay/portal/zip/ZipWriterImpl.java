@@ -49,7 +49,8 @@ public class ZipWriterImpl implements ZipWriter {
 		_file.mkdir();
 
 		FinalizeManager.register(
-			_file, new DeleteFileFinalizeAction(_file.getAbsolutePath()),
+			_file.getDelegate(),
+			new DeleteFileFinalizeAction(_file.getAbsolutePath()),
 			FinalizeManager.PHANTOM_REFERENCE_FACTORY);
 	}
 
@@ -83,8 +84,6 @@ public class ZipWriterImpl implements ZipWriter {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Adding " + name);
 		}
-
-		FileUtil.mkdirs(getPath());
 
 		try (OutputStream outputStream = new FileOutputStream(
 				new File(getPath() + StringPool.SLASH + name))) {
@@ -142,6 +141,8 @@ public class ZipWriterImpl implements ZipWriter {
 			new DefaultArchiveDetector(
 				ArchiveDetector.ALL, "lar|" + ArchiveDetector.ALL.getSuffixes(),
 				new ZipDriver()));
+
+		TrueZIPHelperUtil.initialize();
 	}
 
 	private final File _file;

@@ -14,14 +14,14 @@
 
 package com.liferay.portlet.asset.service.permission;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil;
-import com.liferay.portlet.asset.model.AssetEntry;
-import com.liferay.portlet.asset.model.AssetRendererFactory;
-import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
  * @author Samuel Kong
@@ -34,7 +34,10 @@ public class AssetEntryPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, entry, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker,
+				PortalUtil.getClassName(entry.getClassNameId()),
+				entry.getClassPK(), actionId);
 		}
 	}
 
@@ -42,9 +45,9 @@ public class AssetEntryPermission {
 			PermissionChecker permissionChecker, long entryId, String actionId)
 		throws PortalException {
 
-		if (!contains(permissionChecker, entryId, actionId)) {
-			throw new PrincipalException();
-		}
+		AssetEntry entry = AssetEntryLocalServiceUtil.getEntry(entryId);
+
+		check(permissionChecker, entry, actionId);
 	}
 
 	public static void check(
@@ -53,7 +56,8 @@ public class AssetEntryPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, className, classPK, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, className, classPK, actionId);
 		}
 	}
 
@@ -64,7 +68,7 @@ public class AssetEntryPermission {
 
 		String className = PortalUtil.getClassName(entry.getClassNameId());
 
-		AssetRendererFactory assetRendererFactory =
+		AssetRendererFactory<?> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
 				className);
 
@@ -73,7 +77,8 @@ public class AssetEntryPermission {
 				permissionChecker, entry.getClassPK(), actionId);
 		}
 		catch (Exception e) {
-			throw new PrincipalException(e);
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, className, entry.getClassPK(), actionId);
 		}
 	}
 

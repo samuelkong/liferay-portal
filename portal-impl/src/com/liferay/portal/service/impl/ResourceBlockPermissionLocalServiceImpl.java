@@ -15,10 +15,10 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.ResourceBlock;
-import com.liferay.portal.model.ResourceBlockConstants;
-import com.liferay.portal.model.ResourceBlockPermission;
-import com.liferay.portal.model.ResourceBlockPermissionsContainer;
+import com.liferay.portal.kernel.model.ResourceBlock;
+import com.liferay.portal.kernel.model.ResourceBlockConstants;
+import com.liferay.portal.kernel.model.ResourceBlockPermission;
+import com.liferay.portal.kernel.model.ResourceBlockPermissionsContainer;
 import com.liferay.portal.service.base.ResourceBlockPermissionLocalServiceBaseImpl;
 
 import java.util.Collections;
@@ -72,8 +72,8 @@ public class ResourceBlockPermissionLocalServiceImpl
 
 	/**
 	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #getAvailableResourceBlockPermissionActionIds(
-	 *             String, long, List)}
+	 *             #getAvailableResourceBlockPermissionActionIds(String, long,
+	 *             List)}
 	 */
 	@Deprecated
 	@Override
@@ -101,13 +101,12 @@ public class ResourceBlockPermissionLocalServiceImpl
 			resourceBlockPermissionPersistence.findByResourceBlockId(
 				resourceBlock.getResourceBlockId());
 
-		Map<Long, Set<String>> roleIdsToActionIds =
-			new HashMap<Long, Set<String>>();
+		Map<Long, Set<String>> roleIdsToActionIds = new HashMap<>();
 
 		for (ResourceBlockPermission resourceBlockPermission :
 				resourceBlockPermissions) {
 
-			Set<String> availableActionIds = new HashSet<String>();
+			Set<String> availableActionIds = new HashSet<>();
 
 			List<String> resourceBlockActionIds =
 				resourceBlockLocalService.getActionIds(
@@ -130,7 +129,7 @@ public class ResourceBlockPermissionLocalServiceImpl
 
 	@Override
 	public ResourceBlockPermissionsContainer
-			getResourceBlockPermissionsContainer(long resourceBlockId) {
+		getResourceBlockPermissionsContainer(long resourceBlockId) {
 
 		List<ResourceBlockPermission> resourceBlockPermissions =
 			resourceBlockPermissionPersistence.findByResourceBlockId(

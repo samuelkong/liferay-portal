@@ -30,7 +30,7 @@ if (Validator.isNull(displayStyle)) {
 %>
 
 <aui:fieldset>
-	<aui:input name="preferences--enableSocialBookmarks--" type="checkbox" value="<%= enabled %>" />
+	<aui:input name="preferences--enableSocialBookmarks--" type="toggle-switch" value="<%= enabled %>" />
 
 	<div class="social-boomarks-options" id="<portlet:namespace />socialBookmarksOptions">
 		<aui:select label="display-style" name="preferences--socialBookmarksDisplayStyle--">
@@ -39,7 +39,7 @@ if (Validator.isNull(displayStyle)) {
 			for (String curDisplayStyle : PropsUtil.getArray(PropsKeys.SOCIAL_BOOKMARK_DISPLAY_STYLES)) {
 			%>
 
-			<aui:option label="<%= curDisplayStyle %>" selected="<%= displayStyle.equals(curDisplayStyle) %>" />
+				<aui:option label="<%= curDisplayStyle %>" selected="<%= displayStyle.equals(curDisplayStyle) %>" />
 
 			<%
 			}

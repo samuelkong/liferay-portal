@@ -15,16 +15,13 @@
 package com.liferay.portal.model.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.ListType;
-import com.liferay.portal.service.ListTypeServiceUtil;
+import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.service.ListTypeServiceUtil;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class OrgLaborImpl extends OrgLaborBaseImpl {
-
-	public OrgLaborImpl() {
-	}
 
 	@Override
 	public ListType getType() throws PortalException {

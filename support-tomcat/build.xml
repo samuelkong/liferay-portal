@@ -1,54 +1,15 @@
 <?xml version="1.0"?>
 
-<project name="support-tomcat" basedir="." default="compile" xmlns:antelope="antlib:ise.antelope.tasks">
+<project basedir="." default="compile" name="support-tomcat" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="../build-common-java.xml" />
 
+	<property name="artifact.version" value="1.0.0" />
 	<property name="deploy.dir" value="${app.server.lib.support.dir}" />
 	<property name="jar.file" value="${ant.project.name}" />
-	<property name="release.info.version" value="6.2.0" />
+	<property name="javac.classpathref" value="web.classpath" />
 
-	<target name="clean">
-		<antcall target="build-common-java.clean" />
-
-		<delete file="${deploy.dir}/${jar.file}.jar" />
-	</target>
-
-	<target name="compile">
-		<mkdir dir="classes" />
-
-		<path id="web-lib.classpath">
-			<fileset dir="${project.dir}/lib/development" includes="catalina.jar,jasper.jar,tomcat-coyote.jar" />
-		</path>
-
-		<javac
-			classpathref="web.classpath"
-			compiler="${javac.compiler}"
-			debug="${javac.debug}"
-			deprecation="${javac.deprecation}"
-			destdir="classes"
-			encoding="${javac.encoding}"
-			includeAntRuntime="false"
-			nowarn="${javac.nowarn}"
-			srcdir="src"
-		/>
-
-		<!--
-		LEP-2995
-		-->
-
-		<mkdir dir="classes/com/liferay/portal/security/jaas" />
-
-		<copy todir="classes/com/liferay/portal/security/jaas" preservelastmodified="true">
-			<fileset
-				dir="${portal-impl.classes.dir}/com/liferay/portal/security/jaas"
-				includes="PortalPrincipal.class,PortalRole.class"
-			/>
-		</copy>
-	</target>
-
-	<target name="deploy">
-		<delete file="${deploy.dir}/support-catalina.jar" />
-
-		<antcall target="build-common-java.deploy" />
-	</target>
+	<path id="web-lib.classpath">
+		<fileset dir="${project.dir}/lib/development" includes="catalina.jar,jasper.jar,tomcat-api.jar,tomcat-coyote.jar" />
+		<fileset dir="${project.dir}/lib/portal" includes="tomcat-juli.jar" />
+	</path>
 </project>

@@ -14,8 +14,6 @@
 
 package com.liferay.portal.apache.bridges.struts;
 
-import com.liferay.portal.kernel.util.ContextPathUtil;
-
 import java.io.InputStream;
 
 import java.net.MalformedURLException;
@@ -155,7 +153,7 @@ public class LiferayServletContext implements ServletContext {
 
 	@Override
 	public String getContextPath() {
-		return ContextPathUtil.getContextPath(_servletContext);
+		return _servletContext.getContextPath();
 	}
 
 	@Override
@@ -269,6 +267,10 @@ public class LiferayServletContext implements ServletContext {
 		return _servletContext.getServerInfo();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public Servlet getServlet(String name) {
 		return null;
@@ -279,6 +281,10 @@ public class LiferayServletContext implements ServletContext {
 		return _servletContext.getServletContextName();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public Enumeration<String> getServletNames() {
 		return Collections.enumeration(new ArrayList<String>());
@@ -296,6 +302,10 @@ public class LiferayServletContext implements ServletContext {
 		return _servletContext.getServletRegistrations();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public Enumeration<Servlet> getServlets() {
 		return Collections.enumeration(new ArrayList<Servlet>());
@@ -306,6 +316,10 @@ public class LiferayServletContext implements ServletContext {
 		return _servletContext.getSessionCookieConfig();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public void log(Exception exception, String message) {
 		_servletContext.log(message, exception);

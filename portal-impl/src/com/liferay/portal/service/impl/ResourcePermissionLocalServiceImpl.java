@@ -14,35 +14,38 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.NoSuchResourcePermissionException;
-import com.liferay.portal.kernel.concurrent.LockRegistry;
-import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
+import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.model.Resource;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.ResourcePermissionConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionUpdateHandler;
+import com.liferay.portal.kernel.security.permission.PermissionUpdateHandlerRegistryUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.ExceptionRetryAcceptor;
+import com.liferay.portal.kernel.spring.aop.Property;
+import com.liferay.portal.kernel.spring.aop.Retry;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.Resource;
-import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.model.ResourcePermission;
-import com.liferay.portal.model.ResourcePermissionConstants;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.model.RoleConstants;
-import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
 import com.liferay.portal.service.base.ResourcePermissionLocalServiceBaseImpl;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.ResourcePermissionsThreadLocal;
 import com.liferay.util.dao.orm.CustomSQLUtil;
@@ -55,7 +58,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.Callable;
 
 /**
  * Provides the local service for accessing, adding, checking, deleting,
@@ -105,19 +108,25 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope. This method only supports company, group, and
-	 *         group-template scope.
-	 * @param  primKey the primary key
-	 * @param  roleId the primary key of the role
-	 * @param  actionId the action ID
-	 * @throws PortalException if scope was set to individual scope or if a role
-	 *         with the primary key or a resource action with the name and
-	 *         action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope. This method only supports company, group, and
+	 *        group-template scope.
+	 * @param primKey the primary key
+	 * @param roleId the primary key of the role
+	 * @param actionId the action ID
 	 */
 	@Override
+	@Retry(
+		acceptor = ExceptionRetryAcceptor.class,
+		properties = {
+			@Property(
+				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
+				value = "org.springframework.dao.DataIntegrityViolationException"
+			)
+		}
+	)
 	public void addResourcePermission(
 			long companyId, String name, int scope, String primKey, long roleId,
 			String actionId)
@@ -146,8 +155,6 @@ public class ResourcePermissionLocalServiceImpl
 		updateResourcePermission(
 			companyId, name, scope, primKey, roleId, 0, new String[] {actionId},
 			ResourcePermissionConstants.OPERATOR_ADD);
-
-		PermissionCacheUtil.clearCache();
 	}
 
 	/**
@@ -161,11 +168,11 @@ public class ResourcePermissionLocalServiceImpl
 	 * permissions to view all blog posts.
 	 * </p>
 	 *
-	 * @param  resourceName the resource's name, which can be either a class
-	 *         name or a portlet ID
-	 * @param  roleName the role's name
-	 * @param  scope the scope
-	 * @param  resourceActionBitwiseValue the bitwise IDs of the actions
+	 * @param resourceName the resource's name, which can be either a class name
+	 *        or a portlet ID
+	 * @param roleName the role's name
+	 * @param scope the scope
+	 * @param resourceActionBitwiseValue the bitwise IDs of the actions
 	 */
 	@Override
 	public void addResourcePermissions(
@@ -237,12 +244,22 @@ public class ResourcePermissionLocalServiceImpl
 				resourcePermission.setName((String)resourcePermissionArray[1]);
 				resourcePermission.setScope(
 					(Integer)resourcePermissionArray[2]);
-				resourcePermission.setPrimKey(
-					(String)resourcePermissionArray[3]);
+
+				String primKey = (String)resourcePermissionArray[3];
+
+				resourcePermission.setPrimKey(primKey);
+				resourcePermission.setPrimKeyId(GetterUtil.getLong(primKey));
+
 				resourcePermission.setRoleId((Long)resourcePermissionArray[4]);
 				resourcePermission.setActionIds(resourceActionBitwiseValue);
+				resourcePermission.setViewActionId(
+					resourceActionBitwiseValue % 2 == 1);
 
 				session.save(resourcePermission);
+
+				PermissionCacheUtil.clearResourcePermissionCache(
+					resourcePermission.getScope(), resourcePermission.getName(),
+					resourcePermission.getPrimKey());
 			}
 		}
 		catch (Exception e) {
@@ -270,12 +287,11 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
 	 */
 	@Override
 	public void deleteResourcePermissions(
@@ -301,12 +317,11 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
 	 */
 	@Override
 	public void deleteResourcePermissions(
@@ -324,6 +339,14 @@ public class ResourcePermissionLocalServiceImpl
 	}
 
 	@Override
+	public ResourcePermission fetchResourcePermission(
+		long companyId, String name, int scope, String primKey, long roleId) {
+
+		return resourcePermissionPersistence.fetchByC_N_S_P_R(
+			companyId, name, scope, primKey, roleId);
+	}
+
+	@Override
 	public Map<Long, Set<String>> getAvailableResourcePermissionActionIds(
 		long companyId, String name, int scope, String primKey,
 		Collection<String> actionIds) {
@@ -335,16 +358,19 @@ public class ResourcePermissionLocalServiceImpl
 		List<ResourcePermission> resourcePermissions = getResourcePermissions(
 			companyId, name, scope, primKey);
 
-		Map<Long, Set<String>> roleIdsToActionIds =
-			new HashMap<Long, Set<String>>(resourcePermissions.size());
+		Map<Long, Set<String>> roleIdsToActionIds = new HashMap<>(
+			resourcePermissions.size());
 
 		for (ResourcePermission resourcePermission : resourcePermissions) {
 			if (resourcePermission.getActionIds() == 0) {
+				roleIdsToActionIds.put(
+					resourcePermission.getRoleId(),
+					Collections.<String>emptySet());
+
 				continue;
 			}
 
-			Set<String> availableActionIds = new HashSet<String>(
-				actionIds.size());
+			Set<String> availableActionIds = new HashSet<>(actionIds.size());
 
 			for (String actionId : actionIds) {
 				if (resourcePermission.hasActionId(actionId)) {
@@ -352,7 +378,7 @@ public class ResourcePermissionLocalServiceImpl
 				}
 			}
 
-			if (availableActionIds.size() > 0) {
+			if (!availableActionIds.isEmpty()) {
 				roleIdsToActionIds.put(
 					resourcePermission.getRoleId(), availableActionIds);
 			}
@@ -374,8 +400,6 @@ public class ResourcePermissionLocalServiceImpl
 	 * @param  actionIds the action IDs
 	 * @return the intersection of action IDs the role has permission at the
 	 *         scope to perform on resources of the type
-	 * @throws PortalException if a resouce action could not be found for any
-	 *         one of the actions on the resource
 	 */
 	@Override
 	public List<String> getAvailableResourcePermissionActionIds(
@@ -391,8 +415,7 @@ public class ResourcePermissionLocalServiceImpl
 			return Collections.emptyList();
 		}
 
-		List<String> availableActionIds = new ArrayList<String>(
-			actionIds.size());
+		List<String> availableActionIds = new ArrayList<>(actionIds.size());
 
 		for (String actionId : actionIds) {
 			ResourceAction resourceAction =
@@ -408,8 +431,8 @@ public class ResourcePermissionLocalServiceImpl
 
 	/**
 	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #getAvailableResourcePermissionActionIds(
-	 *             long, String, int, String, Collection)}
+	 *             #getAvailableResourcePermissionActionIds(long, String, int,
+	 *             String, Collection)}
 	 */
 	@Deprecated
 	@Override
@@ -433,7 +456,6 @@ public class ResourcePermissionLocalServiceImpl
 	 * @param  roleId the primary key of the role
 	 * @return the resource permission for the role at the scope to perform the
 	 *         actions on resources of the type
-	 * @throws PortalException if no matching resources could be found
 	 */
 	@Override
 	public ResourcePermission getResourcePermission(
@@ -536,6 +558,40 @@ public class ResourcePermissionLocalServiceImpl
 		return resourcePermissionFinder.findByR_S(roleId, scopes, start, end);
 	}
 
+	@Override
+	public List<Role> getRoles(
+			long companyId, String name, int scope, String primKey,
+			String actionId)
+		throws PortalException {
+
+		List<ResourcePermission> resourcePermissions =
+			resourcePermissionPersistence.findByC_N_S_P(
+				companyId, name, scope, primKey);
+
+		if (resourcePermissions.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		ResourceAction resourceAction =
+			resourceActionLocalService.getResourceAction(name, actionId);
+
+		Set<Long> rolesIds = new HashSet<>();
+
+		for (ResourcePermission resourcePermission : resourcePermissions) {
+			if (resourcePermission.hasAction(resourceAction)) {
+				rolesIds.add(resourcePermission.getRoleId());
+			}
+		}
+
+		List<Role> roles = new ArrayList<>(rolesIds.size());
+
+		for (long roleId : rolesIds) {
+			roles.add(roleLocalService.getRole(roleId));
+		}
+
+		return roles;
+	}
+
 	/**
 	 * Returns all the resource permissions where scope = any &#63;.
 	 *
@@ -599,9 +655,6 @@ public class ResourcePermissionLocalServiceImpl
 	 * @return <code>true</code> if any one of the roles has permission to
 	 *         perform the action on any one of the resources;
 	 *         <code>false</code> otherwise
-	 * @throws PortalException if any one of the roles with the primary keys
-	 *         could not be found or if a resource action with the name and
-	 *         action ID could not be found
 	 */
 	@Override
 	public boolean hasResourcePermission(
@@ -619,16 +672,18 @@ public class ResourcePermissionLocalServiceImpl
 				"The list of resources must contain at least two values");
 		}
 
-		Resource firstResource = resources.get(0);
+		Resource individualResource = resources.get(0);
 
-		if (firstResource.getScope() != ResourceConstants.SCOPE_INDIVIDUAL) {
+		if (individualResource.getScope() !=
+				ResourceConstants.SCOPE_INDIVIDUAL) {
+
 			throw new IllegalArgumentException(
 				"The first resource must be an individual scope");
 		}
 
-		Resource lastResource = resources.get(size - 1);
+		Resource companyResource = resources.get(size - 1);
 
-		if (lastResource.getScope() != ResourceConstants.SCOPE_COMPANY) {
+		if (companyResource.getScope() != ResourceConstants.SCOPE_COMPANY) {
 			throw new IllegalArgumentException(
 				"The last resource must be a company scope");
 		}
@@ -636,10 +691,23 @@ public class ResourcePermissionLocalServiceImpl
 		// See LPS-47464
 
 		if (resourcePermissionPersistence.countByC_N_S_P(
-				firstResource.getCompanyId(), firstResource.getName(),
-				firstResource.getScope(), firstResource.getPrimKey()) < 1) {
+				individualResource.getCompanyId(), individualResource.getName(),
+				individualResource.getScope(),
+				individualResource.getPrimKey()) < 1) {
 
-			return false;
+			StringBundler sb = new StringBundler(9);
+
+			sb.append("{companyId=");
+			sb.append(individualResource.getCompanyId());
+			sb.append(", name=");
+			sb.append(individualResource.getName());
+			sb.append(", primKey=");
+			sb.append(individualResource.getPrimKey());
+			sb.append(", scope=");
+			sb.append(individualResource.getScope());
+			sb.append("}");
+
+			throw new NoSuchResourcePermissionException(sb.toString());
 		}
 
 		// Iterate the list of resources in reverse order to test permissions
@@ -682,8 +750,6 @@ public class ResourcePermissionLocalServiceImpl
 	 * @param  actionId the action ID
 	 * @return <code>true</code> if the role has permission to perform the
 	 *         action on the resource; <code>false</code> otherwise
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
 	 */
 	@Override
 	public boolean hasResourcePermission(
@@ -728,9 +794,6 @@ public class ResourcePermissionLocalServiceImpl
 	 * @param  actionId the action ID
 	 * @return <code>true</code> if any one of the roles has permission to
 	 *         perform the action on the resource; <code>false</code> otherwise
-	 * @throws PortalException if any one of the roles with the primary keys
-	 *         could not be found or if a resource action with the name and
-	 *         action ID could not be found
 	 */
 	@Override
 	public boolean hasResourcePermission(
@@ -745,16 +808,9 @@ public class ResourcePermissionLocalServiceImpl
 		ResourceAction resourceAction =
 			resourceActionLocalService.getResourceAction(name, actionId);
 
-		DB db = DBFactoryUtil.getDB();
-
-		String dbType = db.getType();
-
-		if ((roleIds.length >
+		if (roleIds.length >
 				PropsValues.
-					PERMISSIONS_ROLE_RESOURCE_PERMISSION_QUERY_THRESHOLD) &&
-			!dbType.equals(DB.TYPE_DERBY) &&
-			!dbType.equals(DB.TYPE_JDATASTORE) &&
-			!dbType.equals(DB.TYPE_SAP)) {
+					PERMISSIONS_ROLE_RESOURCE_PERMISSION_QUERY_THRESHOLD) {
 
 			int count = resourcePermissionFinder.countByC_N_S_P_R_A(
 				companyId, name, scope, primKey, roleIds,
@@ -783,6 +839,11 @@ public class ResourcePermissionLocalServiceImpl
 		return false;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #getRoles(long, String, int,
+	 *             String, String}
+	 */
+	@Deprecated
 	@Override
 	public boolean[] hasResourcePermissions(
 			long companyId, String name, int scope, String primKey,
@@ -841,8 +902,6 @@ public class ResourcePermissionLocalServiceImpl
 	 * @param  actionId the action ID
 	 * @return <code>true</code> if the role has permission to perform the
 	 *         action on the resource; <code>false</code> otherwise
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
 	 */
 	@Override
 	public boolean hasScopeResourcePermission(
@@ -869,9 +928,8 @@ public class ResourcePermissionLocalServiceImpl
 	 * Reassigns all the resource permissions from the source role to the
 	 * destination role, and deletes the source role.
 	 *
-	 * @param  fromRoleId the primary key of the source role
-	 * @param  toRoleId the primary key of the destination role
-	 * @throws PortalException if a role with the primary key could not be found
+	 * @param fromRoleId the primary key of the source role
+	 * @param toRoleId the primary key of the destination role
 	 */
 	@Override
 	public void mergePermissions(long fromRoleId, long toRoleId)
@@ -883,10 +941,10 @@ public class ResourcePermissionLocalServiceImpl
 		if (fromRole.getType() != toRole.getType()) {
 			throw new PortalException("Role types are mismatched");
 		}
-		else if (PortalUtil.isSystemRole(toRole.getName())) {
+		else if (toRole.isSystem()) {
 			throw new PortalException("Cannot move permissions to system role");
 		}
-		else if (PortalUtil.isSystemRole(fromRole.getName())) {
+		else if (fromRole.isSystem()) {
 			throw new PortalException(
 				"Cannot move permissions from system role");
 		}
@@ -901,8 +959,6 @@ public class ResourcePermissionLocalServiceImpl
 		}
 
 		roleLocalService.deleteRole(fromRoleId);
-
-		PermissionCacheUtil.clearCache();
 	}
 
 	/**
@@ -911,10 +967,8 @@ public class ResourcePermissionLocalServiceImpl
 	 * permission, and deletes the resource permission's role if it has no
 	 * permissions remaining.
 	 *
-	 * @param  resourcePermissionId the primary key of the resource permission
-	 * @param  toRoleId the primary key of the role
-	 * @throws PortalException if a resource permission or role with the primary
-	 *         key could not be found
+	 * @param resourcePermissionId the primary key of the resource permission
+	 * @param toRoleId the primary key of the role
 	 */
 	@Override
 	public void reassignPermissions(long resourcePermissionId, long toRoleId)
@@ -966,15 +1020,13 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @param  roleId the primary key of the role
-	 * @param  actionId the action ID
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
+	 * @param roleId the primary key of the role
+	 * @param actionId the action ID
 	 */
 	@Override
 	public void removeResourcePermission(
@@ -985,8 +1037,6 @@ public class ResourcePermissionLocalServiceImpl
 		updateResourcePermission(
 			companyId, name, scope, primKey, roleId, 0, new String[] {actionId},
 			ResourcePermissionConstants.OPERATOR_REMOVE);
-
-		PermissionCacheUtil.clearCache();
 	}
 
 	/**
@@ -995,14 +1045,12 @@ public class ResourcePermissionLocalServiceImpl
 	 * revoke all individual scope permissions to edit blog posts from site
 	 * members.
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  roleId the primary key of the role
-	 * @param  actionId the action ID
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param roleId the primary key of the role
+	 * @param actionId the action ID
 	 */
 	@Override
 	public void removeResourcePermissions(
@@ -1019,8 +1067,6 @@ public class ResourcePermissionLocalServiceImpl
 				0, new String[] {actionId},
 				ResourcePermissionConstants.OPERATOR_REMOVE);
 		}
-
-		PermissionCacheUtil.clearCache();
 	}
 
 	/**
@@ -1040,19 +1086,26 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @param  roleId the primary key of the role
-	 * @param  ownerId the primary key of the owner (generally the user that
-	 *         created the resource)
-	 * @param  actionIds the action IDs of the actions
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
+	 * @param roleId the primary key of the role
+	 * @param ownerId the primary key of the owner (generally the user that
+	 *        created the resource)
+	 * @param actionIds the action IDs of the actions
 	 */
 	@Override
+	@Retry(
+		acceptor = ExceptionRetryAcceptor.class,
+		properties = {
+			@Property(
+				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
+				value = "org.springframework.dao.DataIntegrityViolationException"
+			)
+		}
+	)
 	public void setOwnerResourcePermissions(
 			long companyId, String name, int scope, String primKey, long roleId,
 			long ownerId, String[] actionIds)
@@ -1079,17 +1132,24 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @param  roleId the primary key of the role
-	 * @param  actionIds the action IDs of the actions
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
+	 * @param roleId the primary key of the role
+	 * @param actionIds the action IDs of the actions
 	 */
 	@Override
+	@Retry(
+		acceptor = ExceptionRetryAcceptor.class,
+		properties = {
+			@Property(
+				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
+				value = "org.springframework.dao.DataIntegrityViolationException"
+			)
+		}
+	)
 	public void setResourcePermissions(
 			long companyId, String name, int scope, String primKey, long roleId,
 			String[] actionIds)
@@ -1116,16 +1176,23 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @param  roleIdsToActionIds a map of role IDs to action IDs of the actions
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
+	 * @param roleIdsToActionIds a map of role IDs to action IDs of the actions
 	 */
 	@Override
+	@Retry(
+		acceptor = ExceptionRetryAcceptor.class,
+		properties = {
+			@Property(
+				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
+				value = "org.springframework.dao.DataIntegrityViolationException"
+			)
+		}
+	)
 	public void setResourcePermissions(
 			long companyId, String name, int scope, String primKey,
 			Map<Long, String[]> roleIdsToActionIds)
@@ -1176,8 +1243,13 @@ public class ResourcePermissionLocalServiceImpl
 			resourcePermission.setName(name);
 			resourcePermission.setScope(scope);
 			resourcePermission.setPrimKey(primKey);
+			resourcePermission.setPrimKeyId(GetterUtil.getLong(primKey));
 			resourcePermission.setRoleId(roleId);
 			resourcePermission.setOwnerId(ownerId);
+
+			if (resourcePermissionsMap != null) {
+				resourcePermissionsMap.put(roleId, resourcePermission);
+			}
 		}
 
 		List<String> unsupportedActionIds = Collections.emptyList();
@@ -1221,62 +1293,16 @@ public class ResourcePermissionLocalServiceImpl
 			}
 		}
 
-		resourcePermission.setActionIds(actionIdsLong);
+		if ((actionIdsLong != resourcePermission.getActionIds()) ||
+			resourcePermission.isNew()) {
 
-		resourcePermissionPersistence.update(resourcePermission);
+			resourcePermission.setActionIds(actionIdsLong);
+			resourcePermission.setViewActionId(actionIdsLong % 2 == 1);
 
-		PermissionCacheUtil.clearCache();
-
-		SearchEngineUtil.updatePermissionFields(name, primKey);
-	}
-
-	protected void doUpdateResourcePermission(
-			long companyId, String name, int scope, String primKey,
-			long ownerId, Map<Long, String[]> roleIdsToActionIds)
-		throws PortalException {
-
-		boolean flushEnabled = PermissionThreadLocal.isFlushEnabled();
-
-		PermissionThreadLocal.setIndexEnabled(false);
-
-		try {
-			long[] roleIds = ArrayUtil.toLongArray(roleIdsToActionIds.keySet());
-
-			List<ResourcePermission> resourcePermissions =
-				resourcePermissionPersistence.findByC_N_S_P_R(
-					companyId, name, scope, primKey, roleIds);
-
-			for (ResourcePermission resourcePermission : resourcePermissions) {
-				long roleId = resourcePermission.getRoleId();
-				String[] actionIds = roleIdsToActionIds.remove(roleId);
-
-				doUpdateResourcePermission(
-					companyId, name, scope, primKey, ownerId, roleId, actionIds,
-					ResourcePermissionConstants.OPERATOR_SET, true);
-			}
-
-			if (roleIdsToActionIds.isEmpty()) {
-				return;
-			}
-
-			for (Map.Entry<Long, String[]> entry :
-					roleIdsToActionIds.entrySet()) {
-
-				long roleId = entry.getKey();
-				String[] actionIds = entry.getValue();
-
-				doUpdateResourcePermission(
-					companyId, name, scope, primKey, ownerId, roleId, actionIds,
-					ResourcePermissionConstants.OPERATOR_SET, false);
-			}
+			resourcePermissionPersistence.update(resourcePermission);
 		}
-		finally {
-			PermissionThreadLocal.setIndexEnabled(flushEnabled);
 
-			PermissionCacheUtil.clearCache();
-
-			SearchEngineUtil.updatePermissionFields(name, primKey);
-		}
+		IndexWriterHelperUtil.updatePermissionFields(name, primKey);
 	}
 
 	protected boolean isGuestRoleId(long companyId, long roleId)
@@ -1305,69 +1331,26 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @param  roleId the primary key of the role
-	 * @param  ownerId the primary key of the owner
-	 * @param  actionIds the action IDs of the actions
-	 * @param  operator whether to add to, remove from, or set/replace the
-	 *         existing actions. Possible values can be found in {@link
-	 *         ResourcePermissionConstants}.
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
+	 * @param roleId the primary key of the role
+	 * @param ownerId the primary key of the owner
+	 * @param actionIds the action IDs of the actions
+	 * @param operator whether to add to, remove from, or set/replace the
+	 *        existing actions. Possible values can be found in {@link
+	 *        ResourcePermissionConstants}.
 	 */
 	protected void updateResourcePermission(
 			long companyId, String name, int scope, String primKey, long roleId,
 			long ownerId, String[] actionIds, int operator)
 		throws PortalException {
 
-		DB db = DBFactoryUtil.getDB();
-
-		String dbType = db.getType();
-
-		if (!dbType.equals(DB.TYPE_HYPERSONIC)) {
-			doUpdateResourcePermission(
-				companyId, name, scope, primKey, ownerId, roleId, actionIds,
-				operator, true);
-
-			return;
-		}
-
-		StringBundler sb = new StringBundler(9);
-
-		sb.append(companyId);
-		sb.append(StringPool.POUND);
-		sb.append(name);
-		sb.append(StringPool.POUND);
-		sb.append(scope);
-		sb.append(StringPool.POUND);
-		sb.append(primKey);
-		sb.append(StringPool.POUND);
-		sb.append(roleId);
-
-		Class<?> clazz = getClass();
-
-		String groupName = clazz.getName();
-
-		String key = sb.toString();
-
-		Lock lock = LockRegistry.allocateLock(groupName, key);
-
-		lock.lock();
-
-		try {
-			doUpdateResourcePermission(
-				companyId, name, scope, primKey, ownerId, roleId, actionIds,
-				operator, true);
-		}
-		finally {
-			lock.unlock();
-
-			LockRegistry.freeLock(groupName, key);
-		}
+		doUpdateResourcePermission(
+			companyId, name, scope, primKey, ownerId, roleId, actionIds,
+			operator, true);
 	}
 
 	/**
@@ -1383,61 +1366,88 @@ public class ResourcePermissionLocalServiceImpl
 	 * com.liferay.portal.model.impl.ResourcePermissionImpl}.
 	 * </p>
 	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource's name, which can be either a class name or a
-	 *         portlet ID
-	 * @param  scope the scope
-	 * @param  primKey the primary key
-	 * @param  ownerId the primary key of the owner
-	 * @throws PortalException if a role with the primary key or a resource
-	 *         action with the name and action ID could not be found
+	 * @param companyId the primary key of the company
+	 * @param name the resource's name, which can be either a class name or a
+	 *        portlet ID
+	 * @param scope the scope
+	 * @param primKey the primary key
+	 * @param ownerId the primary key of the owner
 	 */
 	protected void updateResourcePermission(
 			long companyId, String name, int scope, String primKey,
 			long ownerId, Map<Long, String[]> roleIdsToActionIds)
 		throws PortalException {
 
-		DB db = DBFactoryUtil.getDB();
+		boolean flushResourcePermissionEnabled =
+			PermissionThreadLocal.isFlushResourcePermissionEnabled(
+				name, primKey);
 
-		String dbType = db.getType();
-
-		if (!dbType.equals(DB.TYPE_HYPERSONIC)) {
-			doUpdateResourcePermission(
-				companyId, name, scope, primKey, ownerId, roleIdsToActionIds);
-
-			return;
-		}
-
-		StringBundler sb = new StringBundler(9);
-
-		sb.append(companyId);
-		sb.append(StringPool.POUND);
-		sb.append(name);
-		sb.append(StringPool.POUND);
-		sb.append(scope);
-		sb.append(StringPool.POUND);
-		sb.append(primKey);
-		sb.append(StringPool.POUND);
-		sb.append(StringUtil.merge(roleIdsToActionIds.keySet()));
-
-		Class<?> clazz = getClass();
-
-		String groupName = clazz.getName();
-
-		String key = sb.toString();
-
-		Lock lock = LockRegistry.allocateLock(groupName, key);
-
-		lock.lock();
+		PermissionThreadLocal.setFlushResourcePermissionEnabled(
+			name, primKey, false);
 
 		try {
-			doUpdateResourcePermission(
-				companyId, name, scope, primKey, ownerId, roleIdsToActionIds);
+			long[] roleIds = ArrayUtil.toLongArray(roleIdsToActionIds.keySet());
+
+			List<ResourcePermission> resourcePermissions = new ArrayList<>(
+				roleIds.length);
+
+			int batchSize = 1000;
+			int start = 0;
+
+			while (start < (roleIds.length - batchSize)) {
+				resourcePermissions.addAll(
+					resourcePermissionPersistence.findByC_N_S_P_R(
+						companyId, name, scope, primKey,
+						ArrayUtil.subset(roleIds, start, start + batchSize)));
+
+				start += batchSize;
+			}
+
+			resourcePermissions.addAll(
+				resourcePermissionPersistence.findByC_N_S_P_R(
+					companyId, name, scope, primKey,
+					ArrayUtil.subset(roleIds, start, roleIds.length)));
+
+			roleIdsToActionIds = new HashMap<>(roleIdsToActionIds);
+
+			for (ResourcePermission resourcePermission : resourcePermissions) {
+				long roleId = resourcePermission.getRoleId();
+
+				String[] actionIds = roleIdsToActionIds.remove(roleId);
+
+				doUpdateResourcePermission(
+					companyId, name, scope, primKey, ownerId, roleId, actionIds,
+					ResourcePermissionConstants.OPERATOR_SET, true);
+			}
+
+			if (roleIdsToActionIds.isEmpty()) {
+				return;
+			}
+
+			for (Map.Entry<Long, String[]> entry :
+					roleIdsToActionIds.entrySet()) {
+
+				long roleId = entry.getKey();
+				String[] actionIds = entry.getValue();
+
+				doUpdateResourcePermission(
+					companyId, name, scope, primKey, ownerId, roleId, actionIds,
+					ResourcePermissionConstants.OPERATOR_SET, false);
+			}
+
+			if (!MergeLayoutPrototypesThreadLocal.isInProgress()) {
+				TransactionCommitCallbackUtil.registerCallback(
+					new UpdateResourcePermissionCallable(name, primKey));
+			}
 		}
 		finally {
-			lock.unlock();
+			PermissionThreadLocal.setFlushResourcePermissionEnabled(
+				name, primKey, flushResourcePermissionEnabled);
 
-			LockRegistry.freeLock(groupName, key);
+			PermissionCacheUtil.clearResourcePermissionCache(
+				scope, name, primKey);
+
+			IndexWriterHelperUtil.updatePermissionFields(name, primKey);
 		}
 	}
 
@@ -1447,5 +1457,33 @@ public class ResourcePermissionLocalServiceImpl
 
 	private static final String _UPDATE_ACTION_IDS =
 		ResourcePermissionLocalServiceImpl.class.getName() + ".updateActionIds";
+
+	private static class UpdateResourcePermissionCallable
+		implements Callable<Void> {
+
+		public UpdateResourcePermissionCallable(String name, String primKey) {
+			_name = name;
+			_primKey = primKey;
+		}
+
+		@Override
+		public Void call() {
+			PermissionUpdateHandler permissionUpdateHandler =
+				PermissionUpdateHandlerRegistryUtil.getPermissionUpdateHandler(
+					_name);
+
+			if (permissionUpdateHandler == null) {
+				return null;
+			}
+
+			permissionUpdateHandler.updatedPermission(_primKey);
+
+			return null;
+		}
+
+		private final String _name;
+		private final String _primKey;
+
+	}
 
 }

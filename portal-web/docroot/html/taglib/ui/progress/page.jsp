@@ -20,7 +20,7 @@
 Integer height = (Integer)request.getAttribute("liferay-ui:progress:height");
 String id = (String)request.getAttribute("liferay-ui:progress:id");
 String message = (String)request.getAttribute("liferay-ui:progress:message");
-String sessionKey = GetterUtil.getString(request.getAttribute("liferay-ui:progress:sessionKey"), LiferayFileUpload.PERCENT);
+String sessionKey = GetterUtil.getString(request.getAttribute("liferay-ui:progress:sessionKey"), ProgressTracker.PERCENT);
 %>
 
 <div id="<%= id %>Bar"></div>
@@ -35,7 +35,7 @@ String sessionKey = GetterUtil.getString(request.getAttribute("liferay-ui:progre
 			</c:if>
 
 			id: '<%= id %>',
-			label: '<%= UnicodeLanguageUtil.get(request, message) %>',
+			label: '<%= UnicodeLanguageUtil.get(resourceBundle, message) %>',
 			sessionKey: '<%= HtmlUtil.escapeJS(sessionKey) %>'
 		}
 	);

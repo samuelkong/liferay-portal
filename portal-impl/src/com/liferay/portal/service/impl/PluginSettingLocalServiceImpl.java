@@ -17,14 +17,14 @@ package com.liferay.portal.service.impl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Plugin;
+import com.liferay.portal.kernel.model.PluginSetting;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Plugin;
-import com.liferay.portal.model.PluginSetting;
-import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.PluginSettingImpl;
-import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.service.base.PluginSettingLocalServiceBaseImpl;
-import com.liferay.portal.util.PortalUtil;
 
 /**
  * @author Jorge Ferrer
@@ -37,7 +37,8 @@ public class PluginSettingLocalServiceImpl
 		throws PortalException {
 
 		if (!hasPermission(userId, pluginId, pluginType)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				userId, pluginType, pluginId);
 		}
 	}
 
@@ -69,9 +70,7 @@ public class PluginSettingLocalServiceImpl
 				pluginId, false, null);
 		}
 		else if (pluginType.equals(Plugin.TYPE_THEME)) {
-			boolean wapTheme = true;
-
-			plugin = themeLocalService.getTheme(companyId, pluginId, wapTheme);
+			plugin = themeLocalService.getTheme(companyId, pluginId);
 		}
 
 		if ((plugin == null) || (plugin.getDefaultPluginSetting() == null)) {

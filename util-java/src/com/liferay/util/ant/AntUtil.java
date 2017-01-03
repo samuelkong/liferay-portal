@@ -86,7 +86,7 @@ public class AntUtil {
 		};
 
 		buildLogger.setErrorPrintStream(System.err);
-		buildLogger.setMessageOutputLevel(Project.MSG_INFO);
+		buildLogger.setMessageOutputLevel(Project.MSG_WARN);
 		buildLogger.setOutputPrintStream(System.out);
 
 		project.addBuildListener(buildLogger);

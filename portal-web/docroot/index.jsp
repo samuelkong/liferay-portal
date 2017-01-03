@@ -15,15 +15,16 @@
 --%>
 
 <%@ page import="com.liferay.portal.events.ServicePreAction" %>
+<%@ page import="com.liferay.portal.kernel.model.Layout" %>
+<%@ page import="com.liferay.portal.kernel.model.LayoutConstants" %>
+<%@ page import="com.liferay.portal.kernel.model.LayoutSet" %>
+<%@ page import="com.liferay.portal.kernel.service.LayoutLocalServiceUtil" %>
 <%@ page import="com.liferay.portal.kernel.servlet.HttpHeaders" %>
+<%@ page import="com.liferay.portal.kernel.theme.ThemeDisplay" %>
+<%@ page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.InstancePool" %>
-<%@ page import="com.liferay.portal.model.Layout" %>
-<%@ page import="com.liferay.portal.model.LayoutConstants" %>
-<%@ page import="com.liferay.portal.model.LayoutSet" %>
-<%@ page import="com.liferay.portal.service.LayoutLocalServiceUtil" %>
-<%@ page import="com.liferay.portal.theme.ThemeDisplay" %>
-<%@ page import="com.liferay.portal.util.PortalUtil" %>
-<%@ page import="com.liferay.portal.util.WebKeys" %>
+<%@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 
 <%
 
@@ -67,14 +68,13 @@ response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 %>
 
 <html>
+	<head>
+		<title></title>
+		<meta content="1; url=<%= HtmlUtil.escapeAttribute(redirect) %>" http-equiv="refresh" />
+	</head>
 
-<head>
-	<title></title>
-	<meta content="1; url=<%= redirect %>" http-equiv="refresh" />
-</head>
+	<body onload="javascript:location.replace('<%= HtmlUtil.escapeJS(redirect) %>')">
 
-<body onload="javascript:location.replace('<%= redirect %>')">
-
-</body>
+	</body>
 
 </html>

@@ -1,0 +1,148 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%
+Hits hits = searchDisplayContext.getHits();
+%>
+
+<aui:row cssClass='<%= "search-layout" + (searchDisplayContext.isShowMenu() ? " menu-column" : StringPool.BLANK) %>'>
+	<c:if test="<%= searchDisplayContext.isShowMenu() %>">
+		<aui:col id="facetNavigation" span="<%= 3 %>">
+
+			<%
+			for (SearchFacet searchFacet : ListUtil.sort(searchDisplayContext.getEnabledSearchFacets(), SearchFacetComparator.INSTANCE)) {
+				if (searchFacet.isStatic()) {
+					continue;
+				}
+
+				request.setAttribute("search.jsp-facet", searchFacet.getFacet());
+
+				searchFacet.includeView(request, new PipingServletResponse(pageContext));
+			}
+			%>
+
+			<aui:script sandbox="<%= true %>">
+				$('#<portlet:namespace />facetNavigation').on(
+					'click',
+					'.facet-value a',
+					function(event) {
+						event.preventDefault();
+
+						var term = $(event.currentTarget);
+
+						var facetValue = term.parentsUntil('.search-facet', '.facet-value');
+
+						if (!facetValue.hasClass('active')) {
+							facetValue.addClass('active');
+
+							facetValue.siblings().removeClass('active');
+
+							var searchFacet = facetValue.parentsUntil('.search-layout', '.search-facet');
+
+							var form = $(document.<portlet:namespace />fm);
+
+							var field = form.fm(searchFacet.data('facetfieldname'));
+							var fieldSelection = form.fm(searchFacet.data('facetfieldname') + 'selection');
+
+							if (field.length) {
+								field.val(term.data('value'));
+
+								if (fieldSelection.length) {
+									fieldSelection.val(term.data('selection'));
+								}
+
+								form.fm('<%= SearchContainer.DEFAULT_CUR_PARAM %>').val(1);
+
+								submitForm(form);
+							}
+						}
+					}
+				);
+			</aui:script>
+		</aui:col>
+	</c:if>
+
+	<aui:col cssClass="result" first="<%= !searchDisplayContext.isShowMenu() %>" span="<%= 9 %>">
+		<%@ include file="/main_search_suggest.jspf" %>
+
+		<liferay-ui:search-container
+			id="search"
+			searchContainer="<%= searchDisplayContext.getSearchContainer() %>"
+		>
+			<liferay-ui:search-container-row
+				className="com.liferay.portal.kernel.search.Document"
+				escapedModel="<%= false %>"
+				keyProperty="UID"
+				modelVar="document"
+				stringKey="<%= true %>"
+			>
+
+				<%
+				com.liferay.portal.search.web.internal.result.display.builder.SearchResultSummaryDisplayBuilder searchResultSummaryDisplayBuilder = new com.liferay.portal.search.web.internal.result.display.builder.SearchResultSummaryDisplayBuilder();
+
+				searchResultSummaryDisplayBuilder.setAssetEntryLocalService(com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil.getService());
+				searchResultSummaryDisplayBuilder.setCurrentURL(currentURL);
+				searchResultSummaryDisplayBuilder.setDocument(document);
+				searchResultSummaryDisplayBuilder.setHighlightEnabled(searchDisplayContext.isHighlightEnabled());
+				searchResultSummaryDisplayBuilder.setLanguage(com.liferay.portal.kernel.language.LanguageUtil.getLanguage());
+				searchResultSummaryDisplayBuilder.setLocale(locale);
+				searchResultSummaryDisplayBuilder.setPortletURLFactory(searchDisplayContext.getPortletURLFactory());
+				searchResultSummaryDisplayBuilder.setQueryTerms(searchDisplayContext.getQueryTerms());
+				searchResultSummaryDisplayBuilder.setRenderRequest(renderRequest);
+				searchResultSummaryDisplayBuilder.setRenderResponse(renderResponse);
+				searchResultSummaryDisplayBuilder.setRequest(request);
+				searchResultSummaryDisplayBuilder.setResourceActions(com.liferay.portal.kernel.security.permission.ResourceActionsUtil.getResourceActions());
+				searchResultSummaryDisplayBuilder.setSearchResultPreferences(searchDisplayContext.getSearchResultPreferences());
+				searchResultSummaryDisplayBuilder.setThemeDisplay(themeDisplay);
+
+				com.liferay.portal.search.web.internal.result.display.context.SearchResultSummaryDisplayContext searchResultSummaryDisplayContext = searchResultSummaryDisplayBuilder.build();
+				%>
+
+				<c:if test="<%= searchResultSummaryDisplayContext != null %>">
+					<%@ include file="/main_search_result_form.jspf" %>
+				</c:if>
+			</liferay-ui:search-container-row>
+
+			<liferay-ui:search-iterator displayStyle="descriptive" markupView="lexicon" type="more" />
+
+			<c:if test="<%= searchDisplayContext.isDisplayMainQuery() && (hits.getQuery() != null) %>">
+				<table class="full-query">
+					<tr>
+						<td valign="top">
+							<div class="container">
+								<code>
+									<%= HtmlUtil.escape(IndexSearcherHelperUtil.getQueryString(searchDisplayContext.getSearchContext(), hits.getQuery())) %>
+								</code>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</c:if>
+		</liferay-ui:search-container>
+	</aui:col>
+</aui:row>
+
+<aui:script use="aui-base">
+	A.one('#<portlet:namespace />search').delegate(
+		'click',
+		function(event) {
+			var currentTarget = event.currentTarget;
+
+			currentTarget.siblings('.table-details').toggleClass('hide');
+		},
+		'.expand-details'
+	);
+</aui:script>

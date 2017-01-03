@@ -1,0 +1,86 @@
+import java.util.concurrent.ConcurrentHashMap
+
+import org.gradle.internal.hash.HashUtil
+import org.gradle.internal.hash.HashValue
+
+if (System.properties["http.proxyHost"] == "squid.lax.liferay.com") {
+	println "Using proxy ${System.properties['http.proxyHost']}:${System.properties['http.proxyPort']}."
+
+	System.setProperty "repository.url", "http://repository.liferay.com/nexus/content/groups/public"
+}
+
+gradle.buildFinished {
+	if (System.getenv("JENKINS_HOME")) {
+		Date now = new Date()
+
+		println "Gradle build finished at " + now.format("yyyy-MM-dd HH:mm:ss.SSS", TimeZone.getTimeZone("UTC"))
+	}
+
+	ByteArrayOutputStream errorByteArrayOutputStream = new ByteArrayOutputStream()
+	ByteArrayOutputStream outputByteArrayOutputStream = new ByteArrayOutputStream()
+
+	exec {
+		commandLine "git", "ls-files", "--exclude-standard", "--others"
+		ignoreExitValue = true
+		errorOutput = errorByteArrayOutputStream
+		standardOutput = outputByteArrayOutputStream
+		workingDir = gradle.gradleUserHomeDir
+	}
+
+	String errorString = errorByteArrayOutputStream.toString()
+
+	if (!errorString.contains("Not a git repository")) {
+		logger.error errorString
+	}
+
+	String output = outputByteArrayOutputStream.toString()
+
+	List<String> fileNames = output.readLines()
+
+	fileNames.retainAll {
+		it.endsWith ".pom"
+	}
+
+	fileNames.each {
+		String pomFileName ->
+
+		File pomFile = new File(gradle.gradleUserHomeDir, pomFileName)
+
+		rootProject.ant.fixcrlf encoding: "UTF-8", eol: "lf", file: pomFile, fixlast: false
+
+		HashValue hashValue = HashUtil.sha1(pomFile)
+
+		String hash = hashValue.asHexString()
+		File hashDir = pomFile.parentFile
+
+		if (hashDir.name != hash) {
+			boolean success = hashDir.renameTo new File(hashDir.parentFile, hash)
+
+			if (!success) {
+				delete hashDir
+			}
+		}
+	}
+}
+
+if (Boolean.getBoolean("build.performance.logger.enabled")) {
+	gradle.taskGraph.addTaskExecutionListener(
+		new TaskExecutionListener() {
+
+			void afterExecute(Task task, TaskState taskState) {
+				long endTime = System.currentTimeMillis()
+				long startTime = _taskStartTimes.remove(task)
+
+				long duration = endTime - startTime
+
+				logger.lifecycle "${task.path} started at ${startTime} and ended at ${endTime}, taking ${duration} ms."
+			}
+
+			void beforeExecute(Task task) {
+				_taskStartTimes.put task, System.currentTimeMillis()
+			}
+
+			private final ConcurrentHashMap<Task, Long> _taskStartTimes = new ConcurrentHashMap<Task, Long>()
+
+		})
+}

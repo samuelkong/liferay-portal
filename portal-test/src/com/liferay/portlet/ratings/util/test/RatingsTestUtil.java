@@ -14,14 +14,14 @@
 
 package com.liferay.portlet.ratings.util.test;
 
-import com.liferay.counter.service.CounterLocalServiceUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portal.util.test.ServiceContextTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portlet.ratings.model.RatingsEntry;
-import com.liferay.portlet.ratings.model.RatingsStats;
-import com.liferay.portlet.ratings.service.RatingsEntryLocalServiceUtil;
-import com.liferay.portlet.ratings.service.RatingsStatsLocalServiceUtil;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.ratings.kernel.model.RatingsEntry;
+import com.liferay.ratings.kernel.model.RatingsStats;
+import com.liferay.ratings.kernel.service.RatingsEntryLocalServiceUtil;
+import com.liferay.ratings.kernel.service.RatingsStatsLocalServiceUtil;
 
 /**
  * @author Daniel Kocsis
@@ -31,15 +31,15 @@ public class RatingsTestUtil {
 	public static RatingsEntry addEntry(String className, long classPK)
 		throws Exception {
 
-		return addEntry(className, classPK, 1.0d);
+		return addEntry(className, classPK, 1.0d, TestPropsValues.getUserId());
 	}
 
 	public static RatingsEntry addEntry(
-			String className, long classPK, double score)
+			String className, long classPK, double score, long userId)
 		throws Exception {
 
 		return RatingsEntryLocalServiceUtil.updateEntry(
-			TestPropsValues.getUserId(), className, classPK, score,
+			userId, className, classPK, score,
 			ServiceContextTestUtil.getServiceContext());
 	}
 

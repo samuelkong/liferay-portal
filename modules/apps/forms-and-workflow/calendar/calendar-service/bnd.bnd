@@ -1,0 +1,30 @@
+Bundle-Name: Liferay Calendar Service
+Bundle-SymbolicName: com.liferay.calendar.service
+Bundle-Version: 2.2.0
+Export-Package:\
+	com.liferay.calendar.model.impl,\
+	com.liferay.calendar.notification.impl,\
+	com.liferay.calendar.search,\
+	com.liferay.calendar.service.configuration,\
+	com.liferay.calendar.service.permission,\
+	com.liferay.calendar.social,\
+	com.liferay.calendar.upgrade.v1_0_2,\
+	com.liferay.calendar.upgrade.v1_0_6,\
+	com.liferay.calendar.util,\
+	com.liferay.calendar.workflow
+Import-Package:\
+	!edu.emory.*,\
+	\
+	!groovy.*,\
+	\
+	!net.fortuna.*,\
+	\
+	!org.codehaus.*,\
+	*
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Calendar
+Liferay-Require-SchemaVersion: 1.0.6
+Liferay-Service: true
+-includeresource:\
+	@backport-util-concurrent-[0-9]*.jar,\
+	@net.fortuna.ical4j-[0-9]*.jar

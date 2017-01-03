@@ -14,24 +14,23 @@
 
 package com.liferay.counter.service.persistence.impl;
 
-import com.liferay.counter.model.Counter;
+import com.liferay.counter.kernel.model.Counter;
+import com.liferay.counter.kernel.service.persistence.CounterFinder;
 import com.liferay.counter.model.CounterHolder;
 import com.liferay.counter.model.CounterRegister;
 import com.liferay.counter.model.impl.CounterImpl;
-import com.liferay.counter.service.persistence.CounterFinder;
 import com.liferay.portal.kernel.cache.CacheRegistryItem;
-import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.concurrent.CompeteLatch;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.LockMode;
 import com.liferay.portal.kernel.dao.orm.ObjectNotFoundException;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.Dummy;
+import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.model.Dummy;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -57,11 +56,6 @@ public class CounterFinderImpl
 	implements CacheRegistryItem, CounterFinder {
 
 	@Override
-	public void afterPropertiesSet() {
-		CacheRegistryUtil.register(this);
-	}
-
-	@Override
 	public List<String> getNames() {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -74,7 +68,7 @@ public class CounterFinderImpl
 
 			resultSet = preparedStatement.executeQuery();
 
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 
 			while (resultSet.next()) {
 				list.add(resultSet.getString(1));
@@ -321,14 +315,14 @@ public class CounterFinderImpl
 
 		// Use the slow path
 
-		CompeteLatch completeLatch = counterRegister.getCompeteLatch();
+		CompeteLatch competeLatch = counterRegister.getCompeteLatch();
 
-		if (!completeLatch.compete()) {
+		if (!competeLatch.compete()) {
 
 			// Loser thread has to wait for the winner thread to finish its job
 
 			try {
-				completeLatch.await();
+				competeLatch.await();
 			}
 			catch (InterruptedException ie) {
 				throw processException(ie);
@@ -346,6 +340,7 @@ public class CounterFinderImpl
 			// Double check
 
 			counterHolder = counterRegister.getCounterHolder();
+
 			newValue = counterHolder.addAndGet(size);
 
 			if (newValue > counterHolder.getRangeMax()) {
@@ -365,7 +360,7 @@ public class CounterFinderImpl
 
 			// Winner thread opens the latch so that loser threads can continue
 
-			completeLatch.done();
+			competeLatch.done();
 		}
 
 		return newValue;
@@ -427,8 +422,8 @@ public class CounterFinderImpl
 		"update Counter set name = ? where name = ?";
 
 	private final Map<String, CounterRegister> _counterRegisterMap =
-		new ConcurrentHashMap<String, CounterRegister>();
+		new ConcurrentHashMap<>();
 	private final Map<String, Integer> _rangeSizeMap =
-		new ConcurrentHashMap<String, Integer>();
+		new ConcurrentHashMap<>();
 
 }

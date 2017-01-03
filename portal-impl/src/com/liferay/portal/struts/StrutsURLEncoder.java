@@ -111,8 +111,7 @@ public class StrutsURLEncoder implements URLEncoder {
 
 		String encodedURL = path;
 
-		if (!path.startsWith("//") &&
-			!path.startsWith(_contextPath) &&
+		if (!path.startsWith("//") && !path.startsWith(_contextPath) &&
 			!path.startsWith(_servletMapping)) {
 
 			return encodedURL;
@@ -212,13 +211,14 @@ public class StrutsURLEncoder implements URLEncoder {
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(StrutsURLEncoder.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		StrutsURLEncoder.class);
 
-	private String _contextPath;
-	private LiferayPortletURL _liferayPortletURL;
-	private String _mainPath;
-	private PortletMode _portletMode;
+	private final String _contextPath;
+	private final LiferayPortletURL _liferayPortletURL;
+	private final String _mainPath;
+	private final PortletMode _portletMode;
 	private String _servletMapping = StringPool.BLANK;
-	private WindowState _windowState;
+	private final WindowState _windowState;
 
 }

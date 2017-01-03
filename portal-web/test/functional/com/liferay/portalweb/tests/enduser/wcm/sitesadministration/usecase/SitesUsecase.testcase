@@ -1,0 +1,340 @@
+<definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Site Administration" />
+
+	<var name="globalSiteName" value="Global" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="User#firstLoginPG" />
+
+				<execute macro="Site#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+
+				<execute macro="WebContent#tearDownCP">
+					<var name="siteScopeName" value="Global" />
+				</execute>
+
+				<execute macro="WebContentTemplates#tearDownCP">
+					<var name="siteScopeName" value="Global" />
+				</execute>
+
+				<execute macro="WebContentStructures#tearDownCP">
+					<var name="siteScopeName" value="Global" />
+				</execute>
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddPageAndChildPageTranslations" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoPages">
+			<var name="page" value="Public Pages" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Home" />
+		</execute>
+
+		<execute macro="Page#addPageTranslations">
+			<var name="page" value="Home" />
+			<var name="pageTranslation" value="es_ES" />
+			<var name="pageTranslationName" value="Casa" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#viewTranslationsPG">
+			<var name="pageLocalizationMessage" value="This page is displayed in Spanish (Spain). Display the page in English (United States). Set Spanish (Spain) as your preferred language." />
+			<var name="pageLocalizationPreferredLanguage" value="Set Spanish (Spain) as your preferred language." />
+			<var name="pageName" value="Casa" />
+			<var name="sitePageURL" value="http://localhost:8080/es/web/site-name/home" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#localizedPG">
+			<var name="pageLocale" value="Display the page in English (United States)" />
+		</execute>
+
+		<execute macro="Page#addChild">
+			<var name="page" value="Public Pages" />
+			<var name="pageName" value="Home" />
+			<var name="siteChildPageName" value="Blog Page" />
+			<var name="siteName" value="Site Name" />
+			<var name="siteScopeSelected" value="true" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoPages">
+			<var name="page" value="Public Pages" />
+		</execute>
+
+		<execute macro="Page#addPageTranslations">
+			<var name="page" value="Blog Page" />
+			<var name="pageTranslation" value="es_ES" />
+			<var name="pageTranslationName" value="Blog Página" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#viewTranslationsPG">
+			<var name="childPageName" value="Blog Página" />
+			<var name="pageLocalizationMessage" value="This page is displayed in Spanish (Spain). Display the page in English (United States). Set Spanish (Spain) as your preferred language." />
+			<var name="pageLocalizationPreferredLanguage" value="Set Spanish (Spain) as your preferred language." />
+			<var name="sitePageURL" value="http://localhost:8080/es/web/site-name/blog-page" />
+		</execute>
+	</command>
+
+	<command name="SitesTemplatePermissionPersistence" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addCommunityCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoConfigurationPG" >
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="PermissionsInline#assertDefaultPG">
+			<var name="roleList" value="Guest,Owner,Power User,Site Member,User" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoConfigurationPG" >
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="PermissionsInline#assertDefaultPG">
+			<var name="roleList" value="Guest,Owner,Power User,Site Member,User" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Asset Publisher" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Portlet#viewTitle">
+			<var name="portletName" value="Asset Publisher" />
+		</execute>
+
+		<execute macro="SiteTemplates#resetPageChanges">
+			<var name="columnNumberTo" value="1" />
+			<var name="portletName" value="Asset Publisher" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Portlet#viewNoSpecificPG">
+			<var name="portletName" value="Asset Publisher" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoConfigurationPG" >
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="PermissionsInline#assertDefaultPG">
+			<var name="roleList" value="Guest,Owner,Power User,Site Member,User" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Polls#addPollPG">
+			<var name="pollsQuestion" value="What is the most important issue for this election?" />
+			<var name="pollsQuestionChoiceA" value="The Economy" />
+			<var name="pollsQuestionChoiceB" value="The National Debt" />
+			<var name="pollsQuestionTitle" value="Election Poll" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Polls#selectPollPG">
+			<var name="pollsQuestionTitle" value="Election Poll" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Polls#viewPollPG">
+			<var name="pollsQuestion" value="What is the most important issue for this election?" />
+			<var name="pollsQuestionChoiceList" value="The Economy,The National Debt" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoConfigurationPG" >
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="PermissionsInline#assertDefaultPG">
+			<var name="roleList" value="Guest,Owner,Power User,Site Member,User" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#addPG">
+			<var name="threadBody" value="This is the message boards thread." />
+			<var name="threadSubject" value="Thread" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="This is the message boards thread." />
+			<var name="threadSubject" value="Thread" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="This is the message boards thread." />
+			<var name="threadSubject" value="Thread" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
+		<execute function="Open" locator1="${portalURL}/web/site-name/home" />
+
+		<execute macro="Portlet#viewTitle">
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="MessageboardsThread#gotoPG">
+			<var name="lastPostUserName" value="Test Test" />
+			<var name="postCount" value="1" />
+			<var name="threadBody" value="This is the message boards thread." />
+			<var name="threadSubject" value="Thread" />
+		</execute>
+
+		<execute macro="MessageboardsThread#viewPG">
+			<var name="threadBody" value="This is the message boards thread." />
+			<var name="threadSubject" value="Thread" />
+		</execute>
+
+		<execute macro="Portlet#viewTitle">
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="Message#INFO" value1="Please sign in to vote." />
+
+		<execute function="AssertElementPresent" locator1="Search#SEARCH_FIELD" />
+
+		<execute macro="Portlet#viewTitle">
+			<var name="portletName" value="User Statistics" />
+		</execute>
+
+		<execute macro="SignIn#signIn">
+			<var name="userEmailAddress" value="test@liferay.com" />
+			<var name="userPassword" value="test" />
+		</execute>
+
+		<execute function="Open" locator1="${portalURL}/web/site-name/home" />
+
+		<execute macro="PermissionsInline#gotoConfigurationPG" >
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="PermissionsInline#addOrRemoveViewPermissionFromAllRoles">
+			<var name="addOrRemoveViewPermission" value="Remove" />
+			<var name="roleList" value="Guest,Owner,Power User,Site Member,User" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoConfigurationPG" >
+			<var name="portletName" value="Message Boards" />
+		</execute>
+
+		<execute macro="PermissionsInline#addOrRemoveViewPermissionFromAllRoles">
+			<var name="addOrRemoveViewPermission" value="Remove" />
+			<var name="roleList" value="Guest,Owner,Power User,Site Member,User" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute function="Open" locator1="${portalURL}/web/site-name/home" />
+
+		<execute function="AssertTextEquals" locator1="Message#ERROR_1_COLUMN_1" value1="You do not have the roles required to access this portlet." />
+		<execute function="AssertTextEquals" locator1="Message#ERROR_1_COLUMN_2" value1="You do not have the roles required to access this portlet." />
+	</command>
+
+	<command name="ViewDefaultGlobalScopeLandingPage" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Global" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
+		</execute>
+
+		<execute macro="Site#viewGlobalLandingDefault">
+			<var name="portletName" value="Web Content" />
+			<var name="siteName" value="Global" />
+		</execute>
+	</command>
+</definition>

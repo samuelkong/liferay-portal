@@ -19,18 +19,20 @@ import com.liferay.portal.kernel.deploy.hot.HotDeployEvent;
 import com.liferay.portal.kernel.deploy.hot.HotDeployException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.FileTimestampUtil;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.template.TemplateResourceLoaderUtil;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.model.Theme;
-import com.liferay.portal.service.ThemeLocalServiceUtil;
-import com.liferay.portal.util.ClassLoaderUtil;
-import com.liferay.portal.util.WebKeys;
+import com.liferay.portal.kernel.util.ThemeHelper;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.ServletContext;
 
@@ -114,6 +116,22 @@ public class ThemeHotDeployListener extends BaseHotDeployListener {
 						" are available for use");
 			}
 		}
+
+		if (_log.isWarnEnabled()) {
+			for (Theme theme : themes) {
+				if (!Objects.equals(
+						theme.getTemplateExtension(),
+						ThemeHelper.TEMPLATE_EXTENSION_VM)) {
+
+					continue;
+				}
+
+				_log.warn(
+					"Support of Velocity is deprecated. Update theme " +
+						theme.getName() +
+							" to use FreeMarker for forward compatibility.");
+			}
+		}
 	}
 
 	protected void doInvokeUndeploy(HotDeployEvent hotDeployEvent)
@@ -177,7 +195,6 @@ public class ThemeHotDeployListener extends BaseHotDeployListener {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ThemeHotDeployListener.class);
 
-	private static final Map<String, List<Theme>> _themes =
-		new HashMap<String, List<Theme>>();
+	private static final Map<String, List<Theme>> _themes = new HashMap<>();
 
 }

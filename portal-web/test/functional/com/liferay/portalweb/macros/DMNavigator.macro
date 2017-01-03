@@ -1,0 +1,125 @@
+<definition>
+	<var name="dmDocumentTypeName" value="Basic Document" />
+
+	<command name="gotoAddDocumentType">
+		<execute function="Click" locator1="Button#PLUS" />
+
+		<var name="key_dmDocumentTypeName" value="${dmDocumentTypeName}" />
+
+		<execute function="AssertClick" locator1="MenuItem#DOCUMENT_TYPE" value1="${dmDocumentTypeName}" />
+	</command>
+
+	<command name="gotoAddRepositoryCP">
+		<execute function="AssertVisible" locator1="Button#PLUS" />
+
+		<execute function="Click" locator1="Button#PLUS" />
+
+		<execute function="AssertClick" locator1="MenuItem#REPOSITORY" value1="Repository" />
+	</command>
+
+	<command name="gotoAddRepositoryPG">
+		<execute function="Click#makeVisibleClickAt" locator1="Portlet#ICON_PLUS_SIGN" />
+
+		<execute function="AssertClick" locator1="MenuItem#REPOSITORY" value1="Repository" />
+	</command>
+
+	<command name="gotoCheckedOutDocument">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE" value1="${dmCheckedOutDocumentTitle}" />
+	</command>
+
+	<command name="gotoDocumentCP">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<if>
+			<condition function="IsElementPresent" locator1="Icon#DISPLAY_STYLE_DESCRIPTIVE_ACTIVE" />
+			<then>
+				<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
+			</then>
+			<else>
+				<execute function="AssertClick" locator1="DocumentsAndMedia#ICON_DOCUMENT_TITLE_LINK" value1="${dmDocumentTitle}" />
+			</else>
+		</if>
+	</command>
+
+	<command name="gotoDocumentDetails">
+		<execute function="Click" locator1="Button#INFO" />
+
+		<execute function="AssertClick" locator1="NavBar#DETAILS" value1="Details" />
+	</command>
+
+	<command name="gotoDocumentPG">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
+	</command>
+
+	<command name="gotoDocumentType">
+		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#DOCUMENT_TYPES" value1="Document Types" />
+	</command>
+
+	<command name="gotoDocumentVersion">
+		<execute macro="DMNavigator#gotoDocumentDetails" />
+
+		<execute function="AssertClick" locator1="MenuItem#VERSIONS" value1="Versions" />
+	</command>
+
+	<command name="gotoEditDocument">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="Click" locator1="DocumentsAndMedia#ICON_DOCUMENT_ACTIONS" />
+
+		<execute function="AssertClick" locator1="MenuItem#EDIT" value1="Edit" />
+	</command>
+
+	<command name="gotoFolder">
+		<var name="key_dmFolderName" value="${dmFolderName}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_FOLDER_TITLE" value1="${dmFolderName}" />
+
+		<execute function="AssertVisible" locator1="DocumentsAndMedia#BREADCRUMB_FOLDER_NAME" />
+	</command>
+
+	<command name="gotoHomeCP">
+		<execute function="AssertClick#assertTextClickAt" locator1="DocumentsAndMedia#BREADCRUMB_HOME" value1="HOME" />
+	</command>
+
+	<command name="gotoMetadataSets">
+		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertElementPresent" locator1="MenuItem#METADATA_SETS" value1="Metadata Sets" />
+
+		<execute function="AssertClick" locator1="MenuItem#METADATA_SETS" value1="Metadata Sets" />
+	</command>
+
+	<command name="gotoRelatedAssetPG">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
+
+		<var name="key_assetTitle" value="${key_assetTitle}" />
+
+		<execute function="AssertTextEquals" locator1="DocumentsAndMediaDocument#DOCUMENT_INFO_TITLE" value1="${dmDocumentTitle}" />
+		<execute function="AssertTextEquals" locator1="DocumentsAndMediaDocument#DOCUMENT_INFO_RELATED_ASSETS_HEADER" value1="Related Assets:" />
+		<execute function="AssertTextEquals" locator1="DocumentsAndMediaDocument#DOCUMENT_INFO_RELATED_ASSETS_TITLE" value1="${assetTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMediaDocument#DOCUMENT_INFO_RELATED_ASSETS_TITLE" value1="${assetTitle}" />
+	</command>
+
+	<command name="gotoRepository">
+		<var name="key_dmFolderName" value="${dmRepositoryName}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_FOLDER_TITLE"  value1="${dmRepositoryName}" />
+
+		<execute function="AssertVisible" locator1="DocumentsAndMedia#BREADCRUMB_FOLDER_NAME" />
+	</command>
+
+	<command name="gotoURLDetail">
+		<execute function="Click" locator1="Icon#INFO" />
+
+		<execute function="Click" locator1="DocumentsAndMediaDocument#DETAILS_URL" />
+	</command>
+</definition>

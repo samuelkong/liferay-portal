@@ -16,8 +16,8 @@ package com.liferay.portlet.social.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.social.model.SocialActivity;
-import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
+import com.liferay.social.kernel.model.SocialActivity;
+import com.liferay.social.kernel.service.SocialActivityLocalServiceUtil;
 
 /**
  * The extended model base implementation for the SocialActivity service. Represents a row in the &quot;SocialActivity&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see SocialActivityImpl
- * @see com.liferay.portlet.social.model.SocialActivity
+ * @see SocialActivity
  * @generated
  */
 @ProviderType

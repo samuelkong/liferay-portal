@@ -14,30 +14,29 @@
 
 package com.liferay.portal.action;
 
-import com.liferay.portal.NoSuchUserException;
-import com.liferay.portal.UserLockoutException;
-import com.liferay.portal.UserPasswordException;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.UserLockoutException;
+import com.liferay.portal.kernel.exception.UserPasswordException;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.TicketLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.model.CompanyConstants;
-import com.liferay.portal.model.Ticket;
-import com.liferay.portal.model.TicketConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.AuthTokenUtil;
-import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.pwd.PwdToolkitUtilThreadLocal;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.service.TicketLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.struts.ActionConstants;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
-import com.liferay.portlet.login.util.LoginUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,10 +64,7 @@ public class UpdatePasswordAction extends Action {
 
 		Ticket ticket = getTicket(request);
 
-		if (!themeDisplay.isSignedIn() && (ticket == null)) {
-			return actionMapping.findForward(
-				ActionConstants.COMMON_REFERER_JSP);
-		}
+		request.setAttribute(WebKeys.TICKET, ticket);
 
 		String cmd = ParamUtil.getString(request, Constants.CMD);
 
@@ -83,7 +79,7 @@ public class UpdatePasswordAction extends Action {
 						user.getUserId(), true);
 				}
 				catch (UserLockoutException ule) {
-					SessionErrors.add(request, ule.getClass());
+					SessionErrors.add(request, ule.getClass(), ule);
 				}
 			}
 
@@ -135,9 +131,11 @@ public class UpdatePasswordAction extends Action {
 		}
 
 		try {
-			Ticket ticket = TicketLocalServiceUtil.getTicket(ticketKey);
+			Ticket ticket = TicketLocalServiceUtil.fetchTicket(ticketKey);
 
-			if (ticket.getType() != TicketConstants.TYPE_PASSWORD) {
+			if ((ticket == null) ||
+				(ticket.getType() != TicketConstants.TYPE_PASSWORD)) {
+
 				return null;
 			}
 
@@ -225,7 +223,8 @@ public class UpdatePasswordAction extends Action {
 				login = String.valueOf(userId);
 			}
 
-			LoginUtil.login(request, response, login, password1, false, null);
+			AuthenticatedSessionManagerUtil.login(
+				request, response, login, password1, false, null);
 
 			UserLocalServiceUtil.updatePasswordReset(userId, false);
 		}

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 public class NullSession implements HttpSession {
 
 	public NullSession() {
-		_attributes = new HashMap<String, Object>();
+		_attributes = new HashMap<>();
 		_creationTime = System.currentTimeMillis();
 		_id =
 			NullSession.class.getName() + StringPool.POUND +
@@ -88,11 +88,19 @@ public class NullSession implements HttpSession {
 		return null;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public Object getValue(String name) {
 		return getAttribute(name);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public String[] getValueNames() {
 		List<String> names = ListUtil.fromEnumeration(getAttributeNames());
@@ -110,6 +118,10 @@ public class NullSession implements HttpSession {
 		return _new;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public void putValue(String name, Object value) {
 		setAttribute(name, value);
@@ -120,6 +132,10 @@ public class NullSession implements HttpSession {
 		_attributes.remove(name);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public void removeValue(String name) {
 		removeAttribute(name);

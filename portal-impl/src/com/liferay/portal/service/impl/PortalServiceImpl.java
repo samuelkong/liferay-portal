@@ -14,7 +14,6 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,15 +24,15 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.sender.DirectSynchronousMessageSender;
+import com.liferay.portal.kernel.messaging.sender.SingleDestinationMessageSenderFactoryUtil;
 import com.liferay.portal.kernel.messaging.sender.SynchronousMessageSender;
+import com.liferay.portal.kernel.model.ClassName;
+import com.liferay.portal.kernel.service.PortalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ReleaseInfo;
-import com.liferay.portal.model.ClassName;
 import com.liferay.portal.model.impl.ClassNameImpl;
-import com.liferay.portal.service.PortalService;
 import com.liferay.portal.service.base.PortalServiceBaseImpl;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
@@ -55,6 +54,12 @@ public class PortalServiceImpl extends PortalServiceBaseImpl {
 	@Override
 	public int getBuildNumber() {
 		return ReleaseInfo.getBuildNumber();
+	}
+
+	@JSONWebService
+	@Override
+	public String getVersion() {
+		return ReleaseInfo.getVersion();
 	}
 
 	@Override
@@ -228,8 +233,9 @@ public class PortalServiceImpl extends PortalServiceBaseImpl {
 			message.put("text", transactionPortletBarText);
 
 			SynchronousMessageSender synchronousMessageSender =
-				(SynchronousMessageSender)PortalBeanLocatorUtil.locate(
-					DirectSynchronousMessageSender.class.getName());
+				SingleDestinationMessageSenderFactoryUtil.
+					getSynchronousMessageSender(
+						SynchronousMessageSender.Mode.DIRECT);
 
 			synchronousMessageSender.send(
 				DestinationNames.TEST_TRANSACTION, message);

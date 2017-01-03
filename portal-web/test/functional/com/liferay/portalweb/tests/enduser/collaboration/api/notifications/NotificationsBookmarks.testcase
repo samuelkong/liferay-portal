@@ -1,0 +1,272 @@
+<definition component-name="portal-collaboration">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="testray.main.component.name" value="Notifications" />
+
+	<var name="pageName" value="Bookmarks Page" />
+	<var name="portletName" value="Bookmarks" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Bookmarks" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="password" value="password" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#assignRegularRoleCP">
+			<var name="roleTitle" value="Administrator" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Bookmark#tearDownCP" />
+
+				<execute macro="BookmarksFolder#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+
+				<execute macro="User#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="ViewWebsiteNotificationForNewBookmarkInFolder" priority="4">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Bookmarks Folder Description" />
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#subscribePG">
+			<var name="folderDescription" value="Bookmarks Folder Description" />
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="0" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginUserPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkName" value="Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="0" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginUserPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="test@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="1" />
+		</execute>
+
+		<execute macro="Notifications#gotoNotifications" />
+
+		<execute macro="Notifications#viewNewContent">
+			<var name="assetType" value="bookmarks entry" />
+			<var name="contentBody" value="Bookmark Name" />
+			<var name="user" value="userfn userln" />
+		</execute>
+
+		<execute macro="Notifications#navigateToContent">
+			<var name="contentBody" value="Bookmark Name" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#viewEntry">
+			<var name="bookmarkName" value="Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="0" />
+		</execute>
+	</command>
+
+	<command name="ViewWebsiteNotificationForUpdatedBookmarkInFolder" priority="4">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addPG">
+			<var name="folderDescription" value="Bookmarks Folder Description" />
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="BookmarksFolder#subscribePG">
+			<var name="folderDescription" value="Bookmarks Folder Description" />
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#addPG">
+			<var name="bookmarkName" value="Bookmark Name" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="0" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginUserPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#editPG">
+			<var name="bookmarkName" value="Bookmark Name" />
+			<var name="bookmarkNameEdit" value="Bookmark Name Edit" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+			<var name="bookmarkURLEdit" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="0" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="User#loginUserPG">
+			<var name="password" value="test" />
+			<var name="userEmailAddress" value="test@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="1" />
+		</execute>
+
+		<execute macro="Notifications#gotoNotifications" />
+
+		<execute macro="Notifications#viewUpdatedContent">
+			<var name="assetType" value="bookmarks entry" />
+			<var name="contentBody" value="Bookmark Name Edit" />
+			<var name="user" value="userfn userln" />
+		</execute>
+
+		<execute macro="Notifications#navigateToContent">
+			<var name="contentBody" value="Bookmark Name Edit" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Bookmarks Folder Name" />
+		</execute>
+
+		<execute macro="Bookmark#viewEntry">
+			<var name="bookmarkName" value="Bookmark Name Edit" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Notifications#viewBadgeCount">
+			<var name="notificationCount" value="0" />
+		</execute>
+	</command>
+</definition>

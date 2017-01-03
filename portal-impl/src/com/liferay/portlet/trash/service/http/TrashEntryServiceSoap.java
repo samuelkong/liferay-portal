@@ -19,13 +19,13 @@ import aQute.bnd.annotation.ProviderType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import com.liferay.portlet.trash.service.TrashEntryServiceUtil;
+import com.liferay.trash.kernel.service.TrashEntryServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portlet.trash.service.TrashEntryServiceUtil} service utility. The
+ * {@link TrashEntryServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -33,10 +33,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portlet.trash.model.TrashEntrySoap}.
+ * is translated to an array of {@link com.liferay.trash.kernel.model.TrashEntrySoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portlet.trash.model.TrashEntry}, that is translated to a
- * {@link com.liferay.portlet.trash.model.TrashEntrySoap}. Methods that SOAP cannot
+ * {@link com.liferay.trash.kernel.model.TrashEntry}, that is translated to a
+ * {@link com.liferay.trash.kernel.model.TrashEntrySoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -59,8 +59,8 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see TrashEntryServiceHttp
- * @see com.liferay.portlet.trash.model.TrashEntrySoap
- * @see com.liferay.portlet.trash.service.TrashEntryServiceUtil
+ * @see com.liferay.trash.kernel.model.TrashEntrySoap
+ * @see TrashEntryServiceUtil
  * @generated
  */
 @ProviderType
@@ -70,7 +70,6 @@ public class TrashEntryServiceSoap {
 	* permissions.
 	*
 	* @param groupId the primary key of the group
-	* @throws PortalException if a portal exception occurred
 	*/
 	public static void deleteEntries(long groupId) throws RemoteException {
 		try {
@@ -87,9 +86,6 @@ public class TrashEntryServiceSoap {
 	* Deletes the trash entries with the primary keys.
 	*
 	* @param entryIds the primary keys of the trash entries
-	* @throws PortalException if a trash entry with the primary key could not
-	be found or if the user did not have permission to delete any one
-	of the trash entries
 	*/
 	public static void deleteEntries(long[] entryIds) throws RemoteException {
 		try {
@@ -112,9 +108,6 @@ public class TrashEntryServiceSoap {
 	* </p>
 	*
 	* @param entryId the primary key of the trash entry
-	* @throws PortalException if a trash entry with the primary key could not
-	be found or if the user did not have permission to delete the
-	trash entry
 	*/
 	public static void deleteEntry(long entryId) throws RemoteException {
 		try {
@@ -138,9 +131,6 @@ public class TrashEntryServiceSoap {
 	*
 	* @param className the class name of the entity
 	* @param classPK the primary key of the entity
-	* @throws PortalException if a trash entry with the entity class name and
-	primary key could not be found or if the user did not have
-	permission to delete the entry
 	*/
 	public static void deleteEntry(java.lang.String className, long classPK)
 		throws RemoteException {
@@ -159,12 +149,11 @@ public class TrashEntryServiceSoap {
 	*
 	* @param groupId the primary key of the group
 	* @return the matching trash entries
-	* @throws PrincipalException if a principal exception occurred
 	*/
-	public static com.liferay.portlet.trash.model.TrashEntryList getEntries(
+	public static com.liferay.trash.kernel.model.TrashEntryList getEntries(
 		long groupId) throws RemoteException {
 		try {
-			com.liferay.portlet.trash.model.TrashEntryList returnValue = TrashEntryServiceUtil.getEntries(groupId);
+			com.liferay.trash.kernel.model.TrashEntryList returnValue = TrashEntryServiceUtil.getEntries(groupId);
 
 			return returnValue;
 		}
@@ -186,17 +175,31 @@ public class TrashEntryServiceSoap {
 	<code>null</code>)
 	* @return the range of matching trash entries ordered by comparator
 	<code>obc</code>
-	* @throws PrincipalException if a system exception occurred
 	*/
-	public static com.liferay.portlet.trash.model.TrashEntryList getEntries(
+	public static com.liferay.trash.kernel.model.TrashEntryList getEntries(
 		long groupId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portlet.trash.model.TrashEntry> obc)
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.trash.kernel.model.TrashEntry> obc)
 		throws RemoteException {
 		try {
-			com.liferay.portlet.trash.model.TrashEntryList returnValue = TrashEntryServiceUtil.getEntries(groupId,
+			com.liferay.trash.kernel.model.TrashEntryList returnValue = TrashEntryServiceUtil.getEntries(groupId,
 					start, end, obc);
 
 			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.trash.kernel.model.TrashEntrySoap[] getEntries(
+		long groupId, java.lang.String className) throws RemoteException {
+		try {
+			java.util.List<com.liferay.trash.kernel.model.TrashEntry> returnValue =
+				TrashEntryServiceUtil.getEntries(groupId, className);
+
+			return com.liferay.trash.kernel.model.TrashEntrySoap.toSoapModels(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -233,15 +236,10 @@ public class TrashEntryServiceSoap {
 	* @param destinationContainerModelId the primary key of the new location
 	* @param serviceContext the service context to be applied (optionally
 	<code>null</code>)
-	* @throws PortalException if a matching trash entry could not be found, if
-	the user did not have permission to move the trash entry to the
-	new location, if the user did not have permission to restore the
-	trash entry, if a duplicate trash entry exists at the new
-	location, or if a portal exception occurred
 	*/
 	public static void moveEntry(java.lang.String className, long classPK,
 		long destinationContainerModelId,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
 			TrashEntryServiceUtil.moveEntry(className, classPK,
@@ -254,12 +252,12 @@ public class TrashEntryServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.trash.model.TrashEntrySoap restoreEntry(
+	public static com.liferay.trash.kernel.model.TrashEntrySoap restoreEntry(
 		long entryId) throws RemoteException {
 		try {
-			com.liferay.portlet.trash.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(entryId);
+			com.liferay.trash.kernel.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(entryId);
 
-			return com.liferay.portlet.trash.model.TrashEntrySoap.toSoapModel(returnValue);
+			return com.liferay.trash.kernel.model.TrashEntrySoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -301,19 +299,15 @@ public class TrashEntryServiceSoap {
 	* @param name a new name to give to the trash entry being restored
 	(optionally <code>null</code>)
 	* @return the restored trash entry
-	* @throws PortalException if a matching trash entry could not be found, if
-	the user did not have permission to overwrite an existing trash
-	entry, to rename the trash entry being restored, or to restore
-	the trash entry in general
 	*/
-	public static com.liferay.portlet.trash.model.TrashEntrySoap restoreEntry(
+	public static com.liferay.trash.kernel.model.TrashEntrySoap restoreEntry(
 		long entryId, long overrideClassPK, java.lang.String name)
 		throws RemoteException {
 		try {
-			com.liferay.portlet.trash.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(entryId,
+			com.liferay.trash.kernel.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(entryId,
 					overrideClassPK, name);
 
-			return com.liferay.portlet.trash.model.TrashEntrySoap.toSoapModel(returnValue);
+			return com.liferay.trash.kernel.model.TrashEntrySoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -322,13 +316,13 @@ public class TrashEntryServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.trash.model.TrashEntrySoap restoreEntry(
+	public static com.liferay.trash.kernel.model.TrashEntrySoap restoreEntry(
 		java.lang.String className, long classPK) throws RemoteException {
 		try {
-			com.liferay.portlet.trash.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(className,
+			com.liferay.trash.kernel.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(className,
 					classPK);
 
-			return com.liferay.portlet.trash.model.TrashEntrySoap.toSoapModel(returnValue);
+			return com.liferay.trash.kernel.model.TrashEntrySoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -337,14 +331,14 @@ public class TrashEntryServiceSoap {
 		}
 	}
 
-	public static com.liferay.portlet.trash.model.TrashEntrySoap restoreEntry(
+	public static com.liferay.trash.kernel.model.TrashEntrySoap restoreEntry(
 		java.lang.String className, long classPK, long overrideClassPK,
 		java.lang.String name) throws RemoteException {
 		try {
-			com.liferay.portlet.trash.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(className,
+			com.liferay.trash.kernel.model.TrashEntry returnValue = TrashEntryServiceUtil.restoreEntry(className,
 					classPK, overrideClassPK, name);
 
-			return com.liferay.portlet.trash.model.TrashEntrySoap.toSoapModel(returnValue);
+			return com.liferay.trash.kernel.model.TrashEntrySoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

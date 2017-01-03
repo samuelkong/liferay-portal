@@ -42,6 +42,11 @@
 		<tag-class>com.liferay.taglib.util.DynamicIncludeTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
+			<name>ascendingPriority</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>key</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>

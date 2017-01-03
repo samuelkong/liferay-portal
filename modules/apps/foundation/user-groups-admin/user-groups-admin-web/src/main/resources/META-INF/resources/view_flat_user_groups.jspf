@@ -1,0 +1,64 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<liferay-ui:search-container
+	id="userGroups"
+	rowChecker="<%= new UserGroupChecker(renderResponse) %>"
+	searchContainer="<%= userGroupSearchContainer %>"
+>
+	<liferay-ui:user-group-search-container-results
+		searchTerms="<%= searchTerms %>"
+		userGroupParams="<%= new LinkedHashMap<String, Object>() %>"
+	/>
+
+	<liferay-ui:search-container-row
+		className="com.liferay.portal.kernel.model.UserGroup"
+		escapedModel="<%= true %>"
+		keyProperty="userGroupId"
+		modelVar="userGroup"
+	>
+		<portlet:renderURL var="rowURL">
+			<portlet:param name="mvcPath" value="/edit_user_group_assignments.jsp" />
+			<portlet:param name="redirect" value="<%= searchContainer.getIteratorURL().toString() %>" />
+			<portlet:param name="userGroupId" value="<%= String.valueOf(userGroup.getUserGroupId()) %>" />
+		</portlet:renderURL>
+
+		<%
+		if (!UserGroupPermissionUtil.contains(permissionChecker, userGroup.getUserGroupId(), ActionKeys.ASSIGN_MEMBERS)) {
+			rowURL = null;
+		}
+
+		int usersCount = UserLocalServiceUtil.getUserGroupUsersCount(userGroup.getUserGroupId(), WorkflowConstants.STATUS_APPROVED);
+		%>
+
+		<%@ include file="/search_columns.jspf" %>
+	</liferay-ui:search-container-row>
+
+	<liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="lexicon" />
+</liferay-ui:search-container>
+
+<c:if test="<%= hasAddUserGroupPermission %>">
+	<portlet:renderURL var="viewUserGroupsURL" />
+
+	<portlet:renderURL var="addUsergroupURL">
+		<portlet:param name="mvcPath" value="/edit_user_group.jsp" />
+		<portlet:param name="redirect" value="<%= viewUserGroupsURL %>" />
+	</portlet:renderURL>
+
+	<liferay-frontend:add-menu>
+		<liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, "add") %>' url="<%= addUsergroupURL.toString() %>" />
+	</liferay-frontend:add-menu>
+</c:if>

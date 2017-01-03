@@ -15,10 +15,10 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.PasswordPolicy;
-import com.liferay.portal.model.PasswordTracker;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.pwd.PasswordEncryptorUtil;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.model.PasswordTracker;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.service.base.PasswordTrackerLocalServiceBaseImpl;
 
 import java.util.Date;
@@ -89,6 +89,7 @@ public class PasswordTrackerLocalServiceImpl
 			}
 
 			String oldEncPwd = passwordTracker.getPassword();
+
 			String newEncPwd = PasswordEncryptorUtil.encrypt(
 				newClearTextPwd, oldEncPwd);
 

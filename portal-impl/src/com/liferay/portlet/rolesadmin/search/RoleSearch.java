@@ -17,15 +17,17 @@ package com.liferay.portlet.rolesadmin.search;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.PortalPreferences;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
+import com.liferay.users.admin.kernel.util.UsersAdminUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,9 +44,8 @@ public class RoleSearch extends SearchContainer<Role> {
 
 	public static final String EMPTY_RESULTS_MESSAGE = "no-roles-were-found";
 
-	public static List<String> headerNames = new ArrayList<String>();
-	public static Map<String, String> orderableHeaders =
-		new HashMap<String, String>();
+	public static List<String> headerNames = new ArrayList<>();
+	public static Map<String, String> orderableHeaders = new HashMap<>();
 
 	static {
 		headerNames.add("title");
@@ -59,9 +60,9 @@ public class RoleSearch extends SearchContainer<Role> {
 
 		headerNames.add("description");
 
+		orderableHeaders.put("description", "description");
 		orderableHeaders.put("title", "title");
 		orderableHeaders.put("type", "type");
-		orderableHeaders.put("description", "description");
 	}
 
 	public RoleSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
@@ -71,6 +72,12 @@ public class RoleSearch extends SearchContainer<Role> {
 			DEFAULT_DELTA, iteratorURL, headerNames, EMPTY_RESULTS_MESSAGE);
 
 		RoleDisplayTerms displayTerms = (RoleDisplayTerms)getDisplayTerms();
+		RoleSearchTerms searchTerms = (RoleSearchTerms)getSearchTerms();
+
+		if (ParamUtil.getInteger(portletRequest, "type") == 0) {
+			displayTerms.setType(RoleConstants.TYPE_REGULAR);
+			searchTerms.setType(RoleConstants.TYPE_REGULAR);
+		}
 
 		iteratorURL.setParameter(
 			RoleDisplayTerms.DESCRIPTION, displayTerms.getDescription());
@@ -83,6 +90,9 @@ public class RoleSearch extends SearchContainer<Role> {
 				PortletPreferencesFactoryUtil.getPortalPreferences(
 					portletRequest);
 
+			String portletId = PortletProviderUtil.getPortletId(
+				Role.class.getName(), PortletProvider.Action.BROWSE);
+
 			String orderByCol = ParamUtil.getString(
 				portletRequest, "orderByCol");
 			String orderByType = ParamUtil.getString(
@@ -92,16 +102,15 @@ public class RoleSearch extends SearchContainer<Role> {
 				Validator.isNotNull(orderByType)) {
 
 				preferences.setValue(
-					PortletKeys.ROLES_ADMIN, "roles-order-by-col", orderByCol);
+					portletId, "roles-order-by-col", orderByCol);
 				preferences.setValue(
-					PortletKeys.ROLES_ADMIN, "roles-order-by-type",
-					orderByType);
+					portletId, "roles-order-by-type", orderByType);
 			}
 			else {
 				orderByCol = preferences.getValue(
-					PortletKeys.ROLES_ADMIN, "roles-order-by-col", "title");
+					portletId, "roles-order-by-col", "title");
 				orderByType = preferences.getValue(
-					PortletKeys.ROLES_ADMIN, "roles-order-by-type", "asc");
+					portletId, "roles-order-by-type", "asc");
 			}
 
 			OrderByComparator<Role> orderByComparator =

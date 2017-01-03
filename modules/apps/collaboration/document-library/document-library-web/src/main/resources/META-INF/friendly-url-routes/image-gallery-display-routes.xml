@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes PUBLIC "-//Liferay//DTD Friendly URL Routes 7.0.0//EN" "http://www.liferay.com/dtd/liferay-friendly-url-routes_7_0_0.dtd">
+
+<routes>
+	<route>
+		<pattern></pattern>
+		<implicit-parameter name="folderId">0</implicit-parameter>
+		<implicit-parameter name="instanceId">0000</implicit-parameter>
+		<implicit-parameter name="mvcRenderCommandName">/image_gallery_display/view</implicit-parameter>
+		<implicit-parameter name="userIdAndInstanceId"></implicit-parameter>
+	</route>
+	<route>
+		<pattern>/view/{folderId:\d+}</pattern>
+		<implicit-parameter name="instanceId">0000</implicit-parameter>
+		<implicit-parameter name="mvcRenderCommandName">/image_gallery_display/view</implicit-parameter>
+		<implicit-parameter name="userIdAndInstanceId"></implicit-parameter>
+	</route>
+	<route>
+		<pattern>/view_file/{fileEntryId:\d+}</pattern>
+		<implicit-parameter name="instanceId">0000</implicit-parameter>
+		<implicit-parameter name="mvcRenderCommandName">/document_library/view_file_entry</implicit-parameter>
+		<implicit-parameter name="userIdAndInstanceId"></implicit-parameter>
+	</route>
+</routes>

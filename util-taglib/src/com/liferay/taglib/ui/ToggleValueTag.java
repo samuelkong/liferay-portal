@@ -14,8 +14,8 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.util.SessionClicks;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -27,17 +27,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @author Brian Wing Shun Chan
  */
 public class ToggleValueTag extends TagSupport {
-
-	/**
-	 * @deprecated As of 6.1.0
-	 */
-	@Deprecated
-	public static void doTag(
-			String id, PageContext pageContext, HttpServletRequest request)
-		throws Exception {
-
-		doTag(id, "block", pageContext);
-	}
 
 	public static void doTag(
 			String id, String defaultValue, PageContext pageContext)

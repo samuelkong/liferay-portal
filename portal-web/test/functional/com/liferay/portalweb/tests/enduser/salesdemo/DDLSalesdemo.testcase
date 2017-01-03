@@ -1,0 +1,218 @@
+<definition component-name="portal-web-forms-and-data-lists">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Dynamic Data Lists" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="User#firstLoginPG" />
+
+				<execute macro="DDLList#tearDownCP" />
+
+				<execute macro="DDLDataDefinition#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="Demo1" priority="3">
+		<execute macro="Page#add">
+			<var name="pageName" value="Company Picnic" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Company Picnic" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoEditPage">
+			<var name="page" value="Company Picnic" />
+		</execute>
+
+		<execute macro="Page#editPageLayoutColumn">
+			<var name="columnName" value="1 Column" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Company Picnic" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Dynamic Data Lists Display" />
+		</execute>
+
+		<execute macro="DDLList#addViaDDLDisplayPG">
+			<var name="ddlListDescription" value="Sign up list for our company picnic." />
+			<var name="ddlListName" value="Potluck Sign Up List" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addViaDDLDisplayPG">
+			<var name="ddlDataDefinitionDescription" value="List for Potlucks" />
+			<var name="ddlDataDefinitionName" value="Potluck Items" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="First Name" />
+			<var name="fieldName" value="FirstName" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Last Name" />
+			<var name="fieldName" value="LastName" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="What are you bringing?" />
+			<var name="fieldName" value="WhatAreYouBringing" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#editFieldOptions">
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="What are you bringing?" />
+			<var name="fieldName" value="WhatAreYouBringing" />
+			<var name="fieldOptionsNames" value="Carrots,Beef Jerky,Chips" />
+			<var name="fieldOptionsValues" value="Carrots,Beef Jerky,Chips" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#saveViaDDLDisplayPG" />
+
+		<execute macro="DDLDataDefinition#selectViaDDLDisplayPG">
+			<var name="ddlDataDefinitionName" value="Potluck Items" />
+		</execute>
+
+		<execute macro="DDLList#saveViaDDLDisplayPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Company Picnic" />
+		</execute>
+
+		<execute macro="DDLRecord#addViaDDLDisplayPG">
+			<var name="ddlDataDefinitionName" value="Potluck Items" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldText">
+			<var name="ddlRecordFieldData" value="John" />
+			<var name="fieldFieldLabel" value="First Name" />
+			<var name="fieldName" value="FirstName" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldText">
+			<var name="ddlRecordFieldData" value="Doe" />
+			<var name="fieldFieldLabel" value="Last Name" />
+			<var name="fieldName" value="LastName" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldSelect">
+			<var name="ddlRecordFieldData" value="Beef Jerky" />
+			<var name="fieldFieldLabel" value="What are you bringing?" />
+			<var name="fieldName" value="WhatAreYouBringing" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="DDLRecord#addViaDDLDisplayPG">
+			<var name="ddlDataDefinitionName" value="Potluck Items" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldText">
+			<var name="ddlRecordFieldData" value="Jane" />
+			<var name="fieldFieldLabel" value="First Name" />
+			<var name="fieldName" value="FirstName" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldText">
+			<var name="ddlRecordFieldData" value="Smith" />
+			<var name="fieldFieldLabel" value="Last Name" />
+			<var name="fieldName" value="LastName" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldSelect">
+			<var name="ddlRecordFieldData" value="Carrots" />
+			<var name="fieldFieldLabel" value="What are you bringing?" />
+			<var name="fieldName" value="WhatAreYouBringing" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<for list="John,Jane" param="ddlRecordFieldData">
+			<execute macro="DDLRecord#viewViaDDLDisplayTable">
+				<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
+				<var name="fieldFieldLabel" value="First Name" />
+			</execute>
+		</for>
+
+		<for list="Doe,Smith" param="ddlRecordFieldData">
+			<execute macro="DDLRecord#viewViaDDLDisplayTable">
+				<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
+				<var name="fieldFieldLabel" value="Last Name" />
+			</execute>
+		</for>
+
+		<for list="Beef Jerky,Carrots" param="ddlRecordFieldData">
+			<execute macro="DDLRecord#viewViaDDLDisplayTable">
+				<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
+				<var name="fieldFieldLabel" value="What are you bringing" />
+			</execute>
+		</for>
+
+		<execute macro="DDLRecord#viewStatusViaDDLDisplayTable">
+			<var name="fieldFieldLabel" value="Status" />
+			<var name="workflowStatus" value="Approved" />
+		</execute>
+
+		<execute macro="DDLRecord#viewViaDDLDisplayTable">
+			<var name="ddlRecordFieldData" value="Test Test" />
+			<var name="fieldFieldLabel" value="Author" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute macro="DDLNavigator#gotoOptionalConfiguration" />
+
+		<execute macro="FormFields#enableCheckbox">
+			<var name="fieldName" value="spreadsheet" />
+		</execute>
+
+		<execute macro="PortletEntry#save" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Company Picnic" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldTextViaSpreadsheetView">
+			<var name="ddlRecordFieldData" value="Joe" />
+			<var name="ddlRecordRow" value="3" />
+			<var name="fieldName" value="FirstName" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldTextViaSpreadsheetView">
+			<var name="ddlRecordFieldData" value="Perkins" />
+			<var name="ddlRecordRow" value="3" />
+			<var name="fieldName" value="LastName" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldSelectViaSpreadsheetView">
+			<var name="ddlRecordFieldData" value="Chips" />
+			<var name="ddlRecordRow" value="3" />
+			<var name="fieldName" value="WhatAreYouBringing" />
+		</execute>
+	</command>
+</definition>

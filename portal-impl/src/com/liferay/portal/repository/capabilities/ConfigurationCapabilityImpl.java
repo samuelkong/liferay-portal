@@ -16,28 +16,32 @@ package com.liferay.portal.repository.capabilities;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.repository.DocumentRepository;
 import com.liferay.portal.kernel.repository.capabilities.Capability;
 import com.liferay.portal.kernel.repository.capabilities.ConfigurationCapability;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.Repository;
-import com.liferay.portal.service.RepositoryLocalServiceUtil;
+import com.liferay.portal.repository.capabilities.util.RepositoryServiceAdapter;
 
 /**
  * @author Iván Zaera
  */
 public class ConfigurationCapabilityImpl implements ConfigurationCapability {
 
-	public ConfigurationCapabilityImpl(DocumentRepository repository) {
-		_repository = repository;
+	public ConfigurationCapabilityImpl(
+		DocumentRepository documentRepository,
+		RepositoryServiceAdapter repositoryServiceAdapter) {
+
+		_documentRepository = documentRepository;
+		_repositoryServiceAdapter = repositoryServiceAdapter;
 	}
 
 	@Override
 	public String getProperty(Class<? extends Capability> owner, String key) {
 		try {
-			Repository repository = RepositoryLocalServiceUtil.getRepository(
-				_repository.getRepositoryId());
+			Repository repository = _repositoryServiceAdapter.getRepository(
+				_documentRepository.getRepositoryId());
 
 			UnicodeProperties typeSettingsProperties =
 				repository.getTypeSettingsProperties();
@@ -56,8 +60,8 @@ public class ConfigurationCapabilityImpl implements ConfigurationCapability {
 		Class<? extends Capability> owner, String key, String value) {
 
 		try {
-			Repository repository = RepositoryLocalServiceUtil.getRepository(
-				_repository.getRepositoryId());
+			Repository repository = _repositoryServiceAdapter.getRepository(
+				_documentRepository.getRepositoryId());
 
 			UnicodeProperties typeSettingsProperties =
 				repository.getTypeSettingsProperties();
@@ -67,7 +71,7 @@ public class ConfigurationCapabilityImpl implements ConfigurationCapability {
 
 			repository.setTypeSettingsProperties(typeSettingsProperties);
 
-			RepositoryLocalServiceUtil.updateRepository(repository);
+			_repositoryServiceAdapter.updateRepository(repository);
 		}
 		catch (PortalException pe) {
 			throw new SystemException(
@@ -83,6 +87,7 @@ public class ConfigurationCapabilityImpl implements ConfigurationCapability {
 		return clazz.getName() + StringPool.POUND + key;
 	}
 
-	private final DocumentRepository _repository;
+	private final DocumentRepository _documentRepository;
+	private final RepositoryServiceAdapter _repositoryServiceAdapter;
 
 }

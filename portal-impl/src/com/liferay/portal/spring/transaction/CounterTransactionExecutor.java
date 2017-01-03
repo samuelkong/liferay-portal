@@ -14,30 +14,35 @@
 
 package com.liferay.portal.spring.transaction;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.interceptor.TransactionAttribute;
 
 /**
  * @author Shuyang Zhou
  */
-public class CounterTransactionExecutor extends BaseTransactionExecutor {
+public class CounterTransactionExecutor
+	implements TransactionExecutor, TransactionHandler {
+
+	@Override
+	public void commit(
+		PlatformTransactionManager platformTransactionManager,
+		TransactionAttributeAdapter transactionAttributeAdapter,
+		TransactionStatusAdapter transactionStatusAdapter) {
+
+		platformTransactionManager.commit(
+			transactionStatusAdapter.getTransactionStatus());
+	}
 
 	@Override
 	public Object execute(
 			PlatformTransactionManager platformTransactionManager,
-			TransactionAttribute transactionAttribute,
+			TransactionAttributeAdapter transactionAttributeAdapter,
 			MethodInvocation methodInvocation)
 		throws Throwable {
 
-		TransactionStatus transactionStatus =
-			platformTransactionManager.getTransaction(transactionAttribute);
+		TransactionStatusAdapter transactionStatusAdapter = start(
+			platformTransactionManager, transactionAttributeAdapter);
 
 		Object returnValue = null;
 
@@ -45,81 +50,61 @@ public class CounterTransactionExecutor extends BaseTransactionExecutor {
 			returnValue = methodInvocation.proceed();
 		}
 		catch (Throwable throwable) {
-			processThrowable(
-				platformTransactionManager, throwable, transactionAttribute,
-				transactionStatus);
+			rollback(
+				platformTransactionManager, throwable,
+				transactionAttributeAdapter, transactionStatusAdapter);
 		}
 
-		processCommit(platformTransactionManager, transactionStatus);
+		commit(
+			platformTransactionManager, transactionAttributeAdapter,
+			transactionStatusAdapter);
 
 		return returnValue;
 	}
 
-	protected void processCommit(
-		PlatformTransactionManager platformTransactionManager,
-		TransactionStatus transactionStatus) {
-
-		try {
-			platformTransactionManager.commit(transactionStatus);
-		}
-		catch (TransactionSystemException tse) {
-			_log.error(
-				"Application exception overridden by commit exception", tse);
-
-			throw tse;
-		}
-		catch (RuntimeException re) {
-			_log.error(
-				"Application exception overridden by commit exception", re);
-
-			throw re;
-		}
-		catch (Error e) {
-			_log.error("Application exception overridden by commit error", e);
-
-			throw e;
-		}
-	}
-
-	protected void processThrowable(
+	@Override
+	public void rollback(
 			PlatformTransactionManager platformTransactionManager,
-			Throwable throwable, TransactionAttribute transactionAttribute,
-			TransactionStatus transactionStatus)
+			Throwable throwable,
+			TransactionAttributeAdapter transactionAttributeAdapter,
+			TransactionStatusAdapter transactionStatusAdapter)
 		throws Throwable {
 
-		if (transactionAttribute.rollbackOn(throwable)) {
+		if (transactionAttributeAdapter.rollbackOn(throwable)) {
 			try {
-				platformTransactionManager.rollback(transactionStatus);
+				platformTransactionManager.rollback(
+					transactionStatusAdapter.getTransactionStatus());
 			}
-			catch (TransactionSystemException tse) {
-				_log.error(
-					"Application exception overridden by rollback exception",
-					tse);
+			catch (Throwable t) {
+				t.addSuppressed(throwable);
 
-				throw tse;
-			}
-			catch (RuntimeException re) {
-				_log.error(
-					"Application exception overridden by rollback exception",
-					re);
-
-				throw re;
-			}
-			catch (Error e) {
-				_log.error(
-					"Application exception overridden by rollback error", e);
-
-				throw e;
+				throw t;
 			}
 		}
 		else {
-			processCommit(platformTransactionManager, transactionStatus);
+			try {
+				platformTransactionManager.commit(
+					transactionStatusAdapter.getTransactionStatus());
+			}
+			catch (Throwable t) {
+				t.addSuppressed(throwable);
+
+				throw t;
+			}
 		}
 
 		throw throwable;
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		CounterTransactionExecutor.class);
+	@Override
+	public TransactionStatusAdapter start(
+		PlatformTransactionManager platformTransactionManager,
+		TransactionAttributeAdapter transactionAttributeAdapter) {
+
+		return new TransactionStatusAdapter(
+			platformTransactionManager,
+			platformTransactionManager.getTransaction(
+				transactionAttributeAdapter));
+	}
 
 }

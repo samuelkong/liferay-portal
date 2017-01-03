@@ -14,10 +14,10 @@
 
 package com.liferay.portal.spring.remoting;
 
-import com.liferay.portal.PwdEncryptorException;
+import com.liferay.portal.kernel.exception.PwdEncryptorException;
+import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.security.pwd.PasswordEncryptorUtil;
 
 import java.io.IOException;
 
@@ -37,10 +37,6 @@ import org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor
  */
 public class AuthenticatingHttpInvokerRequestExecutor
 	extends SimpleHttpInvokerRequestExecutor {
-
-	public AuthenticatingHttpInvokerRequestExecutor() {
-		super();
-	}
 
 	public String getPassword() {
 		return _password;

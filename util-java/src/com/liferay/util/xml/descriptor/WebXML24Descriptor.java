@@ -30,14 +30,14 @@ public class WebXML24Descriptor extends SimpleXMLDescriptor {
 
 	public WebXML24Descriptor() {
 		_orderedChildren.put(
+			"jsp-config", new String[] {"taglib", "jsp-property-group"});
+		_orderedChildren.put(
 			"servlet",
 			new String[] {
 				"icon", "servlet-name", "display-name", "description",
 				"servlet-class", "jsp-file", "init-param", "load-on-startup",
 				"run-as", "security-role-ref"
 			});
-		_orderedChildren.put(
-			"jsp-config", new String[] {"taglib", "jsp-property-group"});
 	}
 
 	@Override
@@ -83,8 +83,7 @@ public class WebXML24Descriptor extends SimpleXMLDescriptor {
 		return _UNIQUE_ELEMENTS;
 	}
 
-	private static final ElementIdentifier[] _ELEMENTS_IDENTIFIED_BY_ATTR = {
-	};
+	private static final ElementIdentifier[] _ELEMENTS_IDENTIFIED_BY_ATTR = {};
 
 	private static final ElementIdentifier[] _ELEMENTS_IDENTIFIED_BY_CHILD = {
 		new ElementIdentifier("context-param", "param-name"),
@@ -116,7 +115,6 @@ public class WebXML24Descriptor extends SimpleXMLDescriptor {
 		"session-config", "welcome-file-list", "jsp-config", "login-config"
 	};
 
-	private final Map<String, String[]> _orderedChildren =
-		new HashMap<String, String[]>();
+	private final Map<String, String[]> _orderedChildren = new HashMap<>();
 
 }

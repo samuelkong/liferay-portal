@@ -1,0 +1,21 @@
+.lfr-alert-container {
+	left: 0;
+	position: absolute;
+	right: auto;
+	top: auto;
+	width: 100%;
+	z-index: 430;
+
+	&.inline-alert-container {
+		position: relative;
+
+		.lfr-alert-wrapper {
+			padding: 0;
+		}
+	}
+
+	.lfr-alert-wrapper {
+		margin-bottom: 5px;
+		overflow: hidden;
+	}
+}

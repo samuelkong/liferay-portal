@@ -20,15 +20,12 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class ServiceComponentImpl extends ServiceComponentBaseImpl {
-
-	public ServiceComponentImpl() {
-	}
 
 	@Override
 	public String getIndexesSQL() {
@@ -65,7 +62,7 @@ public class ServiceComponentImpl extends ServiceComponentBaseImpl {
 
 	private Element _getDataEl() throws DocumentException {
 		if (_dataEl == null) {
-			Document doc = SAXReaderUtil.read(getData());
+			Document doc = UnsecureSAXReaderUtil.read(getData());
 
 			_dataEl = doc.getRootElement();
 		}

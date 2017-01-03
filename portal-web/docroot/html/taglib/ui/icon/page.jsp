@@ -22,6 +22,9 @@ boolean urlIsNotNull = Validator.isNotNull(url);
 
 <liferay-util:buffer var="linkContent">
 	<c:choose>
+		<c:when test="<%= Validator.isNotNull(icon) %>">
+			<aui:icon image="<%= icon %>" markupView="<%= markupView %>" />
+		</c:when>
 		<c:when test="<%= auiImage %>">
 			<aui:icon image="<%= image.substring(_AUI_PATH.length()) %>" />
 		</c:when>
@@ -88,7 +91,7 @@ boolean urlIsNotNull = Validator.isNotNull(url);
 	<c:otherwise>
 		<span class="<%= cssClass %>"
 			<c:if test="<%= !label && Validator.isNotNull(message) %>">
-				onmouseover="Liferay.Portal.ToolTip.show(this, '<liferay-ui:message key="<%= HtmlUtil.escapeJS(message) %>" />')"
+				title="<liferay-ui:message key="<%= HtmlUtil.stripHtml(message) %>" />"
 			</c:if>
 		>
 			<c:choose>
@@ -110,14 +113,14 @@ boolean urlIsNotNull = Validator.isNotNull(url);
 		Liferay.Icon.register(
 			{
 				forcePost: <%= forcePost %>,
-				id: '<portlet:namespace /><%= id %>'
+				id: '<portlet:namespace /><%= id %>',
 
 				<c:if test="<%= Validator.isNotNull(srcHover) %>">
-					, src: '<%= src %>',
-					srcHover: '<%= srcHover %>'
+					src: '<%= src %>',
+					srcHover: '<%= srcHover %>',
 				</c:if>
 
-				, useDialog: <%= useDialog %>
+				useDialog: <%= useDialog %>
 			}
 		);
 	</aui:script>

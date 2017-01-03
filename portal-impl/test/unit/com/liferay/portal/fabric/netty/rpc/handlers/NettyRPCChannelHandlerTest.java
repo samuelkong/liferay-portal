@@ -15,7 +15,7 @@
 package com.liferay.portal.fabric.netty.rpc.handlers;
 
 import com.liferay.portal.fabric.netty.rpc.RPCSerializable;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -37,8 +37,8 @@ import org.junit.Test;
 public class NettyRPCChannelHandlerTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Test
 	public void testChannelRead0() {
@@ -46,10 +46,10 @@ public class NettyRPCChannelHandlerTest {
 			NettyRPCChannelHandler.INSTANCE);
 
 		final AtomicReference<Channel> channelReference =
-			new AtomicReference<Channel>();
+			new AtomicReference<>();
 
-		RPCSerializable rpcSerializable = new RPCSerializable(
-			System.currentTimeMillis()) {
+		RPCSerializable rpcSerializable =
+			new RPCSerializable(System.currentTimeMillis()) {
 
 				@Override
 				public void execute(Channel channel) {

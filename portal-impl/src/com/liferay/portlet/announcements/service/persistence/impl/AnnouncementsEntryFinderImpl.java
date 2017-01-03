@@ -14,6 +14,9 @@
 
 package com.liferay.portlet.announcements.service.persistence.impl;
 
+import com.liferay.announcements.kernel.model.AnnouncementsEntry;
+import com.liferay.announcements.kernel.model.AnnouncementsFlagConstants;
+import com.liferay.announcements.kernel.service.persistence.AnnouncementsEntryFinder;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -21,16 +24,14 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CalendarUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.announcements.model.AnnouncementsEntry;
-import com.liferay.portlet.announcements.model.AnnouncementsFlagConstants;
 import com.liferay.portlet.announcements.model.impl.AnnouncementsEntryImpl;
-import com.liferay.portlet.announcements.service.persistence.AnnouncementsEntryFinder;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.sql.Timestamp;
@@ -46,7 +47,7 @@ import java.util.Map;
  * @author Raymond Augé
  */
 public class AnnouncementsEntryFinderImpl
-	extends BasePersistenceImpl<AnnouncementsEntry>
+	extends AnnouncementsEntryFinderBaseImpl
 	implements AnnouncementsEntryFinder {
 
 	public static final String COUNT_BY_HIDDEN =
@@ -407,6 +408,12 @@ public class AnnouncementsEntryFinderImpl
 				displayDateHour, displayDateMinute, null);
 		}
 		catch (PortalException pe) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe, pe);
+			}
 		}
 
 		if (displayDate == null) {
@@ -423,6 +430,12 @@ public class AnnouncementsEntryFinderImpl
 				expirationDateHour, expirationDateMinute, null);
 		}
 		catch (PortalException pe) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe, pe);
+			}
 		}
 
 		if (expirationDate == null) {
@@ -436,5 +449,8 @@ public class AnnouncementsEntryFinderImpl
 		qPos.add(expirationDateTS);
 		qPos.add(expirationDateTS);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AnnouncementsEntryFinderImpl.class);
 
 }

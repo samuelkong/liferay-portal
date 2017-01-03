@@ -14,18 +14,15 @@
 
 package com.liferay.portal.model.impl;
 
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.FullNameGenerator;
-import com.liferay.portal.security.auth.FullNameGeneratorFactory;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.FullNameGenerator;
+import com.liferay.portal.kernel.security.auth.FullNameGeneratorFactory;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class ContactImpl extends ContactBaseImpl {
-
-	public ContactImpl() {
-	}
 
 	@Override
 	public String getFullName() {
@@ -38,18 +35,21 @@ public class ContactImpl extends ContactBaseImpl {
 
 	@Override
 	public boolean isUser() {
-		return hasClassName(User.class);
-	}
-
-	protected boolean hasClassName(Class<?> clazz) {
-		long classNameId = getClassNameId();
-
-		if (classNameId == PortalUtil.getClassNameId(clazz)) {
+		if (getClassNameId() == ClassNameIds._USER_CLASS_NAME_ID) {
 			return true;
 		}
-		else {
-			return false;
+
+		return false;
+	}
+
+	private static class ClassNameIds {
+
+		private ClassNameIds() {
 		}
+
+		private static final long _USER_CLASS_NAME_ID =
+			PortalUtil.getClassNameId(User.class);
+
 	}
 
 }

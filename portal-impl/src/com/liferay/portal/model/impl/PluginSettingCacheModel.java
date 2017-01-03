@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.PluginSetting;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.PluginSetting;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,33 @@ import java.io.ObjectOutput;
 @ProviderType
 public class PluginSettingCacheModel implements CacheModel<PluginSetting>,
 	Externalizable, MVCCModel {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof PluginSettingCacheModel)) {
+			return false;
+		}
+
+		PluginSettingCacheModel pluginSettingCacheModel = (PluginSettingCacheModel)obj;
+
+		if ((pluginSettingId == pluginSettingCacheModel.pluginSettingId) &&
+				(mvccVersion == pluginSettingCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, pluginSettingId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
 	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
@@ -109,11 +137,14 @@ public class PluginSettingCacheModel implements CacheModel<PluginSetting>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		pluginSettingId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
 		pluginId = objectInput.readUTF();
 		pluginType = objectInput.readUTF();
 		roles = objectInput.readUTF();
+
 		active = objectInput.readBoolean();
 	}
 
@@ -121,7 +152,9 @@ public class PluginSettingCacheModel implements CacheModel<PluginSetting>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(pluginSettingId);
+
 		objectOutput.writeLong(companyId);
 
 		if (pluginId == null) {

@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -15,15 +14,13 @@
 
 package com.liferay.portal.fabric.netty.codec.serialization;
 
-import com.liferay.portal.kernel.io.AnnotatedObjectInputStream;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.io.ProtectedAnnotatedObjectInputStream;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,10 +28,9 @@ import java.lang.reflect.Modifier;
 
 import java.util.Date;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import org.testng.Assert;
 
 /**
  * @author Shuyang Zhou
@@ -42,13 +38,29 @@ import org.testng.Assert;
 public class AnnotatedObjectEncoderTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Test
 	public void testEncode() throws Exception {
-		doTestEncode(true);
-		doTestEncode(false);
+		AnnotatedObjectEncoder annotatedObjectEncoder =
+			AnnotatedObjectEncoder.INSTANCE;
+
+		Date date = new Date();
+
+		ByteBuf byteBuf = Unpooled.buffer();
+
+		annotatedObjectEncoder.encode(null, date, byteBuf);
+
+		Assert.assertEquals(byteBuf.readInt(), byteBuf.readableBytes());
+
+		ProtectedAnnotatedObjectInputStream annotatedObjectInputStream =
+			new ProtectedAnnotatedObjectInputStream(
+				new ByteBufInputStream(byteBuf));
+
+		Assert.assertEquals(date, annotatedObjectInputStream.readObject());
+
+		Assert.assertFalse(byteBuf.isReadable());
 	}
 
 	@Test
@@ -78,34 +90,6 @@ public class AnnotatedObjectEncoderTest {
 			AnnotatedObjectEncoder.class.getDeclaredConstructor();
 
 		Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
-	}
-
-	protected void doTestEncode(boolean bridge) throws Exception {
-		AnnotatedObjectEncoder annotatedObjectEncoder =
-			AnnotatedObjectEncoder.INSTANCE;
-
-		Date date = new Date();
-
-		ByteBuf byteBuf = Unpooled.buffer();
-
-		if (bridge) {
-			ReflectionTestUtil.invokeBridge(
-				annotatedObjectEncoder, "encode",
-				new Class<?>[] {
-					ChannelHandlerContext.class, Object.class, ByteBuf.class},
-				null, date, byteBuf);
-		}
-		else {
-			annotatedObjectEncoder.encode(null, date, byteBuf);
-		}
-
-		Assert.assertEquals(byteBuf.readInt(), byteBuf.readableBytes());
-
-		AnnotatedObjectInputStream annotatedObjectInputStream =
-			new AnnotatedObjectInputStream(new ByteBufInputStream(byteBuf));
-
-		Assert.assertEquals(date, annotatedObjectInputStream.readObject());
-		Assert.assertFalse(byteBuf.isReadable());
 	}
 
 }

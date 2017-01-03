@@ -47,24 +47,13 @@ public class AutoEscapeBeanHandlerTest {
 			_UNESCAPED_TEXT, escapedBean.getUnescapedAttribute());
 	}
 
-	private static final String _ESCAPED_TEXT = "Old Mc&#039;Donald";
+	private static final String _ESCAPED_TEXT = "Old Mc&#39;Donald";
 
 	private static final String _UNESCAPED_TEXT = "Old Mc'Donald";
 
 	private Bean _bean;
 
-	private interface Bean extends Serializable {
-
-		@AutoEscape
-		public String getAttribute();
-
-		public String getUnescapedAttribute();
-
-		public Bean toEscapedBean();
-
-	}
-
-	private class BeanImpl implements Bean {
+	private static class BeanImpl implements Bean {
 
 		public BeanImpl(String attribute) {
 			_attribute = attribute;
@@ -92,6 +81,17 @@ public class AutoEscapeBeanHandlerTest {
 
 		private final String _attribute;
 		private final String _unescapedAttribute;
+
+	}
+
+	private interface Bean extends Serializable {
+
+		@AutoEscape
+		public String getAttribute();
+
+		public String getUnescapedAttribute();
+
+		public Bean toEscapedBean();
 
 	}
 

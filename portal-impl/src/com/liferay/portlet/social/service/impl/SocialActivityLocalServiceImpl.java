@@ -14,22 +14,21 @@
 
 package com.liferay.portlet.social.service.impl;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.messaging.async.Async;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackRegistryUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.asset.model.AssetEntry;
-import com.liferay.portlet.social.model.SocialActivity;
-import com.liferay.portlet.social.model.SocialActivityConstants;
-import com.liferay.portlet.social.model.SocialActivityDefinition;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portlet.social.service.base.SocialActivityLocalServiceBaseImpl;
 import com.liferay.portlet.social.util.SocialActivityHierarchyEntry;
 import com.liferay.portlet.social.util.SocialActivityHierarchyEntryThreadLocal;
+import com.liferay.social.kernel.model.SocialActivity;
+import com.liferay.social.kernel.model.SocialActivityConstants;
+import com.liferay.social.kernel.model.SocialActivityDefinition;
 
 import java.util.Date;
 import java.util.List;
@@ -84,15 +83,14 @@ public class SocialActivityLocalServiceImpl
 	 * activities.
 	 * </p>
 	 *
-	 * @param  userId the primary key of the acting user
-	 * @param  groupId the primary key of the group
-	 * @param  createDate the activity's date
-	 * @param  className the target asset's class name
-	 * @param  classPK the primary key of the target asset
-	 * @param  type the activity's type
-	 * @param  extraData any extra data regarding the activity
-	 * @param  receiverUserId the primary key of the receiving user
-	 * @throws PortalException if the user or group could not be found
+	 * @param userId the primary key of the acting user
+	 * @param groupId the primary key of the group
+	 * @param createDate the activity's date
+	 * @param className the target asset's class name
+	 * @param classPK the primary key of the target asset
+	 * @param type the activity's type
+	 * @param extraData any extra data regarding the activity
+	 * @param receiverUserId the primary key of the receiving user
 	 */
 	@Override
 	public void addActivity(
@@ -185,21 +183,20 @@ public class SocialActivityLocalServiceImpl
 
 		};
 
-		TransactionCommitCallbackRegistryUtil.registerCallback(callable);
+		TransactionCommitCallbackUtil.registerCallback(callable);
 	}
 
 	/**
 	 * Records an activity in the database, using a time based on the current
 	 * time in an attempt to make the activity's time unique.
 	 *
-	 * @param  userId the primary key of the acting user
-	 * @param  groupId the primary key of the group
-	 * @param  className the target asset's class name
-	 * @param  classPK the primary key of the target asset
-	 * @param  type the activity's type
-	 * @param  extraData any extra data regarding the activity
-	 * @param  receiverUserId the primary key of the receiving user
-	 * @throws PortalException if the user or group could not be found
+	 * @param userId the primary key of the acting user
+	 * @param groupId the primary key of the group
+	 * @param className the target asset's class name
+	 * @param classPK the primary key of the target asset
+	 * @param type the activity's type
+	 * @param extraData any extra data regarding the activity
+	 * @param receiverUserId the primary key of the receiving user
 	 */
 	@Override
 	public void addActivity(
@@ -265,15 +262,14 @@ public class SocialActivityLocalServiceImpl
 					SocialActivity.class.getName());
 
 				mirrorActivity.setActivityId(mirrorActivityId);
+
 				mirrorActivity.setMirrorActivityId(activity.getPrimaryKey());
 
 				socialActivityPersistence.update(mirrorActivity);
 			}
 
-			if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-				socialActivityInterpreterLocalService.updateActivitySet(
-					activity.getActivityId());
-			}
+			socialActivityInterpreterLocalService.updateActivitySet(
+				activity.getActivityId());
 		}
 
 		socialActivityCounterLocalService.addActivityCounters(activity);
@@ -288,15 +284,14 @@ public class SocialActivityLocalServiceImpl
 	 * String, long, int, String, long)}
 	 * </p>
 	 *
-	 * @param  userId the primary key of the acting user
-	 * @param  groupId the primary key of the group
-	 * @param  createDate the activity's date
-	 * @param  className the target asset's class name
-	 * @param  classPK the primary key of the target asset
-	 * @param  type the activity's type
-	 * @param  extraData any extra data regarding the activity
-	 * @param  receiverUserId the primary key of the receiving user
-	 * @throws PortalException if the user or group could not be found
+	 * @param userId the primary key of the acting user
+	 * @param groupId the primary key of the group
+	 * @param createDate the activity's date
+	 * @param className the target asset's class name
+	 * @param classPK the primary key of the target asset
+	 * @param type the activity's type
+	 * @param extraData any extra data regarding the activity
+	 * @param receiverUserId the primary key of the receiving user
 	 */
 	@Override
 	public void addUniqueActivity(
@@ -329,14 +324,13 @@ public class SocialActivityLocalServiceImpl
 	 * String, long, int, String, long)}
 	 * </p>
 	 *
-	 * @param  userId the primary key of the acting user
-	 * @param  groupId the primary key of the group
-	 * @param  className the target asset's class name
-	 * @param  classPK the primary key of the target asset
-	 * @param  type the activity's type
-	 * @param  extraData any extra data regarding the activity
-	 * @param  receiverUserId the primary key of the receiving user
-	 * @throws PortalException if the user or group could not be found
+	 * @param userId the primary key of the acting user
+	 * @param groupId the primary key of the group
+	 * @param className the target asset's class name
+	 * @param classPK the primary key of the target asset
+	 * @param type the activity's type
+	 * @param extraData any extra data regarding the activity
+	 * @param receiverUserId the primary key of the receiving user
 	 */
 	@Override
 	public void addUniqueActivity(
@@ -361,27 +355,16 @@ public class SocialActivityLocalServiceImpl
 	/**
 	 * Removes stored activities for the asset.
 	 *
-	 * @param  assetEntry the asset from which to remove stored activities
-	 * @throws PortalException if a portal exception occurred
+	 * @param assetEntry the asset from which to remove stored activities
 	 */
 	@Override
 	public void deleteActivities(AssetEntry assetEntry) throws PortalException {
-		if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-			socialActivitySetLocalService.decrementActivityCount(
-				assetEntry.getClassNameId(), assetEntry.getClassPK());
-		}
-
-		socialActivityPersistence.removeByC_C(
-			assetEntry.getClassNameId(), assetEntry.getClassPK());
-
-		socialActivityCounterLocalService.deleteActivityCounters(assetEntry);
+		deleteActivities(assetEntry.getClassName(), assetEntry.getClassPK());
 	}
 
 	@Override
 	public void deleteActivities(long groupId) {
-		if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-			socialActivitySetPersistence.removeByGroupId(groupId);
-		}
+		socialActivitySetPersistence.removeByGroupId(groupId);
 
 		socialActivityPersistence.removeByGroupId(groupId);
 
@@ -396,10 +379,8 @@ public class SocialActivityLocalServiceImpl
 	 * Removes stored activities for the asset identified by the class name and
 	 * class primary key.
 	 *
-	 * @param  className the target asset's class name
-	 * @param  classPK the primary key of the target asset
-	 * @throws PortalException if the user's activity counters could not be
-	 *         deleted
+	 * @param className the target asset's class name
+	 * @param classPK the primary key of the target asset
 	 */
 	@Override
 	public void deleteActivities(String className, long classPK)
@@ -407,19 +388,13 @@ public class SocialActivityLocalServiceImpl
 
 		long classNameId = classNameLocalService.getClassNameId(className);
 
-		if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-			socialActivitySetLocalService.decrementActivityCount(
-				classNameId, classPK);
-		}
-
-		socialActivityPersistence.removeByC_C(classNameId, classPK);
+		deleteActivities(classNameId, classPK);
 	}
 
 	/**
 	 * Removes the stored activity from the database.
 	 *
-	 * @param  activityId the primary key of the stored activity
-	 * @throws PortalException if the activity could not be found
+	 * @param activityId the primary key of the stored activity
 	 */
 	@Override
 	public void deleteActivity(long activityId) throws PortalException {
@@ -432,16 +407,12 @@ public class SocialActivityLocalServiceImpl
 	/**
 	 * Removes the stored activity and its mirror activity from the database.
 	 *
-	 * @param  activity the activity to be removed
-	 * @throws PortalException if the user's activity counters could not be
-	 *         deleted or if a portal exception occurred
+	 * @param activity the activity to be removed
 	 */
 	@Override
 	public void deleteActivity(SocialActivity activity) throws PortalException {
-		if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-			socialActivitySetLocalService.decrementActivityCount(
-				activity.getActivitySetId());
-		}
+		socialActivitySetLocalService.decrementActivityCount(
+			activity.getActivitySetId());
 
 		socialActivityPersistence.remove(activity);
 
@@ -462,9 +433,7 @@ public class SocialActivityLocalServiceImpl
 	 * the receiver.
 	 * </p>
 	 *
-	 * @param  userId the primary key of the user
-	 * @throws PortalException if the user's activity counters could not be
-	 *         deleted
+	 * @param userId the primary key of the user
 	 */
 	@Override
 	public void deleteUserActivities(long userId) throws PortalException {
@@ -473,10 +442,8 @@ public class SocialActivityLocalServiceImpl
 				userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (SocialActivity activity : activities) {
-			if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-				socialActivitySetLocalService.decrementActivityCount(
-					activity.getActivitySetId());
-			}
+			socialActivitySetLocalService.decrementActivityCount(
+				activity.getActivitySetId());
 
 			socialActivityPersistence.remove(activity);
 		}
@@ -485,10 +452,8 @@ public class SocialActivityLocalServiceImpl
 			userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (SocialActivity activity : activities) {
-			if (PropsValues.SOCIAL_ACTIVITY_SETS_ENABLED) {
-				socialActivitySetLocalService.decrementActivityCount(
-					activity.getActivitySetId());
-			}
+			socialActivitySetLocalService.decrementActivityCount(
+				activity.getActivitySetId());
 
 			socialActivityPersistence.remove(activity);
 		}
@@ -516,8 +481,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -544,8 +508,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -575,8 +538,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -607,8 +569,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -636,6 +597,18 @@ public class SocialActivityLocalServiceImpl
 	@Override
 	public int getActivitiesCount(long classNameId) {
 		return socialActivityPersistence.countByClassNameId(classNameId);
+	}
+
+	@Override
+	public int getActivitiesCount(
+		long userId, long groupId, Date createDate, String className,
+		long classPK, int type, long receiverUserId) {
+
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		return socialActivityPersistence.countByG_U_CD_C_C_T_R(
+			groupId, userId, createDate.getTime(), classNameId, classPK, type,
+			receiverUserId);
 	}
 
 	/**
@@ -693,7 +666,6 @@ public class SocialActivityLocalServiceImpl
 	 *
 	 * @param  activityId the primary key of the activity
 	 * @return Returns the activity
-	 * @throws PortalException if the activity could not be found
 	 */
 	@Override
 	public SocialActivity getActivity(long activityId) throws PortalException {
@@ -720,8 +692,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -765,8 +736,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -803,7 +773,6 @@ public class SocialActivityLocalServiceImpl
 	 *
 	 * @param  mirrorActivityId the primary key of the mirror activity
 	 * @return Returns the mirror activity
-	 * @throws PortalException if the mirror activity could not be found
 	 */
 	@Override
 	public SocialActivity getMirrorActivity(long mirrorActivityId)
@@ -822,8 +791,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -861,8 +829,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -898,10 +865,9 @@ public class SocialActivityLocalServiceImpl
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end -
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <>0</code> refers
-	 * to the first result in the set. Setting both <code>start</code> and
-	 * <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
+	 * refers to the first result in the set. Setting both <code>start</code>
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -927,8 +893,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -980,8 +945,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -1017,8 +981,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -1055,8 +1018,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -1094,8 +1056,7 @@ public class SocialActivityLocalServiceImpl
 	 * start</code> instances. <code>start</code> and <code>end</code> are not
 	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
 	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
 	 * result set.
 	 * </p>
 	 *
@@ -1121,6 +1082,18 @@ public class SocialActivityLocalServiceImpl
 	@Override
 	public int getUserOrganizationsActivitiesCount(long userId) {
 		return socialActivityFinder.countByUserOrganizations(userId);
+	}
+
+	protected void deleteActivities(long classNameId, long classPK)
+		throws PortalException {
+
+		socialActivitySetLocalService.decrementActivityCount(
+			classNameId, classPK);
+
+		socialActivityPersistence.removeByC_C(classNameId, classPK);
+
+		socialActivityCounterLocalService.deleteActivityCounters(
+			classNameId, classPK);
 	}
 
 	protected boolean isLogActivity(SocialActivity activity) {

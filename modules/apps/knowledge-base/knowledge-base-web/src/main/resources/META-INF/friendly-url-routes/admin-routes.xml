@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes PUBLIC "-//Liferay//DTD Friendly URL Routes 7.0.0//EN" "http://www.liferay.com/dtd/liferay-friendly-url-routes_7_0_0.dtd">
+
+<routes>
+	<route>
+		<pattern></pattern>
+		<implicit-parameter name="mvcPath">/admin/view.jsp</implicit-parameter>
+		<implicit-parameter name="p_p_state">maximized</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/articles</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_articles.jsp</implicit-parameter>
+		<implicit-parameter name="p_p_state">maximized</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/folders</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_folders.jsp</implicit-parameter>
+		<implicit-parameter name="p_p_state">maximized</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/templates</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_templates.jsp</implicit-parameter>
+		<implicit-parameter name="p_p_state">maximized</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/suggestions</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_suggestions.jsp</implicit-parameter>
+		<implicit-parameter name="p_p_state">maximized</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/article/{resourcePrimKey:\d+}/{p_p_state}</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_article.jsp</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/article/{resourcePrimKey:\d+}/{p_p_state}</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_article.jsp</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/template/{kbTemplateId:\d+}/{p_p_state}</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_template.jsp</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/template/{kbTemplateId:\d+}/{p_p_state}</pattern>
+		<implicit-parameter name="mvcPath">/admin/view_template.jsp</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/article/{resourcePrimKey:\d+}/{status:-?\d+}/history</pattern>
+		<implicit-parameter name="mvcPath">/admin/history.jsp</implicit-parameter>
+		<implicit-parameter name="p_p_state">maximized</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/article/{resourcePrimKey:\d+}/{status:-?\d+}/history/{p_p_state}</pattern>
+		<implicit-parameter name="mvcPath">/admin/history.jsp</implicit-parameter>
+	</route>
+</routes>

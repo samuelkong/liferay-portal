@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = c521caa104f7d57d089729033612b314e1fe01a5
+	mode = push
+	parent = 47800a6937d10a8aeb419901ade9bc6b615e81ba
+	remote = git@github.com:liferay/com-liferay-notifications.git

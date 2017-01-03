@@ -66,7 +66,7 @@ public class SPIClassPathContextListener implements ServletContextListener {
 		String spiEmbeddedLibDirName = servletContext.getInitParameter(
 			"spiEmbeddedLibDir");
 
-		Set<File> jarFiles = new LinkedHashSet<File>();
+		Set<File> jarFiles = new LinkedHashSet<>();
 
 		// Load embedded Tomcat
 
@@ -74,7 +74,7 @@ public class SPIClassPathContextListener implements ServletContextListener {
 
 		addJarFiles(jarFiles, spiEmbeddedLibDir);
 
-		// Load portal-service.jar from MPI
+		// Load portal-kernel.jar from MPI
 
 		addJarFiles(
 			jarFiles, PortalClassLoaderUtil.getClassLoader(),
@@ -90,7 +90,7 @@ public class SPIClassPathContextListener implements ServletContextListener {
 
 		addJarFiles(jarFiles, new File(spiEmbeddedLibDir, "ext"));
 
-		StringBundler sb = new StringBundler(jarFiles.size() * 2 + 4);
+		StringBundler sb = new StringBundler(jarFiles.size() * 2 + 2);
 
 		for (File file : jarFiles) {
 			sb.append(file.getAbsolutePath());
@@ -211,7 +211,7 @@ public class SPIClassPathContextListener implements ServletContextListener {
 	}
 
 	protected static final AtomicReference<SPIProvider> spiProviderReference =
-		new AtomicReference<SPIProvider>();
+		new AtomicReference<>();
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SPIClassPathContextListener.class);

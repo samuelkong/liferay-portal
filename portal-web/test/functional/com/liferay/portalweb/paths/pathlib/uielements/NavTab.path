@@ -1,0 +1,289 @@
+<html>
+<head>
+<title>NavTab</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">NavTab</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ACTIVE_TAB_LINK</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li[contains(.,'${key_tab}') and contains(@class,'active')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TAB_LINK</td>
+	<td>//ul[contains(@class,'nav-tabs')]//li[contains(.,'${key_tab}')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>ACCOUNT_CREATED_NOTIFICATION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Account Created Notification')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ALL_ORGANIZATIONS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'All Organizations')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_SELECTION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li[contains(.,'Asset Selection')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>AVAILABLE</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Available')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAPTCHA</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'CAPTCHA')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CAS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'CAS')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>COMPLETED</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Completed')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONSUMERS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Consumers')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CURRENT</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Current')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATA_MIGRATION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Data Migration')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEFAULT_USER_ASSOCIATIONS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Default User Associations')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DISPLAY_SETTINGS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li[contains(.,'Display Settings')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DNS_LOOKUP</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'DNS Lookup')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EMAIL_VERIFICATION_NOTIFICATION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Email Verification Notification')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FACEBOOK</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Facebook')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELDS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Fields')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FILE_INFO</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'File Info')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GENERAL</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'General')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GOOGLE</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Google')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IDENTIFICATION</td>
+	<td>//li[contains(@class,'tab')]/a[contains(.,'Identification')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IDENTITY_PROVIDER</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Identity Provider')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IDENTITY_PROVIDER_CONNECTION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Identity Provider Connection')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LDAP</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'LDAP')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENTIONS</td>
+	<td>//li[contains(@id,'microblogs')]/a[contains(.,'Mentions')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NTLM</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'NTLM')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OPENID</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'OpenID')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>OPENSSO</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'OpenSSO')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ORGANIZATIONS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Organizations')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PASSWORD_CHANGED_NOTIFICATION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Password Changed Notification')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PASSWORD_RESET_NOTIFICATION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Password Reset Notification')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PENDING</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Pending')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTAL_PROPERTIES</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Portal Properties')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LOOK_AND_FEEL_GENERAL</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'General')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCERS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Producers')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PROPERTIES</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Properties')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RESERVED_CREDENTIALS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Reserved Credentials')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SCRIPT</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Script')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SENDER</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Sender')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SERVICE_PROVIDER_CONNECTIONS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Service Provider Connections')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHUTDOWN</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Shutdown')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITES</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Sites')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITE_MINDER</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'SiteMinder')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SOURCE</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li[contains(.,'Source')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBSCRIPTIONS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li[contains(.,'Subscriptions')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUPPORTED_CLIENTS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li[contains(.,'Supported Clients')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SYSTEM_PROPERTIES</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'System Properties')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TIMELINE</td>
+	<td>//li[contains(@id,'microblogs')]/a[contains(.,'Timeline')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>UPDATE_CATEGORIES</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Update Categories')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USERS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Users')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_GROUPS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'User Groups')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VERSION</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Version')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WHOIS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Whois')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

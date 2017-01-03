@@ -14,7 +14,10 @@
 
 package com.liferay.portal.security.auth;
 
-import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.security.auth.AuthException;
+import com.liferay.portal.kernel.security.auth.AuthFailure;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 
 import java.util.Map;
 
@@ -22,6 +25,7 @@ import java.util.Map;
  * @author Brian Wing Shun Chan
  * @author Scott Lee
  */
+@OSGiBeanProperties(property = "key=auth.failure")
 public class LoginFailure implements AuthFailure {
 
 	@Override

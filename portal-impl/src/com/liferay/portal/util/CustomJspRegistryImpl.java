@@ -16,6 +16,7 @@ package com.liferay.portal.util;
 
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.CustomJspRegistry;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 
@@ -31,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CustomJspRegistryImpl implements CustomJspRegistry {
 
 	public CustomJspRegistryImpl() {
-		_servletContextNames = new ConcurrentHashMap<String, String>();
+		_servletContextNames = new ConcurrentHashMap<>();
 	}
 
 	@Override

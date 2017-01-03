@@ -1,0 +1,11 @@
+apply plugin: "com.liferay.baseline"
+
+archivesBaseName = "com.example.foo"
+group = "com.example"
+version = "123.456.789"
+
+task runGradleTest
+
+runGradleTest {
+	dependsOn jar
+}

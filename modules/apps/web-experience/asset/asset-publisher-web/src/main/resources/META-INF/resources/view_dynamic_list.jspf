@@ -1,0 +1,67 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%
+List<AssetEntryResult> assetEntryResults = AssetPublisherUtil.getAssetEntryResults(assetPublisherDisplayContext, searchContainer, portletPreferences);
+
+for (AssetEntryResult assetEntryResult : assetEntryResults) {
+	List<AssetEntry> assetEntries = assetEntryResult.getAssetEntries();
+%>
+
+	<c:if test="<%= Validator.isNotNull(assetEntryResult.getTitle()) %>">
+		<h3 class="asset-entries-group-label"><%= HtmlUtil.escape(assetEntryResult.getTitle()) %></h3>
+	</c:if>
+
+	<liferay-ddm:template-renderer className="<%= AssetEntry.class.getName() %>" displayStyle="<%= assetPublisherDisplayContext.getDisplayStyle() %>" displayStyleGroupId="<%= assetPublisherDisplayContext.getDisplayStyleGroupId() %>" entries="<%= assetEntries %>">
+
+		<%
+		request.setAttribute("view.jsp-results", assetEntries);
+		%>
+
+		<%@ include file="/view_dynamic_list_asset.jspf" %>
+	</liferay-ddm:template-renderer>
+
+<%
+}
+%>
+
+<c:if test="<%= assetEntryResults.isEmpty() %>">
+	<liferay-ddm:template-renderer className="<%= AssetEntry.class.getName() %>" displayStyle="<%= assetPublisherDisplayContext.getDisplayStyle() %>" displayStyleGroupId="<%= assetPublisherDisplayContext.getDisplayStyleGroupId() %>" entries="<%= new ArrayList<AssetEntry>() %>">
+
+		<%
+		Map<Long, Map<String, PortletURL>> addPortletURLs = assetPublisherDisplayContext.getScopeAddPortletURLs(1);
+		%>
+
+		<c:if test="<%= MapUtil.isEmpty(addPortletURLs) && !((assetCategoryId > 0) || Validator.isNotNull(assetTagName)) %>">
+
+			<%
+			renderRequest.setAttribute(WebKeys.PORTLET_CONFIGURATOR_VISIBILITY, Boolean.TRUE);
+			%>
+
+		</c:if>
+
+		<div class="alert alert-info">
+			<c:choose>
+				<c:when test="<%= !portletName.equals(AssetPublisherPortletKeys.RELATED_ASSETS) %>">
+					<liferay-ui:message key="there-are-no-results" />
+				</c:when>
+				<c:otherwise>
+					<liferay-ui:message key="there-are-no-related-assets" />
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</liferay-ddm:template-renderer>
+</c:if>

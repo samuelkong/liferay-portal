@@ -14,8 +14,8 @@
 
 package com.liferay.portal.model.impl;
 
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Organization;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
 
 import java.util.List;
 
@@ -23,9 +23,6 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  */
 public class OrgGroupRoleImpl extends OrgGroupRoleBaseImpl {
-
-	public OrgGroupRoleImpl() {
-	}
 
 	@Override
 	public boolean containsGroup(List<Group> groups) {

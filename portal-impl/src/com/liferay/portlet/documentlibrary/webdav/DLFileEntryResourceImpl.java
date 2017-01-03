@@ -14,13 +14,14 @@
 
 package com.liferay.portlet.documentlibrary.webdav;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.webdav.BaseResourceImpl;
 import com.liferay.portal.kernel.webdav.WebDAVException;
 import com.liferay.portal.kernel.webdav.WebDAVRequest;
-import com.liferay.portal.model.Lock;
-import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 
 import java.io.InputStream;
 
@@ -30,25 +31,25 @@ import java.io.InputStream;
 public class DLFileEntryResourceImpl extends BaseResourceImpl {
 
 	public DLFileEntryResourceImpl(
-		WebDAVRequest webDAVRequest, FileEntry fileEntry, String parentPath,
-		String name) {
+		WebDAVRequest webDAVRequest, FileEntry fileEntry, boolean appendPath) {
 
 		super(
-			parentPath, name, fileEntry.getTitle(), fileEntry.getCreateDate(),
-			fileEntry.getModifiedDate(), fileEntry.getSize());
+			webDAVRequest.getRootPath() + webDAVRequest.getPath(),
+			_getName(fileEntry, appendPath), _getName(fileEntry, true),
+			fileEntry.getCreateDate(), fileEntry.getModifiedDate(),
+			fileEntry.getSize());
 
 		setModel(fileEntry);
 		setClassName(DLFileEntry.class.getName());
 		setPrimaryKey(fileEntry.getPrimaryKey());
-
-		//_webDAVRequest = webDAVRequest;
-		_fileEntry = fileEntry;
 	}
 
 	@Override
 	public InputStream getContentAsStream() throws WebDAVException {
+		FileEntry fileEntry = getModel();
+
 		try {
-			FileVersion fileVersion = _fileEntry.getLatestFileVersion();
+			FileVersion fileVersion = fileEntry.getLatestFileVersion();
 
 			return fileVersion.getContentStream(true);
 		}
@@ -59,20 +60,24 @@ public class DLFileEntryResourceImpl extends BaseResourceImpl {
 
 	@Override
 	public String getContentType() {
+		FileEntry fileEntry = getModel();
+
 		try {
-			FileVersion fileVersion = _fileEntry.getLatestFileVersion();
+			FileVersion fileVersion = fileEntry.getLatestFileVersion();
 
 			return fileVersion.getMimeType();
 		}
 		catch (Exception e) {
-			return _fileEntry.getMimeType();
+			return fileEntry.getMimeType();
 		}
 	}
 
 	@Override
 	public Lock getLock() {
+		FileEntry fileEntry = getModel();
+
 		try {
-			return _fileEntry.getLock();
+			return fileEntry.getLock();
 		}
 		catch (Exception e) {
 		}
@@ -81,14 +86,21 @@ public class DLFileEntryResourceImpl extends BaseResourceImpl {
 	}
 
 	@Override
+	public FileEntry getModel() {
+		return (FileEntry)super.getModel();
+	}
+
+	@Override
 	public long getSize() {
+		FileEntry fileEntry = getModel();
+
 		try {
-			FileVersion fileVersion = _fileEntry.getLatestFileVersion();
+			FileVersion fileVersion = fileEntry.getLatestFileVersion();
 
 			return fileVersion.getSize();
 		}
 		catch (Exception e) {
-			return _fileEntry.getSize();
+			return fileEntry.getSize();
 		}
 	}
 
@@ -99,8 +111,10 @@ public class DLFileEntryResourceImpl extends BaseResourceImpl {
 
 	@Override
 	public boolean isLocked() {
+		FileEntry fileEntry = getModel();
+
 		try {
-			return _fileEntry.hasLock();
+			return fileEntry.hasLock();
 		}
 		catch (Exception e) {
 		}
@@ -108,6 +122,16 @@ public class DLFileEntryResourceImpl extends BaseResourceImpl {
 		return false;
 	}
 
-	private final FileEntry _fileEntry;
+	private static String _getName(FileEntry fileEntry, boolean appendPath) {
+		if (appendPath) {
+			String name = fileEntry.getTitle();
+
+			name = DLWebDAVUtil.escapeRawTitle(name);
+
+			return name;
+		}
+
+		return StringPool.BLANK;
+	}
 
 }

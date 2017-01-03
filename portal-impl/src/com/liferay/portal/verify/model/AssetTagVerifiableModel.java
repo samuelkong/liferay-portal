@@ -14,12 +14,15 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portlet.asset.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
+import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class AssetTagVerifiableModel implements VerifiableResourcedModel {
+public class AssetTagVerifiableModel
+	implements VerifiableResourcedModel, VerifiableUUIDModel {
 
 	@Override
 	public String getModelName() {
@@ -34,6 +37,11 @@ public class AssetTagVerifiableModel implements VerifiableResourcedModel {
 	@Override
 	public String getTableName() {
 		return "AssetTag";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

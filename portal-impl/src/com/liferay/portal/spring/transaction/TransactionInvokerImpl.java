@@ -14,10 +14,17 @@
 
 package com.liferay.portal.spring.transaction;
 
-import com.liferay.portal.kernel.transaction.TransactionAttribute;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvoker;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+
 import java.util.concurrent.Callable;
+
+import org.aopalliance.intercept.MethodInvocation;
+
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author Shuyang Zhou
@@ -26,20 +33,80 @@ public class TransactionInvokerImpl implements TransactionInvoker {
 
 	@Override
 	public <T> T invoke(
-			TransactionAttribute transactionAttribute, Callable<T> callable)
+			TransactionConfig transactionConfig, Callable<T> callable)
 		throws Throwable {
 
-		return TransactionalCallableUtil.call(
-			TransactionAttributeBuilder.build(
-				true, transactionAttribute.getIsolation(),
-				transactionAttribute.getPropagation(),
-				transactionAttribute.isReadOnly(),
-				transactionAttribute.getTimeout(),
-				transactionAttribute.getRollbackForClasses(),
-				transactionAttribute.getRollbackForClassNames(),
-				transactionAttribute.getNoRollbackForClasses(),
-				transactionAttribute.getNoRollbackForClassNames()),
-			callable);
+		PlatformTransactionManager platformTransactionManager =
+			CurrentPlatformTransactionManagerUtil.
+				getCurrentPlatformTransactionManager();
+
+		if (platformTransactionManager == null) {
+			platformTransactionManager = _platformTransactionManager;
+		}
+
+		return (T)_transactionExecutor.execute(
+			platformTransactionManager,
+			new TransactionAttributeAdapter(
+				TransactionAttributeBuilder.build(
+					true, transactionConfig.getIsolation(),
+					transactionConfig.getPropagation(),
+					transactionConfig.isReadOnly(),
+					transactionConfig.getTimeout(),
+					transactionConfig.getRollbackForClasses(),
+					transactionConfig.getRollbackForClassNames(),
+					transactionConfig.getNoRollbackForClasses(),
+					transactionConfig.getNoRollbackForClassNames())),
+			new CallableMethodInvocation(callable));
+	}
+
+	public void setPlatformTransactionManager(
+		PlatformTransactionManager platformTransactionManager) {
+
+		_platformTransactionManager = platformTransactionManager;
+	}
+
+	public void setTransactionExecutor(
+		TransactionExecutor transactionExecutor) {
+
+		_transactionExecutor = transactionExecutor;
+	}
+
+	private static PlatformTransactionManager _platformTransactionManager;
+	private static TransactionExecutor _transactionExecutor;
+
+	private static class CallableMethodInvocation implements MethodInvocation {
+
+		@Override
+		public Object[] getArguments() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Method getMethod() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public AccessibleObject getStaticPart() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Object getThis() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Object proceed() throws Throwable {
+			return _callable.call();
+		}
+
+		private CallableMethodInvocation(Callable<?> callable) {
+			_callable = callable;
+		}
+
+		private final Callable<?> _callable;
+
 	}
 
 }

@@ -18,13 +18,13 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.service.PermissionServiceUtil;
+import com.liferay.portal.kernel.service.PermissionServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.service.PermissionServiceUtil} service utility. The
+ * {@link PermissionServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -48,7 +48,7 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see PermissionServiceHttp
- * @see com.liferay.portal.service.PermissionServiceUtil
+ * @see PermissionServiceUtil
  * @generated
  */
 @ProviderType
@@ -59,9 +59,6 @@ public class PermissionServiceSoap {
 	* @param groupId the primary key of the group
 	* @param name the service name
 	* @param primKey the primary key of the service
-	* @throws PortalException if the group did not have permission to the
-	service, if a group with the primary key could not be found or if
-	the permission information was invalid
 	*/
 	public static void checkPermission(long groupId, java.lang.String name,
 		long primKey) throws RemoteException {
@@ -81,9 +78,6 @@ public class PermissionServiceSoap {
 	* @param groupId the primary key of the group
 	* @param name the service name
 	* @param primKey the primary key of the service
-	* @throws PortalException if the group did not have permission to the
-	service, if a group with the primary key could not be found or if
-	the permission information was invalid
 	*/
 	public static void checkPermission(long groupId, java.lang.String name,
 		java.lang.String primKey) throws RemoteException {

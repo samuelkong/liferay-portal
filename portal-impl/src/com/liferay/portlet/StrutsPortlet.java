@@ -17,12 +17,12 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.struts.PortletRequestProcessor;
 import com.liferay.portal.struts.StrutsUtil;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.WebKeys;
 
 import java.io.IOException;
 
@@ -196,6 +196,8 @@ public class StrutsPortlet extends LiferayPortlet {
 			getInitParameter("copy-request-parameters"), true);
 
 		_liferayPortletConfig = (LiferayPortletConfig)portletConfig;
+
+		initValidPaths(templatePath, ".jsp");
 	}
 
 	@Override
@@ -248,9 +250,9 @@ public class StrutsPortlet extends LiferayPortlet {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws IOException, PortletException {
 
-		String resourceId = resourceRequest.getResourceID();
+		String resourceID = resourceRequest.getResourceID();
 
-		checkPath(resourceId);
+		checkPath(resourceID);
 
 		resourceRequest.setAttribute(WebKeys.PORTLET_STRUTS_ACTION, viewAction);
 
@@ -266,15 +268,9 @@ public class StrutsPortlet extends LiferayPortlet {
 		}
 	}
 
+	@Override
 	protected void checkPath(String path) throws PortletException {
-		if (Validator.isNotNull(path) &&
-			(!path.startsWith(templatePath) ||
-			 !PortalUtil.isValidResourceId(path) ||
-			 !Validator.isFilePath(path, false))) {
-
-			throw new PortletException(
-				"Path " + path + " is not accessible by this portlet");
-		}
+		super.checkPath(path);
 	}
 
 	protected void include(

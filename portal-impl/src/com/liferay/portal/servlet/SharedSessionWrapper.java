@@ -130,11 +130,19 @@ public class SharedSessionWrapper implements HttpSession {
 		return session.getSessionContext();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public Object getValue(String name) {
 		return getAttribute(name);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public String[] getValueNames() {
 		List<String> names = ListUtil.fromEnumeration(getAttributeNames());
@@ -156,6 +164,10 @@ public class SharedSessionWrapper implements HttpSession {
 		return session.isNew();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public void putValue(String name, Object value) {
 		setAttribute(name, value);
@@ -168,6 +180,10 @@ public class SharedSessionWrapper implements HttpSession {
 		session.removeAttribute(name);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0
+	 */
+	@Deprecated
 	@Override
 	public void removeValue(String name) {
 		removeAttribute(name);
@@ -228,7 +244,7 @@ public class SharedSessionWrapper implements HttpSession {
 	private static final Map<String, String> _sharedSessionAttributesExcludes;
 
 	static {
-		_sharedSessionAttributesExcludes = new HashMap<String, String>();
+		_sharedSessionAttributesExcludes = new HashMap<>();
 
 		for (String name : PropsValues.SESSION_SHARED_ATTRIBUTES_EXCLUDES) {
 			_sharedSessionAttributesExcludes.put(name, name);

@@ -16,11 +16,12 @@ package com.liferay.portlet.messageboards.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.message.boards.kernel.model.MBDiscussion;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.messageboards.model.MBDiscussion;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -40,8 +41,32 @@ import java.util.Date;
 public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MBDiscussionCacheModel)) {
+			return false;
+		}
+
+		MBDiscussionCacheModel mbDiscussionCacheModel = (MBDiscussionCacheModel)obj;
+
+		if (discussionId == mbDiscussionCacheModel.discussionId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, discussionId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -65,6 +90,8 @@ public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 		sb.append(classPK);
 		sb.append(", threadId=");
 		sb.append(threadId);
+		sb.append(", lastPublishDate=");
+		sb.append(lastPublishDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -111,6 +138,13 @@ public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 		mbDiscussionImpl.setClassPK(classPK);
 		mbDiscussionImpl.setThreadId(threadId);
 
+		if (lastPublishDate == Long.MIN_VALUE) {
+			mbDiscussionImpl.setLastPublishDate(null);
+		}
+		else {
+			mbDiscussionImpl.setLastPublishDate(new Date(lastPublishDate));
+		}
+
 		mbDiscussionImpl.resetOriginalValues();
 
 		return mbDiscussionImpl;
@@ -119,16 +153,24 @@ public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		discussionId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
+
 		threadId = objectInput.readLong();
+		lastPublishDate = objectInput.readLong();
 	}
 
 	@Override
@@ -142,8 +184,11 @@ public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 		}
 
 		objectOutput.writeLong(discussionId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -155,9 +200,13 @@ public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
+
 		objectOutput.writeLong(threadId);
+		objectOutput.writeLong(lastPublishDate);
 	}
 
 	public String uuid;
@@ -171,4 +220,5 @@ public class MBDiscussionCacheModel implements CacheModel<MBDiscussion>,
 	public long classNameId;
 	public long classPK;
 	public long threadId;
+	public long lastPublishDate;
 }

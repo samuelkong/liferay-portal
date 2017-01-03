@@ -17,6 +17,7 @@ package com.liferay.portal.resiliency.spi.agent;
 import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.nio.intraband.Datagram;
 import com.liferay.portal.kernel.nio.intraband.mailbox.MailboxException;
 import com.liferay.portal.kernel.nio.intraband.mailbox.MailboxUtil;
@@ -27,21 +28,23 @@ import com.liferay.portal.kernel.resiliency.spi.agent.annotation.DistributedRegi
 import com.liferay.portal.kernel.resiliency.spi.agent.annotation.MatchType;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.CaptureHandler;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.util.ClassLoaderPool;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtilAdvice;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.ThreadLocalDistributor;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Portlet;
 import com.liferay.portal.model.impl.PortletImpl;
-import com.liferay.portal.test.AdviseWith;
-import com.liferay.portal.test.runners.AspectJMockingNewClassLoaderJUnitTestRunner;
+import com.liferay.portal.test.rule.AdviseWith;
+import com.liferay.portal.test.rule.AspectJNewEnvTestRule;
+import com.liferay.registry.BasicRegistryImpl;
+import com.liferay.registry.RegistryUtil;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -68,8 +71,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
@@ -77,15 +80,18 @@ import org.springframework.mock.web.MockHttpSession;
 /**
  * @author Shuyang Zhou
  */
-@RunWith(AspectJMockingNewClassLoaderJUnitTestRunner.class)
 public class SPIAgentSerializableTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			CodeCoverageAssertor.INSTANCE, AspectJNewEnvTestRule.INSTANCE);
 
 	@Before
 	public void setUp() {
+		RegistryUtil.setRegistry(new BasicRegistryImpl());
+
 		Thread currentThread = Thread.currentThread();
 
 		_classLoader = new URLClassLoader(
@@ -110,8 +116,6 @@ public class SPIAgentSerializableTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			distributedSerializable, distributedSerializable);
-		mockHttpServletRequest.setAttribute(
 			distributedNonserializable,
 			new Object() {
 
@@ -121,19 +125,18 @@ public class SPIAgentSerializableTest {
 				}
 
 			});
+		mockHttpServletRequest.setAttribute(
+			distributedSerializable, distributedSerializable);
 
 		String nondistributed = "NONDISTRIBUTED";
 
 		mockHttpServletRequest.setAttribute(nondistributed, nondistributed);
 
-		CaptureHandler captureHandler = null;
-
-		try {
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					SPIAgentSerializable.class.getName(), Level.OFF)) {
 
 			// Without log
-
-			captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-				SPIAgentSerializable.class.getName(), Level.OFF);
 
 			List<LogRecord> logRecords = captureHandler.getLogRecords();
 
@@ -162,7 +165,8 @@ public class SPIAgentSerializableTest {
 			Assert.assertEquals(
 				"Nonserializable distributed request attribute name " +
 					distributedNonserializable + " with value " +
-						distributedNonserializable, logRecord.getMessage());
+						distributedNonserializable,
+				logRecord.getMessage());
 
 			Assert.assertEquals(1, distributedRequestAttributes.size());
 			Assert.assertEquals(
@@ -184,7 +188,8 @@ public class SPIAgentSerializableTest {
 			Assert.assertEquals(
 				"Nonserializable distributed request attribute name " +
 					distributedNonserializable + " with value " +
-						distributedNonserializable, logRecord.getMessage());
+						distributedNonserializable,
+				logRecord.getMessage());
 
 			logRecord = logRecords.get(1);
 
@@ -197,11 +202,6 @@ public class SPIAgentSerializableTest {
 			Assert.assertEquals(
 				distributedSerializable,
 				distributedRequestAttributes.get(distributedSerializable));
-		}
-		finally {
-			if (captureHandler != null) {
-				captureHandler.close();
-			}
 		}
 	}
 
@@ -263,14 +263,11 @@ public class SPIAgentSerializableTest {
 
 	@Test
 	public void testExtractSessionAttributes() {
-		CaptureHandler captureHandler = null;
-
-		try {
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					SPIAgentSerializable.class.getName(), Level.OFF)) {
 
 			// Without log, no portlet session
-
-			captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-				SPIAgentSerializable.class.getName(), Level.OFF);
 
 			List<LogRecord> logRecords = captureHandler.getLogRecords();
 
@@ -419,7 +416,8 @@ public class SPIAgentSerializableTest {
 			Assert.assertEquals(
 				"Nonserializable session attribute name " +
 					nonserializableAttribute + " with value " +
-						nonserializableAttribute, logRecord.getMessage());
+						nonserializableAttribute,
+				logRecord.getMessage());
 
 			Assert.assertEquals(2, sessionAttributes.size());
 			Assert.assertEquals(
@@ -448,14 +446,16 @@ public class SPIAgentSerializableTest {
 			Assert.assertEquals(
 				"Nonserializable session attribute name " +
 					nonserializableAttribute + " with value " +
-						nonserializableAttribute, logRecord.getMessage());
+						nonserializableAttribute,
+				logRecord.getMessage());
 
 			logRecord = logRecords.get(1);
 
 			Assert.assertEquals(
 				"Nonserializable session attribute name " +
 					nonserializableAttribute + " with value " +
-						nonserializableAttribute, logRecord.getMessage());
+						nonserializableAttribute,
+				logRecord.getMessage());
 
 			Assert.assertEquals(2, sessionAttributes.size());
 			Assert.assertEquals(
@@ -472,16 +472,12 @@ public class SPIAgentSerializableTest {
 				serializeableAttribute,
 				portletSessionAttributes.get(serializeableAttribute));
 		}
-		finally {
-			if (captureHandler != null) {
-				captureHandler.close();
-			}
-		}
 	}
 
 	@AdviseWith(
 		adviceClasses = {DeserializerAdvice.class, PropsUtilAdvice.class}
 	)
+	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testSerialization() throws IOException {
 
@@ -606,9 +602,9 @@ public class SPIAgentSerializableTest {
 		};
 
 		ClassLoader oldClassLoader = ClassLoaderPool.getClassLoader(
-			StringPool.BLANK);
+			_SERVLET_CONTEXT_NAME);
 
-		ClassLoaderPool.register(StringPool.BLANK, incapableClassLoader);
+		ClassLoaderPool.register(_SERVLET_CONTEXT_NAME, incapableClassLoader);
 
 		byte[] receiptData = new byte[8];
 
@@ -627,7 +623,7 @@ public class SPIAgentSerializableTest {
 				ClassNotFoundException.class, throwable.getClass());
 		}
 		finally {
-			ClassLoaderPool.register(StringPool.BLANK, oldClassLoader);
+			ClassLoaderPool.register(_SERVLET_CONTEXT_NAME, oldClassLoader);
 		}
 
 		// Successfully receive
@@ -717,7 +713,8 @@ public class SPIAgentSerializableTest {
 
 		@Around(
 			"execution(public * " +
-				"com.liferay.portal.kernel.io.Deserializer.readObject())")
+				"com.liferay.portal.kernel.io.Deserializer.readObject())"
+		)
 		public Object readObject(ProceedingJoinPoint proceedingJoinPoint)
 			throws Throwable {
 
@@ -734,8 +731,7 @@ public class SPIAgentSerializableTest {
 
 	private static final String _SERVLET_CONTEXT_NAME = "SERVLET_CONTEXT_NAME";
 
-	private static final ThreadLocal<String> _threadLocal =
-		new ThreadLocal<String>();
+	private static final ThreadLocal<String> _threadLocal = new ThreadLocal<>();
 
 	private ClassLoader _classLoader;
 

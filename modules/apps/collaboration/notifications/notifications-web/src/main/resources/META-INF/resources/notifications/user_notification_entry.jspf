@@ -1,0 +1,75 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%
+UserNotificationFeedEntry userNotificationFeedEntry = UserNotificationManagerUtil.interpret(StringPool.BLANK, userNotificationEvent, ServiceContextFactory.getInstance(request));
+
+JSONObject jsonObject = JSONFactoryUtil.createJSONObject(userNotificationEvent.getPayload());
+
+boolean anonymous = jsonObject.getBoolean("anonymous");
+
+long userNotificationEventUserId = jsonObject.getLong("userId");
+
+if (userNotificationEvent.isArchived()) {
+	row.setCssClass("archived");
+}
+%>
+
+<c:choose>
+	<c:when test="<%= !anonymous %>">
+		<liferay-ui:search-container-column-user
+			showDetails="<%= false %>"
+			userId="<%= userNotificationEventUserId %>"
+		/>
+	</c:when>
+	<c:otherwise>
+		<liferay-ui:search-container-column-text>
+			<liferay-ui:user-portrait userId="<%= 0 %>" />
+		</liferay-ui:search-container-column-text>
+	</c:otherwise>
+</c:choose>
+
+<c:choose>
+	<c:when test="<%= userNotificationFeedEntry == null %>">
+		<liferay-ui:search-container-column-text colspan="<%= 2 %>">
+			<liferay-ui:message key="notification-no-longer-applies" />
+		</liferay-ui:search-container-column-text>
+	</c:when>
+	<c:otherwise>
+		<portlet:actionURL name="markAsRead" var="markAsReadURL">
+			<portlet:param name="userNotificationEventId" value="<%= String.valueOf(userNotificationEvent.getUserNotificationEventId()) %>" />
+			<portlet:param name="redirect" value="<%= userNotificationFeedEntry.getLink() %>" />
+		</portlet:actionURL>
+
+		<liferay-ui:search-container-column-text colspan="<%= 2 %>">
+			<a href="<%= markAsReadURL.toString() %>">
+				<div class="body-container">
+					<%= userNotificationFeedEntry.getBody() %>
+				</div>
+
+				<div class="timestamp">
+					<span title="<%= dateFormatDateTime.format(userNotificationEvent.getTimestamp()) %>">
+						<%= Time.getRelativeTimeDescription(userNotificationEvent.getTimestamp(), themeDisplay.getLocale(), themeDisplay.getTimeZone(), dateFormatDateTime) %>
+					</span>
+				</div>
+			</a>
+		</liferay-ui:search-container-column-text>
+	</c:otherwise>
+</c:choose>
+
+<liferay-ui:search-container-column-jsp
+	path="/notifications/notification_action.jsp"
+/>

@@ -18,13 +18,13 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.service.PortletServiceUtil;
+import com.liferay.portal.kernel.service.PortletServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.service.PortletServiceUtil} service utility. The
+ * {@link PortletServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -32,10 +32,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portal.model.PortletSoap}.
+ * is translated to an array of {@link com.liferay.portal.kernel.model.PortletSoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portal.model.Portlet}, that is translated to a
- * {@link com.liferay.portal.model.PortletSoap}. Methods that SOAP cannot
+ * {@link com.liferay.portal.kernel.model.Portlet}, that is translated to a
+ * {@link com.liferay.portal.kernel.model.PortletSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -58,8 +58,8 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see PortletServiceHttp
- * @see com.liferay.portal.model.PortletSoap
- * @see com.liferay.portal.service.PortletServiceUtil
+ * @see com.liferay.portal.kernel.model.PortletSoap
+ * @see PortletServiceUtil
  * @generated
  */
 @ProviderType
@@ -77,14 +77,14 @@ public class PortletServiceSoap {
 		}
 	}
 
-	public static com.liferay.portal.model.PortletSoap updatePortlet(
+	public static com.liferay.portal.kernel.model.PortletSoap updatePortlet(
 		long companyId, java.lang.String portletId, java.lang.String roles,
 		boolean active) throws RemoteException {
 		try {
-			com.liferay.portal.model.Portlet returnValue = PortletServiceUtil.updatePortlet(companyId,
+			com.liferay.portal.kernel.model.Portlet returnValue = PortletServiceUtil.updatePortlet(companyId,
 					portletId, roles, active);
 
-			return com.liferay.portal.model.PortletSoap.toSoapModel(returnValue);
+			return com.liferay.portal.kernel.model.PortletSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

@@ -33,9 +33,6 @@ import java.util.Set;
  */
 public class WebDAVPropsImpl extends WebDAVPropsBaseImpl {
 
-	public WebDAVPropsImpl() {
-	}
-
 	@Override
 	public void addProp(String name, String prefix, String uri)
 		throws Exception {
@@ -76,7 +73,7 @@ public class WebDAVPropsImpl extends WebDAVPropsBaseImpl {
 
 	@Override
 	public Set<QName> getPropsSet() throws Exception {
-		Set<QName> propsSet = new HashSet<QName>();
+		Set<QName> propsSet = new HashSet<>();
 
 		Document doc = _getPropsDocument();
 
@@ -159,6 +156,6 @@ public class WebDAVPropsImpl extends WebDAVPropsBaseImpl {
 
 	private static final String _PROPS = "<properties />";
 
-	private Document _document = null;
+	private Document _document;
 
 }

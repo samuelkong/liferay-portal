@@ -15,10 +15,10 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.OrgLabor;
-import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.kernel.model.OrgLabor;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
 import com.liferay.portal.service.base.OrgLaborServiceBaseImpl;
-import com.liferay.portal.service.permission.OrganizationPermissionUtil;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class OrgLaborServiceImpl extends OrgLaborServiceBaseImpl {
 
 	@Override
 	public OrgLabor addOrgLabor(
-			long organizationId, int typeId, int sunOpen, int sunClose,
+			long organizationId, long typeId, int sunOpen, int sunClose,
 			int monOpen, int monClose, int tueOpen, int tueClose, int wedOpen,
 			int wedClose, int thuOpen, int thuClose, int friOpen, int friClose,
 			int satOpen, int satClose)
@@ -78,10 +78,10 @@ public class OrgLaborServiceImpl extends OrgLaborServiceBaseImpl {
 
 	@Override
 	public OrgLabor updateOrgLabor(
-			long orgLaborId, int typeId, int sunOpen, int sunClose, int monOpen,
-			int monClose, int tueOpen, int tueClose, int wedOpen, int wedClose,
-			int thuOpen, int thuClose, int friOpen, int friClose, int satOpen,
-			int satClose)
+			long orgLaborId, long typeId, int sunOpen, int sunClose,
+			int monOpen, int monClose, int tueOpen, int tueClose, int wedOpen,
+			int wedClose, int thuOpen, int thuClose, int friOpen, int friClose,
+			int satOpen, int satClose)
 		throws PortalException {
 
 		OrgLabor orgLabor = orgLaborPersistence.findByPrimaryKey(orgLaborId);

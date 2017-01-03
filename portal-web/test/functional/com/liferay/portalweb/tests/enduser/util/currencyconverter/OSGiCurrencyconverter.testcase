@@ -1,0 +1,49 @@
+<definition component-name="portal-util-misc">
+	<property name="osgi.app.includes" value="currency-converter" />
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Util" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Currency Converter Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Currency Converter Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Currency Converter" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+		</if>
+	</tear-down>
+
+	<command name="ConvertCurrencyUSDToEUR" priority="2">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Currency Converter Page" />
+		</execute>
+
+		<execute macro="CurrencyConverter#convertPG">
+			<var name="currencyDataFrom" value="USD" />
+			<var name="currencyDataTo" value="EUR" />
+			<var name="currencyFrom" value="USD" />
+			<var name="currencyTo" value="EUR" />
+			<var name="currencyValue" value="4" />
+		</execute>
+	</command>
+</definition>

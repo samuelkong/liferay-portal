@@ -14,12 +14,17 @@
 
 package com.liferay.portal.metadata;
 
+import com.liferay.dynamic.data.mapping.kernel.DDMForm;
+import com.liferay.dynamic.data.mapping.kernel.DDMFormField;
+import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
+import com.liferay.dynamic.data.mapping.kernel.UnlocalizedValue;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.metadata.RawMetadataProcessor;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portlet.dynamicdatamapping.storage.Fields;
 
 import java.io.File;
 import java.io.InputStream;
@@ -29,6 +34,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,9 +43,10 @@ import org.apache.tika.metadata.CreativeCommons;
 import org.apache.tika.metadata.DublinCore;
 import org.apache.tika.metadata.Geographic;
 import org.apache.tika.metadata.HttpHeaders;
-import org.apache.tika.metadata.MSOffice;
 import org.apache.tika.metadata.Message;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.Office;
+import org.apache.tika.metadata.OfficeOpenXMLCore;
 import org.apache.tika.metadata.Property;
 import org.apache.tika.metadata.TIFF;
 import org.apache.tika.metadata.TikaMetadataKeys;
@@ -57,27 +64,45 @@ public abstract class BaseRawMetadataProcessor implements RawMetadataProcessor {
 	}
 
 	@Override
-	public Map<String, Fields> getRawMetadataMap(
+	public Map<String, DDMFormValues> getRawMetadataMap(
 			String extension, String mimeType, File file)
 		throws PortalException {
 
 		Metadata metadata = extractMetadata(extension, mimeType, file);
 
-		return createDDMFieldsMap(metadata, getFields());
+		return createDDMFormValuesMap(metadata, getFields());
 	}
 
 	@Override
-	public Map<String, Fields> getRawMetadataMap(
+	public Map<String, DDMFormValues> getRawMetadataMap(
 			String extension, String mimeType, InputStream inputStream)
 		throws PortalException {
 
 		Metadata metadata = extractMetadata(extension, mimeType, inputStream);
 
-		return createDDMFieldsMap(metadata, getFields());
+		return createDDMFormValuesMap(metadata, getFields());
 	}
 
-	protected Fields createDDMFields(Metadata metadata, Field[] fields) {
-		Fields ddmFields = new Fields();
+	protected DDMForm createDDMForm(Locale defaultLocale) {
+		DDMForm ddmForm = new DDMForm();
+
+		ddmForm.addAvailableLocale(defaultLocale);
+		ddmForm.setDefaultLocale(defaultLocale);
+
+		return ddmForm;
+	}
+
+	protected DDMFormValues createDDMFormValues(
+		Metadata metadata, Field[] fields) {
+
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		DDMForm ddmForm = createDDMForm(defaultLocale);
+
+		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
+
+		ddmFormValues.addAvailableLocale(defaultLocale);
+		ddmFormValues.setDefaultLocale(defaultLocale);
 
 		for (Field field : fields) {
 			Class<?> fieldClass = field.getDeclaringClass();
@@ -93,40 +118,56 @@ public abstract class BaseRawMetadataProcessor implements RawMetadataProcessor {
 				continue;
 			}
 
-			com.liferay.portlet.dynamicdatamapping.storage.Field ddmField =
-				new com.liferay.portlet.dynamicdatamapping.storage.Field(
-					name, value);
+			DDMFormField ddmFormField = createTextDDMFormField(name);
 
-			ddmFields.put(ddmField);
+			ddmForm.addDDMFormField(ddmFormField);
+
+			DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
+
+			ddmFormFieldValue.setName(name);
+			ddmFormFieldValue.setValue(new UnlocalizedValue(value));
+
+			ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 		}
 
-		return ddmFields;
+		return ddmFormValues;
 	}
 
-	protected Map<String, Fields> createDDMFieldsMap(
+	protected Map<String, DDMFormValues> createDDMFormValuesMap(
 		Metadata metadata, Map<String, Field[]> fieldsMap) {
 
-		Map<String, Fields> ddmFieldsMap = new HashMap<String, Fields>();
+		Map<String, DDMFormValues> ddmFormValuesMap = new HashMap<>();
 
 		if (metadata == null) {
-			return ddmFieldsMap;
+			return ddmFormValuesMap;
 		}
 
-		for (String key : fieldsMap.keySet()) {
-			Field[] fields = fieldsMap.get(key);
+		for (Map.Entry<String, Field[]> entry : fieldsMap.entrySet()) {
+			Field[] fields = entry.getValue();
 
-			Fields ddmFields = createDDMFields(metadata, fields);
+			DDMFormValues ddmFormValues = createDDMFormValues(metadata, fields);
 
-			Set<String> names = ddmFields.getNames();
+			Map<String, List<DDMFormFieldValue>> ddmFormFieldsValuesMap =
+				ddmFormValues.getDDMFormFieldValuesMap();
+
+			Set<String> names = ddmFormFieldsValuesMap.keySet();
 
 			if (names.isEmpty()) {
 				continue;
 			}
 
-			ddmFieldsMap.put(key, ddmFields);
+			ddmFormValuesMap.put(entry.getKey(), ddmFormValues);
 		}
 
-		return ddmFieldsMap;
+		return ddmFormValuesMap;
+	}
+
+	protected DDMFormField createTextDDMFormField(String name) {
+		DDMFormField ddmFormField = new DDMFormField(name, "text");
+
+		ddmFormField.setDataType("string");
+
+		return ddmFormField;
 	}
 
 	protected abstract Metadata extractMetadata(
@@ -175,11 +216,10 @@ public abstract class BaseRawMetadataProcessor implements RawMetadataProcessor {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseRawMetadataProcessor.class);
 
-	private static final Map<String, Field[]> _fields =
-		new HashMap<String, Field[]>();
+	private static final Map<String, Field[]> _fields = new HashMap<>();
 
 	static {
-		List<Field> fields = new ArrayList<Field>();
+		List<Field> fields = new ArrayList<>();
 
 		_addFields(ClimateForcast.class, fields);
 		_addFields(CreativeCommons.class, fields);
@@ -187,7 +227,8 @@ public abstract class BaseRawMetadataProcessor implements RawMetadataProcessor {
 		_addFields(Geographic.class, fields);
 		_addFields(HttpHeaders.class, fields);
 		_addFields(Message.class, fields);
-		_addFields(MSOffice.class, fields);
+		_addFields(Office.class, fields);
+		_addFields(OfficeOpenXMLCore.class, fields);
 		_addFields(TIFF.class, fields);
 		_addFields(TikaMetadataKeys.class, fields);
 		_addFields(TikaMimeKeys.class, fields);

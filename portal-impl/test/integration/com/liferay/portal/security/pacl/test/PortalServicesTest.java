@@ -14,24 +14,25 @@
 
 package com.liferay.portal.security.pacl.test;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.TestPropsValues;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.test.rule.PACLTestRule;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class PortalServicesTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
 
 	@Test
 	public void test1() throws Exception {
@@ -51,12 +52,7 @@ public class PortalServicesTest {
 
 	@Test
 	public void test2() throws Exception {
-		try {
-			GroupLocalServiceUtil.getGroup(TestPropsValues.getGroupId());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		GroupLocalServiceUtil.getGroup(TestPropsValues.getGroupId());
 	}
 
 	@Test

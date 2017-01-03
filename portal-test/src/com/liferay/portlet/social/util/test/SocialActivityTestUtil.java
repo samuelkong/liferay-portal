@@ -14,21 +14,21 @@
 
 package com.liferay.portlet.social.util.test;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portlet.asset.model.AssetEntry;
-import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
-import com.liferay.portlet.social.model.SocialActivityCounter;
-import com.liferay.portlet.social.model.SocialActivityCounterConstants;
-import com.liferay.portlet.social.model.SocialActivityLimit;
-import com.liferay.portlet.social.service.SocialActivityCounterLocalServiceUtil;
-import com.liferay.portlet.social.service.SocialActivityLimitLocalServiceUtil;
-import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
+import com.liferay.social.kernel.model.SocialActivityCounter;
+import com.liferay.social.kernel.model.SocialActivityCounterConstants;
+import com.liferay.social.kernel.model.SocialActivityLimit;
+import com.liferay.social.kernel.service.SocialActivityCounterLocalServiceUtil;
+import com.liferay.social.kernel.service.SocialActivityLimitLocalServiceUtil;
+import com.liferay.social.kernel.service.SocialActivityLocalServiceUtil;
 
 /**
  * @author Zsolt Berentey
@@ -102,9 +102,8 @@ public class SocialActivityTestUtil {
 			ownerType = SocialActivityCounterConstants.TYPE_CREATOR;
 		}
 
-		return
-			SocialActivityCounterLocalServiceUtil.fetchLatestActivityCounter(
-				groupId, classNameId, classPK, name, ownerType);
+		return SocialActivityCounterLocalServiceUtil.fetchLatestActivityCounter(
+			groupId, classNameId, classPK, name, ownerType);
 	}
 
 	public static SocialActivityLimit getActivityLimit(

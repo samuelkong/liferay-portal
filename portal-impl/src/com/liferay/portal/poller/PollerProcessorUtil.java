@@ -14,8 +14,6 @@
 
 package com.liferay.portal.poller;
 
-import com.liferay.portal.dao.shard.ShardPollerProcessorWrapper;
-import com.liferay.portal.kernel.dao.shard.ShardUtil;
 import com.liferay.portal.kernel.nio.intraband.RegistrationReference;
 import com.liferay.portal.kernel.nio.intraband.proxy.TargetLocator;
 import com.liferay.portal.kernel.poller.PollerProcessor;
@@ -23,6 +21,7 @@ import com.liferay.portal.nio.intraband.proxy.IntrabandProxyInstallationUtil;
 import com.liferay.portal.nio.intraband.proxy.IntrabandProxyUtil;
 import com.liferay.portal.nio.intraband.proxy.StubHolder.StubCreator;
 import com.liferay.portal.nio.intraband.proxy.StubMap;
+import com.liferay.portal.nio.intraband.proxy.StubMapImpl;
 import com.liferay.portal.nio.intraband.proxy.WarnLogExceptionHandler;
 import com.liferay.registry.Filter;
 import com.liferay.registry.Registry;
@@ -32,6 +31,7 @@ import com.liferay.registry.ServiceRegistration;
 import com.liferay.registry.ServiceTracker;
 import com.liferay.registry.ServiceTrackerCustomizer;
 import com.liferay.registry.collections.StringServiceRegistrationMap;
+import com.liferay.registry.collections.StringServiceRegistrationMapImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +74,7 @@ public class PollerProcessorUtil {
 
 		Registry registry = RegistryUtil.getRegistry();
 
-		Map<String, Object> properties = new HashMap<String, Object>();
+		Map<String, Object> properties = new HashMap<>();
 
 		properties.put("javax.portlet.name", portletId);
 
@@ -102,7 +102,7 @@ public class PollerProcessorUtil {
 		new PollerProcessorUtil();
 
 	private final StubMap<PollerProcessor> _pollerPorcessors =
-		new StubMap<PollerProcessor>(
+		new StubMapImpl<>(
 			new StubCreator<PollerProcessor>() {
 
 				@Override
@@ -119,12 +119,11 @@ public class PollerProcessorUtil {
 					String[] skeletonProxyMethodSignatures =
 						skeletonProxyMethodSignaturesFuture.get();
 
-					Class<? extends PollerProcessor>
-						stubPollerClass =
-							(Class<? extends PollerProcessor>)
-								IntrabandProxyUtil.getStubClass(
-									PollerProcessor.class,
-									PollerProcessor.class.getName());
+					Class<? extends PollerProcessor> stubPollerClass =
+						(Class<? extends PollerProcessor>)
+							IntrabandProxyUtil.getStubClass(
+								PollerProcessor.class,
+								PollerProcessor.class.getName());
 
 					IntrabandProxyInstallationUtil.checkProxyMethodSignatures(
 						skeletonProxyMethodSignatures,
@@ -158,8 +157,7 @@ public class PollerProcessorUtil {
 			});
 
 	private final StringServiceRegistrationMap<PollerProcessor>
-		_serviceRegistrations =
-			new StringServiceRegistrationMap<PollerProcessor>();
+		_serviceRegistrations = new StringServiceRegistrationMapImpl<>();
 	private final ServiceTracker<PollerProcessor, PollerProcessor>
 		_serviceTracker;
 
@@ -191,11 +189,6 @@ public class PollerProcessorUtil {
 
 			PollerProcessor pollerProcessor = registry.getService(
 				serviceReference);
-
-			if (ShardUtil.isEnabled()) {
-				pollerProcessor = new ShardPollerProcessorWrapper(
-					pollerProcessor);
-			}
 
 			String portletId = (String)serviceReference.getProperty(
 				"javax.portlet.name");

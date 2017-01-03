@@ -17,15 +17,20 @@ package com.liferay.portal.service.permission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.model.Account;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.model.Account;
+import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.AccountLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.CommonPermission;
+import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
  * @author Charles May
@@ -50,8 +55,21 @@ public class CommonPermissionImpl implements CommonPermission {
 		throws PortalException {
 
 		if (className.equals(Account.class.getName())) {
-		}
-		else if (className.equals(Company.class.getName())) {
+			long companyId = permissionChecker.getCompanyId();
+
+			if (classPK > 0) {
+				Account account = AccountLocalServiceUtil.getAccount(classPK);
+
+				companyId = account.getCompanyId();
+			}
+
+			if (!RoleLocalServiceUtil.hasUserRole(
+					permissionChecker.getUserId(), companyId,
+					RoleConstants.ADMINISTRATOR, true)) {
+
+				throw new PrincipalException.MustBeCompanyAdmin(
+					permissionChecker);
+			}
 		}
 		else if (className.equals(Contact.class.getName())) {
 			User user = UserLocalServiceUtil.getUserByContactId(classPK);
@@ -71,7 +89,8 @@ public class CommonPermissionImpl implements CommonPermission {
 				_log.warn("Invalid class name " + className);
 			}
 
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, className, classPK, actionId);
 		}
 	}
 

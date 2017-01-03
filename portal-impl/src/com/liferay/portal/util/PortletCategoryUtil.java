@@ -14,25 +14,57 @@
 
 package com.liferay.portal.util;
 
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletCategory;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutTypePortlet;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletCategory;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.PortletLocalServiceUtil;
-import com.liferay.portal.service.permission.PortletPermissionUtil;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * @author Eudaldo Alonso
  */
 public class PortletCategoryUtil {
+
+	public static String getPortletCategoryKey(
+		String legacyPortletCategoryKey) {
+
+		if (Objects.equals(legacyPortletCategoryKey, "apps") ||
+			Objects.equals(legacyPortletCategoryKey, "marketplace")) {
+
+			return PortletCategoryKeys.CONTROL_PANEL_APPS;
+		}
+		else if (Objects.equals(legacyPortletCategoryKey, "configuration") ||
+				 Objects.equals(legacyPortletCategoryKey, "portal") ||
+				 Objects.equals(legacyPortletCategoryKey, "server")) {
+
+			return PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION;
+		}
+		else if (Objects.equals(legacyPortletCategoryKey, "content")) {
+			return PortletCategoryKeys.SITE_ADMINISTRATION_CONTENT;
+		}
+		else if (Objects.equals(legacyPortletCategoryKey, "my")) {
+			return PortletCategoryKeys.USER_MY_ACCOUNT;
+		}
+		else if (Objects.equals(legacyPortletCategoryKey, "sites")) {
+			return PortletCategoryKeys.CONTROL_PANEL_SITES;
+		}
+		else if (Objects.equals(legacyPortletCategoryKey, "users")) {
+			return PortletCategoryKeys.CONTROL_PANEL_USERS;
+		}
+
+		return legacyPortletCategoryKey;
+	}
 
 	public static PortletCategory getRelevantPortletCategory(
 			PermissionChecker permissionChecker, long companyId, Layout layout,
@@ -65,7 +97,7 @@ public class PortletCategoryUtil {
 		for (PortletCategory curPortletCategory :
 				portletCategory.getCategories()) {
 
-			Set<String> portletIds = new HashSet<String>();
+			Set<String> portletIds = new HashSet<>();
 
 			if (curPortletCategory.isHidden()) {
 				continue;
@@ -83,13 +115,13 @@ public class PortletCategoryUtil {
 					}
 					else if (layout.isTypePanel() &&
 							 panelSelectedPortletIds.contains(
-									portlet.getRootPortletId())) {
+								 portlet.getRootPortletId())) {
 
 						portletIds.add(portlet.getPortletId());
 					}
 					else if (layout.isTypePanel() &&
 							 !panelSelectedPortletIds.contains(
-									portlet.getRootPortletId())) {
+								 portlet.getRootPortletId())) {
 					}
 					else if (!PortletPermissionUtil.contains(
 								permissionChecker, layout, portlet,
@@ -97,7 +129,7 @@ public class PortletCategoryUtil {
 					}
 					else if (!portlet.isInstanceable() &&
 							 layoutTypePortlet.hasPortletId(
-									portlet.getPortletId())) {
+								 portlet.getPortletId())) {
 
 						portletIds.add(portlet.getPortletId());
 					}

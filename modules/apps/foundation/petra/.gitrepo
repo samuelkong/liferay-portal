@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = 9706072605f754eeba71ebc4a34a50242d798289
+	mode = push
+	parent = 967eddc45fa7d1ecdb39472418539644632c1a52
+	remote = git@github.com:liferay/com-liferay-petra.git

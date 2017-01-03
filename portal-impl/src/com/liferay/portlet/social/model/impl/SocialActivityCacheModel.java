@@ -16,11 +16,12 @@ package com.liferay.portlet.social.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
 
-import com.liferay.portlet.social.model.SocialActivity;
+import com.liferay.social.kernel.model.SocialActivity;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,30 @@ import java.io.ObjectOutput;
 @ProviderType
 public class SocialActivityCacheModel implements CacheModel<SocialActivity>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SocialActivityCacheModel)) {
+			return false;
+		}
+
+		SocialActivityCacheModel socialActivityCacheModel = (SocialActivityCacheModel)obj;
+
+		if (activityId == socialActivityCacheModel.activityId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, activityId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(29);
@@ -108,18 +133,30 @@ public class SocialActivityCacheModel implements CacheModel<SocialActivity>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		activityId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
+
 		createDate = objectInput.readLong();
+
 		activitySetId = objectInput.readLong();
+
 		mirrorActivityId = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
+
 		parentClassNameId = objectInput.readLong();
+
 		parentClassPK = objectInput.readLong();
+
 		type = objectInput.readInt();
 		extraData = objectInput.readUTF();
+
 		receiverUserId = objectInput.readLong();
 	}
 
@@ -127,16 +164,27 @@ public class SocialActivityCacheModel implements CacheModel<SocialActivity>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(activityId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
+
 		objectOutput.writeLong(createDate);
+
 		objectOutput.writeLong(activitySetId);
+
 		objectOutput.writeLong(mirrorActivityId);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
+
 		objectOutput.writeLong(parentClassNameId);
+
 		objectOutput.writeLong(parentClassPK);
+
 		objectOutput.writeInt(type);
 
 		if (extraData == null) {

@@ -8,7 +8,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 >
-	<bean id="chainableMethodAdviceInjector.clusterableAdvice" class="com.liferay.portal.spring.aop.ChainableMethodAdviceInjector">
+	<bean class="com.liferay.portal.spring.aop.ChainableMethodAdviceInjector" id="chainableMethodAdviceInjector.clusterableAdvice">
 		<property name="injectCondition">
 			<util:constant static-field="com.liferay.portal.util.PropsValues.CLUSTER_LINK_ENABLED" />
 		</property>
@@ -17,7 +17,7 @@
 		</property>
 		<property name="parentChainableMethodAdvice" ref="serviceAdvice" />
 	</bean>
-	<bean id="chainableMethodAdviceInjector.spiClusterableAdvice" class="com.liferay.portal.spring.aop.ChainableMethodAdviceInjector">
+	<bean class="com.liferay.portal.spring.aop.ChainableMethodAdviceInjector" id="chainableMethodAdviceInjector.spiClusterableAdvice">
 		<property name="injectCondition">
 			<bean class="com.liferay.portal.kernel.resiliency.spi.SPIUtil" factory-method="isSPI" />
 		</property>
@@ -25,30 +25,5 @@
 			<bean class="com.liferay.portal.cluster.SPIClusterableAdvice" />
 		</property>
 		<property name="parentChainableMethodAdvice" ref="serviceAdvice" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.cluster.ClusterExecutor" class="com.liferay.portal.cluster.ClusterExecutorImpl">
-		<property name="shortcutLocalMethod" value="true" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.cluster.ClusterExecutorUtil" class="com.liferay.portal.kernel.cluster.ClusterExecutorUtil">
-		<property name="clusterExecutor" ref="com.liferay.portal.kernel.cluster.ClusterExecutor" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.cluster.ClusterLink" class="com.liferay.portal.cluster.ClusterLinkImpl">
-		<property name="clusterForwardMessageListener">
-			<bean class="com.liferay.portal.kernel.cluster.messaging.ClusterForwardMessageListener" />
-		</property>
-	</bean>
-	<bean id="com.liferay.portal.kernel.cluster.ClusterLinkUtil" class="com.liferay.portal.kernel.cluster.ClusterLinkUtil">
-		<property name="clusterLink" ref="com.liferay.portal.kernel.cluster.ClusterLink" />
-	</bean>
-	<bean id="com.liferay.portal.kernel.cluster.ClusterMasterExecutor" class="com.liferay.portal.cluster.ClusterMasterExecutorImpl">
-		<property name="clusterExecutor" ref="com.liferay.portal.kernel.cluster.ClusterExecutor" />
-		<property name="clusterMasterTokenTransitionListeners">
-			<util:set>
-				<bean class="com.liferay.portal.backgroundtask.BackgroundTaskClusterMasterTokenTransitionListener" />
-			</util:set>
-		</property>
-	</bean>
-	<bean id="com.liferay.portal.kernel.cluster.ClusterMasterExecutorUtil" class="com.liferay.portal.kernel.cluster.ClusterMasterExecutorUtil">
-		<property name="clusterMasterExecutor" ref="com.liferay.portal.kernel.cluster.ClusterMasterExecutor" />
 	</bean>
 </beans>

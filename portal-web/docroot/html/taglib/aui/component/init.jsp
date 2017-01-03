@@ -29,7 +29,6 @@ javax.servlet.jsp.JspContext tagPageContext = (javax.servlet.jsp.JspContext)requ
 boolean useJavaScript = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:component:useJavaScript")), true);
 java.lang.String var = GetterUtil.getString((java.lang.String)request.getAttribute("aui:component:var"));
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:component:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:component:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/component/init-ext.jspf" %>

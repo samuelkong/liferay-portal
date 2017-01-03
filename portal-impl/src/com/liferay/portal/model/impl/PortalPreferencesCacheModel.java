@@ -16,11 +16,12 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.PortalPreferences;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.PortalPreferences;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,33 @@ import java.io.ObjectOutput;
 @ProviderType
 public class PortalPreferencesCacheModel implements CacheModel<PortalPreferences>,
 	Externalizable, MVCCModel {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof PortalPreferencesCacheModel)) {
+			return false;
+		}
+
+		PortalPreferencesCacheModel portalPreferencesCacheModel = (PortalPreferencesCacheModel)obj;
+
+		if ((portalPreferencesId == portalPreferencesCacheModel.portalPreferencesId) &&
+				(mvccVersion == portalPreferencesCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, portalPreferencesId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
 	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
@@ -90,8 +118,11 @@ public class PortalPreferencesCacheModel implements CacheModel<PortalPreferences
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		portalPreferencesId = objectInput.readLong();
+
 		ownerId = objectInput.readLong();
+
 		ownerType = objectInput.readInt();
 		preferences = objectInput.readUTF();
 	}
@@ -100,8 +131,11 @@ public class PortalPreferencesCacheModel implements CacheModel<PortalPreferences
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(portalPreferencesId);
+
 		objectOutput.writeLong(ownerId);
+
 		objectOutput.writeInt(ownerType);
 
 		if (preferences == null) {

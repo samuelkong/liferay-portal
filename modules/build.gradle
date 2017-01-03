@@ -1,0 +1,242 @@
+import com.liferay.gradle.util.FileUtil
+import com.liferay.gradle.util.GradleUtil
+
+import java.util.concurrent.ConcurrentSkipListSet
+
+buildscript {
+	apply from: rootProject.file("build-buildscript.gradle"), to: buildscript
+}
+
+Set<File> bndPrintJarFiles = null
+
+if (Boolean.getBoolean("build.bnd.print.enabled") && System.getenv("JENKINS_HOME")) {
+	configurations {
+		bnd
+	}
+
+	dependencies {
+		bnd group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "3.2.0"
+	}
+
+	repositories {
+		maven {
+			url System.properties["repository.url"] ?: "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+		}
+	}
+
+	bndPrintJarFiles = new ConcurrentSkipListSet<File>()
+}
+
+buildDir = new File(rootDir.parentFile, "build")
+
+for (String gradleVersion in ["2.5", "2.14"]) {
+	String gradleDistributionURL = "https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
+	String suffix = gradleVersion.replace('.', '')
+
+	tasks.create(name: "extractGradleApi${suffix}", type: Copy) {
+		description = "Extracts the Gradle ${gradleVersion} JAR files into a temporary directory."
+
+		from {
+			zipTree(FileUtil.get(project, gradleDistributionURL))
+		}
+
+		include "gradle-${gradleVersion}/lib/**/*.jar"
+
+		includeEmptyDirs = false
+		into buildDir
+	}
+}
+
+gradle.beforeProject {
+	Project project ->
+
+	if (!project.parent || project.childProjects) {
+		return
+	}
+
+	configure(project) {
+		apply plugin: "com.liferay.defaults.plugin"
+
+		pluginManager.withPlugin("com.liferay.ant.plugin") {
+			task buildLang(dependsOn: "build-lang")
+
+			if (FileUtil.exists(project, "docroot/WEB-INF/service.xml")) {
+				task buildService(dependsOn: "build-service")
+				task buildWSDD(dependsOn: "build-wsdd")
+			}
+
+			deploy {
+				dependsOn ":apps:foundation:frontend-css:frontend-css-common:buildCssCommon"
+			}
+		}
+
+		pluginManager.withPlugin("com.liferay.osgi.plugin") {
+			afterEvaluate {
+				bundle.jarBuilderFactory.contextClassLoader = buildscript.classLoader
+
+				File forcedDeployDir = GradleUtil.getProperty(project, "forced.deploy.dir", (File)null)
+
+				if (forcedDeployDir) {
+					liferay.deployDir = forcedDeployDir
+				}
+			}
+
+			configurations {
+				xmltask
+			}
+
+			dependencies {
+				xmltask rootProject.files("../lib/development/xmltask.jar")
+			}
+
+			testIntegration {
+				doLast {
+					String databaseType = System.properties["database.type"]
+
+					if (!databaseType) {
+						return
+					}
+
+					FileTree fileTree = fileTree(dir: reports.junitXml.destination, exclude: "TEST-*-*.xml", include: "TEST-*.xml")
+
+					ant.taskdef classname: "com.oopsconsultancy.xmltask.ant.XmlTask", classpath: configurations.xmltask.asPath, name: "xmltask"
+
+					fileTree.each {
+						File file ->
+
+						String fileTitle = FileUtil.stripExtension(file.name)
+
+						ant.xmltask(dest: new File(file.parentFile, "${fileTitle}-${databaseType}.xml"), source: file) {
+							replace path: "/testsuite/@name", withText: "${fileTitle}-${databaseType}"
+						}
+
+						delete file
+					}
+				}
+			}
+
+			if (bndPrintJarFiles != null) {
+				jar {
+					doLast {
+						bndPrintJarFiles << archivePath
+					}
+				}
+			}
+
+			if (gradle.hasProperty("testClassGroupIndex")) {
+				configure([test, testIntegration]) {
+					include gradle.testClasses
+
+					jvmArgs "-Dtest.class.group.index=" + gradle.testClassGroupIndex
+					jvmArgs "-Dtest.class.groups=" + gradle.testClassGroups
+				}
+			}
+
+			if (System.getenv("JENKINS_HOME")) {
+				buildCSS {
+					jvmArgs "-Xss4m"
+				}
+
+				startTestableTomcat {
+					deleteLiferayHome = false
+				}
+			}
+		}
+	}
+}
+
+if (bndPrintJarFiles != null) {
+	gradle.buildFinished {
+		bndPrintJarFiles.each {
+			File jarFile ->
+
+			javaexec {
+				args "print", jarFile
+				classpath = configurations.bnd
+				main = "aQute.bnd.main.bnd"
+			}
+		}
+	}
+}
+
+gradle.taskGraph.useFilter {
+	Task task ->
+
+	boolean skipReadOnly = Boolean.parseBoolean(GradleUtil.getTaskPrefixedProperty(task, "skipReadOnly"))
+
+	if (skipReadOnly) {
+		boolean publicBranch = GradleUtil.getProperty(task.project, "liferay.releng.public", false)
+
+		if (publicBranch && task.project.path.startsWith(":private:")) {
+			return false
+		}
+
+		File gitRepoDir = _getRootDir(task.project.projectDir, ".gitrepo")
+
+		if (gitRepoDir != null) {
+			File gitRepoFile = new File(gitRepoDir, ".gitrepo")
+
+			if (gitRepoFile.text.contains("mode = pull")) {
+				return false
+			}
+		}
+	}
+
+	if (task.name == "compileJSP") {
+		FileTree jspFileTree = fileTree(dir: task.project.projectDir, excludes: ["**/custom_jsps/**/*", "**/dependencies/**/*"], includes: ["docroot/**/*.jsp", "src/main/resources/META-INF/resources/**/*.jsp"])
+
+		if (jspFileTree.empty) {
+			return false
+		}
+	}
+	else if (task.name == "test") {
+		if (!_hasTestClasses(task.project, "src/test/java")) {
+			return false
+		}
+	}
+	else if (task.name == "testIntegration") {
+		if (!_hasTestClasses(task.project, "src/testIntegration/java")) {
+			return false
+		}
+	}
+
+	return true
+}
+
+private File _getRootDir(File dir, String markerFileName) {
+	while (true) {
+		File markerFile = new File(dir, markerFileName);
+
+		if (markerFile.exists()) {
+			return dir;
+		}
+
+		dir = dir.getParentFile();
+
+		if (dir == null) {
+			return null;
+		}
+	}
+}
+
+private boolean _hasTestClasses(Project project, String testClassesDirName) {
+	File testClassesDir = project.file(testClassesDirName)
+
+	if (!testClassesDir.exists()) {
+		return false
+	}
+
+	if (project.gradle.hasProperty("testClassGroupIndex")) {
+		List<String> testJavaClasses = project.gradle.testClasses.collect {
+			it.replace ".class", ".java"
+		}
+
+		FileTree testJavaClassesFileTree = project.fileTree(dir: testClassesDir, includes: testJavaClasses)
+
+		if (testJavaClassesFileTree.empty) {
+			return false
+		}
+	}
+
+	return true
+}

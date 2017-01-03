@@ -84,6 +84,11 @@ public class JSONObjectImpl implements JSONObject {
 	}
 
 	@Override
+	public Object get(String key) {
+		return _jsonObject.opt(key);
+	}
+
+	@Override
 	public boolean getBoolean(String key) {
 		return _jsonObject.optBoolean(key);
 	}
@@ -271,7 +276,29 @@ public class JSONObjectImpl implements JSONObject {
 	@Override
 	public JSONObject put(String key, long value) {
 		try {
-			_jsonObject.put(key, value);
+			_jsonObject.put(key, String.valueOf(value));
+		}
+		catch (Exception e) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(e, e);
+			}
+		}
+
+		return this;
+	}
+
+	@Override
+	public JSONObject put(String key, Object value) {
+		try {
+			if (value instanceof JSONArray) {
+				put(key, (JSONArray)value);
+			}
+			else if (value instanceof JSONObject) {
+				put(key, (JSONObject)value);
+			}
+			else {
+				_jsonObject.put(key, value);
+			}
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -316,7 +343,8 @@ public class JSONObjectImpl implements JSONObject {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		try {
-			_jsonObject = new org.json.JSONObject(objectInput.readUTF());
+			_jsonObject = new org.json.JSONObject(
+				(String)objectInput.readObject());
 		}
 		catch (Exception e) {
 			throw new IOException(e);
@@ -326,6 +354,11 @@ public class JSONObjectImpl implements JSONObject {
 	@Override
 	public Object remove(String key) {
 		return _jsonObject.remove(key);
+	}
+
+	@Override
+	public String toJSONString() {
+		return toString();
 	}
 
 	@Override
@@ -355,7 +388,7 @@ public class JSONObjectImpl implements JSONObject {
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
-		objectOutput.writeUTF(toString());
+		objectOutput.writeObject(toString());
 	}
 
 	private static final String _NULL_JSON = "{}";

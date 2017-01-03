@@ -57,7 +57,7 @@ public class LiferayLoggerFactory implements ILoggerFactory {
 			try {
 				Log log = LogFactoryUtil.getLog(name);
 
-				logger = new LiferayLoggerAdapter(log);
+				logger = new LiferayLoggerAdapter(log, name);
 
 				_loggers.put(name, logger);
 			}
@@ -69,7 +69,7 @@ public class LiferayLoggerFactory implements ILoggerFactory {
 		return logger;
 	}
 
-	private final Map<String, Logger> _loggers = new HashMap<String, Logger>();
+	private final Map<String, Logger> _loggers = new HashMap<>();
 	private final Lock _readLock;
 	private final Lock _writeLock;
 

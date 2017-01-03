@@ -1,0 +1,66 @@
+<definition component-name="portal-plugins-osgi">
+	<property name="osgi.app.includes" value="twitter" />
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="plugins.deployment.type" value="osgi" />
+	<property name="testray.main.component.name" value="Social Networking" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Test Page" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<execute macro="Page#tearDownPG" />
+	</tear-down>
+
+	<command name="TwitterPortletSmoke" priority="4">
+		<var name="appName" value="Twitter" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Test Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Twitter" />
+		</execute>
+
+		<execute function="AntCommand#antCommand" locator1="build-test.xml" value1="remove-plugin -Dplugin.name=twitter-portlet" />
+	</command>
+
+	<command name="ViewEntry" priority="5">
+		<execute macro="UserBar#gotoProfile" />
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Twitter" />
+		</execute>
+
+		<execute macro="Twitter#configureUserProfile">
+			<var name="twitterProfileName" value="liferayqa" />
+		</execute>
+
+		<execute function="Pause" locator1="20000" />
+
+		<execute function="Refresh" />
+
+		<execute macro="Twitter#viewConfiguredScreenName">
+			<var name="twitterProfileName" value="liferayqa" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Activities" />
+		</execute>
+
+		<execute function="Pause" locator1="10000" />
+
+		<execute function="Refresh" />
+
+		<execute macro="Twitter#viewFeedEntry">
+			<var name="entryContent" value="Now Available! test.deprecated 1 (Liferay, Inc.) https://www-nightly.liferay.com/web/guest/marketplace/-/mp/application/83373616 … #TestLRMP" />
+			<var name="entryDate" value="December 1" />
+		</execute>
+	</command>
+</definition>

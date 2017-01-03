@@ -14,11 +14,10 @@
 
 package com.liferay.portal.upgrade.v6_1_1;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -35,29 +34,20 @@ public class UpgradeLayout extends UpgradeProcess {
 	protected long getLayoutPrototypeGroupId(String layoutPrototypeUuid)
 		throws Exception {
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+		try (PreparedStatement ps = connection.prepareStatement(
 				"select groupId from Group_ where classPK = (select " +
-					"layoutPrototypeId from LayoutPrototype where uuid_ = ?)");
+					"layoutPrototypeId from LayoutPrototype where uuid_ = " +
+						"?)")) {
 
 			ps.setString(1, layoutPrototypeUuid);
 
-			rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					long groupId = rs.getLong("groupId");
 
-			while (rs.next()) {
-				long groupId = rs.getLong("groupId");
-
-				return groupId;
+					return groupId;
+				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 
 		return 0;
@@ -67,53 +57,33 @@ public class UpgradeLayout extends UpgradeProcess {
 			long groupId, String sourcePrototypeLayoutUuid)
 		throws Exception {
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+		try (PreparedStatement ps = connection.prepareStatement(
 				"select count(*) from Layout where uuid_ = ? and groupId = ? " +
-					"and privateLayout = ?");
+					"and privateLayout = ?")) {
 
 			ps.setString(1, sourcePrototypeLayoutUuid);
 			ps.setLong(2, groupId);
 			ps.setBoolean(3, true);
 
-			rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					int count = rs.getInt(1);
 
-			while (rs.next()) {
-				int count = rs.getInt(1);
-
-				if (count > 0) {
-					return true;
-				}
-				else {
-					return false;
+					if (count > 0) {
+						return true;
+					}
+					else {
+						return false;
+					}
 				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 
 		return false;
 	}
 
 	protected void updateSourcePrototypeLayoutUuid() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			// Get pages with a sourcePrototypeLayoutUuid that have a page
-			// template. If the layoutUuid points to a page template, remove it.
-			// Otherwise, it points to a site template page, so leave it.
-
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			StringBundler sb = new StringBundler(4);
 
 			sb.append("select plid, layoutPrototypeUuid, ");
@@ -121,32 +91,38 @@ public class UpgradeLayout extends UpgradeProcess {
 			sb.append("layoutPrototypeUuid != '' and ");
 			sb.append("sourcePrototypeLayoutUuid != ''");
 
-			ps = con.prepareStatement(sb.toString());
+			try (PreparedStatement ps = connection.prepareStatement(
+					sb.toString());
+				ResultSet rs = ps.executeQuery()) {
 
-			rs = ps.executeQuery();
+				// Get pages with a sourcePrototypeLayoutUuid that have a page
+				// template. If the layoutUuid points to a page template, remove
+				// it. Otherwise, it points to a site template page, so leave
+				// it.
 
-			while (rs.next()) {
-				long plid = rs.getLong("plid");
-				String layoutPrototypeUuid = rs.getString(
-					"layoutPrototypeUuid");
-				String sourcePrototypeLayoutUuid = rs.getString(
-					"sourcePrototypeLayoutUuid");
+				while (rs.next()) {
+					long plid = rs.getLong("plid");
+					String layoutPrototypeUuid = rs.getString(
+						"layoutPrototypeUuid");
+					String sourcePrototypeLayoutUuid = rs.getString(
+						"sourcePrototypeLayoutUuid");
 
-				long groupId = getLayoutPrototypeGroupId(layoutPrototypeUuid);
+					long groupId = getLayoutPrototypeGroupId(
+						layoutPrototypeUuid);
 
-				if (groupId == 0) {
-					continue;
-				}
+					if (groupId == 0) {
+						continue;
+					}
 
-				if (isGroupPrivateLayout(groupId, sourcePrototypeLayoutUuid)) {
-					runSQL(
-						"update Layout set sourcePrototypeLayoutUuid = null " +
-							"where plid = " + plid);
+					if (isGroupPrivateLayout(
+							groupId, sourcePrototypeLayoutUuid)) {
+
+						runSQL(
+							"update Layout set sourcePrototypeLayoutUuid = " +
+								"null where plid = " + plid);
+					}
 				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 

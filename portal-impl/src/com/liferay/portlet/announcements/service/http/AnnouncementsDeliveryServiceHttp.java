@@ -16,21 +16,21 @@ package com.liferay.portlet.announcements.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.announcements.kernel.service.AnnouncementsDeliveryServiceUtil;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.HttpPrincipal;
+import com.liferay.portal.kernel.service.http.TunnelUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
-import com.liferay.portal.security.auth.HttpPrincipal;
-import com.liferay.portal.service.http.TunnelUtil;
-
-import com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUtil;
 
 /**
  * Provides the HTTP utility for the
- * {@link com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUtil} service utility. The
+ * {@link AnnouncementsDeliveryServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it requires an additional
- * {@link com.liferay.portal.security.auth.HttpPrincipal} parameter.
+ * {@link HttpPrincipal} parameter.
  *
  * <p>
  * The benefits of using the HTTP utility is that it is fast and allows for
@@ -49,13 +49,13 @@ import com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUti
  *
  * @author Brian Wing Shun Chan
  * @see AnnouncementsDeliveryServiceSoap
- * @see com.liferay.portal.security.auth.HttpPrincipal
- * @see com.liferay.portlet.announcements.service.AnnouncementsDeliveryServiceUtil
+ * @see HttpPrincipal
+ * @see AnnouncementsDeliveryServiceUtil
  * @generated
  */
 @ProviderType
 public class AnnouncementsDeliveryServiceHttp {
-	public static com.liferay.portlet.announcements.model.AnnouncementsDelivery updateDelivery(
+	public static com.liferay.announcements.kernel.model.AnnouncementsDelivery updateDelivery(
 		HttpPrincipal httpPrincipal, long userId, java.lang.String type,
 		boolean email, boolean sms, boolean website)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -79,7 +79,7 @@ public class AnnouncementsDeliveryServiceHttp {
 				throw new com.liferay.portal.kernel.exception.SystemException(e);
 			}
 
-			return (com.liferay.portlet.announcements.model.AnnouncementsDelivery)returnObj;
+			return (com.liferay.announcements.kernel.model.AnnouncementsDelivery)returnObj;
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException se) {
 			_log.error(se, se);

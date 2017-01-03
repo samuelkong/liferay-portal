@@ -15,54 +15,42 @@
 package com.liferay.portal.repository.capabilities;
 
 import com.liferay.portal.kernel.repository.DocumentRepository;
-import com.liferay.portal.kernel.repository.capabilities.BaseCapabilityProvider;
 import com.liferay.portal.kernel.repository.capabilities.Capability;
-import com.liferay.portal.kernel.repository.registry.CapabilityRegistry;
-import com.liferay.portal.kernel.util.ClassUtil;
+import com.liferay.portal.kernel.repository.capabilities.CapabilityProvider;
 
 /**
  * @author Adolfo Pérez
  */
-public abstract class BaseCapabilityRepository<R> extends BaseCapabilityProvider
-	implements DocumentRepository, CapabilityRegistry {
+public abstract class BaseCapabilityRepository<R>
+	implements DocumentRepository {
 
-	public BaseCapabilityRepository(R repository) {
+	public BaseCapabilityRepository(
+		R repository, CapabilityProvider capabilityProvider) {
+
 		_repository = repository;
+		_capabilityProvider = capabilityProvider;
 	}
 
 	@Override
-	public <S extends Capability, T extends S> void addExportedCapability(
-		Class<S> capabilityClass, T capability) {
-
-		super.addExportedCapability(capabilityClass, capability);
-	}
-
-	@Override
-	public <S extends Capability, T extends S> void addSupportedCapability(
-		Class<S> capabilityClass, T capability) {
-
-		super.addSupportedCapability(capabilityClass, capability);
-	}
-
-	@Override
-	public DocumentRepository getDocumentRepository() {
-		return this;
-	}
-
-	public R getRepository() {
-		return _repository;
+	public <T extends Capability> T getCapability(Class<T> capabilityClass) {
+		return _capabilityProvider.getCapability(capabilityClass);
 	}
 
 	@Override
 	public abstract long getRepositoryId();
 
 	@Override
-	protected String getProviderKey() {
-		return String.format(
-			"%s:%s", ClassUtil.getClassName(getRepository()),
-			getRepositoryId());
+	public <T extends Capability> boolean isCapabilityProvided(
+		Class<T> capabilityClass) {
+
+		return _capabilityProvider.isCapabilityProvided(capabilityClass);
 	}
 
+	protected R getRepository() {
+		return _repository;
+	}
+
+	private final CapabilityProvider _capabilityProvider;
 	private final R _repository;
 
 }

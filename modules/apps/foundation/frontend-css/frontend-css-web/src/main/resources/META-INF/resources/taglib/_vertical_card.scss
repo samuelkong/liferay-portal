@@ -1,0 +1,57 @@
+@import "bourbon";
+
+.card-row-layout-fixed .lfr-card-actions-column {
+	width: 32px;
+
+	.dropdown {
+		margin-left: 8px;
+		margin-right: 0;
+	}
+}
+
+.lfr-card-actions-column {
+	.dropdown {
+		margin-right: -8px;
+		margin-top: -5px;
+	}
+}
+
+.lfr-card-modified-by-text,
+.lfr-card-subtitle-text,
+.lfr-card-workflow-text {
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.lfr-card-title-text {
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.taglib-vertical-card {
+	.icon-vertical-card-container {
+		background-color: #F1F5FA;
+	}
+
+	.icon-vertical-card-image .lexicon-icon {
+		height: 80px;
+		opacity: 0.2;
+		width: 80px;
+	}
+
+	.icon-vertical-card-image, .user-vertical-card-initials {
+		left: 50%;
+		position: absolute;
+		top: 50%;
+
+		@include transform(translate(-50%, -50%));
+	}
+
+	.user-vertical-card-initials {
+		color: #FFF;
+	}
+}
+
+.taglib-vertical-card-footer {
+	min-height: 5.6em;
+}

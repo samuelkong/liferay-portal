@@ -22,6 +22,9 @@ import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.taglib.util.TagResourceBundleUtil;
+
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -48,32 +51,36 @@ public class MessageTag extends TagSupport {
 				_unicode = unicode;
 			}
 
+			ResourceBundle resourceBundle =
+				TagResourceBundleUtil.getResourceBundle(pageContext);
+
 			if (_arguments == null) {
 				if (!_localizeKey) {
 					value = _key;
 				}
 				else if (_escape) {
-					value = HtmlUtil.escape(LanguageUtil.get(request, _key));
+					value = HtmlUtil.escape(
+						LanguageUtil.get(resourceBundle, _key));
 				}
 				else if (_escapeAttribute) {
 					value = HtmlUtil.escapeAttribute(
-						LanguageUtil.get(request, _key));
+						LanguageUtil.get(resourceBundle, _key));
 				}
 				else if (_unicode) {
-					value = UnicodeLanguageUtil.get(request, _key);
+					value = UnicodeLanguageUtil.get(resourceBundle, _key);
 				}
 				else {
-					value = LanguageUtil.get(request, _key);
+					value = LanguageUtil.get(resourceBundle, _key);
 				}
 			}
 			else {
 				if (_unicode) {
 					value = UnicodeLanguageUtil.format(
-						request, _key, _arguments, _translateArguments);
+						resourceBundle, _key, _arguments, _translateArguments);
 				}
 				else {
 					value = LanguageUtil.format(
-						request, _key, _arguments, _translateArguments);
+						resourceBundle, _key, _arguments, _translateArguments);
 				}
 			}
 

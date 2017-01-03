@@ -37,14 +37,18 @@ public abstract class BaseConvertProcess implements ConvertProcess {
 			stopWatch.start();
 
 			if (_log.isInfoEnabled()) {
-				_log.info("Starting conversion for " + getClass().getName());
+				Class<?> clazz = getClass();
+
+				_log.info("Starting conversion for " + clazz.getName());
 			}
 
 			doConvert();
 
 			if (_log.isInfoEnabled()) {
+				Class<?> clazz = getClass();
+
 				_log.info(
-					"Finished conversion for " + getClass().getName() + " in " +
+					"Finished conversion for " + clazz.getName() + " in " +
 						stopWatch.getTime() + " ms");
 			}
 		}
@@ -56,6 +60,11 @@ public abstract class BaseConvertProcess implements ConvertProcess {
 
 			MaintenanceUtil.cancel();
 		}
+	}
+
+	@Override
+	public String getConfigurationErrorMessage() {
+		return null;
 	}
 
 	@Override
@@ -97,8 +106,9 @@ public abstract class BaseConvertProcess implements ConvertProcess {
 
 	protected abstract void doConvert() throws Exception;
 
-	private static Log _log = LogFactoryUtil.getLog(BaseConvertProcess.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseConvertProcess.class);
 
-	private String[] _paramValues = null;
+	private String[] _paramValues;
 
 }

@@ -14,19 +14,101 @@
 
 package com.liferay.taglib.portletext;
 
+import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
+import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIconTracker;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.util.comparator.PortletConfigurationIconComparator;
 import com.liferay.taglib.ui.IconTag;
+
+import java.util.List;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class IconOptionsTag extends IconTag {
 
-	@Override
-	protected String getPage() {
-		return _PAGE;
+	public List<PortletConfigurationIcon> getPortletConfigurationIcons() {
+		if (_portletConfigurationIcons != null) {
+			return _portletConfigurationIcons;
+		}
+
+		_portletConfigurationIcons =
+			PortletConfigurationIconTracker.getPortletConfigurationIcons(
+				getPortletId(), getPortletRequest(),
+				PortletConfigurationIconComparator.INSTANCE);
+
+		return _portletConfigurationIcons;
 	}
 
-	private static final String _PAGE =
-		"/html/taglib/portlet/icon_options/page.jsp";
+	public void setDirection(String direction) {
+		_direction = direction;
+	}
+
+	public void setPortletConfigurationIcons(
+		List<PortletConfigurationIcon> portletConfigurationIcons) {
+
+		_portletConfigurationIcons = portletConfigurationIcons;
+	}
+
+	public void setShowArrow(boolean showArrow) {
+		_showArrow = showArrow;
+	}
+
+	@Override
+	protected void cleanUp() {
+		super.cleanUp();
+
+		_direction = "right";
+		_portletConfigurationIcons = null;
+		_showArrow = true;
+	}
+
+	@Override
+	protected String getPage() {
+		return "/html/taglib/portlet/icon_options/page.jsp";
+	}
+
+	protected String getPortletId() {
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		return portletDisplay.getRootPortletId();
+	}
+
+	protected PortletRequest getPortletRequest() {
+		return (PortletRequest)request.getAttribute(
+			JavaConstants.JAVAX_PORTLET_REQUEST);
+	}
+
+	protected PortletResponse getPortletResponse() {
+		return (PortletResponse)request.getAttribute(
+			JavaConstants.JAVAX_PORTLET_RESPONSE);
+	}
+
+	@Override
+	protected void setAttributes(HttpServletRequest request) {
+		super.setAttributes(request);
+
+		request.setAttribute(
+			"liferay-ui:icon-options:portletConfigurationIcons",
+			getPortletConfigurationIcons());
+		request.setAttribute("liferay-ui:icon:direction", _direction);
+		request.setAttribute(
+			"liferay-ui:icon:showArrow", String.valueOf(_showArrow));
+	}
+
+	private String _direction = "right";
+	private List<PortletConfigurationIcon> _portletConfigurationIcons;
+	private boolean _showArrow = true;
 
 }

@@ -1,0 +1,8 @@
+import com.liferay.gradle.plugins.node.tasks.PublishNodeModuleTask
+
+task publishNodeModule(type: PublishNodeModuleTask)
+
+publishNodeModule {
+	dependsOn jar
+	workingDir = "src/main/resources/META-INF/resources/_styled"
+}

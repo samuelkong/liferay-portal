@@ -1,0 +1,336 @@
+<html>
+<head>
+<title>ProductMenu</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ProductMenu</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>TOGGLE</td>
+	<td>//*[@data-qa-id='productMenu']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_BODY</td>
+	<td>//*[@data-qa-id='productMenuBody']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGE_PLUS_ICON_COLLAPSED</td>
+	<td>//ul[contains(@class,'tree-container')]//span[contains(@class,'icon-plus') and not (contains(@class,'hidden'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGE_PLUS_ICON_EXPANDED</td>
+	<td>//ul[contains(@class,'tree-container')]//span[contains(@class,'tree-hitarea') and contains(@class,'icon-minus')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_OPENED</td>
+	<td>//div[contains(@id,'sidenavSliderId') and not(contains(@class,'closed')) and not(contains(@class,'transition'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_CLOSED</td>
+	<td>//div[contains(@id,'sidenavSliderId') and (contains(@class,'closed')) and not(contains(@class,'transition'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TAB</td>
+	<td>//div[contains(.,'${key_tab}')]/../div[contains(@class,'tab-icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BACK_ARROW</td>
+	<td>//a[contains(@id,'mySitesLink')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITES_COMPASS</td>
+	<td>//span/*[name()='svg'][contains(@class,'sites')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITES_POPUP</td>
+	<td>//div[div[contains(@id,'siteSelectorContent')] and contains(@class,'popover-content')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITES_MODAL_TITLE</td>
+	<td>//h3[@class='modal-title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GO_TO_SITES_LINK</td>
+	<td>//a[contains(.,'Go to Site')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_COLLAPSED</td>
+	<td>//div[a[@aria-expanded='true']]/../..//a[@aria-expanded='false' and contains(.,'${key_category}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORY_EXPANDED</td>
+	<td>//div[a[@aria-expanded='true']]/../..//a[@aria-expanded='true' and contains(.,'${key_category}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRIVATE_PAGE_LINK</td>
+	<td>//div[contains(@id,'layoutsTreeOutput')]//a[contains(.,'${key_pageName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRIVATE_PAGES</td>
+	<td>//*[@data-qa-id='goToPrivatePages']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRIVATE_PAGES_SELECTED</td>
+	<td>//div[contains(@class,'selected-layout-set')]/*[@data-qa-id='goToPrivatePages']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLIC_PAGES</td>
+	<td>//*[@data-qa-id='goToPublicPages']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLIC_PAGES_SELECTED</td>
+	<td>//div[contains(@class,'selected-layout-set')]/*[@data-qa-id='goToPublicPages']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGES</td>
+	<td>//div[@class='list-group-item']//span[contains(.,'${key_page}')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_PAGE_ICON</td>
+	<td>//span/*[name()='a' or 'span'][contains(.,'${key_page}')]/..//span/*[name()='svg'][contains(@class,'icon-plus')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_PUBLIC_PAGE_ICON</td>
+	<td>//*[@data-qa-id='addPublicPage']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_PRIVATE_PAGE_ICON</td>
+	<td>//*[@data-qa-id='addPrivatePage']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_PUBLIC_PAGE_ICON</td>
+	<td>//*[@data-qa-id='editPublicPages']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_PRIVATE_PAGE_ICON</td>
+	<td>//*[@data-qa-id='editPrivatePages']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDIT_PAGE</td>
+	<td>//a[contains(@class,'tree-edit') and contains(.,'${key_page}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET</td>
+	<td>//div[a[@aria-expanded='true']]//a[contains(@id,'Portlet') and @data-title='${key_portlet}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_SELECTED</td>
+	<td>//li[@class='active']//*[@data-qa-id='app' and contains(@data-title,'${key_portlet}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PORTLET_SELECTED_TRANSLATION</td>
+	<td>//li[@class='active']//*[@data-qa-id='app' and contains(@data-title,'${key_portletLocalization}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITE</td>
+	<td>//div[contains(@id,'siteSelector')]//div[h5[.='${key_site}']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRIVATE_SITE_LINK</td>
+	<td>//div[contains(@class,'list-group-item-content') and contains (.,'Private')]//h5[contains(.,'${key_site}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLIC_SITE_LINK</td>
+	<td>//div[contains(@class,'list-group-item-content') and contains (.,'Public')]//h5[contains(.,'${key_site}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIVE_LINK</td>
+	<td>//*[@data-qa-id='live']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>STAGING_LINK</td>
+	<td>//*[@data-qa-id='staging']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>STAGING_SELECTED</td>
+	<td>//span[@class='active']//*[@data-qa-id='staging']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITE_NAME_HEADER</td>
+	<td>//div[contains(@class,'sidebar-header')]//span[contains(.,'${key_siteName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TAB_COLLAPSED</td>
+	<td>//div[@role='tab' and contains(.,'${key_tab}')]//div[@aria-expanded='false']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TAB_EXPANDED</td>
+	<td>//div[@role='tab' and contains(.,'${key_tab}')]//div[@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_PROFILE_PICTURE</td>
+	<td>//div[contains(@class,'user-icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_FULL_NAME</td>
+	<td>//div[contains(@class,'nameplate')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_PROFILE</td>
+	<td>//div[contains(@class,'list-group')]//a[contains(.,'Profile')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PRODUCT_MENU_TABS-->
+<tr>
+	<td>PRODUCT_MENU_TABS_TAB_ICON</td>
+	<td>//div[contains(.,'${tabName}')]/../div[contains(@class,'tab-icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_SITES_COLLAPSED</td>
+	<td>//*[@data-qa-id='productMenuSiteAdministrationPanelCategory'][@aria-expanded='false']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_SITES_EXPANDED</td>
+	<td>//*[@data-qa-id='productMenuSiteAdministrationPanelCategory'][@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_SITES_NAVIGATION</td>
+	<td>//div[contains(.,'Sites')]/../div[contains(@class,'tab-text')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_USER_COLLAPSED</td>
+	<td>//*[@data-qa-id='productMenuUserPanelCategory'][@aria-expanded='false']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_USER_EXPANDED</td>
+	<td>//*[@data-qa-id='productMenuUserPanelCategory'][@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_USER_NAVIGATION</td>
+	<td>//div[contains(@class,'user-tab')]//div[contains(@class,'user-icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_CONTROL_PANEL_COLLAPSED</td>
+	<td>//*[@data-qa-id='productMenuControlPanelCategory'][@aria-expanded='false']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_CONTROL_PANEL_EXPANDED</td>
+	<td>//*[@data-qa-id='productMenuControlPanelCategory'][@aria-expanded='true']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_CONTROL_PANEL_NAVIGATION</td>
+	<td>//div[contains(.,'Control Panel')]/../div[contains(@class,'tab-text')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_TABS_EXPANDED_PANEL</td>
+	<td>//div[(@class='collapse panel-collapse in' or @class='panel-collapse collapse in') and contains(@id,'${key_panelId}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PRODUCT_MENU_PANEL-->
+<tr>
+	<td>PRODUCT_MENU_PANEL_SITES_PANEL_TITLE</td>
+	<td>//div[contains(@id,'site_administration')]//a[contains(.,'${key_portletCategoryName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_ALL_SITES_PANEL_TITLE</td>
+	<td>//div[contains(@id,'all_sites')]//a[contains(.,'${key_portletCategoryName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_MY_SPACE_PANEL_TITLE</td>
+	<td>//div[contains(@id,'my_space')]//a[contains(.,'${key_portletCategoryName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_CONTROL_PANEL_PANEL_TITLE</td>
+	<td>//div[contains(@class,'active') and contains(@id,'control_panel')]/div/a[contains(.,'${key_portletCategoryName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_SCOPE</td>
+	<td>//div[contains(@class,'scope-selector')]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_SCOPE_COG</td>
+	<td>//div[contains(@class,'dropdown')]/a/span/*[name()='svg'][contains(@class,'lexicon-icon-cog')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_MENU_ITEM</td>
+	<td>//div[@class='list-group-item']//li/a[contains(.,'${key_portletName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_MENU_ITEM_2</td>
+	<td>xpath=(//div[@class='list-group-item']//li/a[contains(.,'${key_portletName}')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_SITE_ADMINISTRATION_SITE_NAME</td>
+	<td>//span[contains(@class,'site-name')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_MENU_PANEL_SITE_SELECTOR</td>
+	<td>//a[contains(@id,'mySitesLink')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

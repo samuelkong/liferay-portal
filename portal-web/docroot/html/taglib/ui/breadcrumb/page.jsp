@@ -19,7 +19,18 @@
 <div id="<portlet:namespace />breadcrumbs-defaultScreen">
 	<h1 class="hide-accessible"><liferay-ui:message key="breadcrumbs" /></h1>
 
-	<c:if test="<%= Validator.isNotNull(breadcrumbString) %>">
-		<liferay-util:include page='<%= "/html/taglib/ui/breadcrumb/display_style_" + displayStyle + ".jsp" %>' />
+	<c:if test="<%= !breadcrumbEntries.isEmpty() %>">
+
+		<%
+		String renderedDDMTemplate = StringPool.BLANK;
+
+		DDMTemplate portletDisplayDDMTemplate = PortletDisplayTemplateManagerUtil.getDDMTemplate(displayStyleGroupId, PortalUtil.getClassNameId(BreadcrumbEntry.class), displayStyle, true);
+
+		if (portletDisplayDDMTemplate != null) {
+			renderedDDMTemplate = PortletDisplayTemplateManagerUtil.renderDDMTemplate(request, response, portletDisplayDDMTemplate.getTemplateId(), breadcrumbEntries, new HashMap<String, Object>());
+		}
+		%>
+
+		<%= renderedDDMTemplate %>
 	</c:if>
 </div>

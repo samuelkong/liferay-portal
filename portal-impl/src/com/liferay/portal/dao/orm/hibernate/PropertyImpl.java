@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.security.lang.DoPrivilegedHandler;
 
 import java.util.Collection;
@@ -392,6 +393,17 @@ public class PropertyImpl extends ProjectionImpl implements Property {
 
 		return new CriterionImpl(
 			_property.notIn(dynamicQueryImpl.getDetachedCriteria()));
+	}
+
+	@Override
+	public String toString() {
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("{_property=");
+		sb.append(String.valueOf(_property));
+		sb.append("}");
+
+		return sb.toString();
 	}
 
 	protected DynamicQueryImpl getDynamicQueryImpl(DynamicQuery subselect) {

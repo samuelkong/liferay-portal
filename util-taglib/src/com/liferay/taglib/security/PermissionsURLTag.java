@@ -15,18 +15,17 @@
 package com.liferay.taglib.security;
 
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.WindowStateFactory;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.theme.PortletDisplay;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.PortletURLFactoryUtil;
+import com.liferay.portlet.configuration.kernel.util.PortletConfigurationApplicationType;
 
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.WindowState;
 
@@ -40,6 +39,32 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class PermissionsURLTag extends TagSupport {
 
+	/**
+	 * Returns the URL for opening the resource's permissions configuration
+	 * dialog and for configuring the resource's permissions.
+	 *
+	 * @param  redirect the redirect. If the redirect is <code>null</code> or
+	 *         the dialog does not open as a pop-up, the current URL is obtained
+	 *         via {@link PortalUtil#getCurrentURL(HttpServletRequest)} and
+	 *         used.
+	 * @param  modelResource the resource's class for which to configure
+	 *         permissions
+	 * @param  modelResourceDescription the human-friendly description of the
+	 *         resource
+	 * @param  resourceGroupId the group ID to which the resource belongs. The
+	 *         ID can be a number, string containing a number, or substitution
+	 *         string. If the resource group ID is <code>null</code>, it is
+	 *         obtained via {@link ThemeDisplay#getScopeGroupId()}.
+	 * @param  resourcePrimKey the primary key of the resource
+	 * @param  windowState the window state to use when opening the permissions
+	 *         configuration dialog. For more information, see {@link
+	 *         LiferayWindowState}.
+	 * @param  roleTypes the role types
+	 * @param  request the current request
+	 * @return the URL for opening the resource's permissions configuration
+	 *         dialog and for configuring the resource's permissions
+	 * @throws Exception if an exception occurred
+	 */
 	public static String doTag(
 			String redirect, String modelResource,
 			String modelResourceDescription, Object resourceGroupId,
@@ -69,10 +94,6 @@ public class PermissionsURLTag extends TagSupport {
 			resourceGroupId = String.valueOf(themeDisplay.getScopeGroupId());
 		}
 
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
-		Layout layout = themeDisplay.getLayout();
-
 		if (Validator.isNull(redirect) &&
 			(Validator.isNull(windowState) ||
 			 !windowState.equals(LiferayWindowState.POP_UP.toString()))) {
@@ -80,9 +101,10 @@ public class PermissionsURLTag extends TagSupport {
 			redirect = PortalUtil.getCurrentURL(request);
 		}
 
-		PortletURL portletURL = PortletURLFactoryUtil.create(
-			request, PortletKeys.PORTLET_CONFIGURATION, layout.getPlid(),
-			PortletRequest.RENDER_PHASE);
+		PortletURL portletURL = PortletProviderUtil.getPortletURL(
+			request,
+			PortletConfigurationApplicationType.PortletConfiguration.CLASS_NAME,
+			PortletProvider.Action.VIEW);
 
 		if (Validator.isNotNull(windowState)) {
 			portletURL.setWindowState(
@@ -95,8 +117,7 @@ public class PermissionsURLTag extends TagSupport {
 			portletURL.setWindowState(WindowState.MAXIMIZED);
 		}
 
-		portletURL.setParameter(
-			"struts_action", "/portlet_configuration/edit_permissions");
+		portletURL.setParameter("mvcPath", "/edit_permissions.jsp");
 
 		if (Validator.isNotNull(redirect)) {
 			portletURL.setParameter("redirect", redirect);
@@ -106,7 +127,13 @@ public class PermissionsURLTag extends TagSupport {
 			}
 		}
 
+		portletURL.setParameter(
+			"portletConfiguration", Boolean.TRUE.toString());
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
 		portletURL.setParameter("portletResource", portletDisplay.getId());
+
 		portletURL.setParameter("modelResource", modelResource);
 		portletURL.setParameter(
 			"modelResourceDescription", modelResourceDescription);

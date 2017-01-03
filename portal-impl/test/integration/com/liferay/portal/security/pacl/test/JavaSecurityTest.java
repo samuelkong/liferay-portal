@@ -14,10 +14,8 @@
 
 package com.liferay.portal.security.pacl.test;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.rule.PACLTestRule;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -34,6 +32,9 @@ import java.security.Permissions;
 import java.security.Policy;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.security.SecurityPermission;
+
+import java.util.concurrent.Callable;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -42,15 +43,18 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class JavaSecurityTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
 
 	@Test
 	public void testAccessController1() throws Exception {
@@ -60,7 +64,8 @@ public class JavaSecurityTest {
 			permissions.add(new AllPermission());
 
 			ProtectionDomain[] protectionDomains = new ProtectionDomain[] {
-				new ProtectionDomain(null, permissions)};
+				new ProtectionDomain(null, permissions)
+			};
 
 			AccessControlContext accessControlContext =
 				new AccessControlContext(protectionDomains);
@@ -76,8 +81,7 @@ public class JavaSecurityTest {
 					}
 
 				},
-				accessControlContext
-			);
+				accessControlContext);
 
 			Assert.fail();
 		}
@@ -93,7 +97,8 @@ public class JavaSecurityTest {
 			permissions.add(new AllPermission());
 
 			ProtectionDomain[] protectionDomains = new ProtectionDomain[] {
-				new ProtectionDomain(null, permissions)};
+				new ProtectionDomain(null, permissions)
+			};
 
 			AccessControlContext accessControlContext =
 				new AccessControlContext(protectionDomains);
@@ -109,7 +114,8 @@ public class JavaSecurityTest {
 
 						ProtectionDomain[] protectionDomains =
 							new ProtectionDomain[] {
-								new ProtectionDomain(null, permissions)};
+								new ProtectionDomain(null, permissions)
+							};
 
 						AccessControlContext accessControlContext =
 							new AccessControlContext(protectionDomains);
@@ -125,15 +131,13 @@ public class JavaSecurityTest {
 								}
 
 							},
-							accessControlContext
-						);
+							accessControlContext);
 
 						return null;
 					}
 
 				},
-				accessControlContext
-			);
+				accessControlContext);
 
 			Assert.fail();
 		}
@@ -149,7 +153,8 @@ public class JavaSecurityTest {
 			permissions.add(new AllPermission());
 
 			ProtectionDomain[] protectionDomains = new ProtectionDomain[] {
-				new ProtectionDomain(null, permissions)};
+				new ProtectionDomain(null, permissions)
+			};
 
 			AccessControlContext accessControlContext =
 				new AccessControlContext(protectionDomains);
@@ -165,8 +170,8 @@ public class JavaSecurityTest {
 
 						return assignedDomains;
 					}
-				}
-			);
+
+				});
 
 			AccessController.doPrivileged(
 				new PrivilegedAction<Void>() {
@@ -179,8 +184,7 @@ public class JavaSecurityTest {
 					}
 
 				},
-				accessControlContext
-			);
+				accessControlContext);
 
 			Assert.fail();
 		}
@@ -190,45 +194,35 @@ public class JavaSecurityTest {
 
 	@Test
 	public void testCrypto1() throws Exception {
-		try {
-			KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 
-			keyGenerator.init(128);
+		keyGenerator.init(128);
 
-			SecretKey secretKey = keyGenerator.generateKey();
+		SecretKey secretKey = keyGenerator.generateKey();
 
-			Cipher cipher = Cipher.getInstance("AES");
+		Cipher cipher = Cipher.getInstance("AES");
 
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+		cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-			String text = "Hello World";
+		String text = "Hello World";
 
-			cipher.doFinal(text.getBytes());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		cipher.doFinal(text.getBytes());
 	}
 
 	@Test
 	public void testCrypto2() throws Exception {
-		try {
-			Mac mac = Mac.getInstance("HmacMD5");
+		Mac mac = Mac.getInstance("HmacMD5");
 
-			String key = "123456789";
+		String key = "123456789";
 
-			SecretKeySpec secretKeySpec = new SecretKeySpec(
-				key.getBytes(), "HmacMD5");
+		SecretKeySpec secretKeySpec = new SecretKeySpec(
+			key.getBytes(), "HmacMD5");
 
-			mac.init(secretKeySpec);
+		mac.init(secretKeySpec);
 
-			String text = "Hello World";
+		String text = "Hello World";
 
-			mac.doFinal(text.getBytes());
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		mac.doFinal(text.getBytes());
 	}
 
 	@Test
@@ -273,9 +267,6 @@ public class JavaSecurityTest {
 		}
 		catch (UnsatisfiedLinkError usle) {
 		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
 	}
 
 	@Test
@@ -292,7 +283,24 @@ public class JavaSecurityTest {
 	@Test
 	public void testPolicy2() throws Exception {
 		try {
-			Policy.setPolicy(null);
+
+			// Simulate the stack length required to set the policy without
+			// actually setting it (in case we fail)
+
+			Callable<Void> callable = new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					SecurityManager sm = System.getSecurityManager();
+
+					sm.checkPermission(new SecurityPermission("setPolicy"));
+
+					return null;
+				}
+
+			};
+
+			callable.call();
 
 			Assert.fail();
 		}
@@ -314,7 +322,9 @@ public class JavaSecurityTest {
 	@Test
 	public void testProtectionDomain2() throws Exception {
 		try {
-			getClass().getProtectionDomain();
+			Class<?> clazz = getClass();
+
+			clazz.getProtectionDomain();
 
 			Assert.fail();
 		}

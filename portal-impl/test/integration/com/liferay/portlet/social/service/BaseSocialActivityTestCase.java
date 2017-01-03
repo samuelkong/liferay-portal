@@ -14,17 +14,17 @@
 
 package com.liferay.portlet.social.service;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.User;
-import com.liferay.portal.test.DeleteAfterTestRun;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.test.GroupTestUtil;
-import com.liferay.portal.util.test.UserTestUtil;
-import com.liferay.portlet.asset.model.AssetEntry;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portlet.social.util.SocialActivityHierarchyEntryThreadLocal;
-import com.liferay.portlet.social.util.SocialConfigurationUtil;
 import com.liferay.portlet.social.util.test.SocialActivityTestUtil;
+import com.liferay.social.kernel.util.SocialConfigurationUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class BaseSocialActivityTestCase {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_userClassNameId = PortalUtil.getClassNameId(User.class.getName());
+		userClassNameId = PortalUtil.getClassNameId(User.class.getName());
 
 		Class<?> clazz = SocialActivitySettingLocalServiceTest.class;
 
@@ -50,13 +50,13 @@ public class BaseSocialActivityTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
+		group = GroupTestUtil.addGroup();
 
-		_actorUser = UserTestUtil.addUser("actor", _group.getGroupId());
-		_creatorUser = UserTestUtil.addUser("creator", _group.getGroupId());
+		actorUser = UserTestUtil.addUser("actor", group.getGroupId());
+		creatorUser = UserTestUtil.addUser("creator", group.getGroupId());
 
-		_assetEntry = SocialActivityTestUtil.addAssetEntry(
-			_creatorUser, _group, null);
+		assetEntry = SocialActivityTestUtil.addAssetEntry(
+			creatorUser, group, null);
 
 		SocialActivityHierarchyEntryThreadLocal.clear();
 	}
@@ -69,17 +69,17 @@ public class BaseSocialActivityTestCase {
 	protected static final String TEST_MODEL = "test-model";
 
 	@DeleteAfterTestRun
-	protected static User _actorUser;
+	protected static User actorUser;
 
 	@DeleteAfterTestRun
-	protected static AssetEntry _assetEntry;
+	protected static AssetEntry assetEntry;
 
 	@DeleteAfterTestRun
-	protected static User _creatorUser;
+	protected static User creatorUser;
 
 	@DeleteAfterTestRun
-	protected static Group _group;
+	protected static Group group;
 
-	protected static long _userClassNameId;
+	protected static long userClassNameId;
 
 }

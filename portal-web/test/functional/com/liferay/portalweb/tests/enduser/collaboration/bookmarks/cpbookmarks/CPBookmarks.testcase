@@ -1,0 +1,700 @@
+<definition component-name="portal-collaboration">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Bookmarks" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Bookmark#tearDownCP" />
+
+				<execute macro="BookmarksFolder#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddBookmark" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="AddBookmarks" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is another test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+	</command>
+
+	<command name="AddFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+	</command>
+
+	<command name="AddIncorrectURLBookmark" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addIncorrectURLCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="www.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="AddNullBookmark" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addNullCP" />
+	</command>
+
+	<command name="AddNullFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addNullCP" />
+	</command>
+
+	<command name="AddNullSubfolder" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addNullSubfolderCP">
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+	</command>
+
+	<command name="AddNullTitleBookmark" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="AddNullURLBookmark" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addNullCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+		</execute>
+	</command>
+
+	<command name="AddSubfolder" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addSubfolderCP">
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderDescription" value="This is a test bookmarks subfolder!" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+	</command>
+
+	<command name="DeleteBookmark" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Bookmark#moveToRecycleBinCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+	</command>
+
+	<command name="DeleteSecondBookmark" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is another test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#moveToRecycleBinCP">
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+	</command>
+
+	<command name="EditBookmark" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#editCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+			<var name="editBookmarkDescription" value="This is a test bookmark edit!" />
+			<var name="editBookmarkName" value="Test Bookmark Edit" />
+			<var name="editBookmarkURL" value="https://www.google.com" />
+		</execute>
+	</command>
+
+	<command name="EditFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#editCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderDescriptionEdit" value="This is a test bookmarks folder edit!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="folderNameEdit" value="Test Bookmarks Folder Edit" />
+		</execute>
+	</command>
+
+	<command name="EditSubfolder" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addSubfolderCP">
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderDescription" value="This is a test bookmarks subfolder!" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#editSubfolderCP">
+			<var name="editSubfolderDescription" value="This is a test bookmarks subfolder edit!" />
+			<var name="editSubfolderName" value="Test Bookmarks Subfolder Edit" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+	</command>
+
+	<command name="MergeSubfolderBookmarkToFolder" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addSubfolderCP">
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderDescription" value="This is a test bookmarks subfolder!" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addToSubfolderCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#mergeSubfolderToFolderCP">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+	</command>
+
+	<command name="MoveSubfolderBookmarkToHome" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addSubfolderCP">
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderDescription" value="This is a test bookmarks subfolder!" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addToSubfolderCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#moveToHomeCP">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+			<var name="subfolderName" value="Test Bookmarks Subfolder" />
+		</execute>
+	</command>
+
+	<command name="MoveToRecycleBinFolder" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#addCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#viewFolder">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="BookmarksFolder#moveToRecycleBinCP">
+			<var name="folderDescription" value="This is a test bookmarks folder!" />
+			<var name="folderName" value="Test Bookmarks Folder" />
+		</execute>
+	</command>
+
+	<command name="SearchBookmark" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Search#searchCP">
+			<var name="searchTerm" value="Test Bookmark" />
+		</execute>
+
+		<execute macro="Search#viewSearchAssetTitle">
+			<var name="searchAssetTitle" value="Test Bookmark" />
+		</execute>
+	</command>
+
+	<command name="SearchBookmarks" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is another test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#viewBookmark">
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Search#searchCP">
+			<var name="searchTerm" value="Test Bookmark" />
+		</execute>
+
+		<execute macro="Search#viewSearchAssetTitle">
+			<var name="searchAssetTitle" value="Test Bookmark" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Search#searchCP">
+			<var name="searchTerm" value="Test Bookmark 2" />
+		</execute>
+
+		<execute macro="Search#viewSearchAssetTitle">
+			<var name="searchAssetTitle" value="Test Bookmark 2" />
+		</execute>
+	</command>
+
+	<command name="SearchNullBookmark" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is a test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="bookmarkURL" value="https://www.liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#addCP">
+			<var name="bookmarkDescription" value="This is another test bookmark!" />
+			<var name="bookmarkName" value="Test Bookmark 2" />
+			<var name="bookmarkURL" value="http://digg.com" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Bookmark#searchNullCP">
+			<var name="bookmark2Name" value="Test Bookmark 2" />
+			<var name="bookmarkName" value="Test Bookmark" />
+			<var name="nullBookmarkName" value="Test1" />
+		</execute>
+	</command>
+</definition>

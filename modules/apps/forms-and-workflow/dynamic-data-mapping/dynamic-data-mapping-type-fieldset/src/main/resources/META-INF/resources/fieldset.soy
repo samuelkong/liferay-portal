@@ -1,0 +1,66 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the fieldset field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'fieldset'"}
+	{call .fieldset data="all" /}
+{/deltemplate}
+
+/**
+ * Prints a column.
+ *
+ * @param columnSize
+ * @param field
+ */
+{template .fieldset_column autoescape="deprecated-contextual"}
+	<div class="col-md-{$columnSize}">
+		{let $variant: $field.type /}
+
+		{delcall ddm.field variant="$variant" data="$field" /}
+	</div>
+{/template}
+
+/**
+ * Prints all columns.
+ *
+ * @param columnSize
+ * @param fields
+ */
+{template .fieldset_columns autoescape="deprecated-contextual"}
+	{foreach $field in $fields}
+
+		{call ddm.fieldset_column data="all"}
+			{param columnSize: $columnSize /}
+			{param field: $field /}
+		{/call}
+	{/foreach}
+{/template}
+
+/**
+ * Prints the DDM form fieldset field.
+ *
+ * @param columnSize
+ * @param name
+ * @param fields
+ * @param? label
+ * @param tip
+ * @param visible
+ */
+{template .fieldset autoescape="deprecated-contextual"}
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-fieldset" data-fieldname="{$name}">
+
+		{if $tip}
+			<p class="liferay-ddm-form-field-tip">{$tip}</p>
+		{/if}
+
+		<fieldset>
+			<legend>{$label}</legend>
+
+			{call ddm.fieldset_columns data="all"}
+				{param columnSize: $columnSize /}
+				{param fields: $fields /}
+			{/call}
+		</fieldset>
+	</div>
+{/template}

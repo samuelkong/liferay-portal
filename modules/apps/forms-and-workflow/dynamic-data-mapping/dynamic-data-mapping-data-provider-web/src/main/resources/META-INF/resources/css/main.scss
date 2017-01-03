@@ -1,0 +1,42 @@
+@import "mixins";
+
+.portlet-dynamic-data-mapping-data-provider {
+	.btn-action {
+		height: 64px;
+		line-height: 60px;
+		width: 64px;
+	}
+
+	.form {
+		padding: 0 20px;
+
+		.form-group {
+			margin-bottom: 50px;
+		}
+
+		.help-block {
+			position: absolute;
+		}
+
+		.input-localized {
+			.help-block {
+				margin-top: 21px;
+			}
+		}
+	}
+
+	.form-control {
+		font-size: 14px;
+		height: 40px;
+	}
+
+	@include sm {
+		.form-control {
+			font-size: 16px;
+		}
+	}
+
+	.required-warning {
+		margin: 0 0 20px;
+	}
+}

@@ -28,13 +28,15 @@ import org.junit.Assert;
  */
 public class GCUtil {
 
-	public static void fullGC() throws InterruptedException {
-		ReferenceQueue<Object> referenceQueue = new ReferenceQueue<Object>();
+	public static void fullGC(boolean ensureEnqueuedReferences)
+		throws InterruptedException {
 
-		SoftReference<Object> softReference = new SoftReference<Object>(
+		ReferenceQueue<Object> referenceQueue = new ReferenceQueue<>();
+
+		SoftReference<Object> softReference = new SoftReference<>(
 			new Object(), referenceQueue);
 
-		List<byte[]> list = new ArrayList<byte[]>();
+		List<byte[]> list = new ArrayList<>();
 
 		while (true) {
 			try {
@@ -43,27 +45,47 @@ public class GCUtil {
 			catch (OutOfMemoryError oome) {
 				list.clear();
 
+				list = null;
+
 				break;
 			}
 		}
 
 		Assert.assertNull(softReference.get());
 		Assert.assertSame(softReference, referenceQueue.remove());
+
+		if (ensureEnqueuedReferences) {
+			fullGC(false);
+		}
 	}
 
-	public static void gc() throws InterruptedException {
-		ReferenceQueue<Object> referenceQueue = new ReferenceQueue<Object>();
+	public static void gc(boolean ensureEnqueuedReferences)
+		throws InterruptedException {
 
-		WeakReference<Object> weakReference = new WeakReference<Object>(
+		gc(true, ensureEnqueuedReferences);
+	}
+
+	public static void gc(boolean actively, boolean ensureEnqueuedReferences)
+		throws InterruptedException {
+
+		ReferenceQueue<Object> referenceQueue = new ReferenceQueue<>();
+
+		WeakReference<Object> weakReference = new WeakReference<>(
 			new Object(), referenceQueue);
 
-		while (weakReference.get() != null) {
-			System.gc();
+		if (actively) {
+			while (weakReference.get() != null) {
+				System.gc();
 
-			System.runFinalization();
+				System.runFinalization();
+			}
 		}
 
 		Assert.assertSame(weakReference, referenceQueue.remove());
+
+		if (ensureEnqueuedReferences) {
+			gc(actively, false);
+		}
 	}
 
 }

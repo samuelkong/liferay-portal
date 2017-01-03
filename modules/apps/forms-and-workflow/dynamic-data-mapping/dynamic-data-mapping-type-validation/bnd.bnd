@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Dynamic Data Mapping Type Validation
+Bundle-SymbolicName: com.liferay.dynamic.data.mapping.type.validation
+Bundle-Version: 2.0.5
+Liferay-JS-Config: /META-INF/resources/config.js
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Dynamic Data Mapping
+Web-ContextPath: /dynamic-data-mapping-type-validation

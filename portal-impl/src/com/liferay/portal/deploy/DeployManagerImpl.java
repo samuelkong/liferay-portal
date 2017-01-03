@@ -87,7 +87,7 @@ public class DeployManagerImpl implements DeployManager {
 				levelRequiredDeploymentContexts);
 
 			for (int j = 0; j < levelRequiredDeploymentWARFileNames.length;
-					j++) {
+				j++) {
 
 				String warFileName = levelRequiredDeploymentWARFileNames[j];
 
@@ -221,8 +221,8 @@ public class DeployManagerImpl implements DeployManager {
 		DeployManagerImpl.class);
 
 	private final List<String[]> _levelsRequiredDeploymentContexts =
-		new ArrayList<String[]>();
+		new ArrayList<>();
 	private final List<String[]> _levelsRequiredDeploymentWARFileNames =
-		new ArrayList<String[]>();
+		new ArrayList<>();
 
 }

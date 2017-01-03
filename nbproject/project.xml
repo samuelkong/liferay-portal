@@ -18,9 +18,9 @@
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
-					<label>modules\core\registry-api\src</label>
+					<label>modules\core\registry-api\src\main\java</label>
 					<type>java</type>
-					<location>modules/core/registry-api/src</location>
+					<location>modules/core/registry-api/src/main/java</location>
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
@@ -42,27 +42,21 @@
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
-					<label>portal-pacl\src</label>
+					<label>portal-kernel\src</label>
 					<type>java</type>
-					<location>portal-pacl/src</location>
-					<encoding>UTF-8</encoding>
-				</source-folder>
-				<source-folder>
-					<label>portal-service\src</label>
-					<type>java</type>
-					<location>portal-service/src</location>
+					<location>portal-kernel/src</location>
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<!--<source-folder>
-					<label>portal-service\test\integration</label>
+					<label>portal-kernel\test\integration</label>
 					<type>java</type>
-					<location>portal-service/test/integration</location>
+					<location>portal-kernel/test/integration</location>
 					<encoding>UTF-8</encoding>
 				</source-folder>-->
 				<source-folder>
-					<label>portal-service\test\unit</label>
+					<label>portal-kernel\test\unit</label>
 					<type>java</type>
-					<location>portal-service/test/unit</location>
+					<location>portal-kernel/test/unit</location>
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
@@ -72,9 +66,9 @@
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
-					<label>portal-test-internal\src</label>
+					<label>portal-test-integration\src</label>
 					<type>java</type>
-					<location>portal-test-internal/src</location>
+					<location>portal-test-integration/src</location>
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
@@ -172,16 +166,16 @@
 						<location>portal-impl/test/unit</location>
 					</source-folder>
 					<source-folder style="packages">
-						<label>portal-service\src</label>
-						<location>portal-service/src</location>
+						<label>portal-kernel\src</label>
+						<location>portal-kernel/src</location>
 					</source-folder>
 					<!--<source-folder style="packages">
-						<label>portal-service\test\integration</label>
-						<location>portal-service/test/integration</location>
+						<label>portal-kernel\test\integration</label>
+						<location>portal-kernel/test/integration</location>
 					</source-folder>-->
 					<source-folder style="packages">
-						<label>portal-service\test\unit</label>
-						<location>portal-service/test/unit</location>
+						<label>portal-kernel\test\unit</label>
+						<location>portal-kernel/test/unit</location>
 					</source-folder>
 					<source-folder style="packages">
 						<label>portal-test\src</label>
@@ -241,10 +235,9 @@
 				<package-root>portal-impl/src</package-root>
 				<package-root>portal-impl/test/integration</package-root>
 				<package-root>portal-impl/test/unit</package-root>
-				<package-root>portal-pacl/src</package-root>
-				<package-root>portal-service/src</package-root>
-				<!--<package-root>portal-service/test/integration</package-root>-->
-				<package-root>portal-service/test/unit</package-root>
+				<package-root>portal-kernel/src</package-root>
+				<!--<package-root>portal-kernel/test/integration</package-root>-->
+				<package-root>portal-kernel/test/unit</package-root>
 				<package-root>portal-web/test/functional</package-root>
 				<package-root>support-tomcat/src</package-root>
 				<package-root>util-bridges/src</package-root>
@@ -253,6 +246,7 @@
 				<package-root>util-java/test/unit</package-root>
 				<package-root>util-taglib/src</package-root>
 				<classpath mode="compile">lib/development/activation.jar</classpath>
+				<classpath mode="compile">lib/development/alloy-taglib.jar</classpath>
 				<classpath mode="compile">lib/development/annotations.jar</classpath>
 				<classpath mode="compile">lib/development/ant-apache-bsf.jar</classpath>
 				<classpath mode="compile">lib/development/ant-contrib.jar</classpath>
@@ -260,23 +254,22 @@
 				<classpath mode="compile">lib/development/ant-installer.jar</classpath>
 				<classpath mode="compile">lib/development/antelope.jar</classpath>
 				<classpath mode="compile">lib/development/appium.jar</classpath>
+				<classpath mode="compile">lib/development/bsh.jar</classpath>
 				<classpath mode="compile">lib/development/catalina.jar</classpath>
 				<classpath mode="compile">lib/development/cobertura.jar</classpath>
+				<classpath mode="compile">lib/development/com.liferay.ant.beanshell.jar</classpath>
 				<classpath mode="compile">lib/development/com.liferay.ant.bnd.jar</classpath>
+				<classpath mode="compile">lib/development/com.liferay.ant.build.logger.jar</classpath>
+				<classpath mode="compile">lib/development/com.liferay.ant.mirrors.get.jar</classpath>
 				<classpath mode="compile">lib/development/deployment.jar</classpath>
-				<classpath mode="compile">lib/development/derby.jar</classpath>
-				<classpath mode="compile">lib/development/derbytools.jar</classpath>
 				<classpath mode="compile">lib/development/dtddoc.jar</classpath>
 				<classpath mode="compile">lib/development/dtdparser.jar</classpath>
 				<classpath mode="compile">lib/development/dumbster.jar</classpath>
-				<classpath mode="compile">lib/development/ecj.jar</classpath>
 				<classpath mode="compile">lib/development/error-prone-ant.jar</classpath>
-				<classpath mode="compile">lib/development/firebird.jar</classpath>
 				<classpath mode="compile">lib/development/gson.jar</classpath>
 				<classpath mode="compile">lib/development/hamcrest-core.jar</classpath>
 				<classpath mode="compile">lib/development/hamcrest-library.jar</classpath>
 				<classpath mode="compile">lib/development/hsql.jar</classpath>
-				<classpath mode="compile">lib/development/interbase.jar</classpath>
 				<classpath mode="compile">lib/development/j2h.jar</classpath>
 				<classpath mode="compile">lib/development/jalopy.jar</classpath>
 				<classpath mode="compile">lib/development/jargs.jar</classpath>
@@ -293,41 +286,44 @@
 				<classpath mode="compile">lib/development/jsonassert.jar</classpath>
 				<classpath mode="compile">lib/development/jsp-api.jar</classpath>
 				<classpath mode="compile">lib/development/jta.jar</classpath>
-				<classpath mode="compile">lib/development/jtds.jar</classpath>
 				<classpath mode="compile">lib/development/junit.jar</classpath>
 				<classpath mode="compile">lib/development/jutf7.jar</classpath>
 				<classpath mode="compile">lib/development/jymsg.jar</classpath>
 				<classpath mode="compile">lib/development/mail.jar</classpath>
+				<classpath mode="compile">lib/development/mariadb.jar</classpath>
 				<classpath mode="compile">lib/development/maven-ant-tasks.jar</classpath>
 				<classpath mode="compile">lib/development/mockito.jar</classpath>
 				<classpath mode="compile">lib/development/mysql.jar</classpath>
 				<classpath mode="compile">lib/development/objenesis.jar</classpath>
 				<classpath mode="compile">lib/development/orangevolt-ant-tasks.jar</classpath>
+				<classpath mode="compile">lib/development/freemarker.jar</classpath>
 				<classpath mode="compile">lib/development/p6spy.jar</classpath>
 				<classpath mode="compile">lib/development/persistence.jar</classpath>
 				<classpath mode="compile">lib/development/postgresql.jar</classpath>
-				<classpath mode="compile">lib/development/powermock-mockito.jar</classpath>
+				<classpath mode="compile">lib/development/powermock-api-mockito.jar</classpath>
+				<classpath mode="compile">lib/development/powermock-api-support.jar</classpath>
+				<classpath mode="compile">lib/development/powermock-core.jar</classpath>
+				<classpath mode="compile">lib/development/powermock-module-junit4-common.jar</classpath>
+				<classpath mode="compile">lib/development/powermock-module-junit4.jar</classpath>
+				<classpath mode="compile">lib/development/powermock-reflect.jar</classpath>
 				<classpath mode="compile">lib/development/qdox.jar</classpath>
 				<classpath mode="compile">lib/development/resin.jar</classpath>
-				<classpath mode="compile">lib/development/sap.jar</classpath>
 				<classpath mode="compile">lib/development/saxpath.jar</classpath>
-				<classpath mode="compile">lib/development/script-10.jar</classpath>
 				<classpath mode="compile">lib/development/sdk-addon-api-0.2.jar</classpath>
-				<classpath mode="compile">lib/development/selenium-java.jar</classpath>
-				<classpath mode="compile">lib/development/selenium-server.jar</classpath>
 				<classpath mode="compile">lib/development/servlet-api.jar</classpath>
-				<classpath mode="compile">lib/development/sikuli-api.jar</classpath>
-				<classpath mode="compile">lib/development/sikuli-script.jar</classpath>
 				<classpath mode="compile">lib/development/smtp.jar</classpath>
-				<classpath mode="compile">lib/development/sonar-ant-task.jar</classpath>
 				<classpath mode="compile">lib/development/spring-instrument.jar</classpath>
 				<classpath mode="compile">lib/development/spring-instrument-tomcat.jar</classpath>
 				<classpath mode="compile">lib/development/spring-test.jar</classpath>
+				<classpath mode="compile">lib/development/tlddoc.jar</classpath>
+				<classpath mode="compile">lib/development/tomcat-api.jar</classpath>
 				<classpath mode="compile">lib/development/tomcat-coyote.jar</classpath>
+				<classpath mode="compile">lib/development/velocity.jar</classpath>
+				<classpath mode="compile">lib/development/velocity-tools.jar</classpath>
+				<classpath mode="compile">lib/development/websocket-api.jar</classpath>
 				<classpath mode="compile">lib/development/xmltask.jar</classpath>
 				<classpath mode="compile">lib/global/portlet.jar</classpath>
 				<classpath mode="compile">lib/portal/abdera.jar</classpath>
-				<classpath mode="compile">lib/portal/alloy-taglib.jar</classpath>
 				<classpath mode="compile">lib/portal/ant.jar</classpath>
 				<classpath mode="compile">lib/portal/antlr2.jar</classpath>
 				<classpath mode="compile">lib/portal/antlr3-runtime.jar</classpath>
@@ -340,16 +336,12 @@
 				<classpath mode="compile">lib/portal/axiom-impl.jar</classpath>
 				<classpath mode="compile">lib/portal/axis-ant.jar</classpath>
 				<classpath mode="compile">lib/portal/axis.jar</classpath>
-				<classpath mode="compile">lib/portal/backport-concurrent.jar</classpath>
 				<classpath mode="compile">lib/portal/bcmail.jar</classpath>
 				<classpath mode="compile">lib/portal/bcprov.jar</classpath>
 				<classpath mode="compile">lib/portal/bnd.jar</classpath>
-				<classpath mode="compile">lib/portal/bobo-browse.jar</classpath>
 				<classpath mode="compile">lib/portal/boilerpipe.jar</classpath>
-				<classpath mode="compile">lib/portal/bsh.jar</classpath>
 				<classpath mode="compile">lib/portal/bsf.jar</classpath>
 				<classpath mode="compile">lib/portal/c3p0.jar</classpath>
-				<classpath mode="compile">lib/portal/cas-client-core.jar</classpath>
 				<classpath mode="compile">lib/portal/ccpp-ri.jar</classpath>
 				<classpath mode="compile">lib/portal/ccpp.jar</classpath>
 				<classpath mode="compile">lib/portal/cglib-nodep.jar</classpath>
@@ -361,10 +353,9 @@
 				<classpath mode="compile">lib/portal/chemistry-opencmis-commons-impl.jar</classpath>
 				<classpath mode="compile">lib/portal/closure-compiler.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-beanutils.jar</classpath>
+				<classpath mode="compile">lib/portal/commons-chain.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-codec.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-collections.jar</classpath>
-				<classpath mode="compile">lib/portal/commons-compiler.jar</classpath>
-				<classpath mode="compile">lib/portal/commons-compiler-jdk.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-compress.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-configuration.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-dbcp.jar</classpath>
@@ -381,43 +372,30 @@
 				<classpath mode="compile">lib/portal/commons-validator.jar</classpath>
 				<classpath mode="compile">lib/portal/concurrent.jar</classpath>
 				<classpath mode="compile">lib/portal/crypt.jar</classpath>
-				<classpath mode="compile">lib/portal/daim.jar</classpath>
 				<classpath mode="compile">lib/portal/daisydiff.jar</classpath>
 				<classpath mode="compile">lib/portal/displaytag.jar</classpath>
 				<classpath mode="compile">lib/portal/dom4j.jar</classpath>
 				<classpath mode="compile">lib/portal/easyconf.jar</classpath>
 				<classpath mode="compile">lib/portal/eclipse-core-runtime.jar</classpath>
 				<classpath mode="compile">lib/portal/ecs.jar</classpath>
-				<classpath mode="compile">lib/portal/ehcache.jar</classpath>
-				<classpath mode="compile">lib/portal/ehcache-jgroupsreplication.jar</classpath>
-				<classpath mode="compile">lib/portal/fastutil.jar</classpath>
-				<classpath mode="compile">lib/portal/felix-fileinstall.jar</classpath>
 				<classpath mode="compile">lib/portal/fontbox.jar</classpath>
-				<classpath mode="compile">lib/portal/freemarker.jar</classpath>
 				<classpath mode="compile">lib/portal/freshcookies-security.jar</classpath>
 				<classpath mode="compile">lib/portal/gif89.jar</classpath>
-				<classpath mode="compile">lib/portal/groovy.jar</classpath>
 				<classpath mode="compile">lib/portal/hessian.jar</classpath>
-				<classpath mode="compile">lib/portal/hibernate3.jar</classpath>
+				<classpath mode="compile">lib/portal/hibernate-commons-annotations.jar</classpath>
+				<classpath mode="compile">lib/portal/hibernate-core.jar</classpath>
+				<classpath mode="compile">lib/portal/hikaricp.jar</classpath>
 				<classpath mode="compile">lib/portal/htmlparser.jar</classpath>
 				<classpath mode="compile">lib/portal/httpclient.jar</classpath>
 				<classpath mode="compile">lib/portal/httpcore.jar</classpath>
 				<classpath mode="compile">lib/portal/httpmime.jar</classpath>
 				<classpath mode="compile">lib/portal/ical4j.jar</classpath>
-				<classpath mode="compile">lib/portal/icq.jar</classpath>
 				<classpath mode="compile">lib/portal/im4java.jar</classpath>
 				<classpath mode="compile">lib/portal/isoparser.jar</classpath>
 				<classpath mode="compile">lib/portal/jabsorb.jar</classpath>
-				<classpath mode="compile">lib/portal/jackrabbit-api.jar</classpath>
-				<classpath mode="compile">lib/portal/jackrabbit-core.jar</classpath>
-				<classpath mode="compile">lib/portal/jackrabbit-jcr-commons.jar</classpath>
-				<classpath mode="compile">lib/portal/jackrabbit-spi-commons.jar</classpath>
-				<classpath mode="compile">lib/portal/jackrabbit-spi.jar</classpath>
 				<classpath mode="compile">lib/portal/jai_codec.jar</classpath>
 				<classpath mode="compile">lib/portal/jai_core.jar</classpath>
 				<classpath mode="compile">lib/portal/jakarta-regexp.jar</classpath>
-				<classpath mode="compile">lib/portal/jamwiki-core.jar</classpath>
-				<classpath mode="compile">lib/portal/janino.jar</classpath>
 				<classpath mode="compile">lib/portal/java-diff.jar</classpath>
 				<classpath mode="compile">lib/portal/java-libpst.jar</classpath>
 				<classpath mode="compile">lib/portal/javassist.jar</classpath>
@@ -429,60 +407,42 @@
 				<classpath mode="compile">lib/portal/jcifs.jar</classpath>
 				<classpath mode="compile">lib/portal/jcommon.jar</classpath>
 				<classpath mode="compile">lib/portal/jcl-over-slf4j.jar</classpath>
-				<classpath mode="compile">lib/portal/jcr.jar</classpath>
 				<classpath mode="compile">lib/portal/jdom.jar</classpath>
 				<classpath mode="compile">lib/portal/jempbox.jar</classpath>
 				<classpath mode="compile">lib/portal/jena.jar</classpath>
 				<classpath mode="compile">lib/portal/jericho-html.jar</classpath>
-				<classpath mode="compile">lib/portal/jets3t.jar</classpath>
 				<classpath mode="compile">lib/portal/jfreechart.jar</classpath>
-				<classpath mode="compile">lib/portal/jgroups.jar</classpath>
 				<classpath mode="compile">lib/portal/jhighlight.jar</classpath>
 				<classpath mode="compile">lib/portal/jhlabs-filters.jar</classpath>
 				<classpath mode="compile">lib/portal/jmatio.jar</classpath>
+				<classpath mode="compile">lib/portal/jna.jar</classpath>
 				<classpath mode="compile">lib/portal/jodconverter.jar</classpath>
 				<classpath mode="compile">lib/portal/jodd.jar</classpath>
 				<classpath mode="compile">lib/portal/jrcs-diff.jar</classpath>
-				<classpath mode="compile">lib/portal/jruby.jar</classpath>
 				<classpath mode="compile">lib/portal/json-java.jar</classpath>
-				<classpath mode="compile">lib/portal/jsonrpc.jar</classpath>
-				<classpath mode="compile">lib/portal/jspwiki.jar</classpath>
-				<classpath mode="compile">lib/portal/jsqlparser.jar</classpath>
+				<classpath mode="compile">lib/portal/json-schema-validator.jar</classpath>
 				<classpath mode="compile">lib/portal/jsr107cache.jar</classpath>
 				<classpath mode="compile">lib/portal/jstl-api.jar</classpath>
 				<classpath mode="compile">lib/portal/jstl-impl.jar</classpath>
 				<classpath mode="compile">lib/portal/juh.jar</classpath>
 				<classpath mode="compile">lib/portal/juniversalchardet.jar</classpath>
 				<classpath mode="compile">lib/portal/jurt.jar</classpath>
-				<classpath mode="compile">lib/portal/jython.jar</classpath>
 				<classpath mode="compile">lib/portal/kxml2.jar</classpath>
 				<classpath mode="compile">lib/portal/liferay-icu4j.jar</classpath>
 				<classpath mode="compile">lib/portal/liferay-yui-compressor.jar</classpath>
 				<classpath mode="compile">lib/portal/log4j.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-analyzers.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-core.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-grouping.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-highlighter.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-icu.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-join.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-memory.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-misc.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-queries.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-queryparser.jar</classpath>
-				<classpath mode="compile">lib/portal/lucene-spellchecker.jar</classpath>
+				<classpath mode="compile">lib/portal/log4j-extras.jar</classpath>
 				<classpath mode="compile">lib/portal/mchange-commons-java.jar</classpath>
 				<classpath mode="compile">lib/portal/metadata-extractor.jar</classpath>
 				<classpath mode="compile">lib/portal/mime4j-core.jar</classpath>
 				<classpath mode="compile">lib/portal/mime4j-dom.jar</classpath>
 				<classpath mode="compile">lib/portal/mimepull.jar</classpath>
-				<classpath mode="compile">lib/portal/msnm.jar</classpath>
+				<classpath mode="compile">lib/portal/monte-cc.jar</classpath>
 				<classpath mode="compile">lib/portal/nekohtml.jar</classpath>
 				<classpath mode="compile">lib/portal/netcdf.jar</classpath>
 				<classpath mode="compile">lib/portal/netty-all.jar</classpath>
 				<classpath mode="compile">lib/portal/odmg.jar</classpath>
-				<classpath mode="compile">lib/portal/openid4java.jar</classpath>
 				<classpath mode="compile">lib/portal/oro.jar</classpath>
-				<classpath mode="compile">lib/portal/oscache.jar</classpath>
 				<classpath mode="compile">lib/portal/pdfbox.jar</classpath>
 				<classpath mode="compile">lib/portal/poi-ooxml-schemas.jar</classpath>
 				<classpath mode="compile">lib/portal/poi-ooxml.jar</classpath>
@@ -490,16 +450,11 @@
 				<classpath mode="compile">lib/portal/poi.jar</classpath>
 				<classpath mode="compile">lib/portal/portal-client.jar</classpath>
 				<classpath mode="compile">lib/portal/portals-bridges.jar</classpath>
-				<classpath mode="compile">lib/portal/quartz.jar</classpath>
 				<classpath mode="compile">lib/portal/rdffilter.jar</classpath>
-				<classpath mode="compile">lib/portal/rhino.jar</classpath>
 				<classpath mode="compile">lib/portal/ridl.jar</classpath>
 				<classpath mode="compile">lib/portal/rome.jar</classpath>
-				<classpath mode="compile">lib/portal/ruby-gems.jar</classpath>
 				<classpath mode="compile">lib/portal/saaj-api.jar</classpath>
 				<classpath mode="compile">lib/portal/saaj-impl.jar</classpath>
-				<classpath mode="compile">lib/portal/scala-library.jar</classpath>
-				<classpath mode="compile">lib/portal/scala-reflect.jar</classpath>
 				<classpath mode="compile">lib/portal/scribe.jar</classpath>
 				<classpath mode="compile">lib/portal/serializer.jar</classpath>
 				<classpath mode="compile">lib/portal/simplecaptcha.jar</classpath>
@@ -516,7 +471,6 @@
 				<classpath mode="compile">lib/portal/spring-jms.jar</classpath>
 				<classpath mode="compile">lib/portal/spring-orm.jar</classpath>
 				<classpath mode="compile">lib/portal/spring-oxm.jar</classpath>
-				<classpath mode="compile">lib/portal/spring-struts.jar</classpath>
 				<classpath mode="compile">lib/portal/spring-tx.jar</classpath>
 				<classpath mode="compile">lib/portal/spring-web.jar</classpath>
 				<classpath mode="compile">lib/portal/spring-webmvc.jar</classpath>
@@ -525,8 +479,11 @@
 				<classpath mode="compile">lib/portal/stax.jar</classpath>
 				<classpath mode="compile">lib/portal/streambuffer.jar</classpath>
 				<classpath mode="compile">lib/portal/stringtemplate.jar</classpath>
+				<classpath mode="compile">lib/portal/struts-core.jar</classpath>
 				<classpath mode="compile">lib/portal/struts-el.jar</classpath>
-				<classpath mode="compile">lib/portal/struts.jar</classpath>
+				<classpath mode="compile">lib/portal/struts-extras.jar</classpath>
+				<classpath mode="compile">lib/portal/struts-taglib.jar</classpath>
+				<classpath mode="compile">lib/portal/struts-tiles.jar</classpath>
 				<classpath mode="compile">lib/portal/tagsoup.jar</classpath>
 				<classpath mode="compile">lib/portal/tika-core.jar</classpath>
 				<classpath mode="compile">lib/portal/tika-parsers.jar</classpath>
@@ -535,9 +492,6 @@
 				<classpath mode="compile">lib/portal/truezip.jar</classpath>
 				<classpath mode="compile">lib/portal/unoil.jar</classpath>
 				<classpath mode="compile">lib/portal/urlrewritefilter.jar</classpath>
-				<classpath mode="compile">lib/portal/vaadin.jar</classpath>
-				<classpath mode="compile">lib/portal/velocity-tools.jar</classpath>
-				<classpath mode="compile">lib/portal/velocity.jar</classpath>
 				<classpath mode="compile">lib/portal/vorbis-java-core.jar</classpath>
 				<classpath mode="compile">lib/portal/vorbis-java-tika.jar</classpath>
 				<classpath mode="compile">lib/portal/wsdl4j.jar</classpath>
@@ -551,9 +505,8 @@
 				<classpath mode="compile">lib/portal/xmpcore.jar</classpath>
 				<classpath mode="compile">lib/portal/xpp3.jar</classpath>
 				<classpath mode="compile">lib/portal/xstream.jar</classpath>
-				<classpath mode="compile">lib/portal/xuggle-xuggler.jar</classpath>
+				<classpath mode="compile">lib/portal/xuggle-xuggler-noarch.jar</classpath>
 				<classpath mode="compile">lib/portal/xz.jar</classpath>
-				<classpath mode="compile">modules/core/registry-impl/lib/org.eclipse.osgi.jar</classpath>
 				<source-level>1.5</source-level>
 			</compilation-unit>
 		</java-data>

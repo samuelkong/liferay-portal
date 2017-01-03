@@ -22,8 +22,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * @author Sergio González
+ * @author     Sergio González
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class AppViewToolbarTag extends TagSupport {
 
 	@Override
@@ -111,8 +113,8 @@ public class AppViewToolbarTag extends TagSupport {
 		"/html/taglib/ui/app_view_toolbar/start.jsp";
 
 	private String _endPage;
-	private boolean _includeDisplayStyle = false;
-	private boolean _includeSelectAll = false;
+	private boolean _includeDisplayStyle;
+	private boolean _includeSelectAll;
 	private String _searchJsp;
 	private String _startPage;
 

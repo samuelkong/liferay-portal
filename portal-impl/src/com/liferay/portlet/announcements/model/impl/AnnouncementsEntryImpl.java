@@ -15,19 +15,16 @@
 package com.liferay.portlet.announcements.model.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Wesley Gong
  */
 public class AnnouncementsEntryImpl extends AnnouncementsEntryBaseImpl {
-
-	public AnnouncementsEntryImpl() {
-	}
 
 	@Override
 	public long getGroupId() throws PortalException {

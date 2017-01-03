@@ -14,7 +14,8 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portlet.announcements.model.AnnouncementsEntry;
+import com.liferay.announcements.kernel.model.AnnouncementsEntry;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,6 +36,11 @@ public class AnnouncementsEntryVerifiableModel
 	@Override
 	public String getTableName() {
 		return "AnnouncementsEntry";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

@@ -541,7 +541,9 @@ create table ResourceBlockPermission (
 
 drop index IX_8D83D0CE on ResourcePermission;
 
+alter table ResourcePermission add primKeyId LONG;
 alter table ResourcePermission add ownerId LONG;
+alter table ResourcePermission add viewActionId BOOLEAN;
 
 create table ResourceTypePermission (
 	resourceTypePermissionId LONG not null primary key,
@@ -551,6 +553,18 @@ create table ResourceTypePermission (
 	roleId LONG,
 	actionIds LONG
 );
+
+alter table Role_ add uuid_ VARCHAR(75) null;
+alter table Role_ add userId LONG;
+alter table Role_ add userName VARCHAR(75) null;
+alter table Role_ add createDate DATE null;
+alter table Role_ add modifiedDate DATE null;
+
+update Role_ set name = 'Site Administrator' where name = 'Community Administrator';
+update Role_ set name = 'Site Content Reviewer' where name = 'Community Content Reviewer';
+update Role_ set name = 'Site Member' where name = 'Community Member';
+update Role_ set name = 'Site Owner' where name = 'Community Owner';
+update Role_ set name = 'Organization User' where name = 'Organization Member';
 
 create table SocialActivityAchievement (
 	activityAchievementId LONG not null primary key,
@@ -598,12 +612,6 @@ create table SocialActivitySetting (
 	name VARCHAR(75) null,
 	value VARCHAR(1024) null
 );
-
-update Role_ set name = 'Site Administrator' where name = 'Community Administrator';
-update Role_ set name = 'Site Content Reviewer' where name = 'Community Content Reviewer';
-update Role_ set name = 'Site Member' where name = 'Community Member';
-update Role_ set name = 'Site Owner' where name = 'Community Owner';
-update Role_ set name = 'Organization User' where name = 'Organization Member';
 
 alter table Ticket add type_ INTEGER;
 alter table Ticket add extraInfo TEXT null;

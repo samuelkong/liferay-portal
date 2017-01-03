@@ -14,9 +14,9 @@
 
 package com.liferay.portlet.documentlibrary.service.impl;
 
+import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portlet.documentlibrary.model.DLFileVersion;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portlet.documentlibrary.service.base.DLFileVersionServiceBaseImpl;
 import com.liferay.portlet.documentlibrary.service.permission.DLFileEntryPermission;
 
@@ -70,6 +70,18 @@ public class DLFileVersionServiceImpl extends DLFileVersionServiceBaseImpl {
 
 		return dlFileVersionLocalService.getLatestFileVersion(
 			getGuestOrUserId(), fileEntryId);
+	}
+
+	@Override
+	public DLFileVersion getLatestFileVersion(
+			long fileEntryId, boolean excludeWorkingCopy)
+		throws PortalException {
+
+		DLFileEntryPermission.check(
+			getPermissionChecker(), fileEntryId, ActionKeys.VIEW);
+
+		return dlFileVersionLocalService.getLatestFileVersion(
+			fileEntryId, excludeWorkingCopy);
 	}
 
 }

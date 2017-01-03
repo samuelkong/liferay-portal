@@ -14,6 +14,8 @@
 
 package com.liferay.portlet.messageboards.service.impl;
 
+import com.liferay.message.boards.kernel.model.MBStatsUser;
+import com.liferay.message.boards.kernel.model.MBThread;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
@@ -27,11 +29,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.util.ClassLoaderUtil;
-import com.liferay.portlet.messageboards.model.MBStatsUser;
-import com.liferay.portlet.messageboards.model.MBThread;
 import com.liferay.portlet.messageboards.model.impl.MBStatsUserImpl;
 import com.liferay.portlet.messageboards.service.base.MBStatsUserLocalServiceBaseImpl;
 
@@ -121,8 +121,8 @@ public class MBStatsUserLocalServiceImpl
 
 		Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 
-		QueryDefinition<MBThread> queryDefinition =
-			new QueryDefinition<MBThread>(WorkflowConstants.STATUS_IN_TRASH);
+		QueryDefinition<MBThread> queryDefinition = new QueryDefinition<>(
+			WorkflowConstants.STATUS_IN_TRASH);
 
 		List<MBThread> threads = mbThreadLocalService.getGroupThreads(
 			groupId, queryDefinition);

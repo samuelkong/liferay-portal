@@ -1,0 +1,46 @@
+<definition component-name="portal-util-misc">
+	<property name="osgi.app.includes" value="network-utilities" />
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Util" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Network Utilities Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Network Utilities Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Network Utilities" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+		</if>
+	</tear-down>
+
+	<command name="SearchDNSDomain" priority="2">
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Network Utilities Page" />
+		</execute>
+
+		<execute macro="NetworkUtilities#searchPG">
+			<var name="dnsDomain" value="" />
+			<var name="networkDomain" value="localhost" />
+		</execute>
+	</command>
+</definition>

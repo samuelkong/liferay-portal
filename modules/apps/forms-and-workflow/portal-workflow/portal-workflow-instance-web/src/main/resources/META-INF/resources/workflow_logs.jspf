@@ -1,0 +1,80 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<div class="task-activity">
+	<table class="table table-responsive">
+		<thead>
+			<tr>
+				<th>
+					<liferay-ui:message key="activity-description" />
+				</th>
+				<th>
+					<liferay-ui:message key="date" />
+				</th>
+			</tr>
+		</thead>
+
+		<tbody>
+
+			<%
+			for (WorkflowLog workflowLog : workflowInstanceEditDisplayContext.getWorkflowLogs()) {
+			%>
+
+				<tr>
+					<td>
+						<div>
+							<c:choose>
+								<c:when test="<%= workflowLog.getType() == WorkflowLog.TASK_COMPLETION %>">
+									<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getTaskCompletionMessageArguments(workflowLog) %>" key="x-completed-the-task-x" translateArguments="<%= false %>" />
+								</c:when>
+								<c:when test="<%= workflowLog.getType() == WorkflowLog.TASK_UPDATE %>">
+									<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getTaskUpdateMessageArguments(workflowLog) %>" key="x-updated-the-due-date" />
+								</c:when>
+								<c:when test="<%= workflowLog.getType() == WorkflowLog.TRANSITION %>">
+									<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getTransitionMessageArguments(workflowLog) %>" key="x-changed-the-state-from-x-to-x" translateArguments="<%= false %>" />
+								</c:when>
+								<c:when test="<%= workflowInstanceEditDisplayContext.isAuditUser(workflowLog) %>">
+									<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getUserFullName(workflowLog) %>" key="<%= workflowInstanceEditDisplayContext.getAssignedTheTaskMessageKey(workflowLog) %>" translateArguments="<%= false %>" />
+								</c:when>
+								<c:when test="<%= workflowLog.getRoleId() == 0 %>">
+									<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getAssignedTheTaskToMessageArguments(workflowLog) %>" key="x-assigned-the-task-to-x" translateArguments="<%= false %>" />
+
+									<c:if test="<%= workflowLog.getPreviousUserId() != 0 %>">
+										<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getPreviousAssigneeMessageArguments(workflowLog) %>" key="previous-assignee-was-x" translateArguments="<%= false %>" />
+									</c:if>
+								</c:when>
+								<c:otherwise>
+									<liferay-ui:message arguments="<%= workflowInstanceEditDisplayContext.getTaskInitiallyAssignedMessageArguments(workflowLog) %>" key="task-initially-assigned-to-the-x-role" translateArguments="<%= false %>" />
+								</c:otherwise>
+							</c:choose>
+
+							<%= workflowInstanceEditDisplayContext.getWorkflowLogComment(workflowLog) %>
+						</div>
+					</td>
+					<td>
+						<div>
+							<%= workflowInstanceEditDisplayContext.getWorkflowLogCreateDate(workflowLog) %>
+						</div>
+					</td>
+				</tr>
+
+			<%
+			}
+			%>
+
+		</tbody>
+	</table>
+</div>

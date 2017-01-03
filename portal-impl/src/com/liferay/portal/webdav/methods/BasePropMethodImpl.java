@@ -14,8 +14,11 @@
 
 package com.liferay.portal.webdav.methods;
 
+import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.WebDAVProps;
+import com.liferay.portal.kernel.service.WebDAVPropsLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringPool;
@@ -30,9 +33,6 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Namespace;
 import com.liferay.portal.kernel.xml.QName;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.model.Lock;
-import com.liferay.portal.model.WebDAVProps;
-import com.liferay.portal.service.WebDAVPropsLocalServiceUtil;
 import com.liferay.util.xml.DocUtil;
 
 import java.util.Arrays;
@@ -93,7 +93,7 @@ public abstract class BasePropMethodImpl implements Method {
 
 		// Make a deep copy of the props
 
-		props = new HashSet<QName>(props);
+		props = new HashSet<>(props);
 
 		// Start building multistatus response
 
@@ -106,10 +106,13 @@ public abstract class BasePropMethodImpl implements Method {
 
 		Element successStatElement = DocUtil.add(
 			responseElement, createQName("propstat"));
+
 		Element successPropElement = DocUtil.add(
 			successStatElement, createQName("prop"));
+
 		Element failureStatElement = DocUtil.add(
 			responseElement, createQName("propstat"));
+
 		Element failurePropElement = DocUtil.add(
 			failureStatElement, createQName("prop"));
 
@@ -122,10 +125,10 @@ public abstract class BasePropMethodImpl implements Method {
 			props.remove(ALLPROP);
 
 			if (resource.isCollection()) {
-				props.addAll(_ALL_COLLECTION_PROPS);
+				props.addAll(_allCollectionProps);
 			}
 			else {
-				props.addAll(_ALL_SIMPLE_PROPS);
+				props.addAll(_allSimpleProps);
 			}
 		}
 
@@ -414,19 +417,18 @@ public abstract class BasePropMethodImpl implements Method {
 		return HttpServletResponse.SC_NOT_FOUND;
 	}
 
-	private static final List<QName> _ALL_COLLECTION_PROPS = Arrays.asList(
+	private static final Log _log = LogFactoryUtil.getLog(
+		BasePropMethodImpl.class);
+
+	private static final List<QName> _allCollectionProps = Arrays.asList(
 		new QName[] {
 			CREATIONDATE, DISPLAYNAME, GETLASTMODIFIED, GETCONTENTTYPE,
 			LOCKDISCOVERY, RESOURCETYPE
 		});
-
-	private static final List<QName> _ALL_SIMPLE_PROPS = Arrays.asList(
+	private static final List<QName> _allSimpleProps = Arrays.asList(
 		new QName[] {
 			CREATIONDATE, DISPLAYNAME, GETLASTMODIFIED, GETCONTENTTYPE,
 			GETCONTENTLENGTH, ISREADONLY, LOCKDISCOVERY, RESOURCETYPE
 		});
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		BasePropMethodImpl.class);
 
 }

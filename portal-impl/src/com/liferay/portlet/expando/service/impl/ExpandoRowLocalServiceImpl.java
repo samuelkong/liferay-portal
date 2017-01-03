@@ -14,11 +14,10 @@
 
 package com.liferay.portlet.expando.service.impl;
 
+import com.liferay.expando.kernel.model.ExpandoRow;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.auth.CompanyThreadLocal;
-import com.liferay.portlet.expando.model.ExpandoRow;
-import com.liferay.portlet.expando.model.ExpandoTable;
-import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.expando.service.base.ExpandoRowLocalServiceBaseImpl;
 
 import java.util.Collections;
@@ -104,6 +103,11 @@ public class ExpandoRowLocalServiceImpl extends ExpandoRowLocalServiceBaseImpl {
 		for (ExpandoRow row : rows) {
 			deleteRow(row);
 		}
+	}
+
+	@Override
+	public ExpandoRow fetchRow(long tableId, long classPK) {
+		return expandoRowPersistence.fetchByT_C(tableId, classPK);
 	}
 
 	@Override
@@ -207,21 +211,6 @@ public class ExpandoRowLocalServiceImpl extends ExpandoRowLocalServiceBaseImpl {
 			companyId, classNameId, tableName, start, end);
 	}
 
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getRows(long, String,
-	 *             String, int, int)}
-	 */
-	@Deprecated
-	@Override
-	public List<ExpandoRow> getRows(
-		String className, String tableName, int start, int end) {
-
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		return expandoRowLocalService.getRows(
-			companyId, className, tableName, start, end);
-	}
-
 	@Override
 	public int getRowsCount(long tableId) {
 		return expandoRowPersistence.countByTableId(tableId);
@@ -249,19 +238,6 @@ public class ExpandoRowLocalServiceImpl extends ExpandoRowLocalServiceBaseImpl {
 
 		return expandoRowLocalService.getRowsCount(
 			companyId, classNameId, tableName);
-	}
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #getRowsCount(long, String,
-	 *             String)}
-	 */
-	@Deprecated
-	@Override
-	public int getRowsCount(String className, String tableName) {
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		return expandoRowLocalService.getRowsCount(
-			companyId, className, tableName);
 	}
 
 }

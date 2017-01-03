@@ -14,15 +14,22 @@
 
 package com.liferay.portlet.documentlibrary.util;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.model.DLProcessorConstants;
+import com.liferay.document.library.kernel.store.DLStoreUtil;
+import com.liferay.document.library.kernel.util.DLPreviewableProcessor;
+import com.liferay.document.library.kernel.util.ImageProcessor;
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.image.ImageBag;
+import com.liferay.portal.kernel.image.ImageTool;
 import com.liferay.portal.kernel.image.ImageToolUtil;
-import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
@@ -31,8 +38,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
-import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
@@ -132,6 +137,11 @@ public class ImageProcessorImpl
 	}
 
 	@Override
+	public String getType() {
+		return DLProcessorConstants.IMAGE_PROCESSOR;
+	}
+
+	@Override
 	public boolean hasImages(FileVersion fileVersion) {
 		if (!PropsValues.DL_FILE_ENTRY_PREVIEW_ENABLED &&
 			!PropsValues.DL_FILE_ENTRY_THUMBNAIL_ENABLED) {
@@ -173,10 +183,6 @@ public class ImageProcessorImpl
 
 	@Override
 	public boolean isSupported(String mimeType) {
-		if (Validator.isNull(mimeType)) {
-			return false;
-		}
-
 		return _imageMimeTypes.contains(mimeType);
 	}
 
@@ -320,6 +326,9 @@ public class ImageProcessorImpl
 			}
 		}
 		catch (NoSuchFileEntryException nsfee) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(nsfee, nsfee);
+			}
 		}
 		finally {
 			StreamUtil.cleanUp(inputStream);
@@ -335,13 +344,22 @@ public class ImageProcessorImpl
 			return type;
 		}
 
-		String extension = fileVersion.getExtension();
+		String mimeType = fileVersion.getMimeType();
 
-		if (extension.equals("jpeg")) {
-			type = "jpg";
+		if (mimeType.equals(ContentTypes.IMAGE_BMP)) {
+			type = ImageTool.TYPE_BMP;
+		}
+		else if (mimeType.equals(ContentTypes.IMAGE_GIF)) {
+			type = ImageTool.TYPE_GIF;
+		}
+		else if (mimeType.equals(ContentTypes.IMAGE_JPEG)) {
+			type = ImageTool.TYPE_JPEG;
+		}
+		else if (mimeType.equals(ContentTypes.IMAGE_PNG)) {
+			type = ImageTool.TYPE_PNG;
 		}
 		else if (!_previewGenerationRequired(fileVersion)) {
-			type = extension;
+			type = fileVersion.getExtension();
 		}
 
 		return type;
@@ -369,9 +387,9 @@ public class ImageProcessorImpl
 	}
 
 	private boolean _previewGenerationRequired(FileVersion fileVersion) {
-		String type = fileVersion.getExtension();
+		String mimeType = fileVersion.getMimeType();
 
-		if (type.equals("tiff") || type.equals("tif")) {
+		if (mimeType.contains("tiff") || mimeType.contains("tif")) {
 			return true;
 		}
 		else {
@@ -461,7 +479,7 @@ public class ImageProcessorImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		ImageProcessorImpl.class);
 
-	private final List<Long> _fileVersionIds = new Vector<Long>();
+	private final List<Long> _fileVersionIds = new Vector<>();
 	private final Set<String> _imageMimeTypes = SetUtil.fromArray(
 		PropsValues.DL_FILE_ENTRY_PREVIEW_IMAGE_MIME_TYPES);
 

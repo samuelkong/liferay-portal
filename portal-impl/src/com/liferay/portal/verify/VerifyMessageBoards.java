@@ -14,17 +14,16 @@
 
 package com.liferay.portal.verify;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.message.boards.kernel.model.MBMessage;
+import com.liferay.message.boards.kernel.model.MBThread;
+import com.liferay.message.boards.kernel.service.MBMessageLocalServiceUtil;
+import com.liferay.message.boards.kernel.service.MBThreadLocalServiceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
-import com.liferay.portlet.messageboards.model.MBCategory;
-import com.liferay.portlet.messageboards.model.MBMessage;
-import com.liferay.portlet.messageboards.model.MBThread;
-import com.liferay.portlet.messageboards.service.MBCategoryLocalServiceUtil;
-import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
-import com.liferay.portlet.messageboards.service.MBThreadLocalServiceUtil;
 
 import java.util.List;
 
@@ -43,138 +42,140 @@ public class VerifyMessageBoards extends VerifyProcess {
 	}
 
 	protected void verifyAssetsForMessages() throws Exception {
-		List<MBMessage> messages =
-			MBMessageLocalServiceUtil.getNoAssetMessages();
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			List<MBMessage> messages =
+				MBMessageLocalServiceUtil.getNoAssetMessages();
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"Processing " + messages.size() + " messages with no asset");
-		}
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Processing " + messages.size() +
+						" messages with no asset");
+			}
 
-		for (MBMessage message : messages) {
-			try {
-				MBMessageLocalServiceUtil.updateAsset(
-					message.getUserId(), message, null, null, null);
+			for (MBMessage message : messages) {
+				try {
+					MBMessageLocalServiceUtil.updateAsset(
+						message.getUserId(), message, null, null, null);
 
-				if (message.getStatus() == WorkflowConstants.STATUS_DRAFT) {
-					boolean visible = false;
+					if (message.getStatus() == WorkflowConstants.STATUS_DRAFT) {
+						boolean visible = false;
 
-					if (message.isApproved() &&
-						((message.getClassNameId() == 0) ||
-						 (message.getParentMessageId() != 0))) {
+						if (message.isApproved() &&
+							((message.getClassNameId() == 0) ||
+							 (message.getParentMessageId() != 0))) {
 
-						visible = true;
+							visible = true;
+						}
+
+						AssetEntryLocalServiceUtil.updateEntry(
+							message.getWorkflowClassName(),
+							message.getMessageId(), null, null, true, visible);
 					}
-
-					AssetEntryLocalServiceUtil.updateEntry(
-						message.getWorkflowClassName(), message.getMessageId(),
-						null, visible);
+				}
+				catch (Exception e) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to update asset for message " +
+								message.getMessageId() + ": " + e.getMessage());
+					}
 				}
 			}
-			catch (Exception e) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to update asset for message " +
-							message.getMessageId() + ": " + e.getMessage());
-				}
-			}
-		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Assets verified for messages");
+			if (_log.isDebugEnabled()) {
+				_log.debug("Assets verified for messages");
+			}
 		}
 	}
 
 	protected void verifyAssetsForThreads() throws Exception {
-		List<MBThread> threads = MBThreadLocalServiceUtil.getNoAssetThreads();
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			List<MBThread> threads =
+				MBThreadLocalServiceUtil.getNoAssetThreads();
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"Processing " + threads.size() + " threads with no asset");
-		}
-
-		for (MBThread thread : threads) {
-			try {
-				AssetEntryLocalServiceUtil.updateEntry(
-					thread.getRootMessageUserId(), thread.getGroupId(),
-					thread.getStatusDate(), thread.getLastPostDate(),
-					MBThread.class.getName(), thread.getThreadId(), null, 0,
-					new long[0], new String[0], false, null, null, null, null,
-					String.valueOf(thread.getRootMessageId()), null, null, null,
-					null, 0, 0, null, false);
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Processing " + threads.size() + " threads with no asset");
 			}
-			catch (Exception e) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to update asset for thread " +
-							thread.getThreadId() + ": " + e.getMessage());
+
+			for (MBThread thread : threads) {
+				try {
+					AssetEntryLocalServiceUtil.updateEntry(
+						thread.getRootMessageUserId(), thread.getGroupId(),
+						thread.getStatusDate(), thread.getLastPostDate(),
+						MBThread.class.getName(), thread.getThreadId(), null, 0,
+						new long[0], new String[0], true, false, null, null,
+						null, null, null,
+						String.valueOf(thread.getRootMessageId()), null, null,
+						null, null, 0, 0, null);
+				}
+				catch (Exception e) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to update asset for thread " +
+								thread.getThreadId() + ": " + e.getMessage());
+					}
 				}
 			}
-		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Assets verified for threads");
+			if (_log.isDebugEnabled()) {
+				_log.debug("Assets verified for threads");
+			}
 		}
 	}
 
 	protected void verifyStatisticsForCategories() throws Exception {
-		List<MBCategory> categories =
-			MBCategoryLocalServiceUtil.getMBCategories(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"Processing " + categories.size() +
-					" categories for statistics accuracy");
-		}
-
-		for (MBCategory category : categories) {
-			int threadCount = MBThreadLocalServiceUtil.getCategoryThreadsCount(
-				category.getGroupId(), category.getCategoryId(),
-				WorkflowConstants.STATUS_APPROVED);
-			int messageCount =
-				MBMessageLocalServiceUtil.getCategoryMessagesCount(
-					category.getGroupId(), category.getCategoryId(),
-					WorkflowConstants.STATUS_APPROVED);
-
-			if ((category.getThreadCount() != threadCount) ||
-				(category.getMessageCount() != messageCount)) {
-
-				category.setThreadCount(threadCount);
-				category.setMessageCount(messageCount);
-
-				MBCategoryLocalServiceUtil.updateMBCategory(category);
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Processing categories for statistics accuracy");
 			}
-		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Statistics verified for categories");
+			StringBundler sb = new StringBundler(6);
+
+			sb.append("update MBCategory set threadCount = (select count(*) ");
+			sb.append("from MBThread where (MBCategory.groupId = ");
+			sb.append("MBThread.groupId) and (MBCategory.categoryId = ");
+			sb.append("MBThread.categoryId) and (MBThread.status = ");
+			sb.append(WorkflowConstants.STATUS_APPROVED);
+			sb.append("))");
+
+			runSQL(sb.toString());
+
+			sb.setIndex(0);
+
+			sb.append("update MBCategory set messageCount = (select count(*) ");
+			sb.append("from MBMessage where (MBCategory.groupId = ");
+			sb.append("MBMessage.groupId) and (MBCategory.categoryId = ");
+			sb.append("MBMessage.categoryId) and (MBMessage.status = ");
+			sb.append(WorkflowConstants.STATUS_APPROVED);
+			sb.append("))");
+
+			runSQL(sb.toString());
+
+			if (_log.isDebugEnabled()) {
+				_log.debug("Statistics verified for categories");
+			}
 		}
 	}
 
 	protected void verifyStatisticsForThreads() throws Exception {
-		List<MBThread> threads = MBThreadLocalServiceUtil.getMBThreads(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"Processing " + threads.size() +
-					" threads for statistics accuracy");
-		}
-
-		for (MBThread thread : threads) {
-			int messageCount = MBMessageLocalServiceUtil.getThreadMessagesCount(
-				thread.getThreadId(), WorkflowConstants.STATUS_APPROVED);
-
-			if (thread.getMessageCount() != messageCount) {
-				thread.setMessageCount(messageCount);
-
-				MBThreadLocalServiceUtil.updateMBThread(thread);
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Processing threads for statistics accuracy");
 			}
-		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Statistics verified for threads");
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("update MBThread set messageCount = (select count(*) ");
+			sb.append("from MBMessage where (MBThread.threadId = ");
+			sb.append("MBMessage.threadId) and (MBMessage.status = ");
+			sb.append(WorkflowConstants.STATUS_APPROVED);
+			sb.append("))");
+
+			runSQL(sb.toString());
+
+			if (_log.isDebugEnabled()) {
+				_log.debug("Statistics verified for threads");
+			}
 		}
 	}
 

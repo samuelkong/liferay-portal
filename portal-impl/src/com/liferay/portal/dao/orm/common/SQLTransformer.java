@@ -15,7 +15,8 @@
 package com.liferay.portal.dao.orm.common;
 
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
@@ -56,65 +57,45 @@ public class SQLTransformer {
 
 	private void _reloadSQLTransformer() {
 		if (_transformedSqls == null) {
-			_transformedSqls = new ConcurrentHashMap<String, String>();
+			_transformedSqls = new ConcurrentHashMap<>();
 		}
 		else {
 			_transformedSqls.clear();
 		}
 
 		_vendorDB2 = false;
-		_vendorDerby = false;
-		_vendorFirebird = false;
 		_vendorHypersonic = false;
-		_vendorInformix = false;
-		_vendorIngres = false;
-		_vendorInterbase = false;
 		_vendorMySQL = false;
 		_vendorOracle = false;
 		_vendorPostgreSQL = false;
 		_vendorSQLServer = false;
 		_vendorSybase = false;
 
-		DB db = DBFactoryUtil.getDB();
+		DB db = DBManagerUtil.getDB();
 
-		String dbType = db.getType();
+		DBType dbType = db.getDBType();
 
 		_db = db;
 
-		if (dbType.equals(DB.TYPE_DB2)) {
+		if (dbType == DBType.DB2) {
 			_vendorDB2 = true;
 		}
-		else if (dbType.equals(DB.TYPE_DERBY)) {
-			_vendorDerby = true;
-		}
-		else if (dbType.equals(DB.TYPE_FIREBIRD)) {
-			_vendorFirebird = true;
-		}
-		else if (dbType.equals(DB.TYPE_HYPERSONIC)) {
+		else if (dbType == DBType.HYPERSONIC) {
 			_vendorHypersonic = true;
 		}
-		else if (dbType.equals(DB.TYPE_INFORMIX)) {
-			_vendorInformix = true;
-		}
-		else if (dbType.equals(DB.TYPE_INGRES)) {
-			_vendorIngres = true;
-		}
-		else if (dbType.equals(DB.TYPE_INTERBASE)) {
-			_vendorInterbase = true;
-		}
-		else if (dbType.equals(DB.TYPE_MYSQL)) {
+		else if (dbType == DBType.MYSQL) {
 			_vendorMySQL = true;
 		}
-		else if (db.getType().equals(DB.TYPE_ORACLE)) {
+		else if (dbType == DBType.ORACLE) {
 			_vendorOracle = true;
 		}
-		else if (dbType.equals(DB.TYPE_POSTGRESQL)) {
+		else if (dbType == DBType.POSTGRESQL) {
 			_vendorPostgreSQL = true;
 		}
-		else if (dbType.equals(DB.TYPE_SQLSERVER)) {
+		else if (dbType == DBType.SQLSERVER) {
 			_vendorSQLServer = true;
 		}
-		else if (dbType.equals(DB.TYPE_SYBASE)) {
+		else if (dbType == DBType.SYBASE) {
 			_vendorSybase = true;
 		}
 	}
@@ -162,17 +143,8 @@ public class SQLTransformer {
 	private String _replaceBitwiseCheck(String sql) {
 		Matcher matcher = _bitwiseCheckPattern.matcher(sql);
 
-		if (_vendorDerby) {
-			return matcher.replaceAll("MOD($1 / $2, 2) != 0");
-		}
-		else if (_vendorInformix || _vendorIngres) {
-			return matcher.replaceAll("BIT_AND($1, $2)");
-		}
-		else if (_vendorFirebird || _vendorInterbase) {
-			return matcher.replaceAll("BIN_AND($1, $2)");
-		}
-		else if (_vendorMySQL || _vendorPostgreSQL || _vendorSQLServer ||
-				 _vendorSybase) {
+		if (_vendorMySQL || _vendorPostgreSQL || _vendorSQLServer ||
+			_vendorSybase) {
 
 			return matcher.replaceAll("($1 & $2)");
 		}
@@ -185,6 +157,16 @@ public class SQLTransformer {
 		return StringUtil.replace(
 			newSQL, new String[] {"[$FALSE$]", "[$TRUE$]"},
 			new String[] {_db.getTemplateFalse(), _db.getTemplateTrue()});
+	}
+
+	private String _replaceCastClobText(String sql) {
+		Matcher matcher = _castClobTextPattern.matcher(sql);
+
+		if (_vendorOracle) {
+			return matcher.replaceAll("DBMS_LOB.SUBSTR($1, 4000, 1)");
+		}
+
+		return _replaceCastText(matcher);
 	}
 
 	private String _replaceCastLong(String sql) {
@@ -201,11 +183,9 @@ public class SQLTransformer {
 		}
 	}
 
-	private String _replaceCastText(String sql) {
-		Matcher matcher = _castTextPattern.matcher(sql);
-
-		if (_vendorDB2 || _vendorDerby) {
-			return matcher.replaceAll("CAST($1 AS CHAR(254))");
+	private String _replaceCastText(Matcher matcher) {
+		if (_vendorDB2) {
+			return matcher.replaceAll("CAST($1 AS VARCHAR(254))");
 		}
 		else if (_vendorHypersonic) {
 			return matcher.replaceAll("CONVERT($1, SQL_VARCHAR)");
@@ -227,6 +207,10 @@ public class SQLTransformer {
 		}
 	}
 
+	private String _replaceCastText(String sql) {
+		return _replaceCastText(_castTextPattern.matcher(sql));
+	}
+
 	private String _replaceCrossJoin(String sql) {
 		if (_vendorSybase) {
 			return StringUtil.replace(sql, "CROSS JOIN", StringPool.COMMA);
@@ -237,6 +221,19 @@ public class SQLTransformer {
 
 	private String _replaceEscape(String sql) {
 		return StringUtil.replace(sql, "LIKE ?", "LIKE ? ESCAPE '\\'");
+	}
+
+	private String _replaceInStr(String sql) {
+		Matcher matcher = _instrPattern.matcher(sql);
+
+		if (_vendorPostgreSQL) {
+			return matcher.replaceAll("POSITION($2 in $1)");
+		}
+		else if (_vendorSybase || _vendorSQLServer) {
+			return matcher.replaceAll("CHARINDEX($2, $1)");
+		}
+
+		return sql;
 	}
 
 	private String _replaceIntegerDivision(String sql) {
@@ -276,14 +273,27 @@ public class SQLTransformer {
 		return StringUtil.replace(sql, " != ''", " IS NOT NULL");
 	}
 
+	private String _replaceNullDate(String newSQL) {
+		if (_vendorPostgreSQL) {
+			return StringUtil.replace(
+				newSQL, "[$NULL_DATE$]", "CAST(NULL AS TIMESTAMP)");
+		}
+
+		return StringUtil.replace(newSQL, "[$NULL_DATE$]", "NULL");
+	}
+
 	private String _replaceReplace(String newSQL) {
 		return newSQL.replaceAll("(?i)replace\\(", "str_replace(");
 	}
 
-	private String _replaceUnion(String sql) {
-		Matcher matcher = _unionAllPattern.matcher(sql);
+	private String _replaceSubstr(String sql) {
+		Matcher matcher = _substrPattern.matcher(sql);
 
-		return matcher.replaceAll("$1 $2");
+		if (_vendorSybase || _vendorSQLServer) {
+			return matcher.replaceAll("SUBSTRING($1, $2, $3)");
+		}
+
+		return sql;
 	}
 
 	private String _transform(String sql) {
@@ -295,19 +305,20 @@ public class SQLTransformer {
 
 		newSQL = _replaceBitwiseCheck(newSQL);
 		newSQL = _replaceBoolean(newSQL);
+		newSQL = _replaceCastClobText(newSQL);
 		newSQL = _replaceCastLong(newSQL);
 		newSQL = _replaceCastText(newSQL);
 		newSQL = _replaceCrossJoin(newSQL);
+		newSQL = _replaceInStr(newSQL);
 		newSQL = _replaceIntegerDivision(newSQL);
+		newSQL = _replaceNullDate(newSQL);
+		newSQL = _replaceSubstr(newSQL);
 
 		if (_vendorDB2) {
 			newSQL = _replaceLike(newSQL);
 		}
-		else if (_vendorDerby) {
-			newSQL = _replaceUnion(newSQL);
-		}
 		else if (_vendorMySQL) {
-			DB db = DBFactoryUtil.getDB();
+			DB db = DBManagerUtil.getDB();
 
 			if (!db.isSupportsStringCaseSensitiveQuery()) {
 				newSQL = _removeLower(newSQL);
@@ -419,38 +430,37 @@ public class SQLTransformer {
 
 	private static final String _LOWER_OPEN = "lower(";
 
-	private static Log _log = LogFactoryUtil.getLog(SQLTransformer.class);
+	private static final Log _log = LogFactoryUtil.getLog(SQLTransformer.class);
 
-	private static SQLTransformer _instance = new SQLTransformer();
+	private static final SQLTransformer _instance = new SQLTransformer();
 
-	private static Pattern _bitwiseCheckPattern = Pattern.compile(
+	private static final Pattern _bitwiseCheckPattern = Pattern.compile(
 		"BITAND\\((.+?),(.+?)\\)");
-	private static Pattern _castLongPattern = Pattern.compile(
+	private static final Pattern _castClobTextPattern = Pattern.compile(
+		"CAST_CLOB_TEXT\\((.+?)\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern _castLongPattern = Pattern.compile(
 		"CAST_LONG\\((.+?)\\)", Pattern.CASE_INSENSITIVE);
-	private static Pattern _castTextPattern = Pattern.compile(
+	private static final Pattern _castTextPattern = Pattern.compile(
 		"CAST_TEXT\\((.+?)\\)", Pattern.CASE_INSENSITIVE);
-	private static Pattern _integerDivisionPattern = Pattern.compile(
+	private static final Pattern _instrPattern = Pattern.compile(
+		"INSTR\\((.+?),(.+?)\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern _integerDivisionPattern = Pattern.compile(
 		"INTEGER_DIV\\((.+?),(.+?)\\)", Pattern.CASE_INSENSITIVE);
-	private static Pattern _jpqlCountPattern = Pattern.compile(
+	private static final Pattern _jpqlCountPattern = Pattern.compile(
 		"SELECT COUNT\\((\\S+)\\) FROM (\\S+) (\\S+)");
-	private static Pattern _likePattern = Pattern.compile(
+	private static final Pattern _likePattern = Pattern.compile(
 		"LIKE \\?", Pattern.CASE_INSENSITIVE);
-	private static Pattern _modPattern = Pattern.compile(
+	private static final Pattern _modPattern = Pattern.compile(
 		"MOD\\((.+?),(.+?)\\)", Pattern.CASE_INSENSITIVE);
-	private static Pattern _negativeComparisonPattern = Pattern.compile(
+	private static final Pattern _negativeComparisonPattern = Pattern.compile(
 		"(!?=)( -([0-9]+)?)", Pattern.CASE_INSENSITIVE);
-	private static Pattern _unionAllPattern = Pattern.compile(
-		"SELECT \\* FROM(.*)TEMP_TABLE(.*)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern _substrPattern = Pattern.compile(
+		"SUBSTR\\((.+?),(.+?),(.+?)\\)", Pattern.CASE_INSENSITIVE);
 
 	private DB _db;
 	private Map<String, String> _transformedSqls;
 	private boolean _vendorDB2;
-	private boolean _vendorDerby;
-	private boolean _vendorFirebird;
 	private boolean _vendorHypersonic;
-	private boolean _vendorInformix;
-	private boolean _vendorIngres;
-	private boolean _vendorInterbase;
 	private boolean _vendorMySQL;
 	private boolean _vendorOracle;
 	private boolean _vendorPostgreSQL;

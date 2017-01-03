@@ -3,38 +3,6 @@
 
 <resource-action-mapping>
 	<portlet-resource>
-		<portlet-name>2</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults />
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>11</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults />
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
 		<portlet-name>90</portlet-name>
 		<permissions>
 			<supports>
@@ -60,167 +28,6 @@
 		</permissions>
 	</portlet-resource>
 	<portlet-resource>
-		<portlet-name>125</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>EXPORT_USER</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>128</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>129</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>130</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>131</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>132</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>134</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>135</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
 		<portlet-name>136</portlet-name>
 		<permissions>
 			<supports>
@@ -240,137 +47,13 @@
 			</guest-unsupported>
 		</permissions>
 	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>137</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>140</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults />
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>146</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>149</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults>
-				<action-key>VIEW</action-key>
-			</guest-defaults>
-			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>186</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults />
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>187</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults />
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>CONFIGURATION</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
-	<portlet-resource>
-		<portlet-name>188</portlet-name>
-		<permissions>
-			<supports>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults />
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
-			</guest-unsupported>
-		</permissions>
-	</portlet-resource>
 	<model-resource>
-		<model-name>com.liferay.portal.model.Group</model-name>
+		<model-name>com.liferay.portal.kernel.model.Group</model-name>
 		<portlet-ref>
-			<portlet-name>134</portlet-name>
-			<portlet-name>156</portlet-name>
-			<portlet-name>165</portlet-name>
-			<portlet-name>174</portlet-name>
+			<portlet-name>com_liferay_layout_admin_web_portlet_GroupPagesPortlet</portlet-name>
+			<portlet-name>com_liferay_site_admin_web_portlet_SiteAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_site_admin_web_portlet_SiteSettingsPortlet</portlet-name>
+			<portlet-name>com_liferay_site_memberships_web_portlet_SiteMembershipsPortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>
@@ -393,8 +76,8 @@
 				<action-key>MANAGE_TEAMS</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>PREVIEW_IN_DEVICE</action-key>
+				<action-key>PUBLISH_PORTLET_INFO</action-key>
 				<action-key>PUBLISH_STAGING</action-key>
-				<action-key>PUBLISH_TO_REMOTE</action-key>
 				<action-key>UPDATE</action-key>
 				<action-key>VIEW</action-key>
 				<action-key>VIEW_MEMBERS</action-key>
@@ -421,8 +104,8 @@
 				<action-key>MANAGE_TEAMS</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>PREVIEW_IN_DEVICE</action-key>
+				<action-key>PUBLISH_PORTLET_INFO</action-key>
 				<action-key>PUBLISH_STAGING</action-key>
-				<action-key>PUBLISH_TO_REMOTE</action-key>
 				<action-key>UPDATE</action-key>
 				<action-key>VIEW</action-key>
 				<action-key>VIEW_MEMBERS</action-key>
@@ -431,9 +114,9 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
-		<model-name>com.liferay.portal.model.LayoutBranch</model-name>
+		<model-name>com.liferay.portal.kernel.model.LayoutBranch</model-name>
 		<portlet-ref>
-			<portlet-name>156</portlet-name>
+			<portlet-name>com_liferay_layout_admin_web_portlet_GroupPagesPortlet</portlet-name>
 		</portlet-ref>
 		<weight>3</weight>
 		<permissions>
@@ -451,10 +134,34 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.LayoutSetBranch</model-name>
+	<model-resource portal="true">
+		<model-name>com.liferay.portal.kernel.model.LayoutPrototype</model-name>
 		<portlet-ref>
-			<portlet-name>156</portlet-name>
+			<portlet-name>com_liferay_layout_prototype_web_portlet_LayoutPrototypePortlet</portlet-name>
+		</portlet-ref>
+		<weight>1</weight>
+		<permissions>
+			<supports>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+				<action-key>VIEW</action-key>
+			</supports>
+			<site-member-defaults>
+				<action-key>VIEW</action-key>
+			</site-member-defaults>
+			<guest-defaults />
+			<guest-unsupported>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+	<model-resource>
+		<model-name>com.liferay.portal.kernel.model.LayoutSetBranch</model-name>
+		<portlet-ref>
+			<portlet-name>com_liferay_layout_admin_web_portlet_GroupPagesPortlet</portlet-name>
 		</portlet-ref>
 		<weight>4</weight>
 		<permissions>
@@ -474,10 +181,10 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.LayoutPrototype</model-name>
+	<model-resource portal="true">
+		<model-name>com.liferay.portal.kernel.model.LayoutSetPrototype</model-name>
 		<portlet-ref>
-			<portlet-name>146</portlet-name>
+			<portlet-name>com_liferay_layout_set_prototype_web_portlet_LayoutSetPrototypePortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>
@@ -498,34 +205,10 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.LayoutSetPrototype</model-name>
+	<model-resource organization="true" portal="true">
+		<model-name>com.liferay.portal.kernel.model.Organization</model-name>
 		<portlet-ref>
-			<portlet-name>149</portlet-name>
-		</portlet-ref>
-		<weight>1</weight>
-		<permissions>
-			<supports>
-				<action-key>DELETE</action-key>
-				<action-key>PERMISSIONS</action-key>
-				<action-key>UPDATE</action-key>
-				<action-key>VIEW</action-key>
-			</supports>
-			<site-member-defaults>
-				<action-key>VIEW</action-key>
-			</site-member-defaults>
-			<guest-defaults />
-			<guest-unsupported>
-				<action-key>DELETE</action-key>
-				<action-key>PERMISSIONS</action-key>
-				<action-key>UPDATE</action-key>
-			</guest-unsupported>
-		</permissions>
-	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.Organization</model-name>
-		<portlet-ref>
-			<portlet-name>125</portlet-name>
+			<portlet-name>com_liferay_users_admin_web_portlet_UsersAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -559,10 +242,10 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.PasswordPolicy</model-name>
+	<model-resource organization="true" portal="true">
+		<model-name>com.liferay.portal.kernel.model.PasswordPolicy</model-name>
 		<portlet-ref>
-			<portlet-name>129</portlet-name>
+			<portlet-name>com_liferay_password_policies_admin_web_portlet_PasswordPoliciesAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>
@@ -584,10 +267,10 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.Role</model-name>
+	<model-resource portal="true">
+		<model-name>com.liferay.portal.kernel.model.Role</model-name>
 		<portlet-ref>
-			<portlet-name>128</portlet-name>
+			<portlet-name>com_liferay_roles_admin_web_portlet_RolesAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>
@@ -613,10 +296,10 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.User</model-name>
+	<model-resource organization="true" portal="true">
+		<model-name>com.liferay.portal.kernel.model.User</model-name>
 		<portlet-ref>
-			<portlet-name>125</portlet-name>
+			<portlet-name>com_liferay_users_admin_web_portlet_UsersAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>
@@ -638,10 +321,10 @@
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
-	<model-resource>
-		<model-name>com.liferay.portal.model.UserGroup</model-name>
+	<model-resource portal="true">
+		<model-name>com.liferay.portal.kernel.model.UserGroup</model-name>
 		<portlet-ref>
-			<portlet-name>127</portlet-name>
+			<portlet-name>com_liferay_user_groups_admin_web_portlet_UserGroupsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>

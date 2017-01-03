@@ -1,0 +1,16 @@
+{
+	"availableLanguageIds": ["en_US", "pt_BR"],
+	"defaultLanguageId": "en_US",
+	"fieldValues": [
+		{
+			"instanceId": "usht",
+			"name": "Boolean2282",
+			"value": "false"
+		},
+		{
+			"instanceId": "xdwp",
+			"name": "Documents_and_Media4036",
+			"value": "{\"groupId\":10192,\"uuid\":\"c8acdf70-e101-46a6-83e5-c5f5e087b0dc\",\"version\":1.0}"
+		}
+	]
+}

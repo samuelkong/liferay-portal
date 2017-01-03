@@ -1,0 +1,143 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the select field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'select'"}
+	{call .select data="all" /}
+{/deltemplate}
+
+/**
+ * Prints the DDM form select field.
+ *
+ * @param? childElementsHTML
+ * @param dir
+ * @param label
+ * @param multiple
+ * @param name
+ * @param options
+ * @param readOnly
+ * @param required
+ * @param? selecteCaretDoubleIcon
+ * @param showLabel
+ * @param tip
+ * @param strings
+ * @param value
+ * @param visible
+ */
+{template .select autoescape="deprecated-contextual"}
+	<div class="form-group{$visible ? '' : ' hide'}" data-fieldname="{$name}">
+		<div class="input-select-wrapper">
+
+			{if $showLabel}
+				{call ddm.select_label data="all"}
+					{param name: $name /}
+					{param label: $label /}
+					{param required: $required /}
+					{param tip: $tip /}
+				{/call}
+			{/if}
+
+			<div class="form-builder-select-field input-group-container">
+
+				{if not $readOnly}
+					{call ddm.hidden_select data="all"}
+						{param options: $options /}
+						{param name: $name /}
+						{param multiple: $multiple /}
+						{param dir: $dir /}
+						{param value: $value /}
+						{param string: $strings /}
+					{/call}
+				{/if}
+
+				{if not $multiple}
+					<a class="form-control select-field-trigger" {if $readOnly}disabled{/if} dir="{$dir}" href="javascript:;" id="{$name}" name="{$name}">
+
+						{let $selectedLabel}
+							{if $value and $value.value}
+								{$value.label}
+							{else}
+								{$strings.chooseAnOption}
+							{/if}
+						{/let}
+
+						<span class="option-selected">{$selectedLabel}</span>
+					</a>
+				{else}
+					//TODO Multiple select
+				{/if}
+
+				{if not $readOnly}
+					<div class="drop-chosen hide">
+						<ul class="results-chosen">
+							{foreach $option in $options}
+								{let $selectedValue}
+									{if $value and $value.value}
+										{$value.value}
+									{/if}
+								{/let}
+
+								<li class="{if $selectedValue == $option.value}option-selected{/if}" data-option-index="{index($option)}">
+									{$option.label}
+								</li>
+							{/foreach}
+						</ul>
+					</div>
+				{/if}
+
+				{if $selecteCaretDoubleIcon}
+					<a class="select-arrow-down-container" href="javascript:;">{$selecteCaretDoubleIcon|noAutoescape}</a>
+				{/if}
+
+			</div>
+
+			{if $childElementsHTML}
+				{$childElementsHTML|noAutoescape}
+			{/if}
+		</div>
+	</div>
+{/template}
+
+/**
+ * Prints the select label.
+ * @param name
+ * @param label
+ * @param required
+ * @param tip
+ */
+{template .select_label autoescape="deprecated-contextual"}
+	<label class="control-label" for="{$name}">
+		{$label}
+
+		{if $required}
+			<span class="icon-asterisk text-warning"></span>
+		{/if}
+	</label>
+
+	{if $tip}
+		<p class="liferay-ddm-form-field-tip">{$tip}</p>
+	{/if}
+{/template}
+
+/**
+ * Prints hidden select tag.
+ * @param dir
+ * @param multiple
+ * @param name
+ * @param options
+ * @param value
+ */
+{template .hidden_select autoescape="deprecated-contextual"}
+	<select class="form-control hide" dir="{$dir}" id="{$name}" name="{$name}" {if $multiple}multiple size="{length($options)}"{/if}>
+		{foreach $option in $options}
+			{let $selectedValue}
+				{if $value and $value.value}
+					{$value.value}
+				{/if}
+			{/let}
+
+			<option dir="{$dir}" {if $selectedValue == $option.value}selected{/if} value="{$option.value}">{$option.label}</option>
+		{/foreach}
+	</select>
+{/template}

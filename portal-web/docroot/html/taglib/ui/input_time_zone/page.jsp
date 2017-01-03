@@ -36,6 +36,8 @@ numberFormat.setMinimumIntegerDigits(2);
 	</c:if>
 
 	<%
+	long currentTime = System.currentTimeMillis();
+
 	Set<TimeZone> timeZones = new TreeSet<TimeZone>(new TimeZoneComparator());
 
 	for (String timeZoneId : PropsUtil.getArray(PropsKeys.TIME_ZONES)) {
@@ -47,21 +49,56 @@ numberFormat.setMinimumIntegerDigits(2);
 	for (TimeZone curTimeZone : timeZones) {
 		String offset = StringPool.BLANK;
 
-		int totalOffset = curTimeZone.getRawOffset() + curTimeZone.getDSTSavings();
+		Date date = new Date();
 
-		if (totalOffset > 0) {
-			offset = "+";
-		}
+		boolean inDaylightTime = curTimeZone.inDaylightTime(date);
+
+		int totalOffset = curTimeZone.getOffset(currentTime);
 
 		if (totalOffset != 0) {
 			String offsetHour = numberFormat.format(totalOffset / Time.HOUR);
 			String offsetMinute = numberFormat.format(Math.abs(totalOffset % Time.HOUR) / Time.MINUTE);
 
-			offset += offsetHour + ":" + offsetMinute;
+			StringBundler sb = new StringBundler(5);
+
+			sb.append(StringPool.SPACE);
+
+			if (totalOffset > 0) {
+				sb.append(StringPool.PLUS);
+			}
+
+			sb.append(offsetHour);
+			sb.append(StringPool.COLON);
+			sb.append(offsetMinute);
+
+			offset = sb.toString();
+		}
+
+		String extraDisplayName = StringPool.BLANK;
+
+		String curTimeZoneId = curTimeZone.getID();
+
+		if (curTimeZoneId.contains("Phoenix")) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(StringPool.SPACE);
+			sb.append(StringPool.OPEN_PARENTHESIS);
+
+			com.liferay.ibm.icu.util.TimeZone icuTimeZone = com.liferay.ibm.icu.util.TimeZone.getTimeZone(curTimeZoneId);
+
+			com.liferay.ibm.icu.text.SimpleDateFormat icuSimpleDateFormat = new com.liferay.ibm.icu.text.SimpleDateFormat();
+
+			TimeZoneFormat icuTimeZoneFormat = icuSimpleDateFormat.getTimeZoneFormat();
+
+			sb.append(icuTimeZoneFormat.format(TimeZoneFormat.Style.GENERIC_LOCATION, icuTimeZone, date.getTime()));
+
+			sb.append(StringPool.CLOSE_PARENTHESIS);
+
+			extraDisplayName = sb.toString();
 		}
 	%>
 
-		<option <%= value.equals(curTimeZone.getID()) ? "selected" : "" %> value="<%= curTimeZone.getID() %>">(UTC <%= offset %>) <%= curTimeZone.getDisplayName(curTimeZone.inDaylightTime(new Date()), displayStyle, locale) %></option>
+		<option <%= value.equals(curTimeZone.getID()) ? "selected" : "" %> value="<%= curTimeZoneId %>">(UTC<%= offset %>) <%= curTimeZone.getDisplayName(inDaylightTime, displayStyle, locale) %><%= extraDisplayName %></option>
 
 	<%
 	}

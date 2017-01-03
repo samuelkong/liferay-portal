@@ -16,13 +16,13 @@ package com.liferay.portal.module.framework;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.ServiceLoader;
 import com.liferay.portal.security.lang.DoPrivilegedUtil;
-import com.liferay.portal.util.ClassLoaderUtil;
 import com.liferay.portal.util.FileImpl;
 
 import java.lang.reflect.Method;
@@ -51,15 +51,15 @@ public class ModuleFrameworkAdapterHelper {
 				fileUtil.setFile(DoPrivilegedUtil.wrap(new FileImpl()));
 			}
 
-			List<ClasspathResolver> classpathResolvers = ServiceLoader.load(
-				ClasspathResolver.class);
+			List<ClassPathResolver> classPathResolvers = ServiceLoader.load(
+				ClassPathResolver.class);
 
-			ClasspathResolver classpathResolver = classpathResolvers.get(0);
+			ClassPathResolver classPathResolver = classPathResolvers.get(0);
 
-			URL[] classpathURLs = classpathResolver.getClasspathURLs();
+			URL[] classPathURLs = classPathResolver.getClassPathURLs();
 
 			_classLoader = new ModuleFrameworkClassLoader(
-				classpathURLs, ClassLoaderUtil.getPortalClassLoader());
+				classPathURLs, ClassLoaderUtil.getPortalClassLoader());
 
 			return _classLoader;
 		}
@@ -128,8 +128,7 @@ public class ModuleFrameworkAdapterHelper {
 		ModuleFrameworkAdapterHelper.class);
 
 	private static ClassLoader _classLoader;
-	private static final Map<MethodKey, Method> _methods =
-		new HashMap<MethodKey, Method>();
+	private static final Map<MethodKey, Method> _methods = new HashMap<>();
 
 	private final Object _adaptedObject;
 

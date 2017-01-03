@@ -24,10 +24,10 @@ import com.liferay.portal.kernel.concurrent.DefaultNoticeableFuture;
 import com.liferay.portal.kernel.concurrent.NoticeableFuture;
 import com.liferay.portal.kernel.process.ProcessCallable;
 import com.liferay.portal.kernel.process.ProcessException;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.ReflectionUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
 
 import java.io.Serializable;
 
@@ -64,8 +64,8 @@ import org.junit.Test;
 public class JMXProxyUtilTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Before
 	public void setUp() throws Exception {
@@ -326,6 +326,12 @@ public class JMXProxyUtilTest {
 			public boolean equals(Object object) {
 				return super.equals(object);
 			}
+
+			@Override
+			public int hashCode() {
+				return super.hashCode();
+			}
+
 		}
 
 		Assert.assertFalse(
@@ -343,9 +349,15 @@ public class JMXProxyUtilTest {
 		class OverrideClass {
 
 			@Override
+			public boolean equals(Object object) {
+				return super.equals(object);
+			}
+
+			@Override
 			public int hashCode() {
 				return super.hashCode();
 			}
+
 		}
 
 		Assert.assertFalse(
@@ -366,6 +378,7 @@ public class JMXProxyUtilTest {
 			public String toString() {
 				return super.toString();
 			}
+
 		}
 
 		Assert.assertFalse(
@@ -384,6 +397,7 @@ public class JMXProxyUtilTest {
 			@SuppressWarnings("unused")
 			public void method2() {
 			}
+
 		}
 
 		Assert.assertTrue(
@@ -416,7 +430,8 @@ public class JMXProxyUtilTest {
 							return _testClassObjectName;
 						}
 
-					}}));
+					}
+				}));
 	}
 
 	@Test
@@ -475,6 +490,7 @@ public class JMXProxyUtilTest {
 		testClassMXBean.setName(newName);
 
 		Assert.assertEquals(newName, testClassMXBean.getName());
+
 		Assert.assertEquals(
 			"doSomething", testClassMXBean.doSomething("doSomething"));
 	}
@@ -540,6 +556,7 @@ public class JMXProxyUtilTest {
 				_testClassObjectName, "NameX", "newName", true);
 
 		Assert.assertNull(setAttributeProcessCallable.call());
+
 		Assert.assertEquals(oldName, _testClass.getName());
 	}
 
@@ -573,6 +590,7 @@ public class JMXProxyUtilTest {
 				_testClassObjectName, "Name", newName, true);
 
 		Assert.assertNull(setAttributeProcessCallable.call());
+
 		Assert.assertEquals(newName, _testClass.getName());
 	}
 
@@ -720,7 +738,7 @@ public class JMXProxyUtilTest {
 				ProcessCallable<V> processCallable) {
 
 				DefaultNoticeableFuture<V> defaultNoticeableFuture =
-					new DefaultNoticeableFuture<V>();
+					new DefaultNoticeableFuture<>();
 
 				try {
 					defaultNoticeableFuture.set(processCallable.call());

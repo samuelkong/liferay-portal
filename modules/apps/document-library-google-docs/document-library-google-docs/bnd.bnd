@@ -1,0 +1,21 @@
+Bundle-Name: Liferay Document Library Google Docs
+Bundle-SymbolicName: com.liferay.document.library.google.docs
+Bundle-Version: 2.0.12
+Import-Package:\
+	!com.sun.org.apache.xml.internal.utils,\
+	!com.sun.org.apache.xpath.internal,\
+	!com.sun.org.apache.xpath.internal.objects,\
+	\
+	!org.apache.log,\
+	\
+	!org.mozilla.javascript,\
+	\
+	!org.python.core,\
+	!org.python.util,\
+	\
+	!org.slf4j.spi,\
+	\
+	!org.zeroturnaround.javarebel,\
+	*
+Web-ContextPath: /document-library-google-docs
+-includeresource: @org.freemarker-[0-9]*.jar

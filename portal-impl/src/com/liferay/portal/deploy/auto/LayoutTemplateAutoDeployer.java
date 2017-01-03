@@ -52,8 +52,11 @@ public class LayoutTemplateAutoDeployer
 			unpackWar = PrefsPropsUtil.getBoolean(
 				PropsKeys.AUTO_DEPLOY_UNPACK_WAR,
 				PropsValues.AUTO_DEPLOY_UNPACK_WAR);
+			wildflyPrefix = PrefsPropsUtil.getString(
+				PropsKeys.AUTO_DEPLOY_WILDFLY_PREFIX,
+				PropsValues.AUTO_DEPLOY_WILDFLY_PREFIX);
 
-			List<String> jars = new ArrayList<String>();
+			List<String> jars = new ArrayList<>();
 
 			addExtJar(jars, "ext-util-bridges.jar");
 			addExtJar(jars, "ext-util-java.jar");

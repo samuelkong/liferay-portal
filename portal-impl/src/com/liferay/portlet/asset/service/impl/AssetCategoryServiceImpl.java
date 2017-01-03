@@ -14,23 +14,23 @@
 
 package com.liferay.portlet.asset.service.impl;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetCategoryDisplay;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.model.AssetCategoryConstants;
-import com.liferay.portlet.asset.model.AssetCategoryDisplay;
-import com.liferay.portlet.asset.model.AssetVocabulary;
 import com.liferay.portlet.asset.service.base.AssetCategoryServiceBaseImpl;
 import com.liferay.portlet.asset.service.permission.AssetCategoryPermission;
 import com.liferay.util.Autocomplete;
@@ -56,50 +56,55 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 
 	@Override
 	public AssetCategory addCategory(
-			long parentCategoryId, Map<Locale, String> titleMap,
+			long groupId, long parentCategoryId, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, long vocabularyId,
 			String[] categoryProperties, ServiceContext serviceContext)
 		throws PortalException {
 
 		AssetCategoryPermission.check(
-			getPermissionChecker(), serviceContext.getScopeGroupId(),
-			parentCategoryId, ActionKeys.ADD_CATEGORY);
+			getPermissionChecker(), groupId, parentCategoryId,
+			ActionKeys.ADD_CATEGORY);
 
 		return assetCategoryLocalService.addCategory(
-			getUserId(), parentCategoryId, titleMap, descriptionMap,
+			getUserId(), groupId, parentCategoryId, titleMap, descriptionMap,
 			vocabularyId, categoryProperties, serviceContext);
 	}
 
 	@Override
 	public AssetCategory addCategory(
-			String title, long vocabularyId, ServiceContext serviceContext)
+			long groupId, String title, long vocabularyId,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		AssetCategoryPermission.check(
-			getPermissionChecker(), serviceContext.getScopeGroupId(),
+			getPermissionChecker(), groupId,
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			ActionKeys.ADD_CATEGORY);
 
 		return assetCategoryLocalService.addCategory(
-			getUserId(), title, vocabularyId, serviceContext);
+			getUserId(), groupId, title, vocabularyId, serviceContext);
+	}
+
+	@Override
+	public void deleteCategories(long[] categoryIds) throws PortalException {
+		for (long categoryId : categoryIds) {
+			AssetCategoryPermission.check(
+				getPermissionChecker(), categoryId, ActionKeys.DELETE);
+		}
+
+		assetCategoryLocalService.deleteCategories(categoryIds);
 	}
 
 	/**
-	 * @deprecated As of 6.2.0, Replaced by {@link #deleteCategories(long[],
-	 *             ServiceContext)}
+	 * @deprecated As of 7.0.0, Replaced by {@link #deleteCategories(long[])}
 	 */
 	@Deprecated
-	@Override
-	public void deleteCategories(long[] categoryIds) throws PortalException {
-		deleteCategories(categoryIds, null);
-	}
-
 	@Override
 	public List<AssetCategory> deleteCategories(
 			long[] categoryIds, ServiceContext serviceContext)
 		throws PortalException {
 
-		List<AssetCategory> failedCategories = new ArrayList<AssetCategory>();
+		List<AssetCategory> failedCategories = new ArrayList<>();
 
 		for (long categoryId : categoryIds) {
 			try {
@@ -137,6 +142,19 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 			getPermissionChecker(), categoryId, ActionKeys.DELETE);
 
 		assetCategoryLocalService.deleteCategory(categoryId);
+	}
+
+	@Override
+	public AssetCategory fetchCategory(long categoryId) throws PortalException {
+		AssetCategory category = assetCategoryLocalService.fetchCategory(
+			categoryId);
+
+		if (category != null) {
+			AssetCategoryPermission.check(
+				getPermissionChecker(), category, ActionKeys.VIEW);
+		}
+
+		return category;
 	}
 
 	@Override
@@ -182,86 +200,6 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 		return filterCategories(
 			assetCategoryLocalService.getChildCategories(
 				parentCategoryId, start, end, obc));
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #search(long[], String,
-	 *             long[], int, int)}
-	 */
-	@Deprecated
-	@Override
-	public JSONArray getJSONSearch(
-			long groupId, String name, long[] vocabularyIds, int start, int end)
-		throws PortalException {
-
-		return search(new long[] {groupId}, name, vocabularyIds, start, end);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             #getVocabularyCategoriesDisplay(long, int, int,
-	 *             OrderByComparator)}
-	 */
-	@Deprecated
-	@Override
-	public JSONObject getJSONVocabularyCategories(
-			long vocabularyId, int start, int end,
-			OrderByComparator<AssetCategory> obc)
-		throws PortalException {
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		List<AssetCategory> categories = filterCategories(
-			assetCategoryLocalService.getVocabularyCategories(
-				vocabularyId, start, end, obc));
-
-		jsonObject.put("categories", toJSONArray(categories));
-		jsonObject.put("total", categories.size());
-
-		return jsonObject;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             #getVocabularyCategoriesDisplay(long, String, long, int, int,
-	 *             OrderByComparator)}
-	 */
-	@Deprecated
-	@Override
-	public JSONObject getJSONVocabularyCategories(
-			long groupId, String name, long vocabularyId, int start, int end,
-			OrderByComparator<AssetCategory> obc)
-		throws PortalException {
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		int page = 0;
-
-		if ((end > 0) && (start > 0)) {
-			page = end / (end - start);
-		}
-
-		jsonObject.put("page", page);
-
-		List<AssetCategory> categories;
-		int total = 0;
-
-		if (Validator.isNotNull(name)) {
-			name = (CustomSQLUtil.keywords(name))[0];
-
-			categories = getVocabularyCategories(
-				groupId, name, vocabularyId, start, end, obc);
-			total = getVocabularyCategoriesCount(groupId, name, vocabularyId);
-		}
-		else {
-			categories = getVocabularyCategories(vocabularyId, start, end, obc);
-			total = getVocabularyCategoriesCount(groupId, vocabularyId);
-		}
-
-		jsonObject.put("categories", toJSONArray(categories));
-		jsonObject.put("total", total);
-
-		return jsonObject;
 	}
 
 	@Override
@@ -373,25 +311,6 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 		}
 
 		return new AssetCategoryDisplay(categories, total, start, end);
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link
-	 *             #getVocabularyRootCategories(long, long, int, int,
-	 *             OrderByComparator)}
-	 */
-	@Deprecated
-	@Override
-	public List<AssetCategory> getVocabularyRootCategories(
-			long vocabularyId, int start, int end,
-			OrderByComparator<AssetCategory> obc)
-		throws PortalException {
-
-		AssetVocabulary vocabulary = assetVocabularyLocalService.getVocabulary(
-			vocabularyId);
-
-		return getVocabularyRootCategories(
-			vocabulary.getGroupId(), vocabularyId, start, end, obc);
 	}
 
 	@Override
@@ -509,6 +428,17 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 
 	@Override
 	public AssetCategoryDisplay searchCategoriesDisplay(
+			long groupId, String title, long vocabularyId,
+			long parentCategoryId, int start, int end, Sort sort)
+		throws PortalException {
+
+		return searchCategoriesDisplay(
+			new long[] {groupId}, title, new long[] {vocabularyId},
+			new long[] {parentCategoryId}, start, end, sort);
+	}
+
+	@Override
+	public AssetCategoryDisplay searchCategoriesDisplay(
 			long[] groupIds, String title, long[] vocabularyIds, int start,
 			int end)
 		throws PortalException {
@@ -537,6 +467,24 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 			assetCategoryLocalService.searchCategories(
 				user.getCompanyId(), groupIds, title, parentCategoryIds,
 				vocabularyIds, start, end);
+
+		return new AssetCategoryDisplay(
+			baseModelSearchResult.getBaseModels(),
+			baseModelSearchResult.getLength(), start, end);
+	}
+
+	@Override
+	public AssetCategoryDisplay searchCategoriesDisplay(
+			long[] groupIds, String title, long[] vocabularyIds,
+			long[] parentCategoryIds, int start, int end, Sort sort)
+		throws PortalException {
+
+		User user = getUser();
+
+		BaseModelSearchResult<AssetCategory> baseModelSearchResult =
+			assetCategoryLocalService.searchCategories(
+				user.getCompanyId(), groupIds, title, vocabularyIds,
+				parentCategoryIds, start, end, sort);
 
 		return new AssetCategoryDisplay(
 			baseModelSearchResult.getBaseModels(),

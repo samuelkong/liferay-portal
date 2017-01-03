@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = 83d436730932f9e67c2831028a652914d6d4d5c4
+	mode = push
+	parent = a72cdd18cb99b47cb9f667ba18b8641e3a64b986
+	remote = git@github.com:liferay/com-liferay-portal-cache.git

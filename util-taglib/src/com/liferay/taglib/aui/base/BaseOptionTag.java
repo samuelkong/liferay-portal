@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * @author Julio Camarero
  * @generated
  */
-public class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -71,60 +71,44 @@ public class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 
 	public void setCssClass(java.lang.String cssClass) {
 		_cssClass = cssClass;
-
-		setScopedAttribute("cssClass", cssClass);
 	}
 
 	public void setData(java.util.Map<java.lang.String, java.lang.Object> data) {
 		_data = data;
-
-		setScopedAttribute("data", data);
 	}
 
 	public void setDisabled(boolean disabled) {
 		_disabled = disabled;
-
-		setScopedAttribute("disabled", disabled);
 	}
 
 	public void setLabel(java.lang.Object label) {
 		_label = label;
-
-		setScopedAttribute("label", label);
 	}
 
 	public void setLocalizeLabel(boolean localizeLabel) {
 		_localizeLabel = localizeLabel;
-
-		setScopedAttribute("localizeLabel", localizeLabel);
 	}
 
 	public void setSelected(boolean selected) {
 		_selected = selected;
-
-		setScopedAttribute("selected", selected);
 	}
 
 	public void setStyle(java.lang.String style) {
 		_style = style;
-
-		setScopedAttribute("style", style);
 	}
 
 	public void setUseModelValue(boolean useModelValue) {
 		_useModelValue = useModelValue;
-
-		setScopedAttribute("useModelValue", useModelValue);
 	}
 
 	public void setValue(java.lang.Object value) {
 		_value = value;
-
-		setScopedAttribute("value", value);
 	}
 
 	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_cssClass = null;
 		_data = null;
 		_disabled = false;
@@ -134,11 +118,6 @@ public class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		_style = null;
 		_useModelValue = true;
 		_value = null;
-	}
-
-	@Override
-	protected String getEndPage() {
-		return _END_PAGE;
 	}
 
 	@Override
@@ -160,9 +139,6 @@ public class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "aui:option:";
-
-	private static final String _END_PAGE =
-		"/html/taglib/aui/option/end.jsp";
 
 	private static final String _START_PAGE =
 		"/html/taglib/aui/option/start.jsp";

@@ -21,60 +21,52 @@ import com.liferay.portal.kernel.deploy.hot.BaseHotDeployListener;
 import com.liferay.portal.kernel.deploy.hot.HotDeployEvent;
 import com.liferay.portal.kernel.deploy.hot.HotDeployException;
 import com.liferay.portal.kernel.javadoc.JavadocManagerUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.model.PortletCategory;
+import com.liferay.portal.kernel.model.PortletFilter;
+import com.liferay.portal.kernel.model.PortletURLListener;
+import com.liferay.portal.kernel.portlet.CustomUserAttributes;
+import com.liferay.portal.kernel.portlet.InvokerPortlet;
 import com.liferay.portal.kernel.portlet.PortletBag;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
-import com.liferay.portal.kernel.scheduler.SchedulerEntry;
-import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.portlet.PortletBagPool;
+import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.DirectServletRegistryUtil;
 import com.liferay.portal.kernel.servlet.FileTimestampUtil;
 import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.servlet.ServletContextProvider;
-import com.liferay.portal.kernel.settings.SettingsFactoryUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.InfrastructureUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.ServerDetector;
+import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletApp;
-import com.liferay.portal.model.PortletCategory;
-import com.liferay.portal.model.PortletFilter;
-import com.liferay.portal.model.PortletURLListener;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
-import com.liferay.portal.service.PortletLocalServiceUtil;
-import com.liferay.portal.service.ResourceActionLocalServiceUtil;
-import com.liferay.portal.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PortalInstances;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebAppPool;
-import com.liferay.portal.util.WebKeys;
-import com.liferay.portlet.CustomUserAttributes;
-import com.liferay.portlet.InvokerPortlet;
-import com.liferay.portlet.PortletBagFactory;
 import com.liferay.portlet.PortletContextBag;
 import com.liferay.portlet.PortletContextBagPool;
 import com.liferay.portlet.PortletFilterFactory;
-import com.liferay.portlet.PortletInstanceFactoryUtil;
-import com.liferay.portlet.PortletResourceBundles;
 import com.liferay.portlet.PortletURLListenerFactory;
-import com.liferay.util.bridges.php.PHPPortlet;
+import com.liferay.registry.Registry;
+import com.liferay.registry.RegistryUtil;
+import com.liferay.registry.ServiceRegistration;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -84,8 +76,6 @@ import javax.naming.NamingException;
 import javax.portlet.PortletURLGenerationListener;
 
 import javax.servlet.ServletContext;
-
-import javax.sql.DataSource;
 
 import org.apache.portals.bridges.struts.StrutsPortlet;
 
@@ -123,53 +113,30 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 		}
 	}
 
-	protected void bindDataSource(String servletContextName) throws Exception {
-		if (ServerDetector.isGlassfish() || ServerDetector.isJOnAS()) {
+	protected void checkResourceBundles(
+		ClassLoader classLoader, Portlet portlet) {
+
+		if (Validator.isNull(portlet.getResourceBundle())) {
 			return;
 		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Dynamically binding the Liferay data source");
-		}
+		Registry registry = RegistryUtil.getRegistry();
 
-		DataSource dataSource = InfrastructureUtil.getDataSource();
+		ResourceBundleLoader resourceBundleLoader =
+			ResourceBundleUtil.getResourceBundleLoader(
+				portlet.getResourceBundle(), classLoader);
 
-		if (dataSource == null) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Abort dynamically binding the Liferay data source " +
-						"because it is not available");
-			}
+		Map<String, Object> properties = new HashMap<>();
 
-			return;
-		}
+		properties.put(
+			"resource.bundle.base.name", portlet.getResourceBundle());
+		properties.put("service.ranking", Integer.MIN_VALUE);
+		properties.put("servlet.context.name", portlet.getContextName());
 
-		Context context = new InitialContext();
-
-		try {
-			try {
-				context.lookup(_JNDI_JDBC);
-			}
-			catch (NamingException ne) {
-				context.createSubcontext(_JNDI_JDBC);
-			}
-
-			try {
-				context.lookup(_JNDI_JDBC_LIFERAY_POOL);
-			}
-			catch (NamingException ne) {
-				context.bind(_JNDI_JDBC_LIFERAY_POOL, dataSource);
-			}
-
-			_dataSourceBindStates.put(servletContextName, true);
-		}
-		catch (Exception e) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to dynamically bind the Liferay data source: " +
-						e.getMessage());
-			}
-		}
+		_resourceBundleLoaderServiceRegistrations.put(
+			portlet.getPortletId(),
+			registry.registerService(
+				ResourceBundleLoader.class, resourceBundleLoader, properties));
 	}
 
 	protected void destroyPortlet(Portlet portlet, Set<String> portletIds)
@@ -190,21 +157,18 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			PortletURLListenerFactory.destroy(portletURLListener);
 		}
 
-		if (PropsValues.SCHEDULER_ENABLED) {
-			List<SchedulerEntry> schedulerEntries =
-				portlet.getSchedulerEntries();
-
-			if ((schedulerEntries != null) && !schedulerEntries.isEmpty()) {
-				for (SchedulerEntry schedulerEntry : schedulerEntries) {
-					SchedulerEngineHelperUtil.unschedule(
-						schedulerEntry, StorageType.MEMORY_CLUSTERED);
-				}
-			}
-		}
-
 		PortletInstanceFactoryUtil.destroy(portlet);
 
 		portletIds.add(portlet.getPortletId());
+
+		ServiceRegistration<ResourceBundleLoader>
+			resourceBundleLoaderServiceRegistration =
+				_resourceBundleLoaderServiceRegistrations.remove(
+					portlet.getPortletId());
+
+		if (resourceBundleLoaderServiceRegistration != null) {
+			resourceBundleLoaderServiceRegistration.unregister();
+		}
 	}
 
 	protected void doInvokeDeploy(HotDeployEvent hotDeployEvent)
@@ -238,64 +202,45 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			_log.info("Registering portlets for " + servletContextName);
 		}
 
+		PortletContextBag portletContextBag = new PortletContextBag(
+			servletContextName);
+
+		PortletContextBagPool.put(servletContextName, portletContextBag);
+
 		List<Portlet> portlets = PortletLocalServiceUtil.initWAR(
 			servletContextName, servletContext, xmls,
 			hotDeployEvent.getPluginPackage());
 
 		boolean portletAppInitialized = false;
 
-		boolean phpPortlet = false;
 		boolean strutsBridges = false;
 
-		PortletBagFactory portletBagFactory = new PortletBagFactory();
-
 		ClassLoader classLoader = hotDeployEvent.getContextClassLoader();
-
-		portletBagFactory.setClassLoader(classLoader);
-
-		portletBagFactory.setServletContext(servletContext);
-		portletBagFactory.setWARFile(true);
 
 		Iterator<Portlet> itr = portlets.iterator();
 
 		while (itr.hasNext()) {
 			Portlet portlet = itr.next();
 
-			PortletBag portletBag = portletBagFactory.create(portlet);
+			PortletBag portletBag = PortletBagPool.get(
+				portlet.getRootPortletId());
 
-			if (portletBag == null) {
-				itr.remove();
+			if (!portletAppInitialized) {
+				initPortletApp(
+					servletContextName, servletContext, classLoader, portlet);
+
+				portletAppInitialized = true;
 			}
-			else {
-				if (!portletAppInitialized) {
-					initPortletApp(
-						servletContextName, servletContext, classLoader,
-						portlet);
 
-					portletAppInitialized = true;
-				}
+			javax.portlet.Portlet portletInstance =
+				portletBag.getPortletInstance();
 
-				javax.portlet.Portlet portletInstance =
-					portletBag.getPortletInstance();
+			if (ClassUtil.isSubclass(
+					portletInstance.getClass(),
+					StrutsPortlet.class.getName())) {
 
-				if (ClassUtil.isSubclass(
-						portletInstance.getClass(),
-						PHPPortlet.class.getName())) {
-
-					phpPortlet = true;
-				}
-
-				if (ClassUtil.isSubclass(
-						portletInstance.getClass(),
-						StrutsPortlet.class.getName())) {
-
-					strutsBridges = true;
-				}
+				strutsBridges = true;
 			}
-		}
-
-		if (phpPortlet) {
-			bindDataSource(servletContextName);
 		}
 
 		if (!strutsBridges) {
@@ -346,6 +291,8 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			ResourceActionLocalServiceUtil.checkResourceActions(
 				portlet.getPortletId(), portletActions);
 
+			checkResourceBundles(classLoader, portlet);
+
 			for (String modelName : modelNames) {
 				List<String> modelActions =
 					ResourceActionsUtil.getModelResourceActions(modelName);
@@ -370,13 +317,10 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			portlet.setReady(ready);
 		}
 
-		registerClpMessageListeners(servletContext, classLoader);
-
 		JavadocManagerUtil.load(servletContextName, classLoader);
 
 		DirectServletRegistryUtil.clearServlets();
 		FileTimestampUtil.reset();
-		SettingsFactoryUtil.clearCache();
 
 		_portlets.put(servletContextName, portlets);
 
@@ -413,7 +357,7 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			return;
 		}
 
-		Set<String> portletIds = new HashSet<String>();
+		Set<String> portletIds = new HashSet<>();
 
 		if (portlets != null) {
 			if (_log.isInfoEnabled()) {
@@ -440,11 +384,6 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 		}
 
 		PortletContextBagPool.remove(servletContextName);
-		PortletResourceBundles.remove(servletContextName);
-
-		unbindDataSource(servletContextName);
-
-		unregisterClpMessageListeners(servletContext);
 
 		JavadocManagerUtil.unload(servletContextName);
 
@@ -469,10 +408,8 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			ClassLoader classLoader, Portlet portlet)
 		throws Exception {
 
-		PortletContextBag portletContextBag = new PortletContextBag(
+		PortletContextBag portletContextBag = PortletContextBagPool.get(
 			servletContextName);
-
-		PortletContextBagPool.put(servletContextName, portletContextBag);
 
 		PortletApp portletApp = portlet.getPortletApp();
 
@@ -562,22 +499,6 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			return;
 		}
 
-		String languageBundleName = portletProperties.getProperty(
-			"language.bundle");
-
-		if (Validator.isNotNull(languageBundleName)) {
-			Locale[] locales = LanguageUtil.getAvailableLocales();
-
-			for (Locale locale : locales) {
-				ResourceBundle resourceBundle = ResourceBundle.getBundle(
-					languageBundleName, locale, classLoader);
-
-				PortletResourceBundles.put(
-					servletContextName, LocaleUtil.toLanguageId(locale),
-					resourceBundle);
-			}
-		}
-
 		String[] resourceActionConfigs = StringUtil.split(
 			portletProperties.getProperty(PropsKeys.RESOURCE_ACTIONS_CONFIGS));
 
@@ -636,8 +557,10 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 		PortletHotDeployListener.class);
 
 	private static final Map<String, Boolean> _dataSourceBindStates =
-		new HashMap<String, Boolean>();
-	private static final Map<String, List<Portlet>> _portlets =
-		new HashMap<String, List<Portlet>>();
+		new HashMap<>();
+	private static final Map<String, List<Portlet>> _portlets = new HashMap<>();
+
+	private final Map<String, ServiceRegistration<ResourceBundleLoader>>
+		_resourceBundleLoaderServiceRegistrations = new HashMap<>();
 
 }

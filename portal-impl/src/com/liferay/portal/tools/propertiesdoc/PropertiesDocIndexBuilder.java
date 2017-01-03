@@ -35,18 +35,18 @@ import java.util.Map;
  */
 public class PropertiesDocIndexBuilder {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
+
 		try {
-			new PropertiesDocIndexBuilder(args);
+			new PropertiesDocIndexBuilder(arguments);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			ArgumentsUtil.processMainException(arguments, e);
 		}
 	}
 
-	public PropertiesDocIndexBuilder(String[] args) {
-		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
-
+	public PropertiesDocIndexBuilder(Map<String, String> arguments) {
 		String propertiesDirName = GetterUtil.getString(
 			arguments.get("properties.dir"));
 
@@ -58,7 +58,7 @@ public class PropertiesDocIndexBuilder {
 			return;
 		}
 
-		List<String> propertiesHTMLFileNames = new ArrayList<String>();
+		List<String> propertiesHTMLFileNames = new ArrayList<>();
 
 		File[] files = propertiesDir.listFiles();
 
@@ -80,7 +80,7 @@ public class PropertiesDocIndexBuilder {
 			return;
 		}
 
-		Map<String, Object> context = new HashMap<String, Object>();
+		Map<String, Object> context = new HashMap<>();
 
 		context.put("propertiesHTMLFileNames", propertiesHTMLFileNames);
 		context.put("releaseInfoVersion", ReleaseInfo.getVersion());

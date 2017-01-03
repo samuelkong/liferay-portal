@@ -17,6 +17,8 @@ package com.liferay.portal.security.membershippolicy;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.membershippolicy.RoleMembershipPolicy;
+import com.liferay.portal.kernel.security.membershippolicy.RoleMembershipPolicyFactory;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
@@ -31,7 +33,7 @@ import com.liferay.registry.ServiceTrackerCustomizer;
  * @author Peter Fellwock
  */
 public class RoleMembershipPolicyFactoryImpl
-		implements RoleMembershipPolicyFactory {
+	implements RoleMembershipPolicyFactory {
 
 	@Override
 	public RoleMembershipPolicy getRoleMembershipPolicy() {
@@ -56,7 +58,7 @@ public class RoleMembershipPolicyFactoryImpl
 
 	private final ServiceTracker<?, RoleMembershipPolicy> _serviceTracker;
 
-	private class RoleMembershipPolicyTrackerCustomizer
+	private static class RoleMembershipPolicyTrackerCustomizer
 		implements
 			ServiceTrackerCustomizer
 				<RoleMembershipPolicy, RoleMembershipPolicy> {

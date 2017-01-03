@@ -14,13 +14,12 @@
 
 package com.liferay.portal.upgrade.v6_2_0;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -30,64 +29,13 @@ import java.sql.Timestamp;
  */
 public class UpgradeLayoutFriendlyURL extends UpgradeProcess {
 
-	protected void addLayoutFriendlyURL(
-			long groupId, long companyId, long userId, String userName,
-			Timestamp createDate, Timestamp modifiedDate, long plid,
-			boolean privateLayout, String friendlyURL)
-		throws Exception {
-
-		Connection con = null;
-		PreparedStatement ps = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			StringBundler sb = new StringBundler(4);
-
-			sb.append("insert into LayoutFriendlyURL (uuid_, ");
-			sb.append("layoutFriendlyURLId, groupId, companyId, userId, ");
-			sb.append("userName, createDate, modifiedDate, plid, ");
-			sb.append("privateLayout, friendlyURL, languageId) values (?, ?, ");
-			sb.append("?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-			ps = con.prepareStatement(sb.toString());
-
-			ps.setString(1, PortalUUIDUtil.generate());
-			ps.setLong(2, increment());
-			ps.setLong(3, groupId);
-			ps.setLong(4, companyId);
-			ps.setLong(5, userId);
-			ps.setString(6, userName);
-			ps.setTimestamp(7, createDate);
-			ps.setTimestamp(8, modifiedDate);
-			ps.setLong(9, plid);
-			ps.setBoolean(10, privateLayout);
-			ps.setString(11, friendlyURL);
-			ps.setString(
-				12, UpgradeProcessUtil.getDefaultLanguageId(companyId));
-
-			ps.executeUpdate();
-		}
-		finally {
-			DataAccess.cleanUp(con, ps);
-		}
-	}
-
-	@Override
-	protected void doUpgrade() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
+	protected void addLayoutFriendlyURL() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			PreparedStatement ps = connection.prepareStatement(
 				"select plid, groupId, companyId, userId, userName, " +
 					"createDate, modifiedDate, privateLayout, friendlyURL " +
 						"from Layout");
-
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery()) {
 
 			while (rs.next()) {
 				long plid = rs.getLong("plid");
@@ -105,9 +53,46 @@ public class UpgradeLayoutFriendlyURL extends UpgradeProcess {
 					modifiedDate, plid, privateLayout, friendlyURL);
 			}
 		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
+	}
+
+	protected void addLayoutFriendlyURL(
+			long groupId, long companyId, long userId, String userName,
+			Timestamp createDate, Timestamp modifiedDate, long plid,
+			boolean privateLayout, String friendlyURL)
+		throws Exception {
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append("insert into LayoutFriendlyURL (uuid_, ");
+		sb.append("layoutFriendlyURLId, groupId, companyId, userId, ");
+		sb.append("userName, createDate, modifiedDate, plid, privateLayout, ");
+		sb.append("friendlyURL, languageId) values (?, ?, ?, ?, ?, ?, ?, ?, ");
+		sb.append("?, ?, ?, ?)");
+
+		try (PreparedStatement ps = connection.prepareStatement(
+				sb.toString())) {
+
+			ps.setString(1, PortalUUIDUtil.generate());
+			ps.setLong(2, increment());
+			ps.setLong(3, groupId);
+			ps.setLong(4, companyId);
+			ps.setLong(5, userId);
+			ps.setString(6, userName);
+			ps.setTimestamp(7, createDate);
+			ps.setTimestamp(8, modifiedDate);
+			ps.setLong(9, plid);
+			ps.setBoolean(10, privateLayout);
+			ps.setString(11, friendlyURL);
+			ps.setString(
+				12, UpgradeProcessUtil.getDefaultLanguageId(companyId));
+
+			ps.executeUpdate();
 		}
+	}
+
+	@Override
+	protected void doUpgrade() throws Exception {
+		addLayoutFriendlyURL();
 	}
 
 }

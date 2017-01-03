@@ -1,0 +1,69 @@
+import com.liferay.gradle.util.FileUtil
+import com.liferay.gradle.util.copy.StripPathSegmentsAction
+
+task buildAlloyEditor(type: Copy)
+
+File editorDestinationDir = file("tmp/META-INF/resources")
+File editorSrcDir = file("src/main/resources/META-INF/resources")
+
+buildAlloyEditor {
+	dependsOn npmInstall
+
+	File alloyEditorDestinationDir = new File(editorDestinationDir, "alloyeditor")
+	File alloyEditorSrcDir = new File(editorSrcDir, "_diffs")
+
+	doFirst {
+		delete alloyEditorDestinationDir
+	}
+
+	doLast {
+		FileTree alloyEditorJsFileTree = fileTree(dir: alloyEditorDestinationDir, include : "alloy-editor*.js")
+		FileTree buttonsJsFileTree = fileTree(dir: new File(alloyEditorSrcDir, "buttons"), include: "**/*.js")
+
+		alloyEditorJsFileTree.each {
+			File alloyEditorJsFile ->
+
+			File liferayAlloyEditorJsFile = new File(alloyEditorDestinationDir, "liferay-" + alloyEditorJsFile.name)
+
+			FileUtil.concatenate(liferayAlloyEditorJsFile, files(alloyEditorJsFile, buttonsJsFileTree))
+		}
+	}
+
+	duplicatesStrategy = "exclude"
+
+	from {
+		fileTree(dir: "node_modules")
+	} {
+		eachFile new StripPathSegmentsAction(3)
+		include "alloyeditor/dist/alloy-editor/"
+	}
+
+	from alloyEditorSrcDir
+	includeEmptyDirs = false
+	into alloyEditorDestinationDir
+}
+
+classes {
+	dependsOn buildAlloyEditor
+}
+
+configJSModules {
+	enabled = false
+}
+
+dependencies {
+	provided group: "com.liferay", name: "com.liferay.frontend.taglib", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.petra.encryptor", version: "1.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.util.java", version: "2.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"
+	provided group: "javax.portlet", name: "portlet-api", version: "2.0"
+	provided group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
+	provided group: "javax.servlet.jsp", name: "javax.servlet.jsp-api", version: "2.3.1"
+	provided group: "org.osgi", name: "org.osgi.core", version: "5.0.0"
+	provided group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+}
+
+transpileJS {
+	enabled = false
+}

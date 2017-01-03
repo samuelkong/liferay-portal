@@ -16,6 +16,8 @@ package com.liferay.portlet;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.CustomUserAttributes;
+import com.liferay.portal.kernel.portlet.UserAttributes;
 import com.liferay.portal.kernel.security.RandomUtil;
 
 import java.util.Map;

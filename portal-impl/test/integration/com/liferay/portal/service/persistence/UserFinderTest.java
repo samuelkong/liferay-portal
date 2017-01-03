@@ -15,29 +15,30 @@
 package com.liferay.portal.service.persistence;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.persistence.UserFinderUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroup;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.OrganizationLocalServiceUtil;
-import com.liferay.portal.service.RoleLocalServiceUtil;
-import com.liferay.portal.service.UserGroupLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.test.TransactionalTestRule;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.GroupTestUtil;
-import com.liferay.portal.util.test.OrganizationTestUtil;
-import com.liferay.portal.util.test.RoleTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portal.util.test.UserGroupTestUtil;
-import com.liferay.portal.util.test.UserTestUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -45,19 +46,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Jozsef Illes
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class UserFinderTest {
 
 	@ClassRule
-	public static TransactionalTestRule transactionalTestRule =
-		new TransactionalTestRule();
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(), TransactionalTestRule.INSTANCE);
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -66,7 +67,7 @@ public class UserFinderTest {
 
 		GroupLocalServiceUtil.addUserGroup(_groupUser.getUserId(), _group);
 
-		_organization = OrganizationTestUtil.addOrganization();
+		_organization = OrganizationTestUtil.addOrganization(true);
 		_organizationUser = UserTestUtil.addUser();
 
 		OrganizationLocalServiceUtil.addUserOrganization(
@@ -95,7 +96,7 @@ public class UserFinderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_inheritedUserGroupsParams = new LinkedHashMap<String, Object>();
+		_inheritedUserGroupsParams = new LinkedHashMap<>();
 
 		_inheritedUserGroupsParams.put("inherit", Boolean.TRUE);
 		_inheritedUserGroupsParams.put(
@@ -111,7 +112,7 @@ public class UserFinderTest {
 
 		_roleId = RoleTestUtil.addRegularRole(_group.getGroupId());
 
-		_inheritedUserRolesParams = new LinkedHashMap<String, Object>();
+		_inheritedUserRolesParams = new LinkedHashMap<>();
 
 		_inheritedUserRolesParams.put("inherit", Boolean.TRUE);
 		_inheritedUserRolesParams.put("usersRoles", _roleId);
@@ -124,6 +125,47 @@ public class UserFinderTest {
 		GroupLocalServiceUtil.clearOrganizationGroups(
 			_organization.getOrganizationId());
 		GroupLocalServiceUtil.clearUserGroupGroups(_userGroup.getUserGroupId());
+	}
+
+	@Test
+	public void testCountByGroups() throws Exception {
+		long groupId = _group.getGroupId();
+
+		Map<Long, Integer> counts = UserFinderUtil.countByGroups(
+			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
+			new long[] {groupId});
+
+		Assert.assertEquals(1, counts.size());
+		Assert.assertEquals(2, (int)counts.get(groupId));
+
+		GroupLocalServiceUtil.addOrganizationGroup(
+			_organization.getOrganizationId(), groupId);
+
+		counts = UserFinderUtil.countByGroups(
+			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
+			new long[] {groupId});
+
+		Assert.assertEquals(1, counts.size());
+		Assert.assertEquals(3, (int)counts.get(groupId));
+
+		GroupLocalServiceUtil.addUserGroupGroup(
+			_userGroup.getUserGroupId(), groupId);
+
+		counts = UserFinderUtil.countByGroups(
+			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
+			new long[] {groupId});
+
+		Assert.assertEquals(1, counts.size());
+		Assert.assertEquals(4, (int)counts.get(groupId));
+
+		long organizationGroupId = _organization.getGroupId();
+
+		counts = UserFinderUtil.countByGroups(
+			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
+			new long[] {groupId, organizationGroupId});
+
+		Assert.assertEquals(2, counts.size());
+		Assert.assertEquals(1, (int)counts.get(organizationGroupId));
 	}
 
 	@Test
@@ -173,8 +215,7 @@ public class UserFinderTest {
 
 	@Test
 	public void testFindByKeywordsGroupUsers() throws Exception {
-		LinkedHashMap<String, Object> params =
-			new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
 		params.put("usersGroups", _group.getGroupId());
 
@@ -188,8 +229,7 @@ public class UserFinderTest {
 
 	@Test
 	public void testFindByKeywordsOrganizationUsers() throws Exception {
-		LinkedHashMap<String, Object> params =
-			new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
 		params.put("usersOrgs", _organization.getOrganizationId());
 
@@ -203,8 +243,7 @@ public class UserFinderTest {
 
 	@Test
 	public void testFindByKeywordsUserGroupUsers() throws Exception {
-		LinkedHashMap<String, Object> params =
-			new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
 		params.put("usersUserGroups", _userGroup.getUserGroupId());
 

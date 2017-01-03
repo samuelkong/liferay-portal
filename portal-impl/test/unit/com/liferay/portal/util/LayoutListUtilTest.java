@@ -19,13 +19,13 @@ import com.germinus.easyconf.ConfigurationSerializer;
 import com.liferay.portal.json.JSONArrayImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.impl.LayoutImpl;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,7 +136,7 @@ public class LayoutListUtilTest extends PowerMockito {
 					" ms");
 		}
 
-		List<String> expectedLayoutDescriptionStrings = new ArrayList<String>(
+		List<String> expectedLayoutDescriptionStrings = new ArrayList<>(
 			_layoutListUtilStrings.length);
 
 		for (String layoutListUtilString : _layoutListUtilStrings) {
@@ -150,7 +150,7 @@ public class LayoutListUtilTest extends PowerMockito {
 			expectedLayoutDescriptionStrings.add(plid + name + depth);
 		}
 
-		List<String> actualLayoutDescriptionStrings = new ArrayList<String>(
+		List<String> actualLayoutDescriptionStrings = new ArrayList<>(
 			layoutDescriptions.size() - 1);
 
 		Iterator<LayoutDescription> iterator = layoutDescriptions.listIterator(
@@ -200,10 +200,11 @@ public class LayoutListUtilTest extends PowerMockito {
 
 	private static final int _NODES = 10;
 
-	private static Log _log = LogFactoryUtil.getLog(LayoutListUtilTest.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutListUtilTest.class);
 
 	private String[] _layoutListUtilStrings;
-	private List<Layout> _layouts = new ArrayList<Layout>();
+	private final List<Layout> _layouts = new ArrayList<>();
 	private long _plid;
 
 	private static class MockLayoutImpl extends LayoutImpl {

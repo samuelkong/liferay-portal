@@ -14,18 +14,23 @@
 
 package com.liferay.portlet.documentlibrary.service;
 
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.model.RoleConstants;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.test.DeleteAfterTestRun;
-import com.liferay.portal.util.test.GroupTestUtil;
-import com.liferay.portal.util.test.RoleTestUtil;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portlet.documentlibrary.service.permission.DLPermission;
-import com.liferay.portlet.documentlibrary.util.test.DLAppTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,9 +46,23 @@ public abstract class BaseDLAppTestCase {
 
 		group = GroupTestUtil.addGroup();
 
-		parentFolder = DLAppTestUtil.addFolder(
+		targetGroup = GroupTestUtil.addGroup();
+
+		try {
+			DLAppServiceUtil.deleteFolder(
+				group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				"Test Folder");
+		}
+		catch (NoSuchFolderException nsfe) {
+		}
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId());
+
+		parentFolder = DLAppServiceUtil.addFolder(
 			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			"Test Folder", true);
+			"Test Folder", RandomTestUtil.randomString(), serviceContext);
 
 		RoleTestUtil.addResourcePermission(
 			RoleConstants.GUEST, DLPermission.RESOURCE_NAME,
@@ -68,6 +87,9 @@ public abstract class BaseDLAppTestCase {
 	protected Group group;
 
 	protected Folder parentFolder;
+
+	@DeleteAfterTestRun
+	protected Group targetGroup;
 
 	private String _name;
 

@@ -1,0 +1,17 @@
+dependencies {
+	classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.4.4"
+	classpath group: "com.liferay", name: "com.liferay.gradle.plugins.lang.merger", version: "1.0.3"
+	classpath group: "com.liferay", name: "com.liferay.gradle.plugins.maven.plugin.builder", version: "1.0.12"
+	classpath group: "com.liferay", name: "org.ysb33r.gradle.gradletest", version: "1.0-beta3"
+	classpath group: "xalan", name: "xalan", version: "2.7.2"
+}
+
+repositories {
+	if (!Boolean.getBoolean("maven.local.ignore")) {
+		mavenLocal()
+	}
+
+	maven {
+		url System.properties["repository.url"] ?: "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+	}
+}

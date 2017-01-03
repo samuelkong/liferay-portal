@@ -16,13 +16,13 @@ package com.liferay.portal.dao.jdbc;
 
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.spring.hibernate.SpringHibernateThreadLocalUtil;
 
 import java.sql.Connection;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.datasource.ConnectionHolder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * @author Shuyang Zhou
@@ -33,10 +33,12 @@ public class CurrentConnectionImpl implements CurrentConnection {
 	@Override
 	public Connection getConnection(DataSource dataSource) {
 		ConnectionHolder connectionHolder =
-			(ConnectionHolder)TransactionSynchronizationManager.getResource(
+			(ConnectionHolder)SpringHibernateThreadLocalUtil.getResource(
 				dataSource);
 
-		if (connectionHolder == null) {
+		if ((connectionHolder == null) ||
+			(connectionHolder.getConnectionHandle() == null)) {
+
 			return null;
 		}
 		else {

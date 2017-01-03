@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.io.Deserializer;
 import com.liferay.portal.kernel.io.Serializer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.nio.intraband.RegistrationReference;
 import com.liferay.portal.kernel.nio.intraband.mailbox.MailboxException;
 import com.liferay.portal.kernel.nio.intraband.mailbox.MailboxUtil;
@@ -26,12 +27,11 @@ import com.liferay.portal.kernel.resiliency.spi.agent.annotation.Direction;
 import com.liferay.portal.kernel.resiliency.spi.agent.annotation.DistributedRegistry;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ClassLoaderPool;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.ThreadLocalDistributor;
 import com.liferay.portal.kernel.util.ThreadLocalDistributorRegistry;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.util.ClassLoaderUtil;
-import com.liferay.portal.util.WebKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class SPIAgentSerializable implements Serializable {
 		HttpServletRequest request, Direction direction) {
 
 		Map<String, Serializable> distributedRequestAttributes =
-			new HashMap<String, Serializable>();
+			new HashMap<>();
 
 		Enumeration<String> enumeration = request.getAttributeNames();
 
@@ -93,7 +93,7 @@ public class SPIAgentSerializable implements Serializable {
 	public static Map<String, List<String>> extractRequestHeaders(
 		HttpServletRequest request) {
 
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
+		Map<String, List<String>> headers = new HashMap<>();
 
 		Enumeration<String> nameEnumeration = request.getHeaderNames();
 
@@ -118,7 +118,7 @@ public class SPIAgentSerializable implements Serializable {
 				headerName);
 
 			if (valueEnumeration != null) {
-				List<String> values = new ArrayList<String>();
+				List<String> values = new ArrayList<>();
 
 				while (valueEnumeration.hasMoreElements()) {
 					values.add(valueEnumeration.nextElement());
@@ -148,8 +148,7 @@ public class SPIAgentSerializable implements Serializable {
 		String portletSessionAttributesKey =
 			WebKeys.PORTLET_SESSION_ATTRIBUTES.concat(portlet.getContextName());
 
-		Map<String, Serializable> sessionAttributes =
-			new HashMap<String, Serializable>();
+		Map<String, Serializable> sessionAttributes = new HashMap<>();
 
 		HttpSession session = request.getSession();
 
@@ -183,12 +182,13 @@ public class SPIAgentSerializable implements Serializable {
 			request.removeAttribute(WebKeys.PORTLET_SESSION);
 
 			HashMap<String, Serializable> portletSessionAttributes =
-				new HashMap<String, Serializable>();
+				new HashMap<>();
 
 			enumeration = portletSession.getAttributeNames();
 
 			while (enumeration.hasMoreElements()) {
 				String name = enumeration.nextElement();
+
 				Object value = portletSession.getAttribute(name);
 
 				if (value instanceof Serializable) {
@@ -316,6 +316,7 @@ public class SPIAgentSerializable implements Serializable {
 	protected transient String servletContextName;
 	protected ThreadLocalDistributor[] threadLocalDistributors;
 
-	private static Log _log = LogFactoryUtil.getLog(SPIAgentSerializable.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		SPIAgentSerializable.class);
 
 }

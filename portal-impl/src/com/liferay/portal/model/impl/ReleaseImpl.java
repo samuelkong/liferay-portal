@@ -19,7 +19,9 @@ package com.liferay.portal.model.impl;
  */
 public class ReleaseImpl extends ReleaseBaseImpl {
 
-	public ReleaseImpl() {
+	@Override
+	public String getBundleSymbolicName() {
+		return getServletContextName();
 	}
 
 }

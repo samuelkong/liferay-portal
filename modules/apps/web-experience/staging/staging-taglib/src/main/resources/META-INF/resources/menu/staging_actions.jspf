@@ -1,0 +1,301 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<c:choose>
+	<c:when test="<%= group.isCompany() && GroupPermissionUtil.contains(permissionChecker, group, ActionKeys.PUBLISH_STAGING) %>">
+		<liferay-ui:icon
+			id='<%= groupId + "publishGlobalLink" %>'
+			message="<%= publishDialogTitle %>"
+			url="<%= publishRenderURL.toString() %>"
+		/>
+
+		<aui:script position="inline" sandbox="<%= true %>">
+			var publishGlobalLink = $('#<portlet:namespace /><%= groupId + "publishGlobalLink" %>');
+
+			publishGlobalLink.on(
+				'click',
+				function(event) {
+					event.preventDefault();
+
+					Liferay.LayoutExporter.publishToLive(
+						{
+							title: '<%= UnicodeFormatter.toString(publishMessage) %>',
+							url: publishGlobalLink.attr('href')
+						}
+					);
+				}
+			);
+		</aui:script>
+	</c:when>
+	<c:otherwise>
+
+		<%
+		Group groupType = layout.getGroup();
+		%>
+
+		<c:if test="<%= (liveGroup != null) && GroupPermissionUtil.contains(permissionChecker, liveGroup, ActionKeys.PUBLISH_STAGING) %>">
+			<liferay-portlet:renderURL portletName="<%= PortletKeys.EXPORT_IMPORT %>" var="publishRedirectURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+				<portlet:param name="mvcRenderCommandName" value="publishLayouts" />
+				<portlet:param name="<%= Constants.CMD %>" value="<%= (localPublishing) ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
+				<portlet:param name="tabs2" value="current-and-previous" />
+				<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+				<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+				<portlet:param name="quickPublish" value="<%= Boolean.TRUE.toString() %>" />
+			</liferay-portlet:renderURL>
+
+			<%
+			UnicodeProperties liveGroupTypeSettings = liveGroup.getTypeSettingsProperties();
+			%>
+
+			<liferay-portlet:renderURL portletName="<%= PortletKeys.EXPORT_IMPORT %>" varImpl="simplePublishLayoutsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+				<portlet:param name="mvcRenderCommandName" value="publishLayoutsSimple" />
+				<portlet:param name="<%= Constants.CMD %>" value="<%= (localPublishing) ? Constants.PUBLISH_TO_LIVE : Constants.PUBLISH_TO_REMOTE %>" />
+				<portlet:param name="redirect" value="<%= publishRedirectURL %>" />
+				<portlet:param name="backURL" value="<%= currentURL %>" />
+				<portlet:param name="lastImportUserName" value="<%= user.getFullName() %>" />
+				<portlet:param name="lastImportUserUuid" value="<%= String.valueOf(user.getUserUuid()) %>" />
+				<portlet:param name="localPublishing" value="<%= String.valueOf(localPublishing) %>" />
+				<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+				<portlet:param name="quickPublish" value="<%= Boolean.TRUE.toString() %>" />
+				<portlet:param name="remoteAddress" value='<%= liveGroupTypeSettings.getProperty("remoteAddress") %>' />
+				<portlet:param name="remotePort" value='<%= liveGroupTypeSettings.getProperty("remotePort") %>' />
+				<portlet:param name="remotePathContext" value='<%= liveGroupTypeSettings.getProperty("remotePathContext") %>' />
+				<portlet:param name="remoteGroupId" value='<%= liveGroupTypeSettings.getProperty("remoteGroupId") %>' />
+				<portlet:param name="secureConnection" value='<%= liveGroupTypeSettings.getProperty("secureConnection") %>' />
+				<portlet:param name="sourceGroupId" value="<%= String.valueOf(stagingGroupId) %>" />
+				<portlet:param name="targetGroupId" value="<%= String.valueOf(liveGroupId) %>" />
+			</liferay-portlet:renderURL>
+
+			<%
+			if (groupId == 0) {
+				simplePublishLayoutsURL.setParameter("selPlid", String.valueOf(plid));
+
+				publishRenderURL.setParameter("selPlid", String.valueOf(plid));
+			}
+			%>
+
+			<c:choose>
+				<c:when test="<%= (layoutSetBranchId > 0) && (layoutSetBranches.size() > 1) %>">
+
+					<%
+					layoutSetBranch = LayoutSetBranchLocalServiceUtil.getLayoutSetBranch(layoutSetBranchId);
+
+					simplePublishLayoutsURL.setParameter("layoutSetBranchName", layoutSetBranch.getName());
+					simplePublishLayoutsURL.setParameter("layoutSetBranchId", String.valueOf(layoutSetBranchId));
+
+					publishRenderURL.setParameter("layoutSetBranchId", String.valueOf(layoutSetBranchId));
+					publishRenderURL.setParameter("layoutSetBranchName", layoutSetBranch.getName());
+
+					publishMessage = LanguageUtil.format(request, publishDialogTitle, HtmlUtil.escape(layoutSetBranch.getName()), false);
+					%>
+
+				</c:when>
+				<c:otherwise>
+					<c:if test="<%= layoutSetBranches.size() == 1 %>">
+
+						<%
+						layoutSetBranch = layoutSetBranches.get(0);
+
+						simplePublishLayoutsURL.setParameter("layoutSetBranchId", String.valueOf(layoutSetBranch.getLayoutSetBranchId()));
+
+						publishRenderURL.setParameter("layoutSetBranchId", String.valueOf(layoutSetBranch.getLayoutSetBranchId()));
+						%>
+
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+
+			<%
+			String linkCssClass = StringPool.BLANK;
+
+			if (!groupType.isControlPanel()) {
+				linkCssClass = "btn btn-default btn-sm";
+			}
+			%>
+
+			<liferay-util:buffer var="publishOnControlPanelLink">
+				<aui:a cssClass='<%= linkCssClass + " publish-link" %>' href="<%= publishRenderURL.toString() %>" id='<%= layoutSetBranchId + "publishLink" %>' label="<%= publishMessage %>" />
+			</liferay-util:buffer>
+
+			<liferay-util:buffer var="publishOnLayoutLink">
+				<li class="control-menu-nav-item">
+					<div class="dropdown publish-btn-group">
+						<button class="btn btn-primary btn-sm" href="<%= simplePublishLayoutsURL.toString() %>" id="<%= layoutSetBranchId + "publishToLiveLink" %>" type="button">
+							<liferay-ui:message key="publish-to-live" />
+						</button>
+
+						<c:if test="<%= branchingEnabled %>">
+							<button aria-expanded="false" class="btn btn-primary btn-sm dropdown-toggle visible-xs" data-toggle="dropdown" type="button">
+								<aui:icon image="angle-down" markupView="lexicon" />
+
+								<span class="sr-only">
+									<liferay-ui:message key="toggle-dropdown" />
+								</span>
+							</button>
+
+							<ul class="dropdown-menu" role="menu">
+								<c:if test="<%= !layoutRevision.isIncomplete() %>">
+									<li>
+										<a href="javascript:Liferay.fire('<%= liferayPortletResponse.getNamespace() %>viewHistory', {layoutRevisionId: '<%= layoutRevision.getLayoutRevisionId() %>', layoutSetBranchId: '<%= layoutRevision.getLayoutSetBranchId() %>'}); void(0);">
+											<liferay-ui:message key="history" />
+										</a>
+									</li>
+								</c:if>
+
+								<c:if test="<%= !hasWorkflowTask %>">
+									<c:if test="<%= !layoutRevision.isMajor() && (layoutRevision.getParentLayoutRevisionId() != LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID) %>">
+										<li>
+											<a href="javascript:Liferay.fire('<%= liferayPortletResponse.getNamespace() %>undo', {layoutRevisionId: '<%= layoutRevision.getLayoutRevisionId() %>', layoutSetBranchId: '<%= layoutRevision.getLayoutSetBranchId() %>'}); void(0);">
+												<liferay-ui:message key="undo" />
+											</a>
+										</li>
+									</c:if>
+
+									<c:if test="<%= layoutRevision.hasChildren() %>">
+
+										<%
+										List<LayoutRevision> childLayoutRevisions = layoutRevision.getChildren();
+
+										LayoutRevision firstChildLayoutRevision = childLayoutRevisions.get(0);
+
+										if (firstChildLayoutRevision.isInactive()) {
+										%>
+
+											<li>
+												<a href="javascript:Liferay.fire('<%= liferayPortletResponse.getNamespace() %>redo', {layoutRevisionId: '<%= firstChildLayoutRevision.getLayoutRevisionId() %>', layoutSetBranchId: '<%= firstChildLayoutRevision.getLayoutSetBranchId() %>'}); void(0);">
+													<liferay-ui:message key="redo" />
+												</a>
+											</li>
+
+										<%
+										}
+										%>
+
+									</c:if>
+								</c:if>
+							</ul>
+						</c:if>
+					</div>
+				</li>
+			</liferay-util:buffer>
+
+			<c:choose>
+				<c:when test="<%= !onlyActions %>">
+					<li class="publish-link-container">
+						<%= publishOnControlPanelLink %>
+					</li>
+				</c:when>
+				<c:otherwise>
+					<%= publishOnLayoutLink %>
+				</c:otherwise>
+			</c:choose>
+
+			<aui:script position="inline" sandbox="<%= true %>">
+				var publishLink = $('#<%= layoutSetBranchId + "publishLink" %>');
+
+				publishLink.on(
+					'click',
+					function(event) {
+						event.preventDefault();
+
+						Liferay.LayoutExporter.publishToLive(
+							{
+								title: '<%= UnicodeFormatter.toString(publishMessage) %>',
+								url: publishLink.attr('href')
+							}
+						);
+					}
+				);
+
+				var publishToLiveLink = $('#<%= layoutSetBranchId + "publishToLiveLink" %>');
+
+				publishToLiveLink.on(
+					'click',
+					function(event) {
+						event.preventDefault();
+
+						Liferay.Util.openWindow(
+							{
+								dialog: {
+									after: {
+										destroy: function(event) {
+											window.location.reload();
+										}
+									},
+									destroyOnHide: true
+								},
+								dialogIframe: {
+									bodyCssClass: 'dialog-with-footer'
+								},
+								id: '<portlet:namespace />publishLatestChangesDialog',
+								title: '<%= UnicodeFormatter.toString(publishMessage) %>',
+								uri: publishToLiveLink.attr('href')
+							}
+						);
+					}
+				);
+			</aui:script>
+		</c:if>
+
+		<c:if test="<%= showManageBranches && !layoutSetBranches.isEmpty() %>">
+			<portlet:renderURL var="layoutSetBranchesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+				<portlet:param name="struts_action" value="/staging_bar/view_layout_set_branches" />
+				<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+				<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+				<portlet:param name="selPlid" value="<%= String.valueOf(selPlid) %>" />
+			</portlet:renderURL>
+
+			<liferay-util:buffer var="manageSitePagesVariationsLink">
+				<aui:a cssClass="manage-layout-set-branches" href="<%= layoutSetBranchesURL %>" id="manageLayoutSetBranches" label="manage-site-pages-variations" />
+			</liferay-util:buffer>
+
+			<c:choose>
+				<c:when test="<%= groupType.isControlPanel() %>">
+					<li class="publish-link-container">
+						<%= manageSitePagesVariationsLink %>
+					</li>
+				</c:when>
+				<c:otherwise>
+					<div class="<%= cssClass %> publish-link-container">
+						<%= manageSitePagesVariationsLink %>
+					</div>
+				</c:otherwise>
+			</c:choose>
+
+			<aui:script position="inline" sandbox="<%= true %>">
+				var layoutSetBranchesLink = $('#<portlet:namespace />manageLayoutSetBranches');
+
+				layoutSetBranchesLink.on(
+					'click',
+					function(event) {
+						event.preventDefault();
+
+						Liferay.Util.openWindow(
+							{
+								dialog: {
+									width: 820
+								},
+								id: '<portlet:namespace />layoutSetBranches',
+								title: '<%= UnicodeLanguageUtil.get(request, "manage-site-pages-variations") %>',
+								uri: layoutSetBranchesLink.attr('href')
+							}
+						);
+					}
+				);
+			</aui:script>
+		</c:if>
+	</c:otherwise>
+</c:choose>

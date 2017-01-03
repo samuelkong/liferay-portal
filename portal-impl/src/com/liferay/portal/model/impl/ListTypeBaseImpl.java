@@ -16,7 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.ListType;
+import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.service.ListTypeLocalServiceUtil;
 
 /**
  * The extended model base implementation for the ListType service. Represents a row in the &quot;ListType&quot; database table, with each column mapped to a property of this class.
@@ -27,7 +28,7 @@ import com.liferay.portal.model.ListType;
  *
  * @author Brian Wing Shun Chan
  * @see ListTypeImpl
- * @see com.liferay.portal.model.ListType
+ * @see ListType
  * @generated
  */
 @ProviderType
@@ -38,4 +39,13 @@ public abstract class ListTypeBaseImpl extends ListTypeModelImpl
 	 *
 	 * Never modify or reference this class directly. All methods that expect a list type model instance should use the {@link ListType} interface instead.
 	 */
+	@Override
+	public void persist() {
+		if (this.isNew()) {
+			ListTypeLocalServiceUtil.addListType(this);
+		}
+		else {
+			ListTypeLocalServiceUtil.updateListType(this);
+		}
+	}
 }

@@ -1,0 +1,69 @@
+/* ---------- Scope selection ---------- */
+
+.current-scope {
+	.line-number {
+		opacity: 0.8;
+	}
+
+	&.hover {
+		.line-number {
+			opacity: 0.8;
+		}
+
+		.macro {
+			> {
+				.btn-container .line-number, .line-container .line-number .current-scope .macro > .line-container .line-number {
+					opacity: 0.8;
+				}
+			}
+
+			.line-number {
+				opacity: 0.2;
+			}
+		}
+	}
+
+	&.macro > .btn-container .line-number {
+		opacity: 0.2;
+	}
+
+	.macro {
+		> .btn-container .line-number {
+			opacity: 0.8;
+		}
+
+		.line-number {
+			opacity: 0.2;
+		}
+
+		.child-container .macro {
+			.btn-container, .line-container {
+				.line-number {
+					opacity: 0.2;
+				}
+			}
+		}
+	}
+}
+
+.transitioning .current-scope:after {
+	opacity: 0;
+}
+
+.hover {
+	> {
+		.btn-container .line-number, .line-container .line-number {
+			opacity: 1;
+		}
+	}
+
+	.line-number {
+		opacity: 1;
+	}
+}
+
+.marco.current-scope > {
+	.btn-container .line-number, .line-container .line-number {
+		opacity: 0.2;
+	}
+}

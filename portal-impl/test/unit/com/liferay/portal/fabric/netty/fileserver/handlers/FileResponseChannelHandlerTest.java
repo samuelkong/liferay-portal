@@ -20,8 +20,8 @@ import com.liferay.portal.fabric.netty.util.NettyUtil;
 import com.liferay.portal.kernel.concurrent.AsyncBroker;
 import com.liferay.portal.kernel.concurrent.NoticeableFuture;
 import com.liferay.portal.kernel.test.CaptureHandler;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.util.Time;
 
 import io.netty.channel.Channel;
@@ -50,8 +50,8 @@ import org.junit.Test;
 public class FileResponseChannelHandlerTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Before
 	public void setUp() {
@@ -78,7 +78,7 @@ public class FileResponseChannelHandlerTest {
 			_path, data.length, lastModified, false);
 
 		NoticeableFuture<FileResponse> noticeableFuture = _asyncBroker.post(
-			_path.toAbsolutePath());
+			_path);
 
 		_fileResponseChannelHandler.channelRead(
 			_channelHandlerContext, fileResponse,
@@ -97,6 +97,7 @@ public class FileResponseChannelHandlerTest {
 		channelHandler = _channelPipeline.first();
 
 		Assert.assertFalse(channelHandler instanceof FileUploadChannelHandler);
+
 		Assert.assertSame(fileResponse, fileUploadChannelHandler.fileResponse);
 		Assert.assertSame(fileResponse, noticeableFuture.get());
 
@@ -107,6 +108,7 @@ public class FileResponseChannelHandlerTest {
 		FileTime fileTime = Files.getLastModifiedTime(localFile);
 
 		Assert.assertEquals(lastModified, fileTime.toMillis());
+
 		Assert.assertArrayEquals(data, Files.readAllBytes(localFile));
 
 		Files.delete(localFile);
@@ -114,7 +116,7 @@ public class FileResponseChannelHandlerTest {
 
 	@Test
 	public void testFileNotFound() throws Exception {
-		Future<FileResponse> future = _asyncBroker.post(_path.toAbsolutePath());
+		Future<FileResponse> future = _asyncBroker.post(_path);
 
 		FileResponse fileResponse = new FileResponse(
 			_path, FileResponse.FILE_NOT_FOUND, -1, false);
@@ -130,10 +132,10 @@ public class FileResponseChannelHandlerTest {
 		FileResponse fileResponse = new FileResponse(
 			_path, FileResponse.FILE_NOT_FOUND, -1, false);
 
-		CaptureHandler captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			FileResponseChannelHandler.class.getName(), Level.SEVERE);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					FileResponseChannelHandler.class.getName(), Level.SEVERE)) {
 
-		try {
 			_fileResponseChannelHandler.channelRead(
 				_channelHandlerContext, fileResponse, null);
 
@@ -149,14 +151,11 @@ public class FileResponseChannelHandlerTest {
 						fileResponse.getPath(),
 				logRecord.getMessage());
 		}
-		finally {
-			captureHandler.close();
-		}
 	}
 
 	@Test
 	public void testFileNotModified() throws Exception {
-		Future<FileResponse> future = _asyncBroker.post(_path.toAbsolutePath());
+		Future<FileResponse> future = _asyncBroker.post(_path);
 
 		FileResponse fileResponse = new FileResponse(
 			_path, FileResponse.FILE_NOT_MODIFIED, -1, false);
@@ -172,10 +171,10 @@ public class FileResponseChannelHandlerTest {
 		FileResponse fileResponse = new FileResponse(
 			_path, FileResponse.FILE_NOT_MODIFIED, -1, false);
 
-		CaptureHandler captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			FileResponseChannelHandler.class.getName(), Level.SEVERE);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					FileResponseChannelHandler.class.getName(), Level.SEVERE)) {
 
-		try {
 			_fileResponseChannelHandler.channelRead(
 				_channelHandlerContext, fileResponse, null);
 
@@ -191,15 +190,12 @@ public class FileResponseChannelHandlerTest {
 						fileResponse.getPath(),
 				logRecord.getMessage());
 		}
-		finally {
-			captureHandler.close();
-		}
 	}
 
 	private static final Path _path = Paths.get("testFile");
 
 	private final AsyncBroker<Path, FileResponse> _asyncBroker =
-		new AsyncBroker<Path, FileResponse>();
+		new AsyncBroker<>();
 	private ChannelHandlerContext _channelHandlerContext;
 	private final ChannelPipeline _channelPipeline =
 		NettyUtil.createEmptyChannelPipeline();

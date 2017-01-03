@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>Configuration</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Configuration</td></tr>
+</thead>
+<tbody>
+<!--NAVIGATION-->
+<tr>
+	<td>NAVIGATION_SETUP</td>
+	<td>//ul[contains(@class,'nav') and contains(@class,'nav-pills')]/li/a[contains(.,'Setup')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_PERMISSIONS</td>
+	<td>//ul[contains(@class,'nav') and contains(@class,'nav-pills')]/li/a[contains(.,'Permissions')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_SHARING</td>
+	<td>//ul[contains(@class,'nav') and contains(@class,'nav-pills')]/li/a[contains(.,'Sharing')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_EMAIL_FROM</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Email From')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_PAGE_ADDED_EMAIL</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Page Added Email')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_PAGE_UPDATED_EMAIL</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Page Updated Email')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAVIGATION_RSS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'RSS')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SETUP-->
+<tr>
+	<td>ARCHIVE_RESTORE</td>
+	<td>//div[@class='archived-setups']//a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_CONFIGURATION_TEMPLATE</td>
+	<td>//div[contains(@class,'text-center')]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONFIGURATION_TEMPLATE_TABLE_NAME</td>
+	<td>//tr[contains(.,'${key_configurationName}')]/td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MAXIMUM_ITEMS_TO_DISPLAY_SELECT</td>
+	<td>//select[contains(@id,'pageDelta')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECTION_METHOD_SELECT</td>
+	<td>//select[contains(@id,'selectionMethod')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SCOPE_SELECT</td>
+	<td>//div[@id='scopeContent']//a[@title='Select']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETUP_DISPLAY_SETTINGS_PANEL</td>
+	<td>//a[contains(@class,'collapse-icon') and contains(.,'Display Settings')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETUP_DISPLAY_SETTINGS</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Display Settings')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SETUP_DISPLAY_SETTINGS-->
+<tr>
+	<td>SETUP_DISPLAY_SETTINGS_MAXIMUM_ITEMS_TO_DISPLAY_SELECT</td>
+ 	<td>//select[contains(@id,'pageDelta')]</td>
+ 	<td></td>
+</tr>
+<tr>
+	<td>SETUP_DISPLAY_SETTINGS_DISPLAY_TEMPLATE_SELECT</td>
+	<td>//select[contains(@id,'displayStyle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SETUP_SOCIAL_BOOKMARKS-->
+<tr>
+	<td>SETUP_SOCIAL_BOOKMARKS_DISPLAY_STYLE_SELECT</td>
+	<td>//select[contains(@id,'socialBookmarksDisplayStyle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETUP_SOCIAL_BOOKMARKS_DISPLAY_POSITION_SELECT</td>
+	<td>//select[contains(@id,'socialBookmarksDisplayPosition')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SETUP_RSS-->
+<tr>
+	<td>SETUP_RSS_MAXIMUM_ITEMS_TO_DISPLAY_SELECT</td>
+	<td>//select[contains(@id,'rssDelta')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETUP_RSS_DISPLAY_STYLE_SELECT</td>
+	<td>//select[contains(@id,'rssDisplayStyle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETUP_RSS_FORMAT_SELECT</td>
+	<td>//select[contains(@id,'rssFeedType')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

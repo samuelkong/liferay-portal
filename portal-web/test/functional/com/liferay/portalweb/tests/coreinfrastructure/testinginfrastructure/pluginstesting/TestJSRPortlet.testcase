@@ -1,0 +1,41 @@
+<definition component-name="portal-test-plugins">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Test Plugins" />
+	<property name="portlet.plugins.includes" value="test-jsr-286-plt-26-6-portlet" />
+
+	<set-up>
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<execute macro="Page#tearDownPG" />
+	</tear-down>
+
+	<command name="ViewJSR" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Test JSR 286 PLT.26.6 Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Test JSR 286 PLT.26.6" />
+		</execute>
+
+		<execute function="Click" locator1="TestJSR#TEST_ACTION_URL" />
+		<execute function="AssertElementNotPresent" locator1="TestJSR#TEST_PORTLET_BODY_FAILED" value1="FAILED" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Test JSR 286 PLT.26.6 Page" />
+		</execute>
+
+		<execute function="Click" locator1="TestJSR#TEST_RENDER_URL" />
+		<execute function="AssertElementNotPresent" locator1="TestJSR#TEST_PORTLET_BODY_FAILED" value1="FAILED" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Test JSR 286 PLT.26.6 Page" />
+		</execute>
+
+		<execute function="Click" locator1="TestJSR#TEST_RESOURCE_URL" />
+		<execute function="AssertElementNotPresent" locator1="TestJSR#TEST_PORTLET_BODY_FAILED" value1="FAILED" />
+	</command>
+</definition>

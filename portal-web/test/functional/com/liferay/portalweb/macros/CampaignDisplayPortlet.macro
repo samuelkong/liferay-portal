@@ -1,0 +1,129 @@
+<definition>
+	<command name="configureCampaignRule">
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+		<var method="selenium#getNumberDecrement('${rowNumber}')" name="rowIndexNumber" />
+
+		<if>
+			<not>
+				<equals arg1="${rowIndexNumber}" arg2="0" />
+			</not>
+			<then>
+				<var name="key_indexNumber" value="${rowIndexNumber}" />
+
+				<execute function="Click" locator1="ContentTargeting#PLUS_LINK" />
+			</then>
+		</if>
+
+		<var name="key_rowNumber" value="${rowNumber}" />
+
+		<execute function="Select" locator1="CampaignContentDisplay#RULE_PANEL_CAMPAIGN_SELECT" value1="${campaignName}" />
+
+		<execute function="Click" locator1="CampaignContentDisplay#RULE_PANEL_SELECT_CONTENT" />
+
+		<var name="key_menuItem" value="${contentType}" />
+
+		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<var name="key_rowEntry" value="${contentTitle}" />
+
+		<execute function="ClickNoError" locator1="ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="configureOtherwiseRule">
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+		<execute function="ClickNoError" locator1="ContentTargeting#OTHERWISE_PANEL" />
+
+		<execute function="ScrollWebElementIntoView" locator1="ContentTargeting#OTHERWISE_PANEL_DISPLAY_THIS_CONTENT_RADIO" />
+
+		<execute function="Click" locator1="ContentTargeting#OTHERWISE_PANEL_DISPLAY_THIS_CONTENT_RADIO" />
+		<execute function="Click" locator1="ContentTargeting#OTHERWISE_PANEL_SELECT_CONTENT" />
+
+		<var name="key_menuItem" value="${contentType}" />
+
+		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<var name="key_rowEntry" value="${contentTitle}" />
+
+		<execute function="ClickNoError" locator1="ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="savePG">
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+		<execute function="ClickNoError" locator1="Button#SAVE" />
+
+		<execute function="Pause" locator1="3000" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+
+	<command name="viewContentNoLongerExistsAfterDeletion">
+		<execute function="AssertTextEquals" locator1="CampaignContentDisplay#ENTRY_CONTENT" value1="The selected content no longer exists" />
+	</command>
+
+	<command name="viewPG">
+		<execute macro="ContentTargeting#expandPreview">
+			<var name="portletName" value="Campaign Content Display" />
+		</execute>
+
+		<if>
+			<isset var="viewCampaignSelected" />
+			<then>
+				<var name="key_viewEntrySelected" value="${viewCampaignSelected}" />
+
+				<execute function="AssertElementPresent" locator1="ContentTargeting#PREVIEW_ENTRY_SELECTED" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="previewCampaignList" />
+			<then>
+				<for list="${previewCampaignList}" param="previewEntry">
+					<execute macro="ContentTargeting#expandPreview">
+						<var name="portletName" value="Campaign Content Display" />
+					</execute>
+
+					<var name="key_previewEntry" value="${previewEntry}" />
+
+					<if>
+						<and>
+							<isset var="entryContentText" />
+							<not>
+								<equals arg1="${previewEntry}" arg2="default" />
+							</not>
+						</and>
+						<then>
+							<execute function="AssertTextEquals" locator1="CampaignContentDisplay#ENTRY_CONTENT" value1="${entryContentText}" />
+						</then>
+					</if>
+
+					<if>
+						<and>
+							<equals arg1="viewDontDisplay" arg2="true" />
+							<equals arg1="${previewEntry}" arg2="default" />
+						</and>
+						<then>
+							<execute function="AssertTextEquals" locator1="CampaignContentDisplay#ENTRY_CONTENT" value1="There are no matching rules" />
+						</then>
+					</if>
+				</for>
+			</then>
+		</if>
+	</command>
+</definition>

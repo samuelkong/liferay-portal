@@ -1,9 +1,127 @@
 <?xml version="1.0"?>
 
-<project name="portal-test-plugins" basedir="." default="test" xmlns:antelope="antlib:ise.antelope.tasks">
+<project basedir="." default="test" name="portal-test-plugins" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build-test.xml" />
 
+	<macrodef name="get-plugin-path">
+		<attribute name="plugin" />
+		<attribute name="plugin.types" />
+
+		<sequential>
+			<var name="plugin.path" unset="true" />
+			<var name="plugin.war" unset="true" />
+
+			<if>
+				<matches pattern="https?://" string="${test.build.plugins.war.zip.url}" />
+				<then>
+					<pathconvert pathsep="," property="plugin.war" setonempty="false">
+						<path>
+							<fileset dir="plugins/marketplace" includes="@{plugin}*.war" />
+						</path>
+					</pathconvert>
+
+					<if>
+						<isset property="plugin.war" />
+						<then>
+							<tstamp>
+								<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
+							</tstamp>
+
+							<mkdir dir="${tstamp.value}" />
+
+							<unzip
+								dest="${tstamp.value}"
+								src="${plugin.war}"
+							/>
+
+							<property name="plugin.path" value="${tstamp.value}" />
+						</then>
+					</if>
+				</then>
+			</if>
+
+			<if>
+				<available file="${lp.plugins.dir}/@{plugin.types}/@{plugin}" />
+				<then>
+					<property name="plugin.path" value="${lp.plugins.dir}/@{plugin.types}/@{plugin}" />
+				</then>
+				<else>
+					<pathconvert pathsep="," property="plugin.build.path" setonempty="false">
+						<path>
+							<fileset dir="${project.dir}/modules" includes="**/@{plugin}/build.gradle,**/@{plugin}/build.xml" />
+						</path>
+					</pathconvert>
+
+					<if>
+						<isset property="plugin.build.path" />
+						<then>
+							<dirname file="${plugin.build.path}" property="plugin.path" />
+						</then>
+					</if>
+				</else>
+			</if>
+
+			<if>
+				<not>
+					<isset property="plugin.path" />
+				</not>
+				<then>
+					<fail message="Unable to locate plugin @{plugin}" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<target name="deploy-extra-apps">
+		<for list="${plugins.includes}" param="plugin">
+			<sequential>
+				<if>
+					<available file="extraapps" />
+					<then>
+						<pathconvert pathsep="," property="extraapps.zip" setonempty="false">
+							<path>
+								<fileset
+									dir="extraapps"
+									includes="@{plugin}*"
+								/>
+							</path>
+						</pathconvert>
+					</then>
+				</if>
+
+				<if>
+					<isset property="extraapps.zip" />
+					<then>
+						<get-auto-deploy-dir />
+
+						<unzip
+							dest="${auto.deploy.dir}"
+							src="${extraapps.zip}"
+						/>
+					</then>
+					<elseif>
+						<and>
+							<available file="plugins/marketplace" />
+							<isset property="marketplace.app[@{plugin}]" />
+						</and>
+						<then>
+							<local name="marketplace.app" />
+
+							<propertycopy from="marketplace.app[@{plugin}]" name="marketplace.app" />
+
+							<get-auto-deploy-dir />
+
+							<copy file="plugins/marketplace/${marketplace.app}" todir="${auto.deploy.dir}" />
+						</then>
+					</elseif>
+				</if>
+			</sequential>
+		</for>
+	</target>
+
 	<target name="deploy-simple-server-plugins">
+		<get-auto-deploy-dir />
+
 		<if>
 			<equals arg1="${app.server.type}" arg2="jboss" />
 			<then>
@@ -11,137 +129,321 @@
 app.server.type=${app.server.type}
 app.server.jboss.dir=${app.server.dir}
 
-auto.deploy.dir=${liferay.home}/deploy
+auto.deploy.dir=${auto.deploy.dir}
 
-plugins.includes=${plugins.includes}</echo>
+liferay.home=${liferay.home}</echo>
 			</then>
 			<else>
 				<echo file="${lp.plugins.dir}/build.${user.name}.properties">app.server.parent.dir=${app.server.parent.dir}
 app.server.type=${app.server.type}
 
-auto.deploy.dir=${liferay.home}/deploy
+auto.deploy.dir=${auto.deploy.dir}
 
-plugins.includes=${plugins.includes}</echo>
+liferay.home=${liferay.home}</echo>
 			</else>
-		</if>
-
-		<if>
-			<equals arg1="${java.security}" arg2="true" />
-			<then>
-				<if>
-					<not>
-						<resourcecontains
-							resource="${lp.plugins.dir}/${plugin.types}/${portlet.plugins.includes}/docroot/WEB-INF/liferay-plugin-package.properties"
-							substring="security-manager-enabled=true"
-						/>
-					</not>
-					<then>
-						<echo append="true" file="${lp.plugins.dir}/${plugin.types}/${portlet.plugins.includes}/docroot/WEB-INF/liferay-plugin-package.properties">
-
-security-manager-enabled=true</echo>
-					</then>
-				</if>
-			</then>
 		</if>
 
 		<if>
 			<equals arg1="${liferay.portal.bundle}" arg2="6.1.20" />
 			<then>
-				<echo file="${lp.plugins.dir}/build.${user.name}.properties" append="true">
+				<echo append="true" file="${lp.plugins.dir}/build.${user.name}.properties">
 
 app.server.tomcat.dir=${app.server.parent.dir}/tomcat-7.0.27</echo>
+			</then>
+		</if>
+
+		<if>
+			<or>
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.1" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.2" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.3" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.1" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.2" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.3" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.4" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.5" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.6" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.7" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.8" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.9" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.10" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.11" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.12" />
+				<equals arg1="${liferay.portal.bundle}" arg2="6.2.10.13" />
+			</or>
+			<then>
+				<echo append="true" file="${lp.plugins.dir}/build.${user.name}.properties">
+
+app.server.tomcat.dir=${app.server.parent.dir}/tomcat-7.0.42</echo>
 			</then>
 		</if>
 
 		<for list="${plugins.includes}" param="plugin">
 			<sequential>
 				<if>
-					<isset property="portlet.properties.@{plugin}" />
+					<matches pattern="https?://" string="@{plugin}" />
 					<then>
-						<propertycopy
-							from="portlet.properties.@{plugin}"
-							name="portlet.properties"
-							override="true"
+						<mirrors-get
+							dest="${auto.deploy.dir}"
+							src="@{plugin}"
 						/>
-
-						<echo file="${lp.plugins.dir}/${plugin.types}/@{plugin}/docroot/WEB-INF/src/portlet-ext.properties">${portlet.properties}</echo>
 					</then>
 					<else>
-						<delete file="${lp.plugins.dir}/${plugin.types}/@{plugin}/docroot/WEB-INF/src/portlet-ext.properties" />
+						<get-plugin-path
+							plugin="@{plugin}"
+							plugin.types="${plugin.types}"
+						/>
+
+						<get-testcase-property property.name="portlet.properties.@{plugin}" />
+
+						<if>
+							<isset property="portlet.properties.@{plugin}" />
+							<then>
+								<propertycopy
+									from="portlet.properties.@{plugin}"
+									name="portlet.properties"
+									override="true"
+								/>
+
+								<if>
+									<available file="${plugin.path}/docroot/WEB-INF/src" />
+									<then>
+										<echo append="true" file="${plugin.path}/docroot/WEB-INF/src/portlet-ext.properties">${portlet.properties}</echo>
+									</then>
+									<else>
+										<echo append="true" file="${plugin.path}/WEB-INF/classes/portlet-ext.properties">${portlet.properties}</echo>
+									</else>
+								</if>
+							</then>
+							<else>
+								<delete file="${plugin.path}/docroot/WEB-INF/src/portlet-ext.properties" />
+							</else>
+						</if>
+
+						<get-testcase-property property.name="solr.enabled" />
+
+						<if>
+							<equals arg1="${solr.enabled}" arg2="true" />
+							<then>
+								<echo file="${plugin.path}/WEB-INF/classes/solr-ext.properties">server.http.url=http://localhost:8983/solr</echo>
+							</then>
+						</if>
+
+						<if>
+							<equals arg1="@{plugin}" arg2="so-portlet" />
+							<then>
+								<echo file="${plugin.path}/overwrite/META-INF/custom_jsps/html/portlet/dockbar/license_warning.jsp" />
+							</then>
+						</if>
+
+						<if>
+							<equals arg1="${java.security}" arg2="true" />
+							<then>
+								<if>
+									<not>
+										<resourcecontains
+											resource="${plugin.path}/docroot/WEB-INF/liferay-plugin-package.properties"
+											substring="security-manager-enabled=true"
+										/>
+									</not>
+									<then>
+										<echo append="true" file="${plugin.path}/docroot/WEB-INF/liferay-plugin-package.properties">
+
+				security-manager-enabled=true</echo>
+									</then>
+								</if>
+							</then>
+						</if>
+
+						<if>
+							<isset property="plugin.war" />
+							<then>
+								<zip
+									basedir="${plugin.path}"
+									destfile="${plugin.war}"
+									update="yes"
+								/>
+
+								<get-auto-deploy-dir />
+
+								<copy file="${plugin.war}" todir="${auto.deploy.dir}" />
+
+								<var name="plugin.war" unset="true" />
+							</then>
+							<elseif>
+								<contains string="${plugin.path}" substring="${project.dir}/modules/" />
+								<then>
+									<gradle-execute dir="${plugin.path}" task="deploy" />
+								</then>
+							</elseif>
+							<else>
+								<ant dir="${plugin.path}" inheritAll="false" target="clean" />
+
+								<ant dir="${plugin.path}" inheritAll="false" target="deploy" />
+							</else>
+						</if>
+
+						<if>
+							<equals arg1="@{plugin}" arg2="cas-web" />
+							<then>
+								<move todir="${app.server.dir}/webapps">
+								  <fileset dir="${app.server.dir}/webapps">
+								    <include name="cas-web-*.war" />
+								  </fileset>
+								  <mapper from="*" to="cas-web.war" type="glob" />
+								</move>
+							</then>
+						</if>
 					</else>
 				</if>
 			</sequential>
 		</for>
 
+		<delete dir="${lp.plugins.dir}/dist" />
+		<mkdir dir="${lp.plugins.dir}/dist" />
+	</target>
+
+	<target name="test-plugin">
+		<echo>Compiling ${test.plugin}.</echo>
+
 		<if>
-			<matches pattern="http" string="${test.build.plugins.war.zip.url}" />
+			<or>
+				<contains string="${test.plugin}" substring="layouttpl" />
+				<contains string="${test.plugin}" substring="shared" />
+			</or>
 			<then>
-				<for list="${plugins.includes}" param="plugin.includes">
-					<sequential>
-						<pathconvert pathsep="," property="plugin.war" setonempty="false">
-							<path>
-								<fileset
-									dir="plugins"
-									includes="@{plugin.includes}*.war"
-								/>
-							</path>
-						</pathconvert>
-
-						<propertyregex
-							input="${plugin.war}"
-							override="true"
-							property="plugin.war"
-							regexp=",.*"
-							replace=""
-						/>
-
-						<if>
-							<isset property="plugin.war" />
-							<then>
-								<copy file="${plugin.war}" todir="${liferay.home}/deploy" />
-
-								<var name="plugin.war" unset="true" />
-							</then>
-							<else>
-								<ant dir="${lp.plugins.dir}/${plugin.types}/@{plugin.includes}" inheritAll="false">
-									<target name="clean" />
-									<target name="deploy" />
-								</ant>
-							</else>
-						</if>
-					</sequential>
-				</for>
+				<var name="select" value="\2" />
 			</then>
 			<else>
-				<if>
-					<isset property="plugin.types" />
-					<then>
-						<ant-execute
-							ant.dir="${lp.plugins.dir}/${plugin.types}"
-							ant.target="clean"
-						/>
-
-						<ant-execute
-							ant.dir="${lp.plugins.dir}/${plugin.types}"
-							ant.target="deploy"
-						/>
-					</then>
-					<else>
-						<ant-execute
-							ant.dir="${lp.plugins.dir}"
-							ant.target="clean"
-						/>
-
-						<ant-execute
-							ant.dir="${lp.plugins.dir}"
-							ant.target="deploy"
-						/>
-					</else>
-				</if>
+				<var name="select" value="\2s" />
 			</else>
 		</if>
 
-		<delete dir="${lp.plugins.dir}/dist" />
-		<mkdir dir="${lp.plugins.dir}/dist" />
+		<if>
+			<equals arg1="${test.plugin}" arg2="portal-http-service" />
+			<then>
+				<var name="test.plugin.type" value="shared" />
+			</then>
+			<else>
+				<propertyregex
+					input="${test.plugin}"
+					override="true"
+					property="test.plugin.type"
+					regexp="(\w+-)+(\w+)"
+					select="${select}"
+				/>
+			</else>
+		</if>
+
+		<get-auto-deploy-dir />
+
+		<echo file="${lp.plugins.dir}/build.${user.name}.properties">app.server.parent.dir=${app.server.parent.dir}
+app.server.type=${app.server.type}
+
+auto.deploy.dir=${auto.deploy.dir}
+
+liferay.home=${liferay.home}
+
+plugins.includes=${test.plugin}</echo>
+
+		<ant dir="${lp.plugins.dir}/${test.plugin.type}/${test.plugin}" inheritAll="false" target="clean" />
+
+		<if>
+			<contains string="${test.plugin}" substring="portlet" />
+			<then>
+				<ant dir="${lp.plugins.dir}/${test.plugin.type}/${test.plugin}" inheritAll="false" target="compile-jsp" />
+			</then>
+			<else>
+				<ant dir="${lp.plugins.dir}/${test.plugin.type}/${test.plugin}" inheritAll="false" target="compile" />
+			</else>
+		</if>
+	</target>
+
+	<target name="test-plugin-group">
+		<if>
+			<not>
+				<isset property="test.plugin.group.index" />
+			</not>
+			<then>
+				<fail>Use "ant test-plugin-group -Dtest.plugin.group.index=0".</fail>
+			</then>
+		</if>
+
+		<property file="${project.dir}/test.plugin.names.properties" />
+
+		<propertycopy from="TEST_PLUGIN_GROUP_${test.plugin.group.index}" name="test.plugins" />
+
+		<for list="${test.plugins}" param="test.plugin">
+			<sequential>
+				<trycatch>
+					<try>
+						<antcall target="test-plugin">
+							<param name="test.plugin" value="@{test.plugin}" />
+						</antcall>
+					</try>
+					<catch>
+						<echo append="true" file="plugins-compile-failure">@{test.plugin},</echo>
+					</catch>
+				</trycatch>
+			</sequential>
+		</for>
+
+		<if>
+			<available file="plugins-compile-failure" />
+			<then>
+				<loadfile property="failed.plugins" srcFile="plugins-compile-failure" />
+
+				<beanshell>
+					<![CDATA[
+						StringBuilder sb = new StringBuilder();
+
+						sb.append("\n");
+
+						String failedPluginsString = project.getProperty("failed.plugins");
+
+						String[] failedPlugins = failedPluginsString.split(",");
+
+						sb.append(failedPlugins.length);
+
+						sb.append(" of ");
+
+						String testPluginsString = project.getProperty("test.plugins");
+
+						String[] testPlugins = testPluginsString.split(",");
+
+						sb.append(testPlugins.length);
+
+						sb.append(" plugin");
+
+						if (testPlugins.length != 1) {
+							sb.append("s");
+						}
+
+						sb.append(" failed to compile:\n");
+
+						for (String failedPlugin : failedPlugins) {
+							sb.append(failedPlugin);
+							sb.append("\n");
+						}
+
+						project.setProperty("plugins.failure.message", sb.toString());
+					]]>
+				</beanshell>
+
+				<fail message="${plugins.failure.message}" />
+			</then>
+		</if>
+	</target>
+
+	<target name="test-plugins">
+		<fail message="Please set the property ${lp.plugins.dir}" unless="lp.plugins.dir" />
+
+		<antcall target="record-test-plugin-names">
+			<param name="test.plugin.groups.size" value="1" />
+		</antcall>
+
+		<antcall target="test-plugin-group">
+			<param name="test.plugin.group.index" value="0" />
+		</antcall>
 	</target>
 </project>

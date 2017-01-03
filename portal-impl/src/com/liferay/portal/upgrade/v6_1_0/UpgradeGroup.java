@@ -14,20 +14,13 @@
 
 package com.liferay.portal.upgrade.v6_1_0;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.shard.ShardUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Organization;
 import com.liferay.portal.upgrade.v6_1_0.util.GroupTable;
-import com.liferay.portal.util.PropsValues;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * @author Hugo Huijser
@@ -37,64 +30,33 @@ public class UpgradeGroup extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try {
-			runSQL("alter_column_type Group_ name VARCHAR(150) null");
-		}
-		catch (SQLException sqle) {
-			upgradeTable(
-				GroupTable.TABLE_NAME, GroupTable.TABLE_COLUMNS,
-				GroupTable.TABLE_SQL_CREATE, GroupTable.TABLE_SQL_ADD_INDEXES);
-		}
+		alter(
+			GroupTable.class, new AlterColumnType("name", "VARCHAR(150) null"));
 
 		updateName();
 		updateSite();
 	}
 
 	protected long getClassNameId(String className) throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		String currentShardName = null;
-
-		try {
-			currentShardName = ShardUtil.setTargetSource(
-				PropsValues.SHARD_DEFAULT_NAME);
-
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
-				"select classNameId from ClassName_ where value = ?");
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select classNameId from ClassName_ where value = ?")) {
 
 			ps.setString(1, className);
 
-			rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getLong("classNameId");
+				}
 
-			if (rs.next()) {
-				return rs.getLong("classNameId");
+				return 0;
 			}
-
-			return 0;
-		}
-		finally {
-			if (Validator.isNotNull(currentShardName)) {
-				ShardUtil.setTargetSource(currentShardName);
-			}
-
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 
 	protected void updateName() throws Exception {
-		long organizationClassNameId = getClassNameId(
-			Organization.class.getName());
-
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			long organizationClassNameId = getClassNameId(
+				"com.liferay.portal.model.Organization");
 
 			StringBundler sb = new StringBundler(4);
 
@@ -103,38 +65,29 @@ public class UpgradeGroup extends UpgradeProcess {
 			sb.append("Organization_ on Organization_.organizationId = ");
 			sb.append("Group_.classPK where classNameId = ?");
 
-			String sql = sb.toString();
+			try (PreparedStatement ps = connection.prepareStatement(
+					sb.toString())) {
 
-			ps = con.prepareStatement(sql);
+				ps.setLong(1, organizationClassNameId);
 
-			ps.setLong(1, organizationClassNameId);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						long groupId = rs.getLong("groupId");
+						long classPK = rs.getLong("classPK");
+						String name = rs.getString("name");
 
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				long groupId = rs.getLong("groupId");
-				long classPK = rs.getLong("classPK");
-				String name = rs.getString("name");
-
-				updateName(groupId, classPK, name);
+						updateName(groupId, classPK, name);
+					}
+				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 
 	protected void updateName(long groupId, long classPK, String name)
 		throws Exception {
 
-		Connection con = null;
-		PreparedStatement ps = null;
-
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
-				"update Group_ set name = ? where groupId = ?");
+		try (PreparedStatement ps = connection.prepareStatement(
+				"update Group_ set name = ? where groupId = ?")) {
 
 			StringBundler sb = new StringBundler(3);
 
@@ -143,52 +96,42 @@ public class UpgradeGroup extends UpgradeProcess {
 			sb.append(name);
 
 			ps.setString(1, sb.toString());
+
 			ps.setLong(2, groupId);
 
 			ps.executeUpdate();
 		}
-		finally {
-			DataAccess.cleanUp(con, ps);
-		}
 	}
 
 	protected void updateSite() throws Exception {
-		long groupClassNameId = getClassNameId(Group.class.getName());
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			long groupClassNameId = getClassNameId(
+				"com.liferay.portal.model.Group");
 
-		runSQL(
-			"update Group_ set site = TRUE where classNameId = " +
-				groupClassNameId);
+			runSQL(
+				"update Group_ set site = TRUE where classNameId = " +
+					groupClassNameId);
 
-		long organizationClassNameId = getClassNameId(
-			Organization.class.getName());
+			long organizationClassNameId = getClassNameId(
+				"com.liferay.portal.model.Organization");
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+			try (PreparedStatement ps = connection.prepareStatement(
+					"select distinct Group_.groupId from Group_ inner join " +
+						"Layout on Layout.groupId = Group_.groupId where " +
+							"classNameId = ?")) {
 
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
+				ps.setLong(1, organizationClassNameId);
 
-			String sql =
-				"select distinct Group_.groupId from Group_ inner join " +
-					"Layout on Layout.groupId = Group_.groupId where " +
-						"classNameId = ?";
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						long groupId = rs.getLong("groupId");
 
-			ps = con.prepareStatement(sql);
-
-			ps.setLong(1, organizationClassNameId);
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				long groupId = rs.getLong("groupId");
-
-				runSQL(
-					"update Group_ set site = TRUE where groupId = " + groupId);
+						runSQL(
+							"update Group_ set site = TRUE where groupId = " +
+								groupId);
+					}
+				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 

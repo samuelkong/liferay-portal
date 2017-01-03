@@ -19,8 +19,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.util.xml.XMLFormatter;
+import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
+import com.liferay.util.xml.Dom4jUtil;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class WebXML23Converter {
 		try {
 			String webXML24 = FileUtil.read(input);
 
-			Document document = SAXReaderUtil.read(webXML24);
+			Document document = UnsecureSAXReaderUtil.read(webXML24);
 
 			Element rootElement = document.getRootElement();
 
@@ -76,20 +76,15 @@ public class WebXML23Converter {
 			String webXML23 = document.formattedString();
 
 			int x = webXML23.indexOf("<web-app");
+
 			int y = webXML23.indexOf(">", x);
 
 			webXML23 = webXML23.substring(0, x) + "<!DOCTYPE web-app PUBLIC \"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN\" \"http://java.sun.com/dtd/web-app_2_3.dtd\"><web-app>" + webXML23.substring(y + 1);
 
-			webXML23 = StringUtil.replace(
-				webXML23,
-				new String[] {
-					"<jsp-config>", "</jsp-config>"
-				},
-				new String[] {
-					"", ""
-				});
+			webXML23 = StringUtil.removeSubstrings(
+				webXML23, "<jsp-config>", "</jsp-config>");
 
-			webXML23 = XMLFormatter.toString(webXML23);
+			webXML23 = Dom4jUtil.toString(webXML23);
 
 			FileUtil.write(output, webXML23);
 		}

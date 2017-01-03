@@ -79,14 +79,15 @@ public class FormTag extends BaseFormTag {
 			super.setAction(HtmlUtil.escape(action));
 		}
 
-		request.setAttribute("aui:form:checkboxNames", _checkboxNames);
 		request.setAttribute("aui:form:validatorTagsMap", _validatorTagsMap);
+		request.setAttribute(
+			"LIFERAY_SHARED_aui:form:checkboxNames", _checkboxNames);
 	}
 
 	private static final boolean _CLEAN_UP_SET_ATTRIBUTES = true;
 
-	private final List<String> _checkboxNames = new ArrayList<String>();
+	private final List<String> _checkboxNames = new ArrayList<>();
 	private final Map<String, List<ValidatorTag>> _validatorTagsMap =
-		new HashMap<String, List<ValidatorTag>>();
+		new HashMap<>();
 
 }

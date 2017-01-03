@@ -28,7 +28,6 @@ java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribut
 com.liferay.portal.kernel.dao.search.SearchContainer<?> searchContainer = (com.liferay.portal.kernel.dao.search.SearchContainer<?>)request.getAttribute("aui:nav:searchContainer");
 boolean useNamespace = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:nav:useNamespace")), true);
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:nav:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:nav:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/nav/init-ext.jspf" %>

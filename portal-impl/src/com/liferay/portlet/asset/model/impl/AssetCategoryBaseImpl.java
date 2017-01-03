@@ -16,8 +16,8 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 
 /**
  * The extended model base implementation for the AssetCategory service. Represents a row in the &quot;AssetCategory&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see AssetCategoryImpl
- * @see com.liferay.portlet.asset.model.AssetCategory
+ * @see AssetCategory
  * @generated
  */
 @ProviderType

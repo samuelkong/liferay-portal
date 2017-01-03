@@ -1,0 +1,56 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the key/value field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'key_value'"}
+	{call .key_value data="all" /}
+{/deltemplate}
+
+/**
+ * Prints the DDM form key/value field.
+ *
+ * @param dir
+ * @param key
+ * @param keyInputEnabled
+ * @param keyInputSize
+ * @param label
+ * @param name
+ * @param placeholder
+ * @param required
+ * @param showLabel
+ * @param strings
+ * @param tooltip
+ * @param value
+ * @param visible
+ */
+{template .key_value}
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-key-value liferay-ddm-form-field-text" data-fieldname="{$name}">
+		{if $showLabel}
+			<label class="control-label" for="{$name}">
+				{$label}
+
+				{if $required}
+					<span class="icon-asterisk text-warning"></span>
+				{/if}
+			</label>
+		{/if}
+
+		<div class="input-group-container {if $tooltip}input-group-default{/if}">
+			<input class="field form-control" dir="{$dir}" id="{$name}" name="{$name}" placeholder="{$placeholder}" type="text" value="{$value}" />
+
+			{if $tooltip}
+				<span class="input-group-addon">
+					<span class="input-group-addon-content">
+						<a class="help-icon help-icon-default icon-monospaced icon-question" data-original-title="{$tooltip}" data-toggle="popover" href="javascript:;" title="{$tooltip}"></a>
+					</span>
+				</span>
+			{/if}
+		</div>
+
+		<div class="active key-value-editor">
+			<label class="control-label key-value-label">{$strings.keyLabel}:</label>
+			<input class="key-value-input" {if not $keyInputEnabled}readonly{/if} size="{$keyInputSize}" tabindex="-1" type="text" value='{$key}' />
+		</div>
+	</div>
+{/template}

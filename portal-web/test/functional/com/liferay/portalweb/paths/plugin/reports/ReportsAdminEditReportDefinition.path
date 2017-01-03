@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>ReportsAdminEditReportDefinition</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ReportsAdminEditReportDefinition</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>DATA_SOURCE_NAME_SELECT</td>
+	<td>//select[contains(@id,'AdminPortlet_sourceId')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TEMPLATE_FILE_UPLOAD</td>
+	<td>//input[contains(@id,'AdminPortlet_templateReport')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--REPORT_DEFINITION_PARAMETERS-->
+<tr>
+	<td>REPORT_DEFINITION_PARAMETERS_KEY</td>
+	<td>//input[contains(@id,'AdminPortlet_key')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPORT_DEFINITION_PARAMETERS_VALUE</td>
+	<td>//input[contains(@id,'AdminPortlet_value')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPORT_DEFINITION_PARAMETERS_TYPE</td>
+	<td>//select[contains(@id,'AdminPortlet_type')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

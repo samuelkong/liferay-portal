@@ -107,7 +107,7 @@ public class LiferaySerializer extends AbstractSerializer {
 		String fieldName = null;
 
 		try {
-			Set<String> processedFieldNames = new HashSet<String>();
+			Set<String> processedFieldNames = new HashSet<>();
 
 			while (javaClass != null) {
 				Field[] declaredFields = javaClass.getDeclaredFields();
@@ -151,6 +151,10 @@ public class LiferaySerializer extends AbstractSerializer {
 
 					if (JSONSerializer.CIRC_REF_OR_DUPLICATE != fieldObject) {
 						serializableJSONObject.put(fieldName, fieldObject);
+					}
+					else if (!serializableJSONObject.has(fieldName)) {
+						serializableJSONObject.put(
+							fieldName, field.get(object));
 					}
 				}
 
@@ -293,7 +297,7 @@ public class LiferaySerializer extends AbstractSerializer {
 		String fieldName = null;
 
 		try {
-			Set<String> processedFieldNames = new HashSet<String>();
+			Set<String> processedFieldNames = new HashSet<>();
 
 			while (javaClass != null) {
 				Field[] fields = javaClass.getDeclaredFields();
@@ -329,6 +333,10 @@ public class LiferaySerializer extends AbstractSerializer {
 					}
 
 					Object value = null;
+
+					if (!serializableJSONObject.has(fieldName)) {
+						continue;
+					}
 
 					try {
 						value = ser.unmarshall(

@@ -16,11 +16,12 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.asset.kernel.model.AssetVocabulary;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.asset.model.AssetVocabulary;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -40,8 +41,32 @@ import java.util.Date;
 public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AssetVocabularyCacheModel)) {
+			return false;
+		}
+
+		AssetVocabularyCacheModel assetVocabularyCacheModel = (AssetVocabularyCacheModel)obj;
+
+		if (vocabularyId == assetVocabularyCacheModel.vocabularyId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, vocabularyId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -67,6 +92,8 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 		sb.append(description);
 		sb.append(", settings=");
 		sb.append(settings);
+		sb.append(", lastPublishDate=");
+		sb.append(lastPublishDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -137,6 +164,13 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 			assetVocabularyImpl.setSettings(settings);
 		}
 
+		if (lastPublishDate == Long.MIN_VALUE) {
+			assetVocabularyImpl.setLastPublishDate(null);
+		}
+		else {
+			assetVocabularyImpl.setLastPublishDate(new Date(lastPublishDate));
+		}
+
 		assetVocabularyImpl.resetOriginalValues();
 
 		return assetVocabularyImpl;
@@ -145,9 +179,13 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		vocabularyId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
@@ -156,6 +194,7 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 		title = objectInput.readUTF();
 		description = objectInput.readUTF();
 		settings = objectInput.readUTF();
+		lastPublishDate = objectInput.readLong();
 	}
 
 	@Override
@@ -169,8 +208,11 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 		}
 
 		objectOutput.writeLong(vocabularyId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -210,6 +252,8 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 		else {
 			objectOutput.writeUTF(settings);
 		}
+
+		objectOutput.writeLong(lastPublishDate);
 	}
 
 	public String uuid;
@@ -224,4 +268,5 @@ public class AssetVocabularyCacheModel implements CacheModel<AssetVocabulary>,
 	public String title;
 	public String description;
 	public String settings;
+	public long lastPublishDate;
 }

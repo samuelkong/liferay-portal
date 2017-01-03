@@ -14,38 +14,46 @@
 
 package com.liferay.portal.security.membershippolicy;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroupRole;
+import com.liferay.portal.kernel.security.membershippolicy.MembershipPolicyException;
+import com.liferay.portal.kernel.service.GroupServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserServiceUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroupRole;
 import com.liferay.portal.security.membershippolicy.util.test.MembershipPolicyTestUtil;
-import com.liferay.portal.service.GroupServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.service.UserServiceUtil;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portal.util.test.ServiceContextTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Roberto Díaz
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class SiteMembershipPolicyMembershipsTest
 	extends BaseSiteMembershipPolicyTestCase {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@After
 	@Override
@@ -100,6 +108,7 @@ public class SiteMembershipPolicyMembershipsTest
 		Assert.assertEquals(
 			initialGroupUsersCount + 2,
 			UserLocalServiceUtil.getGroupUsersCount(requiredGroupIds[0]));
+
 		Assert.assertTrue(isPropagateMembership());
 	}
 
@@ -250,6 +259,7 @@ public class SiteMembershipPolicyMembershipsTest
 		Assert.assertEquals(
 			initialUserGroupCount - 1,
 			UserLocalServiceUtil.getGroupUsersCount(standardGroupIds[0]));
+
 		Assert.assertTrue(isPropagateMembership());
 	}
 
@@ -276,12 +286,16 @@ public class SiteMembershipPolicyMembershipsTest
 	public void testVerifyWhenUpdatingGroup() throws Exception {
 		Group group = MembershipPolicyTestUtil.addGroup();
 
+		Map<Locale, String> nameMap = new HashMap<>();
+
+		nameMap.put(LocaleUtil.getDefault(), RandomTestUtil.randomString());
+
 		GroupServiceUtil.updateGroup(
-			group.getGroupId(), group.getParentGroupId(),
-			RandomTestUtil.randomString(), group.getDescription(),
-			group.getType(), group.isManualMembership(),
-			group.getMembershipRestriction(), group.getFriendlyURL(),
-			group.isActive(), ServiceContextTestUtil.getServiceContext());
+			group.getGroupId(), group.getParentGroupId(), nameMap,
+			group.getDescriptionMap(), group.getType(),
+			group.isManualMembership(), group.getMembershipRestriction(),
+			group.getFriendlyURL(), group.isInheritContent(), group.isActive(),
+			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertTrue(isVerify());
 	}

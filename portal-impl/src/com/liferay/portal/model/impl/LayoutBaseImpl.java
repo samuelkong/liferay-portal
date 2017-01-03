@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 
 /**
  * The extended model base implementation for the Layout service. Represents a row in the &quot;Layout&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.LayoutLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutImpl
- * @see com.liferay.portal.model.Layout
+ * @see Layout
  * @generated
  */
 @ProviderType

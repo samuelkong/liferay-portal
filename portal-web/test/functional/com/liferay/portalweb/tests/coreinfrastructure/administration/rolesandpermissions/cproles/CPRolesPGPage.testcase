@@ -1,0 +1,39 @@
+<definition component-name="portal-permissions">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Permissions" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+		</if>
+	</tear-down>
+
+	<command name="RemoveNoGuestInlineView" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Welcome" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoPagePG">
+			<var name="pageName" value="Welcome" />
+		</execute>
+
+		<var name="key_roleTitle" value="guest" />
+
+		<execute function="Click" locator1="Permissions#INLINE_PERMISSIONS_VIEW_CHECKBOX" />
+		<execute function="AssertChecked" locator1="Permissions#INLINE_PERMISSIONS_VIEW_CHECKBOX" />
+	</command>
+</definition>

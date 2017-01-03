@@ -1,0 +1,404 @@
+<html>
+<head>
+<title>Checkbox</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Checkbox</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ACTIVE</td>
+	<td>//label[contains(.,'Active')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_EXPLANATION_POST</td>
+	<td>//input[contains(@id,'addExplanationPost')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_SAMPLE_DATA</td>
+	<td>//label[contains(.,'Add Sample Data')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ALLOW_DICTIONARY_WORDS</td>
+	<td>//label[contains(.,'Allow Dictionary Words')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ALLOW_MANUAL_MEMBERSHIP_MANAGEMENT</td>
+	<td>//label[contains(.,'Allow Manual Membership Management')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ALLOW_SITE_ADMIN_MODIFY_PAGES</td>
+	<td>//label[contains(.,'Allow site administrators to modify')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ANONYMOUS</td>
+	<td>//input[contains(@id,'anonymous')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BLOGS_ENTRY</td>
+	<td>//input[contains(@id,'BlogsEntry')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHANGEABLE</td>
+	<td>//label[contains(.,'Changeable')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CHANGE_REQUIRED</td>
+	<td>//label[contains(.,'Change Required')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DISPLAY_ADDITIONAL_ACTIVITY_COUNTERS</td>
+	<td>//label[contains(.,'Display Additional Activity Counters')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DISPLAY_FACET</td>
+	<td>//div[@style='']//label[contains(.,'Display Facet')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DISPLAY_IMMEDIATELY</td>
+	<td>//input[contains(@name,'displayImmediately')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_COMMENTS</td>
+	<td>//label[contains(.,'Enable Comments')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_COMMENT_RATINGS</td>
+	<td>//label[contains(.,'Enable Comment Ratings')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_CONVERSION_DOC</td>
+	<td>//label[contains(.,'DOC')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_CONVERSION_ODT</td>
+	<td>//label[contains(.,'ODT')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_CONVERSION_PDF</td>
+	<td>//label[contains(.,'PDF')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_CONVERSION_RTF</td>
+	<td>//label[contains(.,'RTF')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_CONVERSION_SXW</td>
+	<td>//label[contains(.,'SXW')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_CONVERSION_TXT</td>
+	<td>//label[contains(.,'TXT')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_FLAGS</td>
+	<td>//label[contains(.,'Enable Flags')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_FULLSCREEN</td>
+	<td>//input[contains(@id,'enableFullscreen')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_GOOGLE_AUTHENTICATION</td>
+	<td>//input[contains(@id,'google-auth')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_LOCKOUT</td>
+	<td>//label[contains(.,'Enable Lockout')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_PAGE_RATINGS</td>
+	<td>//label[contains(.,'Enable Page Ratings')]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_PRINT</td>
+	<td>//label[contains(.,'Enable Print')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_PROPAGATION</td>
+	<td>//label[contains(.,'Enable propagation of changes')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_RATINGS</td>
+	<td>//label[contains(.,'Enable Ratings')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_RECYCLE_BIN</td>
+	<td>//input[contains(@id,'trashEnabled')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_RELATED_ASSETS</td>
+	<td>//label[contains(.,'Enable Related Assets')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_RSS_SUBSCRIPTION</td>
+	<td>//label[contains(.,'RSS Subscription')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_SOCIAL_BOOKMARKS</td>
+	<td>//label[contains(.,'Enable Social Bookmarks')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_VIEW_COUNT</td>
+	<td>//label[contains(.,'Enable View Count')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_VIEW_COUNT_INCREMENT</td>
+	<td>//label[contains(.,'Enable View Count Increment')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLED_ON_PRIVATE_PAGES</td>
+	<td>//input[contains(@id,'branchingPrivate')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLED_ON_PUBLIC_PAGES</td>
+	<td>//input[contains(@id,'branchingPublic')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FACEBOOK</td>
+	<td>//input[contains(@id,'facebook')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GOOGLE_PLUS</td>
+	<td>//input[contains(@id,'plusone')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EXPIRATION_ENABLED</td>
+	<td>//label[contains(.,'Expiration Enabled')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HIDE_FROM_NAVIGATION_MENU</td>
+	<td>//label[contains(.,'Hide from Navigation Menu')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HISTORY_ENABLED</td>
+	<td>//label[contains(.,'History Enabled')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LEXICON_SELECT_ALL</td>
+	<td>//div[contains(@class,'collapse on')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LOWER_CASE_LETTERS</td>
+	<td>//label[contains(.,'Lower Case Letters')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MAILING</td>
+	<td>//label[contains(.,'Mailing')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MARK_AS_A_QUESTION</td>
+	<td>//label[contains(.,'Mark as a Question')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENTIONS</td>
+	<td>//input[contains(@id,'mentionsEnabledCheckbox')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MENTIONS_CHECKBOX_DISABLED</td>
+	<td>//input[contains(@id,'mentionsEnabled') and contains(@class,'disabled')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MERGE_WITH_PARENT_FOLDER</td>
+	<td>//label[contains(.,'Merge with Parent Folder')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEVER_EXPIRE</td>
+	<td>//input[contains(@name,'neverExpire') and @type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEVER_REVIEW</td>
+	<td>//input[contains(@name,'neverReview') and @type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NUMBERS</td>
+	<td>//label[contains(.,'Numbers')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PERMISSIONS</td>
+	<td>//label[contains(.,'Permissions')]/input[contains(@id,'PERMISSIONS')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRIORITIZATION_STRATEGY</td>
+	<td>//input[contains(@id,'prioritize') and contains(@type,'checkbox')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RANK_BY_CONTRIBUTION</td>
+	<td>//label[contains(.,'Rank by Contribution')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RANK_BY_PARTICIPATION</td>
+	<td>//label[contains(.,'Rank by Participation')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REMEMBER_ME</td>
+	<td>//label[contains(.,'Remember Me')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SEARCHABLE</td>
+	<td>//input[contains(@id,'indexable')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_ALL</td>
+	<td>//*[@data-qa-id='selectAllCheckbox'] | //div[@class='checkbox']//input[@title='Select All'] | //input[contains(@id,'allRowIds') or contains(@name,'allRowIds') or contains(@class,'select-all-checkboxes')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_ALL_CHECKBOX_TICK</td>
+	<td>//div[@class='portlet-body']//div[contains(@class,'secondary-bar-open')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_ALL_NOTIFICATIONS</td>
+	<td>//input[contains(@id,'notifications') and contains(@class,'select-all')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_ACTIONS_CHECKBOX</td>
+	<td>//label[contains(@for,'showActions')]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_ADD_CONTENT_BUTTON</td>
+	<td>//label[contains(.,'Show Add Content Button')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_AVAILABLE_LOCALES</td>
+	<td>//label[contains(.,'Show Available Locales')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_FOLDER_MENU_CHECKBOX</td>
+	<td>//label[contains(@for,'showFolderMenu')]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_HEADER_TEXT</td>
+	<td>//label[contains(.,'Show Header Text')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_NAVIGATION_LINKS_CHECKBOX</td>
+	<td>//label[contains(@for,'showTabs')]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_SEARCH_CHECKBOX</td>
+	<td>//input[contains(@id,'showFoldersSearch')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_TOTALS</td>
+	<td>//label[contains(.,'Show Totals')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITE_ADMINISTRATOR</td>
+	<td>xpath=(//input[contains(@name,'rowIds')])[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITE_OWNER</td>
+	<td>//tr[contains(.,'Site Owner')]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SOURCE_URL_ENABLED</td>
+	<td>//label[contains(@for,'sourceURLEnabled')]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>STAGED_CONTENT</td>
+	<td>//li[contains(.,'${key_contentName}')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>STATUS</td>
+	<td>//span[@class='icon-check' and contains(.,'${key_status}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_SYNTAX_CHECKING</td>
+	<td>//label[contains(.,'Enable Syntax Checking')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>THIS_IS_A_MINOR_EDIT</td>
+	<td>//label[contains(.,'This is a minor edit.')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TWITTER</td>
+	<td>//input[contains(@id,'twitter')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>UPPER_CASE_LETTERS</td>
+	<td>//label[contains(.,'Upper Case Letters')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

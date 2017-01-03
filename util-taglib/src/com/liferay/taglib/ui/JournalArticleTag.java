@@ -36,6 +36,10 @@ public class JournalArticleTag extends IncludeTag {
 		_articleResourcePrimKey = articleResourcePrimKey;
 	}
 
+	public void setDDMTemplateKey(String ddmTemplateKey) {
+		_ddmTemplateKey = ddmTemplateKey;
+	}
+
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}
@@ -58,21 +62,17 @@ public class JournalArticleTag extends IncludeTag {
 		_showTitle = showTitle;
 	}
 
-	public void setTemplateId(String templateId) {
-		_templateId = templateId;
-	}
-
 	@Override
 	protected void cleanUp() {
 		_articleId = null;
 		_articlePage = 1;
 		_articleResourcePrimKey = 0;
+		_ddmTemplateKey = null;
 		_groupId = 0;
 		_languageId = null;
 		_portletRequestModel = null;
 		_showAvailableLocales = false;
 		_showTitle = false;
-		_templateId = null;
 	}
 
 	@Override
@@ -91,6 +91,8 @@ public class JournalArticleTag extends IncludeTag {
 			"liferay-ui:journal-article:articleResourcePrimKey",
 			String.valueOf(_articleResourcePrimKey));
 		request.setAttribute(
+			"liferay-ui:journal-article:ddmTemplateKey", _ddmTemplateKey);
+		request.setAttribute(
 			"liferay-ui:journal-article:groupId", String.valueOf(_groupId));
 		request.setAttribute(
 			"liferay-ui:journal-article:languageId", _languageId);
@@ -102,8 +104,6 @@ public class JournalArticleTag extends IncludeTag {
 			String.valueOf(_showAvailableLocales));
 		request.setAttribute(
 			"liferay-ui:journal-article:showTitle", String.valueOf(_showTitle));
-		request.setAttribute(
-			"liferay-ui:journal-article:templateId", _templateId);
 	}
 
 	private static final String _PAGE =
@@ -112,11 +112,11 @@ public class JournalArticleTag extends IncludeTag {
 	private String _articleId;
 	private int _articlePage = 1;
 	private long _articleResourcePrimKey;
+	private String _ddmTemplateKey;
 	private long _groupId;
 	private String _languageId;
 	private PortletRequestModel _portletRequestModel;
 	private boolean _showAvailableLocales;
 	private boolean _showTitle;
-	private String _templateId;
 
 }

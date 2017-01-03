@@ -1,0 +1,345 @@
+/* ---------- XML log ---------- */
+
+.collapse, .header > .btn-container {
+	display: none;
+}
+
+.xml-log {
+	color: $xml-log-default-text-color;
+	display: block;
+	position: relative;
+	transition: width 0.4s ease-out;
+	width: 80%;
+
+	.current-scope {
+		background-color: $line-container-current-scope-bg-color;
+
+		> .line-container {
+			background-color: $line-container-bg-color;
+			box-shadow: $line-container-box-shadow, $line-container-current-scope-border-box-shadow;
+		}
+	}
+}
+
+.command-logger .xml-log {
+	width: 70%;
+}
+
+.minimized-sidebar .xml-log {
+	width: 100%;
+}
+
+.xml-log-container {
+	border-width: 0;
+	padding-left: 100px;
+}
+
+.line-container {
+	display: block;
+	padding: 8px;
+	transition: border-width 0.1s cubic-bezier(1, 0.79, 0, 1.77), background-color 0.3s cubic-bezier(1, 0.44, 1, 1), background 0.2s ease;
+	z-index: 1;
+}
+
+.xml-log {
+	.line-container {
+		-webkit-filter: blur(0);
+		-webkit-font-smoothing: subpixel-antialiased;
+		padding-right: 2%;
+		position: relative;
+		width: 102%;
+	}
+
+	.current-scope > .line-container:nth-child(2) {
+		&:before, &:after {
+			background-color: $neutral;
+			content: "";
+			margin-right: 26px;
+			opacity: 1;
+			position: absolute;
+			top: 24px;
+			transform: translateY(-50%) translateZ(0);
+		}
+
+		&:before {
+			height: 1px;
+			left: calc(-100vw - 44px);
+			transition: height 0.2s ease, opacity 0.15s ease, background-color 0.2s ease;
+			width: 100vw;
+			z-index: -4;
+		}
+
+		&:after {
+			background-clip: content-box;
+			border: 1px solid $neutral;
+			border-radius: 25px;
+			height: 8px;
+			padding: 10px;
+			right: 100%;
+			transform-origin: top;
+			transition: border-color 0.15s ease;
+			width: 8px;
+		}
+	}
+
+	.transitioning .current-scope > .line-container:nth-child(2) {
+		&:after, &:before {
+			display: none;
+			opacity: 0;
+		}
+	}
+
+	*:not(.transitioning) .current-scope > .line-container:nth-child(2) {
+		&:after {
+			animation: ping 0.25s cubic-bezier(1, 0.9, 0.47, 1.92);
+		}
+	}
+}
+
+.function > .line-container, .macro > .line-container:nth-of-type(2) {
+	cursor: pointer;
+}
+
+.macro {
+	&.hover {
+		background-color: $line-group-hover-bg-color;
+	}
+
+	> .child-container {
+		background-color: $macro-child-container-bg-color;
+		box-shadow: $macro-child-container-box-shadow;
+		padding: 1px 0 1px 12px;
+
+		&.in {
+			margin: 40px 0 40px 24px;
+		}
+	}
+}
+
+.child-container {
+	border-left: 1px solid $child-container-left-border-color;
+	height: 0;
+	list-style-type: none;
+	margin: 0 0 0 24px;
+	overflow: visible;
+	padding: 1px 0;
+
+	&.root-container {
+		border-width: 0;
+		overflow: visible;
+	}
+
+	&.transitioning {
+		overflow: hidden;
+		transform: translateZ(0);
+		will-change: height, margin;
+
+		.btn-container, .line-number {
+			opacity: 0;
+			transition: opacity 0s;
+		}
+	}
+}
+
+.header {
+	> .line-container {
+		padding: 4px 0 8px;
+	}
+
+	> .child-container {
+		height: auto;
+	}
+}
+
+.btn-container {
+	left: 0;
+	opacity: 1;
+	padding-top: 8px;
+	position: absolute;
+	transition: opacity 0.2s ease;
+	z-index: 3;
+}
+
+.parameter-container {
+	border: 1px solid $parameter-container-border-color;
+	border-right-width: 0;
+	border-top-width: 0;
+	height: 0;
+	margin-left: 35px;
+	overflow: hidden;
+
+	.line-container {
+		padding: 12px;
+	}
+
+	.line-number {
+		left: 0;
+		position: absolute;
+	}
+}
+
+.line-number {
+	border-width: 0;
+	color: $line-number-text-color;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 10px;
+	line-height: 31px;
+	margin-left: 5px;
+	min-width: 26px;
+	opacity: 0.2;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+/* ---------- Command-logger mode ---------- */
+
+.command-logger {
+	.xml-log {
+		.fail, .pass, .pending, .warning {
+			&:not(.current-scope) > .line-container {
+				box-shadow: $line-container-box-shadow;
+			}
+
+			> .line-container {
+				border-left: 7px solid transparent;
+			}
+		}
+
+		.pass {
+			&.conditional-failed > .line-container {
+				background: transparent;
+			}
+
+			> .line-container {
+				border-left-color: $passed-color;
+			}
+		}
+
+		.pending > .line-container {
+			border-left-color: $pending-color;
+		}
+
+		.warning > .line-container {
+			border-left-color: $warning-color;
+		}
+
+		.fail {
+			.line-number {
+				color: $failed-color;
+			}
+
+			> .line-container {
+				border-left-color: $failed-color;
+			}
+		}
+
+		.function, .macro {
+			&.fail, &.pass, &.pending, &.warning {
+				&:not(.macro) > .line-container:hover, &.hover > .line-container {
+					-webkit-filter: blur(0);
+					background-color: $line-container-bg-color;
+					box-shadow: $line-container-box-shadow-hover;
+					transform: scale(1.007);
+					transition: transform 0.15s cubic-bezier(1, 0.51, 0.44, 1.21) 0.1s, box-shadow 0.14s cubic-bezier(1, 0.12, 0.51, 0.98) 0.1s, background-color 0.2s cubic-bezier(1, 0.44, 1, 1);
+					z-index: 2;
+				}
+			}
+
+			&.fail, &.warning {
+				> .line-container:nth-child(2) {
+					&:before {
+						background-repeat: no-repeat;
+						background-size: calc(100vw - 32px);
+						content: '';
+						height: 100%;
+						left: calc(-100vw - 7px);
+						position: absolute;
+						top: 0;
+						width: 100vw;
+					}
+				}
+			}
+
+			&.fail {
+				> .line-container:nth-child(2):before {
+					background-color: transparentize($failed-color, 0.84);
+				}
+			}
+
+			&.warning {
+				> .line-container:nth-child(2):before {
+					background-color: transparentize($warning-color, 0.84);
+				}
+			}
+		}
+
+		.current-scope {
+			&.pass {
+				&.function {
+					background: transparent;
+					outline-width: 0;
+				}
+			}
+
+			&.fail > .line-container:nth-child(2) {
+				&:before {
+					background: linear-gradient(rgba(0, 0, 0, 0) 23px, $failed-color 24px, rgba(27, 27, 27, 0) 25px);
+					background-color: transparentize($failed-color, 0.84);
+					top: 50%;
+				}
+
+				&:after {
+					background-color: $failed-color;
+					border-color: $failed-color;
+				}
+			}
+
+			&.warning > .line-container:nth-child(2) {
+				&:before {
+					background: linear-gradient(rgba(0, 0, 0, 0) 23px, $warning-color 24px, rgba(27, 27, 27, 0) 25px);
+					background-color: transparentize($warning-color, 0.84);
+					top: 50%;
+				}
+
+				&:after {
+					background-color: $warning-color;
+					border-color: $warning-color;
+				}
+			}
+
+			&.pass, &.pending {
+				> .line-container:nth-child(2) {
+					&:before {
+						background: linear-gradient(rgba(0, 0, 0, 0) 24px, $neutral 25px, rgba(27, 27, 27, 0) 26px);
+						background-color: transparentize($neutral, 0.84);
+					}
+
+					&:after {
+						background-color: $neutral;
+						border-color: $neutral;
+					}
+				}
+			}
+
+			&.fail, &.pass, &.pending, &.warning {
+				> .line-container:nth-child(2):before {
+					background-repeat: no-repeat;
+					background-size: calc(100vw - 32px);
+					content: '';
+					height: 100%;
+					left: calc(-100vw - 7px);
+					position: absolute;
+					top: 50%;
+					width: 100vw;
+				}
+			}
+		}
+	}
+}
+
+.collapse .fail:after, .transitioning .fail:after, .transitioning .fail .line-container:before {
+	opacity: 0;
+}

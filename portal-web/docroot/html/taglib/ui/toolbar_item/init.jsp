@@ -16,6 +16,6 @@
 
 <%@ include file="/html/taglib/init.jsp" %>
 
-<%@ page import="com.liferay.portal.kernel.servlet.taglib.ui.JavascriptToolbarItem" %><%@
+<%@ page import="com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptToolbarItem" %><%@
 page import="com.liferay.portal.kernel.servlet.taglib.ui.ToolbarItem" %><%@
 page import="com.liferay.portal.kernel.servlet.taglib.ui.URLToolbarItem" %>

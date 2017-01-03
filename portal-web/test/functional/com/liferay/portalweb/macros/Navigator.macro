@@ -1,0 +1,222 @@
+<definition>
+	<command name="_gotoPage">
+		<execute macro-mobile="MobileNavigator#clickReorderButton" />
+
+		<execute function="AssertClick" locator1="Home#PAGE" value1="${pageName}">
+			<var name="key_pageName" value="${pageName}" />
+		</execute>
+
+		<execute function="AssertVisible" locator1="Home#PAGE_ACTIVE">
+			<var name="key_pageName" value="${pageName}" />
+		</execute>
+	</command>
+
+	<command name="closeSpecificWindow">
+		<execute macro="Navigator#selectSpecificWindow">
+			<var name="windowTitle" value="${closeWindowTitle}" />
+		</execute>
+
+		<execute function="Close#closeAndSelectWindow" locator1="title=${selectWindowTitle}" />
+	</command>
+
+	<command name="closeWindow">
+		<execute function="Close#closeWindow" />
+	</command>
+
+	<command name="getCurrentURL" returns="currentURL">
+		<var method="selenium#getLocation()" name="currentURL" />
+
+		<return name="currentURL" value="${currentURL}" />
+	</command>
+
+	<command name="gotoBack">
+		<execute function="Click" locator1="Icon#BACK" />
+	</command>
+
+	<command name="gotoNavItem">
+		<var name="key_navItem" value="${navItem}" />
+
+		<execute function="AssertClick" locator1="NavBar#NAV_ITEM_LINK" value1="${navItem}" />
+
+		<execute function="AssertElementPresent" locator1="NavBar#ACTIVE_NAV_ITEM_LINK" />
+	</command>
+
+	<command name="gotoNavTab">
+		<var name="key_tab" value="${navTab}" />
+
+		<execute function="AssertClick" locator1="NavTab#TAB_LINK" value1="${navTab}" />
+
+		<execute function="AssertElementPresent" locator1="NavTab#ACTIVE_TAB_LINK" />
+	</command>
+
+	<command name="gotoPage" summary="Navigate to the page named '${pageName}'">
+		<execute macro="Navigator#openURL" />
+
+		<if>
+			<isset var="sitePagePrivacy" />
+			<then>
+				<execute macro="ProductMenu#gotoPrivatePages" />
+			</then>
+		</if>
+
+		<execute function="Pause" locator1="3000" />
+
+		<execute macro="Navigator#_gotoPage">
+			<var name="pageName" value="${pageName}" />
+		</execute>
+	</command>
+
+	<command name="gotoPrivateStagedSitePage" summary="Navigate to the page named '${pageName}'">
+		<execute macro="Navigator#openPrivateStagedSiteURL">
+			<var name="siteNameURL" value="${siteName}" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoPrivatePages" />
+
+		<execute macro="Navigator#_gotoPage">
+			<var name="pageName" value="${pageName}" />
+		</execute>
+	</command>
+
+	<command name="gotoSitePage">
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="Navigator#_gotoPage">
+			<var name="pageName" value="${pageName}" />
+		</execute>
+	</command>
+
+	<command name="gotoSpecificURLPage">
+		<execute macro="Navigator#openSpecificURL">
+			<var name="url" value="${url}" />
+		</execute>
+
+		<execute macro="Navigator#_gotoPage">
+			<var name="pageName" value="${pageName}" />
+		</execute>
+	</command>
+
+	<command name="gotoStagedSitePage" summary="Navigate to the page named '${pageName}'">
+		<execute macro="Navigator#openStagingSiteURL">
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="Navigator#_gotoPage">
+			<var name="pageName" value="${pageName}" />
+		</execute>
+	</command>
+
+	<command name="gotoStagedView">
+		<execute macro="ProductMenuHelper#openProductMenu" />
+
+		<execute function="Click" locator1="Link#STAGING" />
+	</command>
+
+	<command name="gotoViewPage">
+		<if>
+			<isset var="nodePort" />
+			<then>
+				<execute function="Open" locator1="http://localhost:${nodePort}" />
+			</then>
+			<elseif>
+				<not>
+					<and>
+						<isset var="defaultURL" />
+						<equals arg1="${defaultURL}" arg2="false" />
+					</and>
+				</not>
+				<then>
+					<execute macro="ProductMenuHelper#expandPanelSites" />
+
+					<execute macro="ProductMenuHelper#expandCategory">
+						<var name="category" value="Navigation" />
+					</execute>
+
+					<execute macro="ProductMenuHelper#expandPagePagination" />
+
+					<var name="key_page" value="${pageName}" />
+
+					<execute function="Click" locator1="ProductMenu#PAGES" />
+				</then>
+			</elseif>
+		</if>
+
+		<execute macro-mobile="MobileNavigator#clickReorderButton" />
+
+		<var name="key_pageName" value="${pageName}" />
+
+		<if>
+			<contains string="${pageName}" substring="&apos;" />
+			<then>
+				<execute function="AssertClick" locator1="Home#PAGE_WITH_QUOTES" value1="${pageName}" />
+			</then>
+			<else>
+				<execute function="AssertClick" locator1="Home#PAGE" value1="${pageName}" />
+			</else>
+		</if>
+	</command>
+
+	<command name="openNodePort">
+		<execute function="Open" locator1="http://localhost:${nodePort}" />
+	</command>
+
+	<command name="openPrivateSitePageURL">
+		<var method="StringUtil#replace('${siteName}', ' ', '-')" name="siteNameURL" />
+		<var method="StringUtil#lowerCase('${siteNameURL}')" name="siteNameURL" />
+
+		<var method="StringUtil#replace('${pageName}', ' ', '-')" name="pageNameURL" />
+		<var method="StringUtil#lowerCase('${pageNameURL}')" name="pageNameURL" />
+
+		<execute function="Open" locator1="/group/${siteNameURL}/${pageNameURL}" />
+	</command>
+
+	<command name="openPrivateSiteURL">
+		<var method="StringUtil#replace('${siteName}', ' ', '-')" name="siteNameURL" />
+		<var method="StringUtil#lowerCase('${siteNameURL}')" name="siteNameURL" />
+
+		<execute function="Open" locator1="/group/${siteNameURL}" />
+	</command>
+
+	<command name="openPrivateStagedSiteURL">
+		<var method="StringUtil#replace('${siteNameURL}', ' ', '-')" name="siteNameURL" />
+		<var method="StringUtil#lowerCase('${siteNameURL}')" name="siteNameURL" />
+
+		<execute function="Open" locator1="/group/${siteNameURL}-staging" />
+	</command>
+
+	<command name="openPrivateURL">
+		<execute function="Open" locator1="/group/guest" />
+	</command>
+
+	<command name="openSiteURL">
+		<var method="StringUtil#replace('${siteName}', ' ', '-')" name="siteNameURL" />
+		<var method="StringUtil#lowerCase('${siteNameURL}')" name="siteNameURL" />
+
+		<execute function="Open" locator1="/web/${siteNameURL}" />
+	</command>
+
+	<command name="openSpecificURL">
+		<execute function="Open" locator1="${url}" />
+	</command>
+
+	<command name="openStagingSiteURL">
+		<var method="StringUtil#replace('${siteName}', ' ', '-')" name="siteNameURL" />
+		<var method="StringUtil#lowerCase('${siteNameURL}')" name="siteNameURL" />
+
+		<execute function="Open" locator1="/web/${siteNameURL}-staging" />
+	</command>
+
+	<command name="openStagingURL">
+		<execute function="Open" locator1="/web/guest-staging" />
+	</command>
+
+	<command name="openURL">
+		<execute function="Open" locator1="/web/guest/home" />
+	</command>
+
+	<command name="selectSpecificWindow">
+		<execute function="SelectWindow" locator1="title=${windowTitle}" />
+	</command>
+</definition>

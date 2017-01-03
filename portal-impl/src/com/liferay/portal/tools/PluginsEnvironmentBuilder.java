@@ -14,15 +14,16 @@
 
 package com.liferay.portal.tools;
 
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.FileComparator;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.util.FileImpl;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.xml.SAXReaderImpl;
@@ -89,8 +90,7 @@ public class PluginsEnvironmentBuilder {
 
 			boolean osgiProject = false;
 
-			if (content.contains(
-					"<import file=\"../../build-common-osgi-plugin.xml\" />") ||
+			if (content.contains("../build-common-osgi-plugin.xml\" />") ||
 				content.contains(
 					"../tools/sdk/build-common-osgi-plugin.xml\" />")) {
 
@@ -101,8 +101,7 @@ public class PluginsEnvironmentBuilder {
 
 			if (content.contains(
 					"<import file=\"../build-common-shared.xml\" />") ||
-				content.contains(
-					"../tools/sdk/build-common-shared.xml\" />")) {
+				content.contains("../tools/sdk/build-common-shared.xml\" />")) {
 
 				sharedProject = true;
 			}
@@ -164,6 +163,15 @@ public class PluginsEnvironmentBuilder {
 			String version)
 		throws Exception {
 
+		String string = sb.toString();
+
+		if (string.contains(dependencyName)) {
+			System.out.println(
+				"Skipping duplicate " + dependencyName + " " + version);
+
+			return;
+		}
+
 		System.out.println("Adding " + dependencyName + " " + version);
 
 		if (version.equals("latest.integration")) {
@@ -198,7 +206,7 @@ public class PluginsEnvironmentBuilder {
 				".xml";
 
 		if (_fileUtil.exists(ivyFileName)) {
-			Document document = _saxReaderUtil.read(new File(ivyFileName));
+			Document document = _saxReader.read(new File(ivyFileName));
 
 			Element rootElement = document.getRootElement();
 
@@ -223,7 +231,7 @@ public class PluginsEnvironmentBuilder {
 					String rev = GetterUtil.getString(
 						dependencyElement.attributeValue("rev"));
 
-					String string = sb.toString();
+					string = sb.toString();
 
 					if (string.contains(name)) {
 						continue;
@@ -261,7 +269,12 @@ public class PluginsEnvironmentBuilder {
 				continue;
 			}
 
-			addClasspathEntry(sb, dirName + "/" + fileName);
+			int index = dirName.indexOf("/.ivy");
+
+			String eclipseRelativeDirName =
+				"/portal" + dirName.substring(index);
+
+			addClasspathEntry(sb, eclipseRelativeDirName + "/" + fileName);
 
 			return;
 		}
@@ -274,7 +287,7 @@ public class PluginsEnvironmentBuilder {
 			StringBundler sb, String content, String ivyDirName)
 		throws Exception {
 
-		Document document = _saxReaderUtil.read(content);
+		Document document = _saxReader.read(content);
 
 		Element rootElement = document.getRootElement();
 
@@ -303,7 +316,7 @@ public class PluginsEnvironmentBuilder {
 	}
 
 	protected List<String> getCommonJars() {
-		List<String> jars = new ArrayList<String>();
+		List<String> jars = new ArrayList<>();
 
 		jars.add("commons-logging.jar");
 		jars.add("log4j.jar");
@@ -324,7 +337,7 @@ public class PluginsEnvironmentBuilder {
 		int x = content.indexOf("import.shared");
 
 		if (x == -1) {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 
 		x = content.indexOf("value=\"", x);
@@ -333,16 +346,16 @@ public class PluginsEnvironmentBuilder {
 		int y = content.indexOf("\" />", x);
 
 		if ((x == -1) || (y == -1)) {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 
 		String[] importShared = StringUtil.split(content.substring(x + 1, y));
 
 		if (importShared.length == 0) {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 
-		List<String> jars = new ArrayList<String>();
+		List<String> jars = new ArrayList<>();
 
 		for (String currentImportShared : importShared) {
 			jars.add(currentImportShared + ".jar");
@@ -375,7 +388,7 @@ public class PluginsEnvironmentBuilder {
 			File libDir, Properties properties)
 		throws Exception {
 
-		List<String> jars = new ArrayList<String>();
+		List<String> jars = new ArrayList<>();
 
 		String[] requiredDeploymentContexts = StringUtil.split(
 			properties.getProperty("required-deployment-contexts"));
@@ -390,6 +403,17 @@ public class PluginsEnvironmentBuilder {
 		}
 
 		return jars;
+	}
+
+	protected boolean hasModulesGitIgnore(String dirName) {
+		int index = dirName.indexOf("/modules/");
+
+		if (index == -1) {
+			return false;
+		}
+
+		return _fileUtil.exists(
+			dirName.substring(0, index) + "/modules/.gitignore");
 	}
 
 	protected void setupJarProject(
@@ -420,6 +444,12 @@ public class PluginsEnvironmentBuilder {
 		File gitignoreFile = new File(
 			projectDir.getCanonicalPath() + "/.gitignore");
 
+		if (hasModulesGitIgnore(dirName)) {
+			gitignoreFile.delete();
+
+			return;
+		}
+
 		String[] gitIgnores = importSharedJars.toArray(
 			new String[importSharedJars.size()]);
 
@@ -447,7 +477,7 @@ public class PluginsEnvironmentBuilder {
 
 		properties.load(new FileInputStream(propertiesFile));
 
-		Set<String> jars = new TreeSet<String>();
+		Set<String> jars = new TreeSet<>();
 
 		jars.addAll(getCommonJars());
 
@@ -466,7 +496,7 @@ public class PluginsEnvironmentBuilder {
 		writeEclipseFiles(libDir, projectDir, dependencyJars);
 
 		String libDirPath = StringUtil.replace(
-			libDir.getPath(), StringPool.BACK_SLASH, StringPool.SLASH);
+			libDir.getPath(), CharPool.BACK_SLASH, CharPool.SLASH);
 
 		List<String> ignores = ListUtil.fromFile(
 			libDir.getCanonicalPath() + "/../.gitignore");
@@ -506,14 +536,14 @@ public class PluginsEnvironmentBuilder {
 			return;
 		}
 
-		Set<String> globalJars = new LinkedHashSet<String>();
-		List<String> portalJars = new ArrayList<String>();
+		Set<String> globalJars = new LinkedHashSet<>();
+		List<String> portalJars = new ArrayList<>();
 
-		Set<String> extGlobalJars = new LinkedHashSet<String>();
-		Set<String> extPortalJars = new LinkedHashSet<String>();
+		Set<String> extGlobalJars = new LinkedHashSet<>();
+		Set<String> extPortalJars = new LinkedHashSet<>();
 
 		String libDirPath = StringUtil.replace(
-			libDir.getPath(), StringPool.BACK_SLASH, StringPool.SLASH);
+			libDir.getPath(), CharPool.BACK_SLASH, CharPool.SLASH);
 
 		if (libDirPath.contains("/ext/")) {
 			FilenameFilter filenameFilter = new GlobFilenameFilter("*.jar");
@@ -532,6 +562,7 @@ public class PluginsEnvironmentBuilder {
 
 					globalJars.addAll(
 						ListUtil.sort(ListUtil.toList(fileNames)));
+
 					globalJars.removeAll(extGlobalJars);
 				}
 				else if (dirName.equals("portal")) {
@@ -543,6 +574,7 @@ public class PluginsEnvironmentBuilder {
 
 					portalJars.addAll(
 						ListUtil.sort(ListUtil.toList(fileNames)));
+
 					portalJars.removeAll(extPortalJars);
 				}
 			}
@@ -579,7 +611,7 @@ public class PluginsEnvironmentBuilder {
 			Collections.sort(customJars);
 		}
 		else {
-			customJars = new ArrayList<String>();
+			customJars = new ArrayList<>();
 		}
 
 		StringBundler sb = new StringBundler();
@@ -619,7 +651,15 @@ public class PluginsEnvironmentBuilder {
 			addClasspathEntry(sb, "/portal/lib/development/junit.jar");
 			addClasspathEntry(sb, "/portal/lib/development/mockito.jar");
 			addClasspathEntry(
-				sb, "/portal/lib/development/powermock-mockito.jar");
+				sb, "/portal/lib/development/powermock-api-mockito.jar");
+			addClasspathEntry(
+				sb, "/portal/lib/development/powermock-api-support.jar");
+			addClasspathEntry(sb, "/portal/lib/development/powermock-core.jar");
+			addClasspathEntry(
+				sb, "/portal/lib/development/powermock-module-junit4.jar");
+			addClasspathEntry(
+				sb,
+				"/portal/lib/development/powermock-module-junit4-common.jar");
 			addClasspathEntry(sb, "/portal/lib/development/spring-test.jar");
 
 			portalJars.add("commons-io.jar");
@@ -632,7 +672,7 @@ public class PluginsEnvironmentBuilder {
 		addClasspathEntry(sb, "/portal/lib/development/mail.jar");
 		addClasspathEntry(sb, "/portal/lib/development/servlet-api.jar");
 
-		Map<String, String> attributes = new HashMap<String, String>();
+		Map<String, String> attributes = new HashMap<>();
 
 		if (libDirPath.contains("/ext/")) {
 			attributes.put("optional", "true");
@@ -652,7 +692,7 @@ public class PluginsEnvironmentBuilder {
 			}
 		}
 
-		addClasspathEntry(sb, "/portal/portal-service/portal-service.jar");
+		addClasspathEntry(sb, "/portal/portal-kernel/portal-kernel.jar");
 		addClasspathEntry(sb, "/portal/util-bridges/util-bridges.jar");
 		addClasspathEntry(sb, "/portal/util-java/util-java.jar");
 
@@ -745,7 +785,7 @@ public class PluginsEnvironmentBuilder {
 
 		for (String sourceDirName : _SOURCE_DIR_NAMES) {
 			if (_fileUtil.exists(projectDirName + "/" + sourceDirName)) {
-				List<String> gitIgnores = new ArrayList<String>();
+				List<String> gitIgnores = new ArrayList<>();
 
 				if (sourceDirName.endsWith("ext-impl/src")) {
 					gitIgnores.add("/classes");
@@ -798,7 +838,7 @@ public class PluginsEnvironmentBuilder {
 			String projectDirName, String projectName, boolean javaProject)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n");
 		sb.append("<projectDescription>\n");
@@ -847,7 +887,7 @@ public class PluginsEnvironmentBuilder {
 
 	private static final String[] _TEST_TYPES = {"integration", "unit"};
 
-	private static FileImpl _fileUtil = FileImpl.getInstance();
-	private static SAXReaderImpl _saxReaderUtil = SAXReaderImpl.getInstance();
+	private static final FileImpl _fileUtil = FileImpl.getInstance();
+	private static final SAXReader _saxReader = new SAXReaderImpl();
 
 }

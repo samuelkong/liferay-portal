@@ -31,46 +31,17 @@
 		</span>
 	</c:if>
 
-	<%
-	String additionalText = StringPool.BLANK;
-
-	if (Validator.isNull(statusMessage)) {
-		statusMessage = WorkflowConstants.getStatusLabel(status);
-
-		if ((status == WorkflowConstants.STATUS_PENDING) && (bean != null) && (model != null)) {
-			long companyId = BeanPropertiesUtil.getLong(bean, "companyId");
-			long groupId = BeanPropertiesUtil.getLong(bean, "groupId");
-			long classPK = BeanPropertiesUtil.getLong(bean, "primaryKey");
-
-			StringBundler sb = new StringBundler(4);
-
-			try {
-				String workflowStatus = WorkflowInstanceLinkLocalServiceUtil.getState(companyId, groupId, model.getName(), classPK);
-
-				sb.append(StringPool.SPACE);
-				sb.append(StringPool.OPEN_PARENTHESIS);
-				sb.append(LanguageUtil.get(request, HtmlUtil.escape(workflowStatus)));
-				sb.append(StringPool.CLOSE_PARENTHESIS);
-
-				additionalText = sb.toString();
-			}
-			catch (NoSuchWorkflowInstanceLinkException nswile) {
-			}
-		}
-	}
-	%>
-
 	<span class="<%= showIcon ? "icon-file-alt workflow-status" : "workflow-status" %>">
 		<c:if test="<%= showLabel %>">
 			<span class="workflow-label"><liferay-ui:message key="status" />:</span>
 		</c:if>
 
-		<strong class="label workflow-status-<%= WorkflowConstants.getStatusLabel(status) %> <%= WorkflowConstants.getStatusCssClass(status) %> workflow-value">
+		<strong class="label status workflow-status-<%= WorkflowConstants.getStatusLabel(status) %> <%= WorkflowConstants.getStatusCssClass(status) %> workflow-value">
 			<liferay-ui:message key="<%= statusMessage %>" /><%= additionalText %>
 		</strong>
 	</span>
 
-	<c:if test="<%= Validator.isNotNull(helpMessage) %>">
+	<c:if test="<%= showHelpMessage && Validator.isNotNull(helpMessage) %>">
 		<liferay-ui:icon-help message="<%= helpMessage %>" />
 	</c:if>
 </span>

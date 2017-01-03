@@ -19,27 +19,30 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.model.PortletURLListener;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.URLEncoder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutConstants;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletApp;
-import com.liferay.portal.model.PortletURLListener;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.lang.DoPrivilegedUtil;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
-import com.liferay.portal.service.PortletLocalServiceUtil;
 import com.liferay.portal.struts.StrutsActionPortletURL;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 
 import java.io.Writer;
 
@@ -120,7 +123,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			setDateHeader(name, date);
 		}
 		else {
-			values = ArrayUtil.append(values, new Long(date));
+			values = ArrayUtil.append(values, Long.valueOf(date));
 
 			_headers.put(name, values);
 		}
@@ -156,7 +159,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			setIntHeader(name, value);
 		}
 		else {
-			values = ArrayUtil.append(values, new Integer(value));
+			values = ArrayUtil.append(values, Integer.valueOf(value));
 
 			_headers.put(name, values);
 		}
@@ -201,7 +204,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			}
 			else {
 				if (element != null) {
-					values = new ArrayList<Element>();
+					values = new ArrayList<>();
 
 					values.add(element);
 
@@ -236,7 +239,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 		if (_document == null) {
 			try {
 				DocumentBuilderFactory documentBuilderFactory =
-					DocumentBuilderFactory.newInstance();
+					SecureXMLFactoryProviderUtil.newDocumentBuilderFactory();
 
 				DocumentBuilder documentBuilder =
 					documentBuilderFactory.newDocumentBuilder();
@@ -355,6 +358,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 		return _plid;
 	}
 
+	@Override
 	public Portlet getPortlet() {
 		if (_portlet == null) {
 			try {
@@ -379,8 +383,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 
 	@Override
 	public Map<String, String[]> getProperties() {
-		Map<String, String[]> properties =
-			new LinkedHashMap<String, String[]>();
+		Map<String, String[]> properties = new LinkedHashMap<>();
 
 		for (Map.Entry<String, Object> entry : _headers.entrySet()) {
 			String name = entry.getKey();
@@ -412,7 +415,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			_headers.remove(name);
 		}
 		else {
-			_headers.put(name, new Long[] {new Long(date)});
+			_headers.put(name, new Long[] {Long.valueOf(date)});
 		}
 	}
 
@@ -440,7 +443,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			_headers.remove(name);
 		}
 		else {
-			_headers.put(name, new Integer[] {new Integer(value)});
+			_headers.put(name, new Integer[] {Integer.valueOf(value)});
 		}
 	}
 
@@ -536,7 +539,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			MimeResponse.MARKUP_HEAD_ELEMENT);
 
 		if (markupHeadElements == null) {
-			markupHeadElements = new ArrayList<String>();
+			markupHeadElements = new ArrayList<>();
 
 			request.setAttribute(
 				MimeResponse.MARKUP_HEAD_ELEMENT, markupHeadElements);
@@ -613,6 +616,12 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 					plid = linkedLayout.getPlid();
 				}
 				catch (PortalException pe) {
+
+					// LPS-52675
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(pe, pe);
+					}
 				}
 			}
 		}
@@ -626,7 +635,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			plid = _plid;
 		}
 
-		PortletURLImpl portletURLImpl = null;
+		LiferayPortletURL portletURL = null;
 
 		Portlet portlet = getPortlet();
 
@@ -638,8 +647,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			if (portletURLClass.equals(
 					StrutsActionPortletURL.class.getName())) {
 
-				portletURLImpl = new StrutsActionPortletURL(
-					this, plid, lifecycle);
+				portletURL = new StrutsActionPortletURL(this, plid, lifecycle);
 			}
 			else {
 				try {
@@ -650,17 +658,18 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 						Class<?> portletURLClassObj = Class.forName(
 							portletURLClass);
 
-						constructor = (Constructor<? extends PortletURLImpl>)
-							portletURLClassObj.getConstructor(
-								new Class[] {
-									PortletResponseImpl.class, long.class,
-									String.class
-								});
+						constructor =
+							(Constructor<? extends PortletURLImpl>)
+								portletURLClassObj.getConstructor(
+									new Class<?>[] {
+										PortletResponseImpl.class, long.class,
+										String.class
+									});
 
 						_constructors.put(portletURLClass, constructor);
 					}
 
-					portletURLImpl = constructor.newInstance(
+					portletURL = constructor.newInstance(
 						new Object[] {this, plid, lifecycle});
 				}
 				catch (Exception e) {
@@ -669,8 +678,8 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			}
 		}
 
-		if (portletURLImpl == null) {
-			portletURLImpl = new PortletURLImpl(
+		if (portletURL == null) {
+			portletURL = PortletURLFactoryUtil.create(
 				_portletRequestImpl, portletName, plid, lifecycle);
 		}
 
@@ -685,16 +694,13 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 					PortletURLListenerFactory.create(portletURLListener);
 
 				if (lifecycle.equals(PortletRequest.ACTION_PHASE)) {
-					portletURLGenerationListener.filterActionURL(
-						portletURLImpl);
+					portletURLGenerationListener.filterActionURL(portletURL);
 				}
 				else if (lifecycle.equals(PortletRequest.RENDER_PHASE)) {
-					portletURLGenerationListener.filterRenderURL(
-						portletURLImpl);
+					portletURLGenerationListener.filterRenderURL(portletURL);
 				}
 				else if (lifecycle.equals(PortletRequest.RESOURCE_PHASE)) {
-					portletURLGenerationListener.filterResourceURL(
-						portletURLImpl);
+					portletURLGenerationListener.filterResourceURL(portletURL);
 				}
 			}
 			catch (PortletException pe) {
@@ -703,24 +709,24 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 		}
 
 		try {
-			portletURLImpl.setWindowState(_portletRequestImpl.getWindowState());
+			portletURL.setWindowState(_portletRequestImpl.getWindowState());
 		}
 		catch (WindowStateException wse) {
 			_log.error(wse.getMessage());
 		}
 
 		try {
-			portletURLImpl.setPortletMode(_portletRequestImpl.getPortletMode());
+			portletURL.setPortletMode(_portletRequestImpl.getPortletMode());
 		}
 		catch (PortletModeException pme) {
 			_log.error(pme.getMessage());
 		}
 
 		if (lifecycle.equals(PortletRequest.RESOURCE_PHASE)) {
-			portletURLImpl.setCopyCurrentRenderParameters(true);
+			portletURL.setCopyCurrentRenderParameters(true);
 		}
 
-		return portletURLImpl;
+		return portletURL;
 	}
 
 	protected void init(
@@ -736,15 +742,16 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 		setPlid(plid);
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(PortletResponseImpl.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortletResponseImpl.class);
 
 	private long _companyId;
-	private Map<String, Constructor<? extends PortletURLImpl>> _constructors =
-		new ConcurrentHashMap<String, Constructor<? extends PortletURLImpl>>();
+	private final Map<String, Constructor<? extends PortletURLImpl>>
+		_constructors = new ConcurrentHashMap<>();
 	private Document _document;
-	private Map<String, Object> _headers = new LinkedHashMap<String, Object>();
-	private Map<String, List<Element>> _markupHeadElements =
-		new LinkedHashMap<String, List<Element>>();
+	private final Map<String, Object> _headers = new LinkedHashMap<>();
+	private final Map<String, List<Element>> _markupHeadElements =
+		new LinkedHashMap<>();
 	private String _namespace;
 	private long _plid;
 	private Portlet _portlet;
@@ -774,8 +781,8 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 				_plid, _portletName, _lifecycle, _includeLinkToLayoutUuid);
 		}
 
-		private boolean _includeLinkToLayoutUuid;
-		private String _lifecycle;
+		private final boolean _includeLinkToLayoutUuid;
+		private final String _lifecycle;
 		private long _plid;
 		private String _portletName;
 

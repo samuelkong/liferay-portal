@@ -33,8 +33,30 @@
 			</c:if>
 
 			<c:if test="<%= changesContext %>">
-				<span class="hide-accessible"><liferay-ui:message key="changing-the-value-of-this-field-will-reload-the-page" />)</span>
+				<span class="hide-accessible"><liferay-ui:message key="changing-the-value-of-this-field-reloads-the-page" />)</span>
 			</c:if>
 		</label>
 	</c:if>
 </div>
+
+<aui:script sandbox="<%= true %>">
+	var select = $('#<%= namespace + id %>');
+
+	select.on(
+		'keydown',
+		function(event) {
+			if (event.which == 27) {
+				event.stopPropagation();
+			}
+		}
+	);
+
+	<c:if test="<%= BrowserSnifferUtil.isIe(request) && (BrowserSnifferUtil.getMajorVersion(request) == 11.0) %>">
+		select.on(
+			'mousedown',
+			function(event) {
+				event.currentTarget.focus();
+			}
+		);
+	</c:if>
+</aui:script>

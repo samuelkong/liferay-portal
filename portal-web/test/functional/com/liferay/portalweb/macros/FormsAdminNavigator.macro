@@ -1,0 +1,134 @@
+<definition>
+	<var name="formName" value="Created Form Name" />
+
+	<command name="gotoAddDataProvider">
+		<execute function="Click" locator1="FormsAdmin#DATA_PROVIDER_PLUS_BUTTON" />
+	</command>
+
+	<command name="gotoAddForm">
+		<execute function="Click" locator1="Button#PLUS" />
+	</command>
+
+	<command name="gotoBack">
+		<execute macro="Navigator#gotoBack" />
+
+		<if>
+			<condition function="IsElementPresent" locator1="Button#LEAVE" />
+			<then>
+				<execute function="Click" locator1="Button#LEAVE" />
+			</then>
+		</if>
+	</command>
+
+	<command name="gotoDataProviders">
+		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#DATA_PROVIDERS" value1="Data Providers" />
+	</command>
+
+	<command name="gotoDeleteField">
+		<execute macro="FormsAdminNavigator#gotoEditField">
+			<var name="fieldName" value="${fieldName}" />
+		</execute>
+
+		<var name="key_fieldName" value="${fieldName}" />
+
+		<execute function="Click" locator1="Form#SIDEBAR_ELLIPSIS" />
+
+		<execute function="Click" locator1="Form#SIDEBAR_MENUITEM_REMOVE_FIELD" />
+
+		<execute function="AssertElementNotPresent#assertNotVisible" locator1="Form#SIDEBAR_CLOSE" />
+	</command>
+
+	<command name="gotoEdit">
+		<var name="key_rowEntry" value="${formName}" />
+
+		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#EDIT" value1="Edit" />
+	</command>
+
+	<command name="gotoEditField">
+		<var name="key_fieldName" value="${fieldName}" />
+
+		<execute function="Click" locator1="Form#FIELD_BODY" />
+
+		<execute function="AssertElementPresent" locator1="Form#SIDEBAR_BASIC_TAB" />
+	</command>
+
+	<command name="gotoEditFormByName">
+		<var name="key_formName" value="${formName}" />
+
+		<execute function="AssertClick" locator1="FormsAdmin#FORMS_TABLE_NAME" value1="${formName}" />
+	</command>
+
+	<command name="gotoFormBuilder">
+		<var name="key_assetTitle" value="Builder" />
+
+		<execute function="AssertClick" locator1="NavBar#ASSET_TITLE" value1="Builder" />
+	</command>
+
+	<command name="gotoPreviewForm">
+		<execute function="AssertClick" locator1="Message#INFO_LINK" value1="Click here to preview the form in a new window." />
+	</command>
+
+	<command name="gotoPublish">
+		<execute function="AssertElementPresent" locator1="Form#NAME_FIELD" />
+
+		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#PUBLISH" value1="Publish" />
+	</command>
+
+	<command name="gotoRules">
+		<var name="key_assetTitle" value="Rules" />
+
+		<execute function="AssertClick" locator1="NavBar#ASSET_TITLE" value1="Rules" />
+	</command>
+
+	<command name="gotoSettings">
+		<execute function="AssertElementPresent" locator1="Form#NAME_FIELD" />
+
+		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#SETTINGS" value1="Settings" />
+	</command>
+
+	<command name="gotoView">
+		<execute function="AssertElementPresent" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<var name="key_formName" value="${formName}" />
+
+		<execute function="AssertClick" locator1="MenuItem#VIEW" value1="View" />
+	</command>
+
+	<command name="gotoViewEntries">
+		<execute function="AssertElementPresent" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<var name="key_formName" value="${formName}" />
+
+		<execute function="AssertClick" locator1="MenuItem#VIEW_ENTRIES" value1="View Entries" />
+	</command>
+
+	<command name="gotoViewEntriesViaIcon">
+		<var name="key_rowEntry" value="${formName}" />
+
+		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#ROW_VERTICAL_ELLIPSIS" />
+
+		<var name="key_formName" value="${formName}" />
+
+		<execute function="AssertClick" locator1="MenuItem#VIEW_ENTRIES" value1="View Entries" />
+	</command>
+
+	<command name="openPublishURL">
+		<var locator="Form#PUBLISH_FORM_PUBLIC_URL" name="publishFormURL" />
+
+		<execute macro="Navigator#openSpecificURL">
+			<var name="url" value="${publishFormURL}" />
+		</execute>
+	</command>
+</definition>

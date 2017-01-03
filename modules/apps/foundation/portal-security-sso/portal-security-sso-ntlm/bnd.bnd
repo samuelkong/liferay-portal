@@ -1,0 +1,12 @@
+Bundle-Name: Liferay Portal Security SSO NTLM
+Bundle-SymbolicName: com.liferay.portal.security.sso.ntlm
+Bundle-Version: 3.0.8
+Export-Package:\
+	com.liferay.portal.security.sso.ntlm.configuration,\
+	com.liferay.portal.security.sso.ntlm.constants
+Import-Package:\
+	!javax.microedition.*,\
+	*
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Security Frameworks
+-includeresource: @jcifs-[0-9]*.jar

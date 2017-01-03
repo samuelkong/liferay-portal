@@ -14,13 +14,15 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.kernel.exception.NoSuchRepositoryEntryException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.model.RepositoryEntry;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RepositoryEntry;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.service.base.RepositoryEntryLocalServiceBaseImpl;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +40,6 @@ public class RepositoryEntryLocalServiceImpl
 		throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		Date now = new Date();
 
 		long repositoryEntryId = counterLocalService.increment();
 
@@ -50,8 +51,6 @@ public class RepositoryEntryLocalServiceImpl
 		repositoryEntry.setCompanyId(user.getCompanyId());
 		repositoryEntry.setUserId(userId);
 		repositoryEntry.setUserName(user.getFullName());
-		repositoryEntry.setCreateDate(serviceContext.getCreateDate(now));
-		repositoryEntry.setModifiedDate(serviceContext.getModifiedDate(now));
 		repositoryEntry.setRepositoryId(repositoryId);
 		repositoryEntry.setMappedId(mappedId);
 
@@ -61,8 +60,58 @@ public class RepositoryEntryLocalServiceImpl
 	}
 
 	@Override
+	public void deleteRepositoryEntries(
+			long repositoryId, Iterable<String> mappedIds)
+		throws PortalException {
+
+		for (String mappedId : mappedIds) {
+			try {
+				deleteRepositoryEntry(repositoryId, mappedId);
+			}
+			catch (NoSuchRepositoryEntryException nsree) {
+
+				// LPS-52675
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(nsree, nsree);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void deleteRepositoryEntry(long repositoryId, String mappedId)
+		throws PortalException {
+
+		repositoryEntryPersistence.removeByR_M(repositoryId, mappedId);
+	}
+
+	@Override
 	public List<RepositoryEntry> getRepositoryEntries(long repositoryId) {
 		return repositoryEntryPersistence.findByRepositoryId(repositoryId);
+	}
+
+	@Override
+	public RepositoryEntry getRepositoryEntry(
+			long userId, long groupId, long repositoryId, String objectId)
+		throws PortalException {
+
+		RepositoryEntry repositoryEntry = repositoryEntryPersistence.fetchByR_M(
+			repositoryId, objectId);
+
+		if (repositoryEntry != null) {
+			return repositoryEntry;
+		}
+
+		return addRepositoryEntry(
+			userId, groupId, repositoryId, objectId, new ServiceContext());
+	}
+
+	@Override
+	public RepositoryEntry getRepositoryEntry(String uuid, long groupId)
+		throws PortalException {
+
+		return repositoryEntryPersistence.findByUUID_G(uuid, groupId);
 	}
 
 	@Override
@@ -73,12 +122,14 @@ public class RepositoryEntryLocalServiceImpl
 		RepositoryEntry repositoryEntry =
 			repositoryEntryPersistence.findByPrimaryKey(repositoryEntryId);
 
-		repositoryEntry.setModifiedDate(new Date());
 		repositoryEntry.setMappedId(mappedId);
 
 		repositoryEntryPersistence.update(repositoryEntry);
 
 		return repositoryEntry;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		RepositoryEntryLocalServiceImpl.class);
 
 }

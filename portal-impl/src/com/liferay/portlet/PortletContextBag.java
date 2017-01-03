@@ -14,6 +14,8 @@
 
 package com.liferay.portlet;
 
+import com.liferay.portal.kernel.portlet.CustomUserAttributes;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,11 +48,10 @@ public class PortletContextBag {
 	}
 
 	private final Map<String, CustomUserAttributes> _customUserAttributes =
-		new HashMap<String, CustomUserAttributes>();
-	private final Map<String, PortletFilter> _portletFilters =
-		new HashMap<String, PortletFilter>();
+		new HashMap<>();
+	private final Map<String, PortletFilter> _portletFilters = new HashMap<>();
 	private final String _servletContextName;
 	private final Map<String, PortletURLGenerationListener> _urlListeners =
-		new HashMap<String, PortletURLGenerationListener>();
+		new HashMap<>();
 
 }

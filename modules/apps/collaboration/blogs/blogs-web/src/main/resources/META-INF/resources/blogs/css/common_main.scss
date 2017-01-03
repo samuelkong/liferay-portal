@@ -1,0 +1,77 @@
+@import "mixins";
+
+.portlet-blogs {
+	.entry-subtitle {
+		margin-bottom: 20px;
+
+		h4 {
+			font-size: 32px;
+			font-weight: 300;
+			line-height: 45px;
+			margin-top: 35px;
+			text-align: center;
+		}
+	}
+
+	.entry-body {
+		position: relative;
+
+		h1 {
+			font-weight: bold;
+			text-align: center;
+		}
+
+		p {
+			line-height: 27px;
+			margin-bottom: 30px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		img {
+			max-width: 100%;
+		}
+
+		.cover-image-container {
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			height: 400px;
+		}
+
+		.uploading-image-container {
+			display: inline-block;
+
+			.progressbar {
+				height: 20px;
+			}
+		}
+
+		.uploading-image {
+			opacity: 0.4;
+		}
+	}
+
+	.entry-content {
+		img {
+			max-width: 100%;
+		}
+	}
+
+	.cover-image-caption {
+		color: #868896;
+		text-align: right;
+	}
+
+	.social-bookmarks {
+		.fb-like.fb_iframe_widget span {
+			vertical-align: top !important;
+		}
+	}
+}
+
+.firefox .portlet-blogs fieldset {
+	display: table-cell;
+}

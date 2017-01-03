@@ -19,10 +19,10 @@ import com.liferay.portal.kernel.deploy.hot.HotDeployEvent;
 import com.liferay.portal.kernel.deploy.hot.HotDeployException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.LayoutTemplate;
+import com.liferay.portal.kernel.service.LayoutTemplateLocalServiceUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.model.LayoutTemplate;
-import com.liferay.portal.service.LayoutTemplateLocalServiceUtil;
-import com.liferay.portal.util.WebKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.HashMap;
 import java.util.List;
@@ -164,6 +164,6 @@ public class LayoutTemplateHotDeployListener extends BaseHotDeployListener {
 		LayoutTemplateHotDeployListener.class);
 
 	private static final Map<String, List<LayoutTemplate>> _layoutTemplates =
-		new HashMap<String, List<LayoutTemplate>>();
+		new HashMap<>();
 
 }

@@ -1,0 +1,330 @@
+<definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Site and Page Templates" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Site#tearDownCP" />
+				<execute macro="PageTemplate#tearDownCP" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddPageTemplate" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+	</command>
+
+	<command name="AddSitePageTemplate" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="Portlet#HEADER" value1="Sites" />
+
+		<execute macro="Site#addBlankCP">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Site Page" />
+			<var name="pageTemplateName" value="Page Template Name" />
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="Page#viewPageTemplate" >
+			<var name="page" value="Site Page" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+	</command>
+
+	<command name="DeactivateAndActivatePageTemplate" priority="4">
+		<execute macro="TestCase#getSiteName">
+			<return from="siteName" name="siteName" />
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#deactivateAndActivate">
+			<var name="pageTemplateName" value="Page Template Name" />
+			<var name="pageTemplateStatus" value="No" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#viewStatus">
+			<var name="pageTemplateName" value="Page Template Name" />
+			<var name="pageTemplateStatus" value="No" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="${siteName}" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoPages">
+			<var name="page" value="Public Pages" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoAddPage" />
+
+		<execute macro="Page#viewPageTemplateTypeNotPresent">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#deactivateAndActivate">
+			<var name="pageTemplateName" value="Page Template Name" />
+			<var name="pageTemplateStatus" value="Yes" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#viewStatus">
+			<var name="pageTemplateName" value="Page Template Name" />
+			<var name="pageTemplateStatus" value="Yes" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="${siteName}" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoPages">
+			<var name="page" value="Public Pages" />
+		</execute>
+
+		<execute macro="SitePageNavigator#gotoAddPage" />
+
+		<execute macro="Page#viewPageTemplateTypePresent">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+	</command>
+
+	<command name="DeletePageTemplate" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#deleteCP">
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#viewDefaultCP">
+			<var name="pageTemplateNameList" value="Blog,Content Display Page,Wiki" />
+		</execute>
+	</command>
+
+	<command name="EditPageTemplate" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="PageTemplate#editCP">
+			<var name="pageTemplateActive" value="No" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+	</command>
+
+	<command name="EditPageTemplateDescription" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#editDescription">
+			<var name="pageTemplateDescription" value="This is a page template description" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#viewDescription">
+			<var name="pageTemplateDescription" value="This is a page template description edit" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+	</command>
+
+	<command name="LocalizeDefaultPageTemplates" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#viewDefaultCP">
+			<var name="pageTemplateNameList" value="Blog,Content Display Page,Wiki" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoUserMyAccount">
+			<var name="portlet" value="Account Settings" />
+		</execute>
+
+		<execute macro="MyAccount#changeUserLanguage">
+			<var name="languageName" value="español (España)" />
+			<var name="saveButton" value="Save" />
+			<var name="successMessage" value="Su petición ha terminado con éxito." />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoLocalizedControlPanel">
+			<var name="category" value="Sitios web" />
+			<var name="portlet" value="Plantillas de página" />
+			<var name="tab" value="Panel de control" />
+		</execute>
+
+		<execute macro="PageTemplate#viewDefaultLocalizedCP">
+			<var name="pageTemplateDescriptionList" value="edite y vea blogs desde esta página. Explore los temas usando etiquetas y conecte con otros miembros del blog.,edite y explore contenidos web de esta página. Busque contenido adicional, explore contenido relacionado con etiquetas y hojee las categorías del contenido.,Colabora con los miembros a través de la wiki en esta página. Descubre el contenido relacionado a través de etiquetas y navega rápida y fácilmente por las categorías." />
+			<var name="pageTemplateNameList" value="Blog,Seleccione una página de visualización,Wiki" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoLocalizedUserMyAccount">
+			<var name="category" value="Mi cuenta" />
+			<var name="portlet" value="Mi cuenta" />
+		</execute>
+
+		<execute macro="MyAccount#changeUserLanguage">
+			<var name="languageName" value="English (United States)" />
+			<var name="saveButton" value="Guardar" />
+			<var name="successMessage" value="Your request completed successfully." />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#viewDefaultCP">
+			<var name="pageTemplateNameList" value="Blog,Content Display Page,Wiki" />
+		</execute>
+	</command>
+
+	<command name="ViewEditedPageTemplatePageName" priority="4">
+		<property name="testray.component.names" value="Site and Page Templates" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#addCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="TestCase#getSiteName">
+			<return from="siteName" name="siteName" />
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="PageTemplate#viewPG">
+			<var name="pageTemplateName" value="Page Template Name" />
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Page Templates" />
+		</execute>
+
+		<execute macro="PageTemplate#editCP">
+			<var name="pageTemplateActive" value="Yes" />
+			<var name="pageTemplateName" value="Page Template Name" />
+		</execute>
+
+		<execute macro="PageTemplate#viewPG">
+			<var name="pageTemplateName" value="Page Template Name Edit" />
+			<var name="siteName" value="${siteName}" />
+		</execute>
+	</command>
+</definition>

@@ -14,14 +14,14 @@
 
 package com.liferay.portlet.asset.service.permission;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.model.AssetCategoryConstants;
-import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
 
 /**
  * @author Eduardo Lundgren
@@ -34,7 +34,9 @@ public class AssetCategoryPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, category, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, AssetCategory.class.getName(),
+				category.getCategoryId(), actionId);
 		}
 	}
 
@@ -44,7 +46,9 @@ public class AssetCategoryPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, groupId, categoryId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, AssetCategory.class.getName(), categoryId,
+				actionId);
 		}
 	}
 
@@ -54,7 +58,9 @@ public class AssetCategoryPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, categoryId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, AssetCategory.class.getName(), categoryId,
+				actionId);
 		}
 	}
 

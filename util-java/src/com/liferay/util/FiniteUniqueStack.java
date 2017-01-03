@@ -15,8 +15,11 @@
 package com.liferay.util;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, replaced by
+ *             {com.liferay.petra.collection.stack.FiniteStack}
  */
+@Deprecated
 public class FiniteUniqueStack<E> extends FiniteStack<E> {
 
 	public FiniteUniqueStack(int maxSize) {

@@ -26,7 +26,7 @@ if (bodyContent != null) {
 }
 
 if (Validator.isNull(title)) {
-	title = HtmlUtil.stripHtml(LanguageUtil.get(request, label));
+	title = HtmlUtil.stripHtml(LanguageUtil.get(resourceBundle, label));
 }
 %>
 
@@ -34,7 +34,7 @@ if (Validator.isNull(title)) {
 	<li class="<%= cssClass %><%= selected ? " active " : StringPool.SPACE %><%= state %>" id="<%= id %>" role="presentation" <%= AUIUtil.buildData(data) %> <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>
 		<c:if test="<%= Validator.isNotNull(iconCssClass) || Validator.isNotNull(label) %>">
 			<c:if test="<%= Validator.isNotNull(href) %>">
-				<a <%= Validator.isNotNull(ariaLabel) ? "aria-label=\"" + ariaLabel + "\"" : StringPool.BLANK %> class="<%= anchorCssClass %>" <%= AUIUtil.buildData(anchorData) %> href="<%= HtmlUtil.escapeAttribute(href) %>" id="<%= anchorId %>" role="<%= Validator.isNull(ariaRole) ? "menuitem" : ariaRole %>" title="<liferay-ui:message key="<%= title %>" />">
+				<a <%= Validator.isNotNull(ariaLabel) ? "aria-label=\"" + ariaLabel + "\"" : StringPool.BLANK %> class="<%= anchorCssClass %>" <%= AUIUtil.buildData(anchorData) %> href="<%= HtmlUtil.escapeAttribute(href) %>" id="<%= anchorId %>" role="<%= Validator.isNull(ariaRole) ? "menuitem" : ariaRole %>" <%= Validator.isNotNull(target) ? "target=\"" + target + "\"" : StringPool.BLANK %> title="<liferay-ui:message key="<%= title %>" />">
 
 				<c:if test="<%= useDialog %>">
 					<aui:script>
@@ -59,17 +59,21 @@ if (Validator.isNull(title)) {
 						<i class="icon-caret-down"></i>
 					</c:if>
 			<c:if test="<%= Validator.isNotNull(href) %>">
+				<c:if test="<%= !useDialog && AUIUtil.isOpensNewWindow(target) %>">
+					<span class="opens-new-window-accessible"><liferay-ui:message key="opens-new-window" /></span>
+				</c:if>
+
 				</a>
 			</c:if>
 		</c:if>
 
 		<c:if test="<%= dropdown %>">
 			<aui:script use="aui-base,event-move,event-outside,liferay-menu-toggle,liferay-store">
-				var toggleMenu = new Liferay.MenuToggle(
+				new Liferay.MenuToggle(
 					{
 						content: '#<%= id %>',
 						maxDisplayItems: <%= PropsValues.MENU_MAX_DISPLAY_ITEMS %>,
-						'strings.placeholder': '<%= LanguageUtil.get(request, "search") %>',
+						'strings.placeholder': '<liferay-ui:message key="search" />',
 						toggle: <%= toggle %>,
 						toggleTouch: <%= toggleTouch %>,
 						trigger: '#<%= id %> a'

@@ -1,0 +1,79 @@
+<definition component-name="portal-collaboration">
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="plugins.deployment.type" value="osgi" />
+	<property name="testray.main.component.name" value="My Subscriptions" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="My Subscriptions Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="My Subscriptions Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="My Subscriptions" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="SubscribeAndUnsubscribetoBookmarksRootFolder">
+		<execute macro="Page#add">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Bookmarks" />
+		</execute>
+
+		<execute macro="Subscriptions#subscribeViaInfoPanelPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="My Subscriptions Page" />
+		</execute>
+
+		<execute macro="Subscriptions#viewSubscription">
+			<var name="assetName" value="Bookmarks Folder" />
+			<var name="assetTitle" value="Home" />
+			<var name="assetType" value="Bookmarks Folder" />
+		</execute>
+
+		<execute macro="Subscriptions#unsubscribeViaMySubscriptions" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="My Subscriptions Page" />
+		</execute>
+
+		<execute macro="Subscriptions#viewDefaultPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Bookmarks Page" />
+		</execute>
+
+		<execute macro="Subscriptions#viewUnsubscribedViaInfoPanel" />
+	</command>
+</definition>

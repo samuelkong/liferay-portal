@@ -20,53 +20,32 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mobile.device.Device;
 import com.liferay.portal.kernel.mobile.device.UnknownDevice;
-import com.liferay.portal.kernel.portlet.PortletRequestModel;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.template.TemplateManagerUtil;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.URLTemplateResource;
-import com.liferay.portal.kernel.templateparser.TemplateNode;
 import com.liferay.portal.kernel.templateparser.TransformException;
 import com.liferay.portal.kernel.templateparser.TransformerListener;
-import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.xml.Attribute;
-import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.DocumentException;
-import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.xsl.XSLTemplateResource;
-import com.liferay.portal.xsl.XSLURIResolver;
-import com.liferay.portlet.journal.util.JournalXSLURIResolver;
-import com.liferay.portlet.portletdisplaytemplate.util.PortletDisplayTemplateConstants;
-import com.liferay.taglib.util.VelocityTaglib;
-
-import java.io.IOException;
 
 import java.net.URL;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,19 +61,9 @@ import java.util.Set;
 public class Transformer {
 
 	public Transformer(String errorTemplatePropertyKey, boolean restricted) {
-		Set<String> langTypes = TemplateManagerUtil.getSupportedLanguageTypes(
-			errorTemplatePropertyKey);
-
-		for (String langType : langTypes) {
-			String errorTemplateId = PropsUtil.get(
-				errorTemplatePropertyKey, new Filter(langType));
-
-			if (Validator.isNotNull(errorTemplateId)) {
-				_errorTemplateIds.put(langType, errorTemplateId);
-			}
-		}
-
 		_restricted = restricted;
+
+		setErrorTemplateIds(errorTemplatePropertyKey);
 	}
 
 	public Transformer(
@@ -105,46 +74,13 @@ public class Transformer {
 
 		ClassLoader classLoader = PortalClassLoaderUtil.getClassLoader();
 
-		Set<String> transformerListenerClassNames = SetUtil.fromArray(
-			PropsUtil.getArray(transformerListenerPropertyKey));
-
-		for (String transformerListenerClassName :
-				transformerListenerClassNames) {
-
-			try {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Instantiating transformer listener " +
-							transformerListenerClassName);
-				}
-
-				TransformerListener transformerListener =
-					(TransformerListener)InstanceFactory.newInstance(
-						classLoader, transformerListenerClassName);
-
-				_transformerListeners.add(transformerListener);
-			}
-			catch (Exception e) {
-				_log.error(e, e);
-			}
-		}
-	}
-
-	public String doTransform(
-			ThemeDisplay themeDisplay, Map<String, String> tokens,
-			String viewMode, String languageId, Document document,
-			PortletRequestModel portletRequestModel, String script,
-			String langType)
-		throws Exception {
-
-		return transform(
-			themeDisplay, tokens, viewMode, languageId, document,
-			portletRequestModel, script, langType, true);
+		setTransformerListeners(transformerListenerPropertyKey, classLoader);
 	}
 
 	public String transform(
 			ThemeDisplay themeDisplay, Map<String, Object> contextObjects,
-			String script, String langType)
+			String script, String langType,
+			UnsyncStringWriter unsyncStringWriter)
 		throws Exception {
 
 		if (Validator.isNull(langType)) {
@@ -170,22 +106,20 @@ public class Transformer {
 
 		Template template = getTemplate(templateId, script, langType);
 
-		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
-
 		try {
 			prepareTemplate(themeDisplay, template);
 
-			if (contextObjects != null) {
-				for (String key : contextObjects.keySet()) {
-					template.put(key, contextObjects.get(key));
-				}
-			}
+			template.putAll(contextObjects);
+
+			long classNameId = GetterUtil.getLong(
+				contextObjects.get(TemplateConstants.CLASS_NAME_ID));
 
 			template.put("company", getCompany(themeDisplay, companyId));
 			template.put("companyId", companyId);
 			template.put("device", getDevice(themeDisplay));
 
-			String templatesPath = getTemplatesPath(companyId, scopeGroupId);
+			String templatesPath = getTemplatesPath(
+				companyId, scopeGroupId, classNameId);
 
 			template.put(
 				"permissionChecker",
@@ -211,18 +145,6 @@ public class Transformer {
 		return unsyncStringWriter.toString();
 	}
 
-	public String transform(
-			ThemeDisplay themeDisplay, Map<String, String> tokens,
-			String viewMode, String languageId, Document document,
-			PortletRequestModel portletRequestModel, String script,
-			String langType)
-		throws Exception {
-
-		return transform(
-			themeDisplay, tokens, viewMode, languageId, document,
-			portletRequestModel, script, langType, false);
-	}
-
 	protected Company getCompany(ThemeDisplay themeDisplay, long companyId)
 		throws Exception {
 
@@ -241,13 +163,19 @@ public class Transformer {
 		return UnknownDevice.getInstance();
 	}
 
+	protected String getErrorTemplateId(
+		String errorTemplatePropertyKey, String langType) {
+
+		return PropsUtil.get(errorTemplatePropertyKey, new Filter(langType));
+	}
+
 	protected TemplateResource getErrorTemplateResource(String langType) {
 		try {
 			Class<?> clazz = getClass();
 
 			ClassLoader classLoader = clazz.getClassLoader();
 
-			String errorTemplateId = _errorTemplateIds.get(langType);
+			String errorTemplateId = errorTemplateIds.get(langType);
 
 			URL url = classLoader.getResource(errorTemplateId);
 
@@ -257,31 +185,6 @@ public class Transformer {
 		}
 
 		return null;
-	}
-
-	protected Template getTemplate(
-			String templateId, Map<String, String> tokens, String languageId,
-			Document document, String script, String langType)
-		throws Exception {
-
-		TemplateResource templateResource = null;
-
-		if (langType.equals(TemplateConstants.LANG_TYPE_XSL)) {
-			XSLURIResolver xslURIResolver = new JournalXSLURIResolver(
-				tokens, languageId);
-
-			templateResource = new XSLTemplateResource(
-				templateId, script, xslURIResolver, document.asXML());
-		}
-		else {
-			templateResource = new StringTemplateResource(templateId, script);
-		}
-
-		TemplateResource errorTemplateResource = getErrorTemplateResource(
-			langType);
-
-		return TemplateManagerUtil.getTemplate(
-			langType, templateResource, errorTemplateResource, _restricted);
 	}
 
 	protected Template getTemplate(
@@ -319,158 +222,26 @@ public class Transformer {
 		return sb.toString();
 	}
 
-	protected List<TemplateNode> getTemplateNodes(
-			ThemeDisplay themeDisplay, Element element)
-		throws Exception {
+	protected String getTemplatesPath(
+		long companyId, long groupId, long classNameId) {
 
-		List<TemplateNode> templateNodes = new ArrayList<TemplateNode>();
-
-		Map<String, TemplateNode> prototypeTemplateNodes =
-			new HashMap<String, TemplateNode>();
-
-		List<Element> dynamicElementElements = element.elements(
-			"dynamic-element");
-
-		for (Element dynamicElementElement : dynamicElementElements) {
-			Element dynamicContentElement = dynamicElementElement.element(
-				"dynamic-content");
-
-			String data = StringPool.BLANK;
-
-			if (dynamicContentElement != null) {
-				data = dynamicContentElement.getText();
-			}
-
-			String name = dynamicElementElement.attributeValue(
-				"name", StringPool.BLANK);
-
-			if (name.length() == 0) {
-				throw new TransformException(
-					"Element missing \"name\" attribute");
-			}
-
-			String type = dynamicElementElement.attributeValue(
-				"type", StringPool.BLANK);
-
-			Map<String, String> attributes = new HashMap<String, String>();
-
-			if (dynamicContentElement != null) {
-				for (Attribute attribute : dynamicContentElement.attributes()) {
-					attributes.put(attribute.getName(), attribute.getValue());
-				}
-			}
-
-			TemplateNode templateNode = new TemplateNode(
-				themeDisplay, name, StringUtil.stripCDATA(data), type,
-				attributes);
-
-			if (dynamicElementElement.element("dynamic-element") != null) {
-				templateNode.appendChildren(
-					getTemplateNodes(themeDisplay, dynamicElementElement));
-			}
-			else if ((dynamicContentElement != null) &&
-					 (dynamicContentElement.element("option") != null)) {
-
-				List<Element> optionElements = dynamicContentElement.elements(
-					"option");
-
-				for (Element optionElement : optionElements) {
-					templateNode.appendOption(
-						StringUtil.stripCDATA(optionElement.getText()));
-				}
-			}
-
-			TemplateNode prototypeTemplateNode = prototypeTemplateNodes.get(
-				name);
-
-			if (prototypeTemplateNode == null) {
-				prototypeTemplateNode = templateNode;
-
-				prototypeTemplateNodes.put(name, prototypeTemplateNode);
-
-				templateNodes.add(templateNode);
-			}
-
-			prototypeTemplateNode.appendSibling(templateNode);
-		}
-
-		return templateNodes;
-	}
-
-	protected String getTemplatesPath(long companyId, long groupId) {
-		StringBundler sb = new StringBundler(5);
+		StringBundler sb = new StringBundler(7);
 
 		sb.append(TemplateConstants.TEMPLATE_SEPARATOR);
 		sb.append(StringPool.SLASH);
 		sb.append(companyId);
 		sb.append(StringPool.SLASH);
 		sb.append(groupId);
+		sb.append(StringPool.SLASH);
+		sb.append(classNameId);
 
 		return sb.toString();
-	}
-
-	protected Map<String, Object> insertRequestVariables(Element element) {
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (element == null) {
-			return map;
-		}
-
-		for (Element childElement : element.elements()) {
-			String name = childElement.getName();
-
-			if (name.equals("attribute")) {
-				Element nameElement = childElement.element("name");
-				Element valueElement = childElement.element("value");
-
-				map.put(nameElement.getText(), valueElement.getText());
-			}
-			else if (name.equals("parameter")) {
-				Element nameElement = childElement.element("name");
-
-				List<Element> valueElements = childElement.elements("value");
-
-				if (valueElements.size() == 1) {
-					Element valueElement = valueElements.get(0);
-
-					map.put(nameElement.getText(), valueElement.getText());
-				}
-				else {
-					List<String> values = new ArrayList<String>();
-
-					for (Element valueElement : valueElements) {
-						values.add(valueElement.getText());
-					}
-
-					map.put(nameElement.getText(), values);
-				}
-			}
-			else {
-				List<Element> elements = childElement.elements();
-
-				if (!elements.isEmpty()) {
-					map.put(name, insertRequestVariables(childElement));
-				}
-				else {
-					map.put(name, childElement.getText());
-				}
-			}
-		}
-
-		return map;
 	}
 
 	protected void mergeTemplate(
 			Template template, UnsyncStringWriter unsyncStringWriter,
 			boolean propagateException)
 		throws Exception {
-
-		VelocityTaglib velocityTaglib = (VelocityTaglib)template.get(
-			PortletDisplayTemplateConstants.TAGLIB_LIFERAY);
-
-		if (velocityTaglib != null) {
-			velocityTaglib.setTemplate(template);
-		}
 
 		if (propagateException) {
 			template.doProcessTemplate(unsyncStringWriter);
@@ -490,243 +261,53 @@ public class Transformer {
 		template.prepare(themeDisplay.getRequest());
 	}
 
-	protected String transform(
-			ThemeDisplay themeDisplay, Map<String, String> tokens,
-			String viewMode, String languageId, Document document,
-			PortletRequestModel portletRequestModel, String script,
-			String langType, boolean propagateException)
-		throws Exception {
+	protected void setErrorTemplateIds(String errorTemplatePropertyKey) {
+		Set<String> langTypes = TemplateManagerUtil.getTemplateManagerNames();
 
-		// Setup listeners
+		for (String langType : langTypes) {
+			String errorTemplateId = getErrorTemplateId(
+				errorTemplatePropertyKey, langType);
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Language " + languageId);
-		}
-
-		if (Validator.isNull(viewMode)) {
-			viewMode = Constants.VIEW;
-		}
-
-		if (_logTokens.isDebugEnabled()) {
-			String tokensString = PropertiesUtil.list(tokens);
-
-			_logTokens.debug(tokensString);
-		}
-
-		if (_logTransformBefore.isDebugEnabled()) {
-			_logTransformBefore.debug(document);
-		}
-
-		for (TransformerListener transformerListener : _transformerListeners) {
-
-			// Modify XML
-
-			if (_logXmlBeforeListener.isDebugEnabled()) {
-				_logXmlBeforeListener.debug(document);
-			}
-
-			if (transformerListener != null) {
-				document = transformerListener.onXml(
-					document, languageId, tokens);
-
-				if (_logXmlAfterListener.isDebugEnabled()) {
-					_logXmlAfterListener.debug(document);
-				}
-			}
-
-			// Modify script
-
-			if (_logScriptBeforeListener.isDebugEnabled()) {
-				_logScriptBeforeListener.debug(script);
-			}
-
-			if (transformerListener != null) {
-				script = transformerListener.onScript(
-					script, document, languageId, tokens);
-
-				if (_logScriptAfterListener.isDebugEnabled()) {
-					_logScriptAfterListener.debug(script);
-				}
+			if (Validator.isNotNull(errorTemplateId)) {
+				errorTemplateIds.put(langType, errorTemplateId);
 			}
 		}
+	}
 
-		// Transform
+	protected void setTransformerListeners(
+		String transformerListenerPropertyKey, ClassLoader classLoader) {
 
-		String output = null;
+		Set<String> transformerListenerClassNames = SetUtil.fromArray(
+			PropsUtil.getArray(transformerListenerPropertyKey));
 
-		if (Validator.isNull(langType)) {
-			output = LocalizationUtil.getLocalization(
-				document.asXML(), languageId);
-		}
-		else {
-			long companyId = 0;
-			long companyGroupId = 0;
-			long articleGroupId = 0;
-
-			if (tokens != null) {
-				companyId = GetterUtil.getLong(tokens.get("company_id"));
-				companyGroupId = GetterUtil.getLong(
-					tokens.get("company_group_id"));
-				articleGroupId = GetterUtil.getLong(
-					tokens.get("article_group_id"));
-			}
-
-			long scopeGroupId = 0;
-			long siteGroupId = 0;
-
-			if (themeDisplay != null) {
-				companyId = themeDisplay.getCompanyId();
-				companyGroupId = themeDisplay.getCompanyGroupId();
-				scopeGroupId = themeDisplay.getScopeGroupId();
-				siteGroupId = themeDisplay.getSiteGroupId();
-			}
-
-			String templateId = tokens.get("template_id");
-
-			templateId = getTemplateId(
-				templateId, companyId, companyGroupId, articleGroupId);
-
-			Template template = getTemplate(
-				templateId, tokens, languageId, document, script, langType);
-
-			UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+		for (String transformerListenerClassName :
+				transformerListenerClassNames) {
 
 			try {
-				if (document != null) {
-					Element rootElement = document.getRootElement();
-
-					List<TemplateNode> templateNodes = getTemplateNodes(
-						themeDisplay, rootElement);
-
-					if (templateNodes != null) {
-						for (TemplateNode templateNode : templateNodes) {
-							template.put(templateNode.getName(), templateNode);
-						}
-					}
-
-					if (portletRequestModel != null) {
-						template.put("request", portletRequestModel.toMap());
-
-						if (langType.equals(TemplateConstants.LANG_TYPE_XSL)) {
-							Document requestDocument = SAXReaderUtil.read(
-								portletRequestModel.toXML());
-
-							Element requestElement =
-								requestDocument.getRootElement();
-
-							template.put("xmlRequest", requestElement.asXML());
-						}
-					}
-					else {
-						Element requestElement = rootElement.element("request");
-
-						template.put(
-							"request", insertRequestVariables(requestElement));
-
-						if (langType.equals(TemplateConstants.LANG_TYPE_XSL)) {
-							template.put("xmlRequest", requestElement.asXML());
-						}
-					}
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Instantiating transformer listener " +
+							transformerListenerClassName);
 				}
 
-				template.put("articleGroupId", articleGroupId);
-				template.put("company", getCompany(themeDisplay, companyId));
-				template.put("companyId", companyId);
-				template.put("device", getDevice(themeDisplay));
+				TransformerListener transformerListener =
+					(TransformerListener)InstanceFactory.newInstance(
+						classLoader, transformerListenerClassName);
 
-				String templatesPath = getTemplatesPath(
-					companyId, articleGroupId);
-
-				Locale locale = LocaleUtil.fromLanguageId(languageId);
-
-				template.put("locale", locale);
-
-				template.put(
-					"permissionChecker",
-					PermissionThreadLocal.getPermissionChecker());
-				template.put(
-					"randomNamespace",
-					StringUtil.randomId() + StringPool.UNDERLINE);
-				template.put("scopeGroupId", scopeGroupId);
-				template.put("siteGroupId", siteGroupId);
-				template.put("templatesPath", templatesPath);
-				template.put("viewMode", viewMode);
-
-				// Deprecated variables
-
-				template.put("groupId", articleGroupId);
-				template.put("journalTemplatesPath", templatesPath);
-
-				mergeTemplate(template, unsyncStringWriter, propagateException);
+				transformerListeners.add(transformerListener);
 			}
 			catch (Exception e) {
-				if (e instanceof DocumentException) {
-					throw new TransformException(
-						"Unable to read XML document", e);
-				}
-				else if (e instanceof IOException) {
-					throw new TransformException("Error reading template", e);
-				}
-				else if (e instanceof TransformException) {
-					throw (TransformException)e;
-				}
-				else {
-					throw new TransformException("Unhandled exception", e);
-				}
-			}
-
-			output = unsyncStringWriter.toString();
-		}
-
-		// Postprocess output
-
-		for (TransformerListener transformerListener : _transformerListeners) {
-
-			// Modify output
-
-			if (_logOutputBeforeListener.isDebugEnabled()) {
-				_logOutputBeforeListener.debug(output);
-			}
-
-			output = transformerListener.onOutput(output, languageId, tokens);
-
-			if (_logOutputAfterListener.isDebugEnabled()) {
-				_logOutputAfterListener.debug(output);
+				_log.error(e, e);
 			}
 		}
-
-		if (_logTransfromAfter.isDebugEnabled()) {
-			_logTransfromAfter.debug(output);
-		}
-
-		return output;
 	}
+
+	protected final Map<String, String> errorTemplateIds = new HashMap<>();
+	protected final Set<TransformerListener> transformerListeners =
+		new HashSet<>();
 
 	private static final Log _log = LogFactoryUtil.getLog(Transformer.class);
 
-	private static final Log _logOutputAfterListener = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".OutputAfterListener");
-	private static final Log _logOutputBeforeListener = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".OutputBeforeListener");
-	private static final Log _logScriptAfterListener = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".ScriptAfterListener");
-	private static final Log _logScriptBeforeListener = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".ScriptBeforeListener");
-	private static final Log _logTokens = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".Tokens");
-	private static final Log _logTransformBefore = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".TransformBefore");
-	private static final Log _logTransfromAfter = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".TransformAfter");
-	private static final Log _logXmlAfterListener = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".XmlAfterListener");
-	private static final Log _logXmlBeforeListener = LogFactoryUtil.getLog(
-		Transformer.class.getName() + ".XmlBeforeListener");
-
-	private final Map<String, String> _errorTemplateIds =
-		new HashMap<String, String>();
 	private final boolean _restricted;
-	private final Set<TransformerListener> _transformerListeners =
-		new HashSet<TransformerListener>();
 
 }

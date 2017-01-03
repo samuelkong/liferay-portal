@@ -29,101 +29,63 @@ import org.springframework.aop.framework.AdvisedSupport;
 public class SpringCompatibilityTest {
 
 	@Test
-	public void testAbstractAutowireCapableBeanFactory() {
-		Class<?> AbstractAutowireCapableBeanFactoryClass = null;
+	public void testAbstractAutowireCapableBeanFactory() throws Exception {
+		Class<?> abstractAutowireCapableBeanFactoryClass = null;
 
-		try {
-			AbstractAutowireCapableBeanFactoryClass = Class.forName(
-				"org.springframework.beans.factory.support." +
-					"AbstractAutowireCapableBeanFactory");
-		}
-		catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
+		abstractAutowireCapableBeanFactoryClass = Class.forName(
+			"org.springframework.beans.factory.support." +
+				"AbstractAutowireCapableBeanFactory");
 
 		Field filteredPropertyDescriptorsCacheField = null;
 
-		try {
-			filteredPropertyDescriptorsCacheField =
-				AbstractAutowireCapableBeanFactoryClass.getDeclaredField(
-					"filteredPropertyDescriptorsCache");
-		}
-		catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
+		filteredPropertyDescriptorsCacheField =
+			abstractAutowireCapableBeanFactoryClass.getDeclaredField(
+				"filteredPropertyDescriptorsCache");
 
 		Class<?> filteredPropertyDescriptorsCacheClass =
 			filteredPropertyDescriptorsCacheField.getType();
 
-		if (!Map.class.isAssignableFrom(
-				filteredPropertyDescriptorsCacheClass)) {
+		Class<?> clazz = filteredPropertyDescriptorsCacheClass.getClass();
 
-			Assert.fail(
-				filteredPropertyDescriptorsCacheClass.getClass().getName() +
-					" is not " + Map.class.getName());
-		}
+		Assert.assertTrue(
+			clazz.getName() + " is not " + Map.class.getName(),
+			Map.class.isAssignableFrom(filteredPropertyDescriptorsCacheClass));
 	}
 
 	@Test
-	public void testAspectJExpressionPointcut() {
-		Class<?> aspectJExpressionPointcutClass = null;
-
-		try {
-			aspectJExpressionPointcutClass = Class.forName(
-				"org.springframework.aop.aspectj.AspectJExpressionPointcut");
-		}
-		catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
+	public void testAspectJExpressionPointcut() throws Exception {
+		Class<?> aspectJExpressionPointcutClass = Class.forName(
+			"org.springframework.aop.aspectj.AspectJExpressionPointcut");
 
 		Field shadowMatchCacheField = null;
 
-		try {
-			shadowMatchCacheField =
-				aspectJExpressionPointcutClass.getDeclaredField(
-					"shadowMatchCache");
-		}
-		catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
+		shadowMatchCacheField = aspectJExpressionPointcutClass.getDeclaredField(
+			"shadowMatchCache");
 
 		Class<?> shadowMatchCacheClass = shadowMatchCacheField.getType();
 
-		if (!Map.class.isAssignableFrom(shadowMatchCacheClass)) {
-			Assert.fail(
-				shadowMatchCacheClass.getClass().getName() + " is not " +
-					Map.class.getName());
-		}
+		Class<?> clazz = shadowMatchCacheClass.getClass();
+
+		Assert.assertTrue(
+			clazz.getName() + " is not " + Map.class.getName(),
+			Map.class.isAssignableFrom(shadowMatchCacheClass));
 	}
 
 	@Test
-	public void testJdkDynamicAopProxy() {
-		Class<?> jdkDynamicAopProxyClass = null;
+	public void testJdkDynamicAopProxy() throws Exception {
+		Class<?> jdkDynamicAopProxyClass = Class.forName(
+			"org.springframework.aop.framework.JdkDynamicAopProxy");
 
-		try {
-			jdkDynamicAopProxyClass = Class.forName(
-				"org.springframework.aop.framework.JdkDynamicAopProxy");
-		}
-		catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-
-		Field advisedField = null;
-
-		try {
-			advisedField = jdkDynamicAopProxyClass.getDeclaredField("advised");
-		}
-		catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
+		Field advisedField = jdkDynamicAopProxyClass.getDeclaredField(
+			"advised");
 
 		Class<?> advisedSupportClass = advisedField.getType();
 
-		if (!advisedSupportClass.equals(AdvisedSupport.class)) {
-			Assert.fail(
-				advisedSupportClass.getClass().getName() + " is not " +
-					AdvisedSupport.class.getName());
-		}
+		Class<?> clazz = advisedSupportClass.getClass();
+
+		Assert.assertTrue(
+			clazz.getName() + " is not " + AdvisedSupport.class.getName(),
+			advisedSupportClass.equals(AdvisedSupport.class));
 	}
 
 }

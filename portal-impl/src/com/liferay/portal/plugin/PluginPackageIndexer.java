@@ -14,27 +14,27 @@
 
 package com.liferay.portal.plugin;
 
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.plugin.License;
 import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Query;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
-import com.liferay.portal.kernel.search.TermQueryFactoryUtil;
+import com.liferay.portal.kernel.search.background.task.ReindexStatusMessageSenderUtil;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.CompanyConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +43,6 @@ import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
 
 /**
  * @author Jorge Ferrer
@@ -51,14 +50,12 @@ import javax.portlet.PortletURL;
  * @author Bruno Farache
  * @author Raymond Augé
  */
-public class PluginPackageIndexer extends BaseIndexer {
+@OSGiBeanProperties
+public class PluginPackageIndexer extends BaseIndexer<PluginPackage> {
 
-	public static final String[] CLASS_NAMES = {PluginPackage.class.getName()};
-
-	public static final String PORTLET_ID = "PluginPackageIndexer";
+	public static final String CLASS_NAME = PluginPackage.class.getName();
 
 	public PluginPackageIndexer() {
-		setCommitImmediately(true);
 		setDefaultSelectedFieldNames(
 			Field.COMPANY_ID, Field.CONTENT, Field.ENTRY_CLASS_NAME,
 			Field.ENTRY_CLASS_PK, Field.TITLE, Field.UID);
@@ -66,29 +63,22 @@ public class PluginPackageIndexer extends BaseIndexer {
 	}
 
 	@Override
-	public String[] getClassNames() {
-		return CLASS_NAMES;
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
-	public String getPortletId() {
-		return PORTLET_ID;
-	}
-
-	@Override
-	protected void doDelete(Object obj) throws Exception {
-		PluginPackage pluginPackage = (PluginPackage)obj;
-
+	protected void doDelete(PluginPackage pluginPackage) throws Exception {
 		deleteDocument(CompanyConstants.SYSTEM, pluginPackage.getModuleId());
 	}
 
 	@Override
-	protected Document doGetDocument(Object obj) throws Exception {
-		PluginPackage pluginPackage = (PluginPackage)obj;
+	protected Document doGetDocument(PluginPackage pluginPackage)
+		throws Exception {
 
 		Document document = new DocumentImpl();
 
-		document.addUID(PORTLET_ID, pluginPackage.getModuleId());
+		document.addUID(CLASS_NAME, pluginPackage.getModuleId());
 
 		document.addKeyword(Field.COMPANY_ID, CompanyConstants.SYSTEM);
 
@@ -122,7 +112,6 @@ public class PluginPackageIndexer extends BaseIndexer {
 		document.addKeyword(Field.GROUP_ID, moduleIdObj.getGroupId());
 
 		document.addDate(Field.MODIFIED_DATE, pluginPackage.getModifiedDate());
-		document.addKeyword(Field.PORTLET_ID, PORTLET_ID);
 
 		String[] statusAndInstalledVersion =
 			PluginPackageUtil.getStatusAndInstalledVersion(pluginPackage);
@@ -139,8 +128,7 @@ public class PluginPackageIndexer extends BaseIndexer {
 		List<License> licenses = pluginPackage.getLicenses();
 
 		document.addKeyword(
-			"license",
-			ListUtil.toArray(licenses, License.NAME_ACCESSOR));
+			"license", ListUtil.toArray(licenses, License.NAME_ACCESSOR));
 
 		document.addText("longDescription", longDescription);
 		document.addKeyword("moduleId", pluginPackage.getModuleId());
@@ -177,7 +165,7 @@ public class PluginPackageIndexer extends BaseIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet, PortletURL portletURL,
+		Document document, Locale locale, String snippet,
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		String title = document.get(Field.TITLE);
@@ -188,24 +176,14 @@ public class PluginPackageIndexer extends BaseIndexer {
 			content = StringUtil.shorten(document.get(Field.CONTENT), 200);
 		}
 
-		String moduleId = document.get("moduleId");
-		String repositoryURL = document.get("repositoryURL");
-
-		portletURL.setParameter("struts_action", "/admin/view");
-		portletURL.setParameter("tabs2", "repositories");
-		portletURL.setParameter("moduleId", moduleId);
-		portletURL.setParameter("repositoryURL", repositoryURL);
-
-		return new Summary(title, content, portletURL);
+		return new Summary(title, content);
 	}
 
 	@Override
-	protected void doReindex(Object obj) throws Exception {
-		PluginPackage pluginPackage = (PluginPackage)obj;
-
+	protected void doReindex(PluginPackage pluginPackage) throws Exception {
 		Document document = getDocument(pluginPackage);
 
-		SearchEngineUtil.updateDocument(
+		IndexWriterHelperUtil.updateDocument(
 			getSearchEngineId(), CompanyConstants.SYSTEM, document,
 			isCommitImmediately());
 	}
@@ -216,28 +194,32 @@ public class PluginPackageIndexer extends BaseIndexer {
 
 	@Override
 	protected void doReindex(String[] ids) throws Exception {
-		SearchEngineUtil.deletePortletDocuments(
-			getSearchEngineId(), CompanyConstants.SYSTEM, PORTLET_ID,
+		IndexWriterHelperUtil.deleteEntityDocuments(
+			getSearchEngineId(), CompanyConstants.SYSTEM, CLASS_NAME,
 			isCommitImmediately());
 
-		Collection<Document> documents = new ArrayList<Document>();
+		Collection<Document> documents = new ArrayList<>();
 
-		for (PluginPackage pluginPackage :
-				PluginPackageUtil.getAllAvailablePluginPackages()) {
+		List<PluginPackage> pluginPackages =
+			PluginPackageUtil.getAllAvailablePluginPackages();
 
+		int total = pluginPackages.size();
+
+		ReindexStatusMessageSenderUtil.sendStatusMessage(
+			getClassName(), 0, total);
+
+		for (PluginPackage pluginPackage : pluginPackages) {
 			Document document = getDocument(pluginPackage);
 
 			documents.add(document);
 		}
 
-		SearchEngineUtil.updateDocuments(
+		IndexWriterHelperUtil.updateDocuments(
 			getSearchEngineId(), CompanyConstants.SYSTEM, documents,
 			isCommitImmediately());
-	}
 
-	@Override
-	protected String getPortletId(SearchContext searchContext) {
-		return PORTLET_ID;
+		ReindexStatusMessageSenderUtil.sendStatusMessage(
+			getClassName(), total, total);
 	}
 
 	@Override
@@ -245,52 +227,35 @@ public class PluginPackageIndexer extends BaseIndexer {
 			BooleanQuery fullQuery, SearchContext searchContext)
 		throws Exception {
 
+		BooleanFilter booleanFilter = fullQuery.getPreBooleanFilter();
+
+		if (booleanFilter == null) {
+			booleanFilter = new BooleanFilter();
+		}
+
 		String type = (String)searchContext.getAttribute("type");
 
 		if (Validator.isNotNull(type)) {
-			BooleanQuery searchQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
-
-			searchQuery.addRequiredTerm("type", type);
-
-			fullQuery.add(searchQuery, BooleanClauseOccur.MUST);
+			booleanFilter.addRequiredTerm("type", type);
 		}
 
 		String tag = (String)searchContext.getAttribute("tag");
 
 		if (Validator.isNotNull(tag)) {
-			BooleanQuery searchQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
-
-			searchQuery.addExactTerm("tag", tag);
-
-			fullQuery.add(searchQuery, BooleanClauseOccur.MUST);
+			booleanFilter.addRequiredTerm("tag", tag);
 		}
 
 		String repositoryURL = (String)searchContext.getAttribute(
 			"repositoryURL");
 
 		if (Validator.isNotNull(repositoryURL)) {
-			BooleanQuery searchQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
-
-			Query query = TermQueryFactoryUtil.create(
-				searchContext, "repositoryURL", repositoryURL);
-
-			searchQuery.add(query, BooleanClauseOccur.SHOULD);
-
-			fullQuery.add(searchQuery, BooleanClauseOccur.MUST);
+			booleanFilter.addRequiredTerm("repositoryURL", repositoryURL);
 		}
 
 		String license = (String)searchContext.getAttribute("license");
 
 		if (Validator.isNotNull(license)) {
-			BooleanQuery searchQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
-
-			searchQuery.addExactTerm("license", license);
-
-			fullQuery.add(searchQuery, BooleanClauseOccur.MUST);
+			booleanFilter.addRequiredTerm("license", license);
 		}
 
 		String status = (String)searchContext.getAttribute(Field.STATUS);
@@ -299,23 +264,26 @@ public class PluginPackageIndexer extends BaseIndexer {
 			return;
 		}
 
-		BooleanQuery searchQuery = BooleanQueryFactoryUtil.create(
-			searchContext);
-
 		if (status.equals(
 				PluginPackageImpl.
 					STATUS_NOT_INSTALLED_OR_OLDER_VERSION_INSTALLED)) {
 
-			searchQuery.addExactTerm(
+			BooleanFilter statusBooleanFilter = new BooleanFilter();
+
+			statusBooleanFilter.addTerm(
 				Field.STATUS, PluginPackageImpl.STATUS_NOT_INSTALLED);
-			searchQuery.addExactTerm(
+			statusBooleanFilter.addTerm(
 				Field.STATUS, PluginPackageImpl.STATUS_OLDER_VERSION_INSTALLED);
+
+			booleanFilter.add(statusBooleanFilter, BooleanClauseOccur.MUST);
 		}
 		else {
-			searchQuery.addExactTerm(Field.STATUS, status);
+			booleanFilter.addRequiredTerm(Field.STATUS, status);
 		}
 
-		fullQuery.add(searchQuery, BooleanClauseOccur.MUST);
+		if (booleanFilter.hasClauses()) {
+			fullQuery.setPreBooleanFilter(booleanFilter);
+		}
 	}
 
 }

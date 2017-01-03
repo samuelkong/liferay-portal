@@ -52,8 +52,12 @@ public class TransactionInterceptor implements MethodInterceptor {
 			return methodInvocation.proceed();
 		}
 
+		TransactionAttributeAdapter transactionAttributeAdapter =
+			new TransactionAttributeAdapter(transactionAttribute);
+
 		return transactionExecutor.execute(
-			platformTransactionManager, transactionAttribute, methodInvocation);
+			platformTransactionManager, transactionAttributeAdapter,
+			methodInvocation);
 	}
 
 	public void setPlatformTransactionManager(
@@ -72,17 +76,6 @@ public class TransactionInterceptor implements MethodInterceptor {
 		TransactionExecutor transactionExecutor) {
 
 		this.transactionExecutor = transactionExecutor;
-	}
-
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link
-	 *             #setPlatformTransactionManager(PlatformTransactionManager)}
-	 */
-	@Deprecated
-	public void setTransactionManager(
-		PlatformTransactionManager platformTransactionManager) {
-
-		setPlatformTransactionManager(platformTransactionManager);
 	}
 
 	protected PlatformTransactionManager platformTransactionManager;

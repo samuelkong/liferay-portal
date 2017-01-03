@@ -1,0 +1,67 @@
+/* ---------- Extras ---------- */
+
+@keyframes ping {
+	0% {
+		border-color: transparent;
+		transform: scale(0.2) translateY(-50%);
+	}
+
+	20% {
+		border-color: transparent
+	}
+
+	100% {
+		transform: scale(1) translateY(-50%);
+	}
+}
+
+@keyframes loop {
+	0% {
+		transform: rotate(0) translateY(-50%);
+	}
+
+	50% {
+		transform: rotate(180deg) translateY(-50%);
+	}
+
+	100% {
+		transform: rotate(360deg) translateY(-50%);
+	}
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+
+	40% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeOut {
+	0% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	60% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+}
+
+.running *:not(.transitioning) .current-scope.pending > .line-container:nth-child(2):after {
+	animation: loop 1s cubic-bezier(0.41, 0.35, 0.63, 0.88) 0.1s infinite, ping 0.25s cubic-bezier(1, 0.9, 0.47, 1.92);
+	border-left-color: transparent;
+}

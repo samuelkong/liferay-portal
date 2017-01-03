@@ -1,0 +1,182 @@
+<definition component-name="portal-social-networking">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="testray.main.component.name" value="Social Networking" />
+
+	<var name="pageName" value="Portal Directory Page" />
+	<var name="portletName" value="Portal Directory" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Portal Directory" />
+		</execute>
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="User#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="SearchPortalDirectory" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userMiddleName" value="usermn" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="First Name" />
+			<var name="searchTerm" value="userfn" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="First Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="userfn1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Middle Name" />
+			<var name="searchTerm" value="usermn" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Middle Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="usermn1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Last Name" />
+			<var name="searchTerm" value="userln" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Last Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="userln1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Screen Name" />
+			<var name="searchTerm" value="usersn" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Screen Name" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="usersn1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Email Address" />
+			<var name="searchTerm" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Portal Directory Page" />
+		</execute>
+
+		<execute macro="User#advancedSearchViaPortalDirectoryPG">
+			<var name="searchField" value="Email Address" />
+			<var name="searchNoResults" value="true" />
+			<var name="searchTerm" value="userea@liferay.com1" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+	</command>
+</definition>

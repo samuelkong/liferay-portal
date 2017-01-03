@@ -1,0 +1,53 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the editor field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'editor'"}
+	{call .editor data="all" /}
+{/deltemplate}
+
+/**
+ * Prints the DDM form editor field.
+ *
+ * @param? childElementsHTML
+ * @param label
+ * @param name
+ * @param placeholder
+ * @param required
+ * @param showLabel
+ * @param tip
+ * @param value
+ * @param visible
+ */
+{template .editor autoescape="deprecated-contextual"}
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-editor" data-fieldname="{$name}">
+		{if $showLabel}
+			<label class="control-label" for="{$name}">
+				{$label}
+
+				{if $required}
+					<span class="icon-asterisk text-warning"></span>
+				{/if}
+			</label>
+
+			{if $tip}
+				<p class="liferay-ddm-form-field-tip">{$tip}</p>
+			{/if}
+		{/if}
+
+		<div class="input-group-container">
+			<div class="alloy-editor-container" id="{$name}Container">
+				<div class="alloy-editor alloy-editor-placeholder form-control" contenteditable="false" data-placeholder="{$placeholder}" id="{$name}Editor" name="{$name}Editor">
+					{$value|noAutoescape}
+				</div>
+			</div>
+
+			<input id="{$name}" name="{$name}" type="hidden" value="{$value}" />
+		</div>
+
+		{if $childElementsHTML}
+			{$childElementsHTML|noAutoescape}
+		{/if}
+	</div>
+{/template}

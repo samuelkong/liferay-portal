@@ -37,11 +37,13 @@ for (String servletContextName : ServletContextPool.keySet()) {
 			invokerPortletName = portletConfig.getPortletName();
 		}
 
-		String portletName = PortalUtil.getJsSafePortletId(invokerPortletName);
-
-		String path = StringPool.SLASH.concat(portletName).concat("/invoke");
+		String path = StringPool.SLASH.concat(invokerPortletName).concat("/invoke");
 
 		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher(path);
+
+		if (requestDispatcher == null) {
+			continue;
+		}
 
 		request.setAttribute(WebKeys.EXTEND_SESSION, Boolean.TRUE);
 
@@ -58,5 +60,5 @@ for (String servletContextName : ServletContextPool.keySet()) {
 %>
 
 <%!
-private static Log _log = LogFactoryUtil.getLog("portal-web.docroot.html.portal.extend_session_jsp");
+private static Log _log = LogFactoryUtil.getLog("portal_web.docroot.html.portal.extend_session_jsp");
 %>

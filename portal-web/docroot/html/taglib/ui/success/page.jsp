@@ -19,18 +19,32 @@
 <%
 String key = (String)request.getAttribute("liferay-ui:success:key");
 String message = (String)request.getAttribute("liferay-ui:success:message");
+String targetNode = (String)request.getAttribute("liferay-ui:success:targetNode");
+int timeout = GetterUtil.getInteger(request.getAttribute("liferay-ui:success:timeout"));
 boolean translateMessage = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:success:translateMessage"));
+
+String bodyContentString = StringPool.BLANK;
+
+Object bodyContent = request.getAttribute("liferay-ui:success:bodyContent");
+
+if (bodyContent != null) {
+	bodyContentString = bodyContent.toString();
+}
+
+if (Validator.isNotNull(bodyContentString)) {
+	message = bodyContentString;
+}
+else if (translateMessage) {
+	message = LanguageUtil.get(resourceBundle, message);
+}
 %>
 
-<c:if test="<%= MultiSessionMessages.contains(portletRequest, key) %>">
-	<div class="alert alert-success">
-		<c:choose>
-			<c:when test="<%= translateMessage %>">
-				<%= LanguageUtil.get(request, message) %>
-			</c:when>
-			<c:otherwise>
-				<%= message %>
-			</c:otherwise>
-		</c:choose>
-	</div>
+<c:if test="<%= ((portletRequest != null) && MultiSessionMessages.contains(portletRequest, key)) || SessionMessages.contains(request, key) %>">
+	<liferay-ui:alert
+		icon="check"
+		message="<%= message %>"
+		targetNode="<%= targetNode %>"
+		timeout="<%= timeout %>"
+		type="success"
+	/>
 </c:if>

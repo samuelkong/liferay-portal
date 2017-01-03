@@ -1,0 +1,9 @@
+;
+; Do not manually edit this file.
+;
+[subrepo]
+	cmdver = liferay
+	commit = 253bdeb5f426f8a513b3264b6bac813c518b0239
+	mode = push
+	parent = 36997aa583a82bb0d279e48cfee73ad428eb5bb3
+	remote = git@github.com:liferay/com-liferay-invitation.git

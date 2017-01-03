@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class NamespaceServletRequest extends DynamicServletRequest {
 
-	public static Set<String> reservedAttrs = new HashSet<String>();
+	public static Set<String> reservedAttrs = new HashSet<>();
 
 	static {
 		reservedAttrs.add(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -86,7 +86,7 @@ public class NamespaceServletRequest extends DynamicServletRequest {
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 
 		Enumeration<String> enu = super.getAttributeNames();
 
@@ -148,6 +148,14 @@ public class NamespaceServletRequest extends DynamicServletRequest {
 		else {
 			setAttribute(name, value);
 		}
+	}
+
+	@Override
+	protected void injectInto(DynamicServletRequest dynamicServletRequest) {
+		dynamicServletRequest.setRequest(
+			new NamespaceServletRequest(
+				(HttpServletRequest)getRequest(), _attrNamespace,
+				_paramNamespace));
 	}
 
 	private boolean _isReservedParam(String name) {

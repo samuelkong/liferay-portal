@@ -17,11 +17,9 @@
 <%@ include file="/html/taglib/ui/tabs/init.jsp" %>
 
 <%
-String errorSection = (String)request.getAttribute("errorSection");
+String errorSection = (String)request.getAttribute(WebKeys.ERROR_SECTION);
 %>
 
-<c:if test="<%= !themeDisplay.isFacebook() %>">
-	<aui:script>
-		Liferay.Portal.Tabs.show('<%= namespace + param %>', <%= namesJS %>, '<%= UnicodeFormatter.toString((errorSection == null) ? value : errorSection) %>');
-	</aui:script>
-</c:if>
+<aui:script>
+	Liferay.Portal.Tabs.show('<%= namespace + param %>', <%= namesJS %>, '<%= UnicodeFormatter.toString((errorSection == null) ? value : errorSection) %>');
+</aui:script>

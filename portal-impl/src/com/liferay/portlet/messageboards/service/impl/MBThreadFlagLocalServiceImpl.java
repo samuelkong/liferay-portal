@@ -14,20 +14,20 @@
 
 package com.liferay.portlet.messageboards.service.impl;
 
+import com.liferay.message.boards.kernel.model.MBThread;
+import com.liferay.message.boards.kernel.model.MBThreadFlag;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.DateUtil;
-import com.liferay.portal.model.SystemEventConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portlet.messageboards.model.MBThread;
-import com.liferay.portlet.messageboards.model.MBThreadFlag;
 import com.liferay.portlet.messageboards.service.base.MBThreadFlagLocalServiceBaseImpl;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -37,14 +37,14 @@ public class MBThreadFlagLocalServiceImpl
 	extends MBThreadFlagLocalServiceBaseImpl {
 
 	@Override
-	public void addThreadFlag(
+	public MBThreadFlag addThreadFlag(
 			long userId, MBThread thread, ServiceContext serviceContext)
 		throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		if (user.isDefaultUser()) {
-			return;
+			return null;
 		}
 
 		long threadId = thread.getThreadId();
@@ -62,7 +62,6 @@ public class MBThreadFlagLocalServiceImpl
 			threadFlag.setCompanyId(user.getCompanyId());
 			threadFlag.setUserId(userId);
 			threadFlag.setUserName(user.getFullName());
-			threadFlag.setCreateDate(serviceContext.getCreateDate(new Date()));
 			threadFlag.setModifiedDate(
 				serviceContext.getModifiedDate(thread.getLastPostDate()));
 			threadFlag.setThreadId(threadId);
@@ -86,13 +85,14 @@ public class MBThreadFlagLocalServiceImpl
 			}
 		}
 		else if (!DateUtil.equals(
-					threadFlag.getModifiedDate(), thread.getLastPostDate(),
-					true)) {
+					threadFlag.getModifiedDate(), thread.getLastPostDate())) {
 
 			threadFlag.setModifiedDate(thread.getLastPostDate());
 
 			mbThreadFlagPersistence.update(threadFlag);
 		}
+
+		return threadFlag;
 	}
 
 	@Override
@@ -111,12 +111,22 @@ public class MBThreadFlagLocalServiceImpl
 
 	@Override
 	public void deleteThreadFlagsByThreadId(long threadId) {
-		mbThreadFlagPersistence.removeByThreadId(threadId);
+		List<MBThreadFlag> threadFlags = mbThreadFlagPersistence.findByThreadId(
+			threadId);
+
+		for (MBThreadFlag threadFlag : threadFlags) {
+			mbThreadFlagLocalService.deleteThreadFlag(threadFlag);
+		}
 	}
 
 	@Override
 	public void deleteThreadFlagsByUserId(long userId) {
-		mbThreadFlagPersistence.removeByUserId(userId);
+		List<MBThreadFlag> threadFlags = mbThreadFlagPersistence.findByUserId(
+			userId);
+
+		for (MBThreadFlag threadFlag : threadFlags) {
+			mbThreadFlagLocalService.deleteThreadFlag(threadFlag);
+		}
 	}
 
 	@Override
@@ -147,7 +157,7 @@ public class MBThreadFlagLocalServiceImpl
 
 		if ((threadFlag != null) &&
 			DateUtil.equals(
-				threadFlag.getModifiedDate(), thread.getLastPostDate(), true)) {
+				threadFlag.getModifiedDate(), thread.getLastPostDate())) {
 
 			return true;
 		}

@@ -1,0 +1,8 @@
+@import "bourbon";
+@import "mixins";
+
+.notifications-portlet .user-notifications {
+	.archived, .archived:hover {
+		background-color: #F3F3F3;
+	}
+}

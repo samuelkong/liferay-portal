@@ -19,9 +19,11 @@ import com.liferay.taglib.util.IncludeTag;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Iliyan Peychev
- * @author Sergio González
+ * @author     Iliyan Peychev
+ * @author     Sergio González
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class ProgressTag extends IncludeTag {
 
 	public void setHeight(int height) {
@@ -60,8 +62,8 @@ public class ProgressTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
-		request.setAttribute("liferay-ui:progress:id", _id);
 		request.setAttribute("liferay-ui:progress:height", _height);
+		request.setAttribute("liferay-ui:progress:id", _id);
 		request.setAttribute("liferay-ui:progress:message", _message);
 		request.setAttribute("liferay-ui:progress:sessionKey", _sessionKey);
 		request.setAttribute("liferay-ui:progress:updatePeriod", _updatePeriod);
@@ -69,10 +71,10 @@ public class ProgressTag extends IncludeTag {
 
 	private static final String _PAGE = "/html/taglib/ui/progress/page.jsp";
 
-	private Integer _height;
+	private Integer _height = 25;
 	private String _id;
 	private String _message;
 	private String _sessionKey;
-	private Integer _updatePeriod;
+	private Integer _updatePeriod = 1000;
 
 }

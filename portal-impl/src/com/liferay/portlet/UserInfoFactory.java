@@ -16,12 +16,14 @@ package com.liferay.portlet;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.CustomUserAttributes;
+import com.liferay.portal.kernel.portlet.UserAttributes;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.model.PortletApp;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,8 +44,7 @@ public class UserInfoFactory {
 			return null;
 		}
 
-		LinkedHashMap<String, String> userInfo =
-			new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> userInfo = new LinkedHashMap<>();
 
 		try {
 			User user = PortalUtil.getUser(request);
@@ -64,8 +65,7 @@ public class UserInfoFactory {
 			return null;
 		}
 
-		LinkedHashMap<String, String> userInfo =
-			new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> userInfo = new LinkedHashMap<>();
 
 		try {
 			User user = UserLocalServiceUtil.getUserById(userId);
@@ -99,13 +99,18 @@ public class UserInfoFactory {
 				UserAttributes.LIFERAY_USER_ID,
 				userAttributes.getValue(UserAttributes.LIFERAY_USER_ID));
 
+			userInfo.put(
+				UserAttributes.USER_NAME_FULL,
+				userAttributes.getValue(UserAttributes.USER_NAME_FULL));
+
 			// Portlet user attributes
 
-			for (String attrName : portletApp.getUserAttributes()) {
-				String attrValue = userAttributes.getValue(attrName);
+			for (String userAttributeName : portletApp.getUserAttributes()) {
+				String userAttributeValue = userAttributes.getValue(
+					userAttributeName);
 
-				if (attrValue != null) {
-					userInfo.put(attrName, attrValue);
+				if (userAttributeValue != null) {
+					userInfo.put(userAttributeName, userAttributeValue);
 				}
 			}
 		}
@@ -118,53 +123,73 @@ public class UserInfoFactory {
 
 		// Custom user attributes
 
-		Map<String, CustomUserAttributes> cuaInstances =
-			new HashMap<String, CustomUserAttributes>();
+		Map<String, CustomUserAttributes> customUserAttributesMap =
+			new HashMap<>();
+
+		Map<String, String> customUserAttributesClassNames =
+			portletApp.getCustomUserAttributes();
 
 		for (Map.Entry<String, String> entry :
-				portletApp.getCustomUserAttributes().entrySet()) {
+				customUserAttributesClassNames.entrySet()) {
 
-			String attrName = entry.getKey();
-			String attrCustomClass = entry.getValue();
+			String userAttributeName = entry.getKey();
+			String customUserAttributesClassName = entry.getValue();
 
-			CustomUserAttributes cua = cuaInstances.get(attrCustomClass);
+			CustomUserAttributes customUserAttributes =
+				customUserAttributesMap.get(customUserAttributesClassName);
 
-			if (cua == null) {
+			if (customUserAttributes == null) {
 				if (portletApp.isWARFile()) {
 					PortletContextBag portletContextBag =
 						PortletContextBagPool.get(
 							portletApp.getServletContextName());
 
-					Map<String, CustomUserAttributes> customUserAttributes =
-						portletContextBag.getCustomUserAttributes();
+					Map<String, CustomUserAttributes>
+						portletContextBagCustomUserAttributes =
+							portletContextBag.getCustomUserAttributes();
 
-					cua = customUserAttributes.get(attrCustomClass);
+					customUserAttributes =
+						portletContextBagCustomUserAttributes.get(
+							customUserAttributesClassName);
 
-					cua = (CustomUserAttributes)cua.clone();
+					if (customUserAttributes != null) {
+						customUserAttributes =
+							(CustomUserAttributes)customUserAttributes.clone();
+					}
 				}
 				else {
-					try {
-						cua = (CustomUserAttributes)InstanceFactory.newInstance(
-							attrCustomClass);
-					}
-					catch (Exception e) {
-						_log.error(e, e);
-					}
+					customUserAttributes = _newInstance(
+						customUserAttributesClassName);
 				}
 
-				cuaInstances.put(attrCustomClass, cua);
+				if (customUserAttributes != null) {
+					customUserAttributesMap.put(
+						customUserAttributesClassName, customUserAttributes);
+				}
 			}
 
-			if (cua != null) {
-				String attrValue = cua.getValue(attrName, unmodifiableUserInfo);
+			if (customUserAttributes != null) {
+				String attrValue = customUserAttributes.getValue(
+					userAttributeName, unmodifiableUserInfo);
 
 				if (attrValue != null) {
-					userInfo.put(attrName, attrValue);
+					userInfo.put(userAttributeName, attrValue);
 				}
 			}
 		}
 
 		return userInfo;
+	}
+
+	private static CustomUserAttributes _newInstance(String className) {
+		try {
+			return (CustomUserAttributes)InstanceFactory.newInstance(className);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+		}
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

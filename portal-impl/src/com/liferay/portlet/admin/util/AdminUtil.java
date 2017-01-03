@@ -15,15 +15,15 @@
 package com.liferay.portlet.admin.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroupRole;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserServiceUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroupRole;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.service.UserServiceUtil;
-import com.liferay.portal.util.PortalUtil;
 
 import java.util.Calendar;
 import java.util.List;
@@ -66,9 +66,8 @@ public class AdminUtil {
 			ActionRequest actionRequest, long userId, String screenName,
 			String emailAddress, long facebookId, String openId,
 			String languageId, String timeZoneId, String greeting,
-			String comments, String smsSn, String aimSn, String facebookSn,
-			String icqSn, String jabberSn, String msnSn, String mySpaceSn,
-			String skypeSn, String twitterSn, String ymSn)
+			String comments, String smsSn, String facebookSn, String jabberSn,
+			String skypeSn, String twitterSn)
 		throws PortalException {
 
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(
@@ -76,18 +75,16 @@ public class AdminUtil {
 
 		return updateUser(
 			request, userId, screenName, emailAddress, facebookId, openId,
-			languageId, timeZoneId, greeting, comments, smsSn, aimSn,
-			facebookSn, icqSn, jabberSn, msnSn, mySpaceSn, skypeSn, twitterSn,
-			ymSn);
+			languageId, timeZoneId, greeting, comments, smsSn, facebookSn,
+			jabberSn, skypeSn, twitterSn);
 	}
 
 	public static User updateUser(
 			HttpServletRequest request, long userId, String screenName,
 			String emailAddress, long facebookId, String openId,
 			String languageId, String timeZoneId, String greeting,
-			String comments, String smsSn, String aimSn, String facebookSn,
-			String icqSn, String jabberSn, String msnSn, String mySpaceSn,
-			String skypeSn, String twitterSn, String ymSn)
+			String comments, String smsSn, String facebookSn, String jabberSn,
+			String skypeSn, String twitterSn)
 		throws PortalException {
 
 		String password = getUpdateUserPassword(request, userId);
@@ -119,9 +116,9 @@ public class AdminUtil {
 			contact.getFirstName(), contact.getMiddleName(),
 			contact.getLastName(), contact.getPrefixId(), contact.getSuffixId(),
 			contact.isMale(), birthdayMonth, birthdayDay, birthdayYear, smsSn,
-			aimSn, facebookSn, icqSn, jabberSn, msnSn, mySpaceSn, skypeSn,
-			twitterSn, ymSn, contact.getJobTitle(), groupIds, organizationIds,
-			roleIds, userGroupRoles, userGroupIds, serviceContext);
+			facebookSn, jabberSn, skypeSn, twitterSn, contact.getJobTitle(),
+			groupIds, organizationIds, roleIds, userGroupRoles, userGroupIds,
+			serviceContext);
 	}
 
 }

@@ -21,8 +21,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 /**
- * @author Eduardo Lundgren
+ * @author     Eduardo Lundgren
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class SpacerTag extends TagSupport {
 
 	@Override

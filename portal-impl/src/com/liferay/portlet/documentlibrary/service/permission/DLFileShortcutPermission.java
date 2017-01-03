@@ -14,13 +14,16 @@
 
 package com.liferay.portlet.documentlibrary.service.permission;
 
+import com.liferay.document.library.kernel.model.DLFileShortcut;
+import com.liferay.document.library.kernel.model.DLFileShortcutConstants;
+import com.liferay.document.library.kernel.service.DLFileShortcutLocalServiceUtil;
+import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.staging.permission.StagingPermissionUtil;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.documentlibrary.model.DLFileShortcut;
-import com.liferay.portlet.documentlibrary.service.DLFileShortcutLocalServiceUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.repository.model.FileShortcut;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
  * @author Brian Wing Shun Chan
@@ -33,7 +36,21 @@ public class DLFileShortcutPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, dlFileShortcut, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, DLFileShortcut.class.getName(),
+				dlFileShortcut.getFileShortcutId(), actionId);
+		}
+	}
+
+	public static void check(
+			PermissionChecker permissionChecker, FileShortcut fileShortcut,
+			String actionId)
+		throws PortalException {
+
+		if (!contains(permissionChecker, fileShortcut, actionId)) {
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, FileShortcut.class.getName(),
+				fileShortcut.getFileShortcutId(), actionId);
 		}
 	}
 
@@ -43,7 +60,9 @@ public class DLFileShortcutPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, fileShortcutId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, DLFileShortcut.class.getName(),
+				fileShortcutId, actionId);
 		}
 	}
 
@@ -51,17 +70,21 @@ public class DLFileShortcutPermission {
 		PermissionChecker permissionChecker, DLFileShortcut dlFileShortcut,
 		String actionId) {
 
+		String portletId = PortletProviderUtil.getPortletId(
+			FileShortcut.class.getName(), PortletProvider.Action.EDIT);
+
 		Boolean hasPermission = StagingPermissionUtil.hasPermission(
 			permissionChecker, dlFileShortcut.getGroupId(),
-			DLFileShortcut.class.getName(), dlFileShortcut.getFileShortcutId(),
-			PortletKeys.DOCUMENT_LIBRARY, actionId);
+			DLFileShortcutConstants.getClassName(),
+			dlFileShortcut.getFileShortcutId(), portletId, actionId);
 
 		if (hasPermission != null) {
 			return hasPermission.booleanValue();
 		}
 
 		if (permissionChecker.hasOwnerPermission(
-				dlFileShortcut.getCompanyId(), DLFileShortcut.class.getName(),
+				dlFileShortcut.getCompanyId(),
+				DLFileShortcutConstants.getClassName(),
 				dlFileShortcut.getFileShortcutId(), dlFileShortcut.getUserId(),
 				actionId)) {
 
@@ -69,8 +92,16 @@ public class DLFileShortcutPermission {
 		}
 
 		return permissionChecker.hasPermission(
-			dlFileShortcut.getGroupId(), DLFileShortcut.class.getName(),
+			dlFileShortcut.getGroupId(), DLFileShortcutConstants.getClassName(),
 			dlFileShortcut.getFileShortcutId(), actionId);
+	}
+
+	public static boolean contains(
+			PermissionChecker permissionChecker, FileShortcut fileShortcut,
+			String actionId)
+		throws PortalException {
+
+		return fileShortcut.containsPermission(permissionChecker, actionId);
 	}
 
 	public static boolean contains(

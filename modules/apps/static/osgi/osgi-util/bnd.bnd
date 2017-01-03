@@ -1,0 +1,8 @@
+Bundle-Name: Liferay OSGi Utilities
+Bundle-SymbolicName: com.liferay.osgi.util
+Bundle-Version: 3.0.8
+Export-Package:\
+	com.liferay.osgi.util,\
+	com.liferay.osgi.util.service
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title:

@@ -101,6 +101,10 @@
 		<param-name>filter-class</param-name>
 		<param-value>com.liferay.portal.servlet.filters.gzip.GZipFilter</param-value>
 	</init-param>
+	<init-param>
+		<param-name>Vary</param-name>
+		<param-value>Accept-Encoding</param-value>
+	</init-param>
 </filter>
 <filter>
 	<filter-name>GZip Filter - Theme PNG</filter-name>
@@ -112,6 +116,10 @@
 	<init-param>
 		<param-name>url-regex-pattern</param-name>
 		<param-value>.+/themes/.*/images/.*\.png</param-value>
+	</init-param>
+	<init-param>
+		<param-name>Vary</param-name>
+		<param-value>Accept-Encoding</param-value>
 	</init-param>
 </filter>
 <filter>
@@ -132,10 +140,6 @@
 	<init-param>
 		<param-name>Expires</param-name>
 		<param-value>315360000</param-value>
-	</init-param>
-	<init-param>
-		<param-name>Vary</param-name>
-		<param-value>Accept-Encoding</param-value>
 	</init-param>
 </filter>
 <filter>
@@ -168,6 +172,14 @@
 	<init-param>
 		<param-name>filter-class</param-name>
 		<param-value>com.liferay.portal.servlet.filters.language.LanguageFilter</param-value>
+	</init-param>
+</filter>
+<filter>
+	<filter-name>WebLogic Include Filter</filter-name>
+	<filter-class>com.liferay.portal.kernel.servlet.PortalClassLoaderFilter</filter-class>
+	<init-param>
+		<param-name>filter-class</param-name>
+		<param-value>com.liferay.portal.servlet.filters.weblogic.WebLogicIncludeFilter</param-value>
 	</init-param>
 </filter>
 <filter-mapping>
@@ -293,4 +305,9 @@
 <filter-mapping>
 	<filter-name>Dynamic CSS Filter - JSP</filter-name>
 	<url-pattern>*.jsp</url-pattern>
+</filter-mapping>
+<filter-mapping>
+	<filter-name>WebLogic Include Filter</filter-name>
+	<url-pattern>/*</url-pattern>
+	<dispatcher>INCLUDE</dispatcher>
 </filter-mapping>

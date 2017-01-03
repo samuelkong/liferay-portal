@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>WikiEntry</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">WikiEntry</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ATTACHMENTS_LABEL</td>
+	<td>//div[contains(@class,'page-attachments')]/h5[contains(.,'Attachments')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ATTACHMENT_FILE_NAME</td>
+	<td>//span[contains(@class,'lfr-card-title-text')]/a[contains(@title,'${key_attachmentFileName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY</td>
+	<td>//div[@class='wiki-body']//p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_ASSET</td>
+	<td>//div[@class='portlet-body']/p[contains(.,'${key_wikiPageContent}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_BOLD_TEXT</td>
+	<td>//div[@class='wiki-body']/b</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_GENERIC</td>
+	<td>//div[@class='wiki-body']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_HEADER</td>
+	<td>//div[@class='wiki-body']/h4</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_HTML</td>
+	<td>//div[@class='wiki-body']/${key_htmlTags}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_LINK</td>
+	<td>//div[@class='wiki-body']//a</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

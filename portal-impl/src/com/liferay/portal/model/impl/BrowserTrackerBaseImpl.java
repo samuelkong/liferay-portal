@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.BrowserTracker;
-import com.liferay.portal.service.BrowserTrackerLocalServiceUtil;
+import com.liferay.portal.kernel.model.BrowserTracker;
+import com.liferay.portal.kernel.service.BrowserTrackerLocalServiceUtil;
 
 /**
  * The extended model base implementation for the BrowserTracker service. Represents a row in the &quot;BrowserTracker&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.BrowserTrackerLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see BrowserTrackerImpl
- * @see com.liferay.portal.model.BrowserTracker
+ * @see BrowserTracker
  * @generated
  */
 @ProviderType

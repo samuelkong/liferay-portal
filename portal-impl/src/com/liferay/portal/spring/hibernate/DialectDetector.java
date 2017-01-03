@@ -15,10 +15,10 @@
 package com.liferay.portal.spring.hibernate;
 
 import com.liferay.portal.dao.orm.hibernate.DB2Dialect;
+import com.liferay.portal.dao.orm.hibernate.HSQLDialect;
 import com.liferay.portal.dao.orm.hibernate.SQLServer2005Dialect;
 import com.liferay.portal.dao.orm.hibernate.SQLServer2008Dialect;
 import com.liferay.portal.dao.orm.hibernate.SybaseASE157Dialect;
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -48,18 +48,22 @@ public class DialectDetector {
 		String dialectKey = null;
 		Dialect dialect = null;
 
-		Connection connection = null;
-
-		try {
-			connection = dataSource.getConnection();
-
+		try (Connection connection = dataSource.getConnection()) {
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
 
 			String dbName = databaseMetaData.getDatabaseProductName();
 			int dbMajorVersion = databaseMetaData.getDatabaseMajorVersion();
+			int dbMinorVersion = databaseMetaData.getDatabaseMinorVersion();
 
-			dialectKey = dbName.concat(StringPool.COLON).concat(
-				String.valueOf(dbMajorVersion));
+			StringBundler sb = new StringBundler(5);
+
+			sb.append(dbName);
+			sb.append(StringPool.COLON);
+			sb.append(dbMajorVersion);
+			sb.append(StringPool.COLON);
+			sb.append(dbMinorVersion);
+
+			dialectKey = sb.toString();
 
 			dialect = _dialects.get(dialectKey);
 
@@ -69,26 +73,35 @@ public class DialectDetector {
 
 			if (_log.isInfoEnabled()) {
 				_log.info(
-					"Determine dialect for " + dbName + " " + dbMajorVersion);
+					"Determine dialect for " + dbName + " " + dbMajorVersion +
+						"." + dbMinorVersion);
 			}
 
 			if (dbName.startsWith("HSQL")) {
+				dialect = new HSQLDialect();
+
 				if (_log.isWarnEnabled()) {
-					StringBundler sb = new StringBundler(6);
+					sb = new StringBundler(6);
 
 					sb.append("Liferay is configured to use Hypersonic as ");
 					sb.append("its database. Do NOT use Hypersonic in ");
 					sb.append("production. Hypersonic is an embedded ");
-					sb.append("database useful for development and demo'ing ");
-					sb.append("purposes. The database settings can be ");
-					sb.append("changed in portal-ext.properties.");
+					sb.append("database useful for development and ");
+					sb.append("demonstration purposes. The database settings ");
+					sb.append("can be changed in portal-ext.properties.");
 
 					_log.warn(sb.toString());
 				}
 			}
+			else if (dbName.equals("Adaptive Server Enterprise") &&
+					 (dbMajorVersion >= 15)) {
 
-			if (dbName.equals("ASE") && (dbMajorVersion == 15)) {
 				dialect = new SybaseASE157Dialect();
+			}
+			else if (dbName.equals("ASE")) {
+				throw new RuntimeException(
+					"jTDS is no longer suppported. Please use the Sybase " +
+						"JDBC driver to connect to Sybase.");
 			}
 			else if (dbName.startsWith("DB2") && (dbMajorVersion >= 9)) {
 				dialect = new DB2Dialect();
@@ -124,16 +137,15 @@ public class DialectDetector {
 				_log.error(e, e);
 			}
 		}
-		finally {
-			DataAccess.cleanUp(connection);
-		}
 
 		if (dialect == null) {
 			throw new RuntimeException("No dialect found");
 		}
 		else if (dialectKey != null) {
 			if (_log.isInfoEnabled()) {
-				_log.info("Found dialect " + dialect.getClass().getName());
+				Class<?> clazz = dialect.getClass();
+
+				_log.info("Found dialect " + clazz.getName());
 			}
 
 			_dialects.put(dialectKey, dialect);
@@ -146,6 +158,6 @@ public class DialectDetector {
 		DialectDetector.class);
 
 	private static final Map<String, Dialect> _dialects =
-		new ConcurrentHashMap<String, Dialect>();
+		new ConcurrentHashMap<>();
 
 }

@@ -15,10 +15,15 @@
 package com.liferay.taglib.ui;
 
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portlet.social.model.SocialActivity;
+import com.liferay.social.kernel.model.SocialActivity;
+import com.liferay.social.kernel.model.SocialActivitySet;
+import com.liferay.social.kernel.util.SocialActivityDescriptor;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.portlet.ResourceURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +33,25 @@ import javax.servlet.http.HttpServletRequest;
 public class SocialActivitiesTag extends IncludeTag {
 
 	public void setActivities(List<SocialActivity> activities) {
-		_activities = activities;
+		List<SocialActivityDescriptor> activityDescriptors = new ArrayList<>(
+			activities.size());
+
+		for (SocialActivity activity : activities) {
+			activityDescriptors.add(new SocialActivityDescriptor(activity));
+		}
+
+		_activityDescriptors = activityDescriptors;
+	}
+
+	public void setActivitySets(List<SocialActivitySet> activitySets) {
+		List<SocialActivityDescriptor> activityDescriptors = new ArrayList<>(
+			activitySets.size());
+
+		for (SocialActivitySet activitySet : activitySets) {
+			activityDescriptors.add(new SocialActivityDescriptor(activitySet));
+		}
+
+		_activityDescriptors = activityDescriptors;
 	}
 
 	public void setClassName(String className) {
@@ -55,12 +78,24 @@ public class SocialActivitiesTag extends IncludeTag {
 		_feedEnabled = feedEnabled;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #setFeedURL(String)}
+	 */
+	@Deprecated
 	public void setFeedLink(String feedLink) {
-		_feedLink = feedLink;
+		_feedURL = feedLink;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #setFeedURLMessage(String)}
+	 */
+	@Deprecated
 	public void setFeedLinkMessage(String feedLinkMessage) {
-		_feedLinkMessage = feedLinkMessage;
+		_feedURLMessage = feedLinkMessage;
+	}
+
+	public void setFeedResourceURL(ResourceURL feedResourceURL) {
+		_feedResourceURL = feedResourceURL;
 	}
 
 	public void setFeedTitle(String feedTitle) {
@@ -71,19 +106,28 @@ public class SocialActivitiesTag extends IncludeTag {
 		_feedType = feedType;
 	}
 
+	public void setFeedURL(String feedURL) {
+		_feedURL = feedURL;
+	}
+
+	public void setFeedURLMessage(String feedURLMessage) {
+		_feedURLMessage = feedURLMessage;
+	}
+
 	@Override
 	protected void cleanUp() {
-		_activities = null;
+		_activityDescriptors = null;
 		_className = StringPool.BLANK;
 		_classPK = 0;
 		_displayRSSFeed = false;
 		_feedDelta = 0;
 		_feedDisplayStyle = null;
 		_feedEnabled = false;
-		_feedLink = StringPool.BLANK;
-		_feedLinkMessage = StringPool.BLANK;
+		_feedResourceURL = null;
 		_feedTitle = null;
 		_feedType = null;
+		_feedURL = StringPool.BLANK;
+		_feedURLMessage = StringPool.BLANK;
 	}
 
 	@Override
@@ -94,7 +138,8 @@ public class SocialActivitiesTag extends IncludeTag {
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
 		request.setAttribute(
-			"liferay-ui:social-activities:activities", _activities);
+			"liferay-ui:social-activities:activityDescriptors",
+			_activityDescriptors);
 		request.setAttribute(
 			"liferay-ui:social-activities:className", _className);
 		request.setAttribute(
@@ -111,28 +156,30 @@ public class SocialActivitiesTag extends IncludeTag {
 			"liferay-ui:social-activities:feedEnabled",
 			String.valueOf(_feedEnabled));
 		request.setAttribute(
-			"liferay-ui:social-activities:feedLink", _feedLink);
-		request.setAttribute(
-			"liferay-ui:social-activities:feedLinkMessage", _feedLinkMessage);
+			"liferay-ui:social-activities:feedResourceURL", _feedResourceURL);
 		request.setAttribute(
 			"liferay-ui:social-activities:feedTitle", _feedTitle);
 		request.setAttribute(
 			"liferay-ui:social-activities:feedType", _feedType);
+		request.setAttribute("liferay-ui:social-activities:feedURL", _feedURL);
+		request.setAttribute(
+			"liferay-ui:social-activities:feedURLMessage", _feedURLMessage);
 	}
 
 	private static final String _PAGE =
 		"/html/taglib/ui/social_activities/page.jsp";
 
-	private List<SocialActivity> _activities;
+	private List<SocialActivityDescriptor> _activityDescriptors;
 	private String _className = StringPool.BLANK;
 	private long _classPK;
 	private boolean _displayRSSFeed;
 	private int _feedDelta;
 	private String _feedDisplayStyle;
 	private boolean _feedEnabled;
-	private String _feedLink = StringPool.BLANK;
-	private String _feedLinkMessage = StringPool.BLANK;
+	private ResourceURL _feedResourceURL;
 	private String _feedTitle;
 	private String _feedType;
+	private String _feedURL = StringPool.BLANK;
+	private String _feedURLMessage = StringPool.BLANK;
 
 }

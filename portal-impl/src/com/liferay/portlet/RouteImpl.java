@@ -22,8 +22,9 @@ import com.liferay.portal.kernel.util.StringParser;
 import com.liferay.portal.kernel.util.URLStringEncoder;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,65 +35,106 @@ import java.util.Set;
 public class RouteImpl implements Route {
 
 	public RouteImpl(String pattern) {
-		_stringParser = new StringParser(pattern);
+		_pattern = pattern;
+
+		_stringParser = StringParser.create(pattern);
 
 		_stringParser.setStringEncoder(_urlEncoder);
 	}
 
 	@Override
 	public void addGeneratedParameter(String name, String pattern) {
-		StringParser stringParser = new StringParser(pattern);
+		if (_generatedParameters == null) {
+			_generatedParameters = new HashMap<>();
+		}
+
+		StringParser stringParser = StringParser.create(pattern);
 
 		_generatedParameters.put(name, stringParser);
 	}
 
 	@Override
 	public void addIgnoredParameter(String name) {
+		if (_ignoredParameters == null) {
+			_ignoredParameters = new HashSet<>();
+		}
+
 		_ignoredParameters.add(name);
 	}
 
 	@Override
 	public void addImplicitParameter(String name, String value) {
+		if (_implicitParameters == null) {
+			_implicitParameters = new HashMap<>();
+		}
+
 		_implicitParameters.put(name, value);
 	}
 
 	@Override
 	public void addOverriddenParameter(String name, String value) {
+		if (_overriddenParameters == null) {
+			_overriddenParameters = new HashMap<>();
+		}
+
 		_overriddenParameters.put(name, value);
 	}
 
 	@Override
 	public Map<String, StringParser> getGeneratedParameters() {
+		if (_generatedParameters == null) {
+			return Collections.emptyMap();
+		}
+
 		return _generatedParameters;
 	}
 
 	@Override
 	public Set<String> getIgnoredParameters() {
+		if (_ignoredParameters == null) {
+			return Collections.emptySet();
+		}
+
 		return _ignoredParameters;
 	}
 
 	@Override
 	public Map<String, String> getImplicitParameters() {
+		if (_implicitParameters == null) {
+			return Collections.emptyMap();
+		}
+
 		return _implicitParameters;
 	}
 
 	@Override
 	public Map<String, String> getOverriddenParameters() {
+		if (_overriddenParameters == null) {
+			return Collections.emptyMap();
+		}
+
 		return _overriddenParameters;
 	}
 
 	@Override
+	public String getPattern() {
+		return _pattern;
+	}
+
+	@Override
 	public String parametersToUrl(Map<String, String> parameters) {
-		InheritableMap<String, String> allParameters =
-			new InheritableMap<String, String>();
+		InheritableMap<String, String> allParameters = new InheritableMap<>();
 
 		allParameters.setParentMap(parameters);
 
 		// The order is important because virtual parameters may sometimes be
 		// checked by implicit parameters
 
+		Map<String, StringParser> generatedParameters =
+			getGeneratedParameters();
+
 		for (Map.Entry<String, StringParser> entry :
-				_generatedParameters.entrySet()) {
+				generatedParameters.entrySet()) {
 
 			String name = entry.getKey();
 			StringParser stringParser = entry.getValue();
@@ -104,7 +146,9 @@ public class RouteImpl implements Route {
 			}
 		}
 
-		for (Map.Entry<String, String> entry : _implicitParameters.entrySet()) {
+		Map<String, String> implicitParameters = getImplicitParameters();
+
+		for (Map.Entry<String, String> entry : implicitParameters.entrySet()) {
 			String name = entry.getKey();
 			String value = entry.getValue();
 
@@ -119,7 +163,7 @@ public class RouteImpl implements Route {
 			return null;
 		}
 
-		for (String name : _generatedParameters.keySet()) {
+		for (String name : generatedParameters.keySet()) {
 
 			// Virtual parameters will never be placed in the query string, so
 			// parameters is modified directly instead of allParameters
@@ -127,11 +171,11 @@ public class RouteImpl implements Route {
 			parameters.remove(name);
 		}
 
-		for (String name : _implicitParameters.keySet()) {
+		for (String name : implicitParameters.keySet()) {
 			parameters.remove(name);
 		}
 
-		for (String name : _ignoredParameters) {
+		for (String name : getIgnoredParameters()) {
 			parameters.remove(name);
 		}
 
@@ -144,14 +188,17 @@ public class RouteImpl implements Route {
 			return false;
 		}
 
-		parameters.putAll(_implicitParameters);
-		parameters.putAll(_overriddenParameters);
+		parameters.putAll(getImplicitParameters());
+		parameters.putAll(getOverriddenParameters());
 
 		// The order is important because generated parameters may be dependent
 		// on implicit parameters or overridden parameters
 
+		Map<String, StringParser> generatedParameters =
+			getGeneratedParameters();
+
 		for (Map.Entry<String, StringParser> entry :
-				_generatedParameters.entrySet()) {
+				generatedParameters.entrySet()) {
 
 			String name = entry.getKey();
 			StringParser stringParser = entry.getValue();
@@ -172,13 +219,11 @@ public class RouteImpl implements Route {
 
 	private static final StringEncoder _urlEncoder = new URLStringEncoder();
 
-	private final Map<String, StringParser> _generatedParameters =
-		new HashMap<String, StringParser>();
-	private final Set<String> _ignoredParameters = new LinkedHashSet<String>();
-	private final Map<String, String> _implicitParameters =
-		new HashMap<String, String>();
-	private final Map<String, String> _overriddenParameters =
-		new HashMap<String, String>();
+	private Map<String, StringParser> _generatedParameters;
+	private Set<String> _ignoredParameters;
+	private Map<String, String> _implicitParameters;
+	private Map<String, String> _overriddenParameters;
+	private final String _pattern;
 	private final StringParser _stringParser;
 
 }

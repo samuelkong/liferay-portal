@@ -21,7 +21,7 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 %>
 
 <c:if test="<%= ((quickAccessEntries != null) && !quickAccessEntries.isEmpty()) || Validator.isNotNull(contentId) %>">
-	<nav class="quick-access-nav" id='<%= randomNamespace + "quickAccessNav" %>'>
+	<nav class="quick-access-nav" id="<%= randomNamespace + "quickAccessNav" %>">
 		<h1 class="hide-accessible"><liferay-ui:message key="navigation" /></h1>
 
 		<ul>
@@ -34,9 +34,9 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 				for (QuickAccessEntry quickAccessEntry : quickAccessEntries) {
 			%>
 
-				<li>
-					<a href="<%= quickAccessEntry.getURL() %>" id="<%= randomNamespace + quickAccessEntry.getId() %>"><%= quickAccessEntry.getContent() %></a>
-				</li>
+					<li>
+						<a href="<%= quickAccessEntry.getURL() %>" id="<%= randomNamespace + quickAccessEntry.getId() %>"><%= quickAccessEntry.getContent() %></a>
+					</li>
 
 			<%
 				}
@@ -47,7 +47,7 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 	</nav>
 
 	<c:if test="<%= (quickAccessEntries != null) && !quickAccessEntries.isEmpty() %>">
-		<aui:script use="aui-base">
+		<aui:script sandbox="<%= true %>">
 			var callbacks = {};
 
 			<%
@@ -66,16 +66,16 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 			}
 			%>
 
-			A.one('#<%= randomNamespace %>quickAccessNav').delegate(
+			$('#<%= randomNamespace %>quickAccessNav').on(
 				'click',
+				'li a',
 				function(event) {
-					var callbackFn = callbacks[event.currentTarget.attr('id')];
+					var callbackFn = callbacks[$(event.currentTarget).attr('id')];
 
-					if (A.Lang.isFunction(callbackFn)) {
+					if (_.isFunction(callbackFn)) {
 						callbackFn();
 					}
-				},
-				'li a'
+				}
 			);
 		</aui:script>
 	</c:if>

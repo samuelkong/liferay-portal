@@ -36,7 +36,7 @@ public class SQLQueryTableNamesUtil {
 
 		String lowerCaseSQL = StringUtil.toLowerCase(sql);
 
-		Set<String> tableNameSet = new HashSet<String>();
+		Set<String> tableNameSet = new HashSet<>();
 
 		// Find table name from the "from" clause
 
@@ -108,7 +108,7 @@ public class SQLQueryTableNamesUtil {
 		return new int[] {start, end};
 	}
 
-	private static PortalCache<String, String[]> _portalCache =
-		SingleVMPoolUtil.getCache(SQLQueryTableNamesUtil.class.getName());
+	private static final PortalCache<String, String[]> _portalCache =
+		SingleVMPoolUtil.getPortalCache(SQLQueryTableNamesUtil.class.getName());
 
 }

@@ -46,7 +46,7 @@ public class ModuleFrameworkClassLoader extends URLClassLoader {
 
 	@Override
 	public Enumeration<URL> getResources(String name) throws IOException {
-		final List<URL> urls = new ArrayList<URL>();
+		final List<URL> urls = new ArrayList<>();
 
 		urls.addAll(_buildURLs(null));
 
@@ -65,17 +65,18 @@ public class ModuleFrameworkClassLoader extends URLClassLoader {
 		urls.addAll(_buildURLs(parentURLs));
 
 		return new Enumeration<URL>() {
-			final Iterator<URL> iterator = urls.iterator();
 
 			@Override
 			public boolean hasMoreElements() {
-				return iterator.hasNext();
+				return _iterator.hasNext();
 			}
 
 			@Override
 			public URL nextElement() {
-				return iterator.next();
+				return _iterator.next();
 			}
+
+			private final Iterator<URL> _iterator = urls.iterator();
 
 		};
 	}
@@ -108,10 +109,10 @@ public class ModuleFrameworkClassLoader extends URLClassLoader {
 
 	private List<URL> _buildURLs(Enumeration<URL> url) {
 		if (url == null) {
-			return new ArrayList<URL>();
+			return new ArrayList<>();
 		}
 
-		List<URL> urls = new ArrayList<URL>();
+		List<URL> urls = new ArrayList<>();
 
 		while (url.hasMoreElements()) {
 			urls.add(url.nextElement());

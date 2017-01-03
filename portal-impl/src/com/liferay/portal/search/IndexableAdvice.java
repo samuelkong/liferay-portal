@@ -16,12 +16,14 @@ package com.liferay.portal.search;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.model.BaseModel;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.spring.aop.AnnotationChainableMethodAdvice;
 
 import java.lang.annotation.Annotation;
@@ -40,6 +42,12 @@ public class IndexableAdvice
 		throws Throwable {
 
 		if (result == null) {
+			return;
+		}
+
+		if (IndexWriterHelperUtil.isIndexReadOnly() ||
+			CompanyThreadLocal.isDeleteInProcess()) {
+
 			return;
 		}
 
@@ -62,35 +70,35 @@ public class IndexableAdvice
 			return;
 		}
 
-		Object[] arguments = methodInvocation.getArguments();
+		Indexer<Object> indexer = IndexerRegistryUtil.getIndexer(
+			returnType.getName());
 
-		ServiceContext serviceContext = null;
+		if (indexer == null) {
+			serviceBeanAopCacheManager.removeMethodInterceptor(
+				methodInvocation, this);
+
+			return;
+		}
+
+		Object[] arguments = methodInvocation.getArguments();
 
 		for (int i = arguments.length - 1; i >= 0; i--) {
 			if (arguments[i] instanceof ServiceContext) {
-				serviceContext = (ServiceContext)arguments[i];
+				ServiceContext serviceContext = (ServiceContext)arguments[i];
 
-				break;
+				if (serviceContext.isIndexingEnabled()) {
+					break;
+				}
+
+				return;
 			}
 		}
 
-		Indexer indexer = null;
-
-		if ((serviceContext == null) || serviceContext.isIndexingEnabled()) {
-			indexer = IndexerRegistryUtil.getIndexer(returnType.getName());
-		}
-
-		if (indexer != null) {
-			if (indexable.type() == IndexableType.DELETE) {
-				indexer.delete(result);
-			}
-			else {
-				indexer.reindex(result);
-			}
+		if (indexable.type() == IndexableType.DELETE) {
+			indexer.delete(result);
 		}
 		else {
-			serviceBeanAopCacheManager.removeMethodInterceptor(
-				methodInvocation, this);
+			indexer.reindex(result);
 		}
 	}
 
@@ -99,21 +107,21 @@ public class IndexableAdvice
 		return _nullIndexable;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(IndexableAdvice.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		IndexableAdvice.class);
 
-	private static Indexable _nullIndexable =
-		new Indexable() {
+	private static final Indexable _nullIndexable = new Indexable() {
 
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return Indexable.class;
-			}
+		@Override
+		public Class<? extends Annotation> annotationType() {
+			return Indexable.class;
+		}
 
-			@Override
-			public IndexableType type() {
-				return null;
-			}
+		@Override
+		public IndexableType type() {
+			return null;
+		}
 
-		};
+	};
 
 }

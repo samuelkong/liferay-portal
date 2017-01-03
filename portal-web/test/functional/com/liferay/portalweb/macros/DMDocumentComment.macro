@@ -1,0 +1,27 @@
+<definition>
+	<command name="addPG">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
+
+		<execute function="Type" locator1="Comments#COMMENT_FIELD" value1="${commentBody}" />
+
+		<execute function="Pause" locator1="3000" />
+
+		<execute function="AssertClick" locator1="Button#REPLY" value1="Reply" />
+
+		<execute function="Pause" locator1="3000" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="viewPG">
+		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
+
+		<execute function="AssertClick" locator1="DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
+
+		<var name="key_entryComment" value="${commentBody}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="Comments#COMMENT_BODY_SPECIFIC" value1="${commentBody}" />
+	</command>
+</definition>

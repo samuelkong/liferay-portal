@@ -1,0 +1,34 @@
+<definition>
+	<command name="configureShowAllPG">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Media Gallery" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+
+		<execute function="Check" locator1="Checkbox#SHOW_ACTIONS_CHECKBOX" />
+		<execute function="Check" locator1="Checkbox#SHOW_NAVIGATION_LINKS_CHECKBOX" />
+		<execute function="Check" locator1="Checkbox#SHOW_SEARCH_CHECKBOX" />
+
+		<execute macro="PortletEntry#save" />
+	</command>
+
+	<command name="viewCustomADTCarouselPG">
+		<execute function="AssertElementPresent" locator1="MediaGallery#ADT_CAROUSEL_ITEM" />
+		<execute function="AssertElementPresent" locator1="MediaGallery#ADT_CAROUSEL_PLAY_PAUSE" />
+		<execute function="AssertElementPresent" locator1="MediaGallery#ADT_CAROUSEL_PREVIOUS_ARROW" />
+		<execute function="AssertElementPresent" locator1="MediaGallery#ADT_CAROUSEL_NEXT_ARROW" />
+		<execute function="AssertElementPresent" locator1="MediaGallery#ADT_CAROUSEL_MENU_INDEX" />
+	</command>
+
+	<command name="viewShowAllPG">
+		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertElementPresent" locator1="MenuItem#PERMISSIONS" />
+		<execute function="AssertElementPresent" locator1="MenuItem#ADD_FOLDER" />
+		<execute function="AssertElementPresent" locator1="MenuItem#MULTIPLE_MEDIA" />
+		<execute function="AssertElementPresent" locator1="MenuItem#ADD_SHORTCUT" />
+		<execute function="AssertElementPresent" locator1="MenuItem#ACCESS_FROM_DESKTOP" />
+	</command>
+</definition>

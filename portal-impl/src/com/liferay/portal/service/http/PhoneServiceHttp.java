@@ -18,17 +18,18 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.HttpPrincipal;
+import com.liferay.portal.kernel.service.PhoneServiceUtil;
+import com.liferay.portal.kernel.service.http.TunnelUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
-import com.liferay.portal.security.auth.HttpPrincipal;
-import com.liferay.portal.service.PhoneServiceUtil;
 
 /**
  * Provides the HTTP utility for the
- * {@link com.liferay.portal.service.PhoneServiceUtil} service utility. The
+ * {@link PhoneServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it requires an additional
- * {@link com.liferay.portal.security.auth.HttpPrincipal} parameter.
+ * {@link HttpPrincipal} parameter.
  *
  * <p>
  * The benefits of using the HTTP utility is that it is fast and allows for
@@ -47,55 +48,21 @@ import com.liferay.portal.service.PhoneServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see PhoneServiceSoap
- * @see com.liferay.portal.security.auth.HttpPrincipal
- * @see com.liferay.portal.service.PhoneServiceUtil
+ * @see HttpPrincipal
+ * @see PhoneServiceUtil
  * @generated
  */
 @ProviderType
 public class PhoneServiceHttp {
-	public static com.liferay.portal.model.Phone addPhone(
+	public static com.liferay.portal.kernel.model.Phone addPhone(
 		HttpPrincipal httpPrincipal, java.lang.String className, long classPK,
-		java.lang.String number, java.lang.String extension, int typeId,
-		boolean primary)
+		java.lang.String number, java.lang.String extension, long typeId,
+		boolean primary,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(PhoneServiceUtil.class,
 					"addPhone", _addPhoneParameterTypes0);
-
-			MethodHandler methodHandler = new MethodHandler(methodKey,
-					className, classPK, number, extension, typeId, primary);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception e) {
-				if (e instanceof com.liferay.portal.kernel.exception.PortalException) {
-					throw (com.liferay.portal.kernel.exception.PortalException)e;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(e);
-			}
-
-			return (com.liferay.portal.model.Phone)returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException se) {
-			_log.error(se, se);
-
-			throw se;
-		}
-	}
-
-	public static com.liferay.portal.model.Phone addPhone(
-		HttpPrincipal httpPrincipal, java.lang.String className, long classPK,
-		java.lang.String number, java.lang.String extension, int typeId,
-		boolean primary,
-		com.liferay.portal.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		try {
-			MethodKey methodKey = new MethodKey(PhoneServiceUtil.class,
-					"addPhone", _addPhoneParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					className, classPK, number, extension, typeId, primary,
@@ -114,7 +81,7 @@ public class PhoneServiceHttp {
 				throw new com.liferay.portal.kernel.exception.SystemException(e);
 			}
 
-			return (com.liferay.portal.model.Phone)returnObj;
+			return (com.liferay.portal.kernel.model.Phone)returnObj;
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException se) {
 			_log.error(se, se);
@@ -127,7 +94,7 @@ public class PhoneServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(PhoneServiceUtil.class,
-					"deletePhone", _deletePhoneParameterTypes2);
+					"deletePhone", _deletePhoneParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, phoneId);
 
@@ -149,12 +116,12 @@ public class PhoneServiceHttp {
 		}
 	}
 
-	public static com.liferay.portal.model.Phone getPhone(
+	public static com.liferay.portal.kernel.model.Phone getPhone(
 		HttpPrincipal httpPrincipal, long phoneId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(PhoneServiceUtil.class,
-					"getPhone", _getPhoneParameterTypes3);
+					"getPhone", _getPhoneParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, phoneId);
 
@@ -171,7 +138,7 @@ public class PhoneServiceHttp {
 				throw new com.liferay.portal.kernel.exception.SystemException(e);
 			}
 
-			return (com.liferay.portal.model.Phone)returnObj;
+			return (com.liferay.portal.kernel.model.Phone)returnObj;
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException se) {
 			_log.error(se, se);
@@ -180,12 +147,12 @@ public class PhoneServiceHttp {
 		}
 	}
 
-	public static java.util.List<com.liferay.portal.model.Phone> getPhones(
+	public static java.util.List<com.liferay.portal.kernel.model.Phone> getPhones(
 		HttpPrincipal httpPrincipal, java.lang.String className, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(PhoneServiceUtil.class,
-					"getPhones", _getPhonesParameterTypes4);
+					"getPhones", _getPhonesParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					className, classPK);
@@ -203,7 +170,7 @@ public class PhoneServiceHttp {
 				throw new com.liferay.portal.kernel.exception.SystemException(e);
 			}
 
-			return (java.util.List<com.liferay.portal.model.Phone>)returnObj;
+			return (java.util.List<com.liferay.portal.kernel.model.Phone>)returnObj;
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException se) {
 			_log.error(se, se);
@@ -212,13 +179,13 @@ public class PhoneServiceHttp {
 		}
 	}
 
-	public static com.liferay.portal.model.Phone updatePhone(
+	public static com.liferay.portal.kernel.model.Phone updatePhone(
 		HttpPrincipal httpPrincipal, long phoneId, java.lang.String number,
-		java.lang.String extension, int typeId, boolean primary)
+		java.lang.String extension, long typeId, boolean primary)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(PhoneServiceUtil.class,
-					"updatePhone", _updatePhoneParameterTypes5);
+					"updatePhone", _updatePhoneParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, phoneId,
 					number, extension, typeId, primary);
@@ -236,7 +203,7 @@ public class PhoneServiceHttp {
 				throw new com.liferay.portal.kernel.exception.SystemException(e);
 			}
 
-			return (com.liferay.portal.model.Phone)returnObj;
+			return (com.liferay.portal.kernel.model.Phone)returnObj;
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException se) {
 			_log.error(se, se);
@@ -248,24 +215,20 @@ public class PhoneServiceHttp {
 	private static Log _log = LogFactoryUtil.getLog(PhoneServiceHttp.class);
 	private static final Class<?>[] _addPhoneParameterTypes0 = new Class[] {
 			java.lang.String.class, long.class, java.lang.String.class,
-			java.lang.String.class, int.class, boolean.class
+			java.lang.String.class, long.class, boolean.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _addPhoneParameterTypes1 = new Class[] {
-			java.lang.String.class, long.class, java.lang.String.class,
-			java.lang.String.class, int.class, boolean.class,
-			com.liferay.portal.service.ServiceContext.class
-		};
-	private static final Class<?>[] _deletePhoneParameterTypes2 = new Class[] {
+	private static final Class<?>[] _deletePhoneParameterTypes1 = new Class[] {
 			long.class
 		};
-	private static final Class<?>[] _getPhoneParameterTypes3 = new Class[] {
+	private static final Class<?>[] _getPhoneParameterTypes2 = new Class[] {
 			long.class
 		};
-	private static final Class<?>[] _getPhonesParameterTypes4 = new Class[] {
+	private static final Class<?>[] _getPhonesParameterTypes3 = new Class[] {
 			java.lang.String.class, long.class
 		};
-	private static final Class<?>[] _updatePhoneParameterTypes5 = new Class[] {
+	private static final Class<?>[] _updatePhoneParameterTypes4 = new Class[] {
 			long.class, java.lang.String.class, java.lang.String.class,
-			int.class, boolean.class
+			long.class, boolean.class
 		};
 }

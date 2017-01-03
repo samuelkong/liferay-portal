@@ -19,10 +19,10 @@ import com.liferay.portal.kernel.captcha.CaptchaException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.util.ClassLoaderUtil;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -63,18 +63,14 @@ public class CaptchaImpl implements Captcha {
 	}
 
 	@Override
-	public boolean isEnabled(HttpServletRequest request)
-		throws CaptchaException {
-
+	public boolean isEnabled(HttpServletRequest request) {
 		_initialize();
 
 		return _captcha.isEnabled(request);
 	}
 
 	@Override
-	public boolean isEnabled(PortletRequest portletRequest)
-		throws CaptchaException {
-
+	public boolean isEnabled(PortletRequest portletRequest) {
 		_initialize();
 
 		return _captcha.isEnabled(portletRequest);

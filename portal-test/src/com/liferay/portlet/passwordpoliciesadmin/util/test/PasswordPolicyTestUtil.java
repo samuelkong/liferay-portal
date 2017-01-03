@@ -14,10 +14,10 @@
 
 package com.liferay.portlet.passwordpoliciesadmin.util.test;
 
-import com.liferay.portal.model.PasswordPolicy;
-import com.liferay.portal.service.PasswordPolicyLocalServiceUtil;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.util.test.RandomTestUtil;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.service.PasswordPolicyLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 /**
  * @author Daniela Zapata Riesco
@@ -28,8 +28,15 @@ public class PasswordPolicyTestUtil {
 			ServiceContext serviceContext)
 		throws Exception {
 
+		return addPasswordPolicy(serviceContext, false);
+	}
+
+	public static PasswordPolicy addPasswordPolicy(
+			ServiceContext serviceContext, boolean defaultPolicy)
+		throws Exception {
+
 		return PasswordPolicyLocalServiceUtil.addPasswordPolicy(
-			serviceContext.getUserId(), RandomTestUtil.randomBoolean(),
+			serviceContext.getUserId(), defaultPolicy,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomLong(), RandomTestUtil.randomBoolean(),

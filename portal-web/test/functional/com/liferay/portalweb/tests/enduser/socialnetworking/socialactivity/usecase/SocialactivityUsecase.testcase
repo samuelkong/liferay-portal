@@ -1,0 +1,461 @@
+<definition component-name="portal-social-networking">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="custom.properties" value="default.layout.template.id=1_column" />
+	<property name="testray.main.component.name" value="Social Networking" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<!--There is no need for a SocialActivity#tearDownCP, as the User Statistics will not be reset and Jenkins does not run teardowns.-->
+
+				<execute macro="User#firstLoginPG" />
+
+				<execute macro="User#tearDownCP" />
+
+				<execute macro="BlogsEntry#tearDownCP" />
+
+				<execute macro="Polls#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="BlogsDemo" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesConfiguration">
+			<var name="portlet" value="Social Activity" />
+		</execute>
+
+		<execute macro="SocialActivity#enableBlogsCP" />
+
+		<execute macro="SocialActivity#configureActionCP">
+			<var name="contributionIncrement" value="2" />
+			<var name="contributionLimitValue" value="2" />
+			<var name="participationIncrement" value="2" />
+			<var name="participationLimitValue" value="2" />
+			<var name="userAction" value="Adds a Comment" />
+		</execute>
+
+		<execute macro="SocialActivity#removeActionCP">
+			<var name="userAction" value="Reads a Blog" />
+		</execute>
+
+		<execute macro="SocialActivity#removeActionCP">
+			<var name="userAction" value="Subscribes to a Blog" />
+		</execute>
+
+		<execute macro="SocialActivity#configureActionCP">
+			<var name="participationIncrement" value="0" />
+			<var name="userAction" value="Votes on a Blog" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="User Statistics" />
+		</execute>
+
+		<var name="key_portletName" value="User Statistics" />
+
+		<execute function="AssertTextEquals" locator1="Portlet#BODY" value1="There are no active users for this period." />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Blogs" />
+		</execute>
+
+		<execute macro="Blogs#addEntry">
+			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entryTitle" value="Blogs Entry Title" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 0 (Total: 0)" />
+			<var name="participationScore" value="Participation Score: 5 (Total: 5)" />
+			<var name="userName" value="Test Test" />
+			<var name="userRank" value="Rank: 1" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoEntryPG">
+			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entryTitle" value="Blogs Entry Title" />
+		</execute>
+
+		<execute macro="BlogsEntryComment#add">
+			<var name="entryComment" value="Blogs Entry Comment 1" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 0 (Total: 0)" />
+			<var name="participationScore" value="Participation Score: 7 (Total: 7)" />
+			<var name="userName" value="Test Test" />
+			<var name="userRank" value="Rank: 1" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoEntryPG">
+			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entryTitle" value="Blogs Entry Title" />
+		</execute>
+
+		<execute macro="BlogsEntryComment#add">
+			<var name="entryComment" value="Blogs Entry Comment 2" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 0 (Total: 0)" />
+			<var name="participationScore" value="Participation Score: 9 (Total: 9)" />
+			<var name="userName" value="Test Test" />
+			<var name="userRank" value="Rank: 1" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="BlogsEntryComment#addPGAsGuest">
+			<var name="entryComment" value="Guest Blogs Entry Comment" />
+			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entryTitle" value="Blogs Entry Title" />
+			<var name="userEmailAddress" value="guest@liferay.com" />
+			<var name="userFirstName" value="Guest" />
+		</execute>
+
+		<execute macro="User#loginPG">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoEntryPG">
+			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entryTitle" value="Blogs Entry Title" />
+		</execute>
+
+		<execute macro="BlogsEntryComment#add">
+			<var name="entryComment" value="Blogs Entry Comment from userfn" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 2 (Total: 2)" />
+			<var name="participationScore" value="Participation Score: 9 (Total: 9)" />
+			<var name="userName" value="Test Test" />
+			<var name="userRank" value="Rank: 1" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 0 (Total: 0)" />
+			<var name="participationScore" value="Participation Score: 2 (Total: 2)" />
+			<var name="userName" value="userfn userln" />
+			<var name="userRank" value="Rank: 2" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="test@liferay.com" />
+			<var name="userLoginFullName" value="Test Test" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Blogs Page" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoEntryPG">
+			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entryTitle" value="Blogs Entry Title" />
+		</execute>
+
+		<execute macro="BlogsEntryComment#add">
+			<var name="entryComment" value="Blogs Entry Comment 3" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 2 (Total: 2)" />
+			<var name="participationScore" value="Participation Score: 9 (Total: 9)" />
+			<var name="userName" value="Test Test" />
+			<var name="userRank" value="Rank: 1" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaUserStatistics">
+			<var name="contributionScore" value="Contribution Score: 0 (Total: 0)" />
+			<var name="participationScore" value="Participation Score: 2 (Total: 2)" />
+			<var name="userName" value="userfn userln" />
+			<var name="userRank" value="Rank: 2" />
+		</execute>
+	</command>
+
+	<command name="Localization" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Language Selector" />
+		</execute>
+
+		<execute macro="ProductMenuHelper#expandPanelControlPanel" />
+
+		<execute macro="LanguagePortlet#selectLanguagePG">
+			<var name="language" value="French (France)" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="Page#gotoSALocalizedCP">
+			<var name="adminLocalized" value="Administration du portail" />
+			<var name="portletCategoryName" value="Paramètres" />
+			<var name="portletName" value="Activité sociale" />
+		</execute>
+
+		<execute function="AssertVisible" locator1="ControlMenu#HEADER_TITLE" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="LanguagePortlet#selectLanguagePG">
+			<var name="language" value="Japanese (Japan)" />
+		</execute>
+
+		<execute macro="Page#gotoSALocalizedCP">
+			<var name="adminLocalized" value="システム管理" />
+			<var name="portletCategoryName" value="編集" />
+			<var name="portletName" value="ソーシャルアクティビティ" />
+		</execute>
+
+		<execute function="AssertVisible" locator1="ControlMenu#HEADER_TITLE" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="LanguagePortlet#selectLanguagePG">
+			<var name="language" value="Portuguese (Brazil)" />
+		</execute>
+
+		<execute macro="Page#gotoSALocalizedCP">
+			<var name="adminLocalized" value="Administração" />
+			<var name="portletCategoryName" value="Configurar" />
+			<var name="portletName" value="Atividade Social" />
+		</execute>
+
+		<execute function="AssertVisible" locator1="ControlMenu#HEADER_TITLE" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Social Activity Page" />
+		</execute>
+
+		<execute macro="LanguagePortlet#selectLanguagePG">
+			<var name="language" value="English (United States)" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesConfiguration">
+			<var name="portlet" value="Social Activity" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="Account Settings" />
+		</execute>
+
+		<execute function="AssertSelectedLabel" locator1="MyAccount#LANGUAGE_SELECT" value1="English (United States)" />
+	</command>
+
+	<command name="SaveUserStatisticsConfiguration" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="User Statistics Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="User Statistics Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="User Statistics" />
+		</execute>
+
+		<var name="key_portletName" value="User Statistics" />
+
+		<execute function="AssertTextEquals" locator1="Portlet#BODY" value1="There are no active users for this period." />
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="User Statistics" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="UserStatisticsConfiguration#CONFIGURATION_IFRAME" />
+
+		<execute function="Uncheck" locator1="Checkbox#RANK_BY_CONTRIBUTION" />
+		<execute function="Uncheck" locator1="Checkbox#RANK_BY_PARTICIPATION" />
+		<execute function="Uncheck" locator1="Checkbox#SHOW_HEADER_TEXT" />
+		<execute function="Uncheck" locator1="Checkbox#SHOW_TOTALS" />
+		<execute function="Uncheck" locator1="Checkbox#DISPLAY_ADDITIONAL_ACTIVITY_COUNTERS" />
+
+		<execute macro="PortletEntry#save" />
+
+		<execute function="SelectFrameTop" value1="relative=top" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="User Statistics Page" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="User Statistics" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertNotChecked" locator1="Checkbox#RANK_BY_CONTRIBUTION" />
+		<execute function="AssertNotChecked" locator1="Checkbox#RANK_BY_PARTICIPATION" />
+		<execute function="AssertNotChecked" locator1="Checkbox#SHOW_HEADER_TEXT" />
+		<execute function="AssertNotChecked" locator1="Checkbox#SHOW_TOTALS" />
+		<execute function="AssertNotChecked" locator1="Checkbox#DISPLAY_ADDITIONAL_ACTIVITY_COUNTERS" />
+
+		<execute function="SelectFrameTop" value1="relative=top" />
+	</command>
+
+	<command name="ViewActivityViaGroupStatistics" priority="4">
+		<execute macro="Page#add">
+			<var name="pageName" value="Group Statistics Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Group Statistics Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Group Statistics" />
+		</execute>
+
+		<var name="key_portletName" value="Group Statistics" />
+
+		<execute function="AssertTextEquals" locator1="Portlet#BODY" value1="Please configure this portlet and select at least one activity counter." />
+
+		<execute macro="SocialActivity#updateGroupStatisticsConfiguration">
+			<var name="chartType" value="column diagram" />
+			<var name="chartWidth" value="55%" />
+			<var name="dataRange" value="last 12 months" />
+			<var name="displayActivityCounterName" value="blog entries of This site's users" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesConfiguration">
+			<var name="portlet" value="Social Activity" />
+		</execute>
+
+		<execute macro="SocialActivity#enableBlogsCP" />
+
+		<execute macro="Navigator#openURL" />
+
+		<var name="blogsEntryCounterList" value="1,2,3" />
+
+		<for list="${blogsEntryCounterList}" param="entryCount" >
+			<execute macro="Navigator#openURL" />
+
+			<execute macro="ProductMenu#gotoSitesContent">
+				<var name="portlet" value="Blogs" />
+			</execute>
+
+			<execute macro="Blogs#addEntry">
+				<var name="entryContent" value="Blogs Entry${entryCount} Content" />
+				<var name="entryTitle" value="Blogs Entry${entryCount} Title" />
+			</execute>
+		</for>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Group Statistics Page" />
+		</execute>
+
+		<execute macro="SocialActivity#viewPGViaGroupStatistics">
+			<var name="currentValue" value="3" />
+			<var name="siteStatistics" value="Users' Blog Entries" />
+		</execute>
+	</command>
+</definition>

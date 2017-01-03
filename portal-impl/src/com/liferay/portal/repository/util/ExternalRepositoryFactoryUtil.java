@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.repository.RepositoryException;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Adolfo Pérez
@@ -27,13 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ExternalRepositoryFactoryUtil {
 
 	/**
-	 *
-	 * @deprecated As of 7.0.0 replaced by {@link
-	 *             com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalogUtil#getExternalRepositoryClassNames()}
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             com.liferay.portal.repository.registry.RepositoryDefinitionCatalogUtil#getExternalRepositoryClassNames(
+	 *             )}
 	 */
 	@Deprecated
 	public static String[] getExternalRepositoryClassNames() {
-		Set<String> classNames = externalRepositoryFactories.keySet();
+		Set<String> classNames = _externalRepositoryFactories.keySet();
 
 		return classNames.toArray(new String[classNames.size()]);
 	}
@@ -42,7 +43,7 @@ public class ExternalRepositoryFactoryUtil {
 		throws Exception {
 
 		ExternalRepositoryFactory externalRepositoryFactory =
-			externalRepositoryFactories.get(className);
+			_externalRepositoryFactories.get(className);
 
 		BaseRepository baseRepository = null;
 
@@ -61,15 +62,14 @@ public class ExternalRepositoryFactoryUtil {
 	public static void registerExternalRepositoryFactory(
 		String className, ExternalRepositoryFactory externalRepositoryFactory) {
 
-		externalRepositoryFactories.put(className, externalRepositoryFactory);
+		_externalRepositoryFactories.put(className, externalRepositoryFactory);
 	}
 
 	public static void unregisterExternalRepositoryFactory(String className) {
-		externalRepositoryFactories.remove(className);
+		_externalRepositoryFactories.remove(className);
 	}
 
-	private static final ConcurrentHashMap<String, ExternalRepositoryFactory>
-		externalRepositoryFactories =
-			new ConcurrentHashMap<String, ExternalRepositoryFactory>();
+	private static final ConcurrentMap<String, ExternalRepositoryFactory>
+		_externalRepositoryFactories = new ConcurrentHashMap<>();
 
 }

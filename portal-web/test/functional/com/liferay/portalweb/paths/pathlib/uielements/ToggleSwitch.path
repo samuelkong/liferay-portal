@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>ToggleSwitch</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ToggleSwitch</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>ACTIVE</td>
+	<td>//label[contains(.,'Active')]//span[contains(@class,'toggle-switch-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ALLOW_SITE_ADMIN_MODIFY_PAGES</td>
+	<td>//label[contains(.,'Allow site administrators to modify')]//span[contains(@class,'toggle-switch-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ANY_TOGGLE_SWITCH</td>
+	<td>//label[contains(.,'${key_toggleSwitchLabel}')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DELETE_PORTLET_DATA</td>
+	<td>//label[contains(@for,'DELETE_PORTLET_DATA')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_COMMENTS</td>
+	<td>//label[contains(.,'Enable Comments')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_COMMENT_RATINGS</td>
+	<td>//label[contains(.,'Enable Comment Ratings')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_FLAGS</td>
+	<td>//label[contains(.,'Enable Flags')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_PRINT</td>
+	<td>//label[contains(.,'Enable Print')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_RATINGS</td>
+	<td>//label[contains(.,'Enable Ratings')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_RELATED_ASSETS</td>
+	<td>//label[contains(.,'Enable Related Assets')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENABLE_SOCIAL_BOOKMARKS</td>
+	<td>//label[contains(.,'Enable Social Bookmarks')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPLICATE_INDIVIDUAL_DELETIONS</td>
+	<td>//label[contains(.,'Replicate Individual Deletions')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REQUIRED</td>
+	<td>xpath=(//div[contains(@class,'form-row')])[${key_rowNumber}]//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SET_AS_THE_DEFAULT_ASSET_PUBLISHER_FOR_THIS_PAGE</td>
+	<td>//label[contains(.,'Set as the Default Asset Publisher for This Page')]/input[@type='checkbox']/../span[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SHOW_SPECIFIC_TOGGLE_SWITCH</td>
+	<td>//label[contains(.,'${key_checkSetupName}')]/input[contains(@class,'field') and contains(@class,'toggle-switch')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USE_CUSTOM_TITLE</td>
+	<td>//label[contains(.,'Use Custom Title')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

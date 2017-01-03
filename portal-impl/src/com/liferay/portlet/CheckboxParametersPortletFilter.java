@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
@@ -69,6 +70,14 @@ public class CheckboxParametersPortletFilter
 				dynamicActionRequest.setParameter(
 					checkboxName, Boolean.FALSE.toString());
 			}
+			else {
+				String value = dynamicActionRequest.getParameter(checkboxName);
+
+				if (Objects.equals(value, "on")) {
+					dynamicActionRequest.setParameter(
+						checkboxName, Boolean.TRUE.toString());
+				}
+			}
 		}
 
 		filterChain.doFilter(dynamicActionRequest, actionResponse);
@@ -98,6 +107,15 @@ public class CheckboxParametersPortletFilter
 			if (!parameterNames.contains(checkboxName)) {
 				dynamicResourceRequest.setParameter(
 					checkboxName, Boolean.FALSE.toString());
+			}
+			else {
+				String value = dynamicResourceRequest.getParameter(
+					checkboxName);
+
+				if (Objects.equals(value, "on")) {
+					dynamicResourceRequest.setParameter(
+						checkboxName, Boolean.TRUE.toString());
+				}
 			}
 		}
 

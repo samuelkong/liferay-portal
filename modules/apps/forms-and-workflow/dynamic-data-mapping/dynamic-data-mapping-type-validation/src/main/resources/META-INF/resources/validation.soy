@@ -1,0 +1,84 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the validation field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'validation'"}
+	{call .validation data="all" /}
+{/deltemplate}
+
+/**
+ * Prints an option.
+ *
+ * @param option
+ */
+{template .validationOption}
+	<option {$option.status} value="{$option.value}">{$option.label}</option>
+{/template}
+
+/**
+ * Prints the DDM form validation field.
+ *
+ * @param disableValidationMessage
+ * @param enableValidationMessage
+ * @param enableValidationValue
+ * @param errorMessagePlaceholder
+ * @param errorMessageValue
+ * @param name
+ * @param parameterMessagePlaceholder
+ * @param parameterValue
+ * @param typesOptions
+ * @param validationsOptions
+ * @param value
+ */
+{template .validation}
+	<div class="form-group lfr-ddm-form-field-validation" data-fieldname="{$name}">
+		<div class="form-group">
+			<label class="control-label" for="{$name}EnableValidation">
+				<input class="enable-validation toggle-switch" {$enableValidationValue ? 'checked' : ''} id="{$name}EnableValidation" type="checkbox" value="true" />
+
+				<span aria-hidden="true" class="toggle-switch-bar">
+					<span class="toggle-switch-handle" data-label-off="{$enableValidationMessage}" data-label-on="{$disableValidationMessage}"></span>
+				</span>
+			</label>
+		</div>
+
+		<div class="{$enableValidationValue ? '' : 'hide'} row">
+			<div class="col-md-6">
+				<select class="form-control types-select">
+					{if $typesOptions}
+						{foreach $option in $typesOptions}
+							{call ddm.validationOption data="all"}
+								{param option: $option /}
+							{/call}
+						{/foreach}
+					{/if}
+				</select>
+			</div>
+
+			<div class="col-md-6">
+				<select class="form-control validations-select">
+					{if $validationsOptions}
+						{foreach $option in $validationsOptions}
+							{call ddm.validationOption data="all"}
+								{param option: $option /}
+							{/call}
+						{/foreach}
+					{/if}
+				</select>
+			</div>
+		</div>
+
+		<div class="{$enableValidationValue ? '' : 'hide'} row">
+			<div class="col-md-6">
+				<input class="field form-control {$parameterMessagePlaceholder ? '' : ' hide'} parameter-input" placeholder="{$parameterMessagePlaceholder}" type="text" value="{$parameterValue}" />
+			</div>
+
+			<div class="col-md-6">
+				<input class="field form-control message-input" placeholder="{$errorMessagePlaceholder}" type="text" value="{$errorMessageValue}" />
+			</div>
+		</div>
+
+		<input name="{$name}" type="hidden" value="{$value}" />
+	</div>
+{/template}

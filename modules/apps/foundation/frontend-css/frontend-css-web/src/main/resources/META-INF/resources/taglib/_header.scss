@@ -1,0 +1,24 @@
+@import "bourbon";
+
+.taglib-header {
+	border-bottom: 1px solid transparent;
+	margin-bottom: 1em;
+	padding-bottom: 10px;
+
+	.header-title {
+		@include ellipsis;
+
+		margin: 0.1em;
+		vertical-align: middle;
+	}
+
+	.header-back-to {
+		display: inline-block;
+		vertical-align: middle;
+
+		a {
+			display: block;
+			padding: 0 0.3em 0 0;
+		}
+	}
+}

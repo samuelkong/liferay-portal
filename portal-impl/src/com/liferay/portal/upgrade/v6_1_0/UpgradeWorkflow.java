@@ -14,12 +14,11 @@
 
 package com.liferay.portal.upgrade.v6_1_0;
 
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.documentlibrary.model.DLFileEntry;
-import com.liferay.portlet.documentlibrary.model.DLFileEntryTypeConstants;
-import com.liferay.portlet.documentlibrary.model.DLFolder;
 
 /**
  * @author Alexander Chow
@@ -28,24 +27,31 @@ public class UpgradeWorkflow extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		StringBundler sb = new StringBundler(6);
+		updateWorkflowDefinitionLinks();
+	}
 
-		sb.append("update WorkflowDefinitionLink set classNameId = ");
+	protected void updateWorkflowDefinitionLinks() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			StringBundler sb = new StringBundler(6);
 
-		long folderClassNameId = PortalUtil.getClassNameId(DLFolder.class);
+			sb.append("update WorkflowDefinitionLink set classNameId = ");
 
-		sb.append(folderClassNameId);
+			long folderClassNameId = PortalUtil.getClassNameId(
+				"com.liferay.portlet.documentlibrary.model.DLFolder");
 
-		sb.append(", typePK = ");
-		sb.append(DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL);
-		sb.append(" where classNameId = ");
+			sb.append(folderClassNameId);
 
-		long fileEntryClassNameId = PortalUtil.getClassNameId(
-			DLFileEntry.class);
+			sb.append(", typePK = ");
+			sb.append(DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL);
+			sb.append(" where classNameId = ");
 
-		sb.append(fileEntryClassNameId);
+			long fileEntryClassNameId = PortalUtil.getClassNameId(
+				"com.liferay.portlet.documentlibrary.model.DLFileEntry");
 
-		runSQL(sb.toString());
+			sb.append(fileEntryClassNameId);
+
+			runSQL(sb.toString());
+		}
 	}
 
 }

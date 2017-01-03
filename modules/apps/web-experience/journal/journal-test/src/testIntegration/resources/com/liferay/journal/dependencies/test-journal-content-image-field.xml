@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US">
+	<dynamic-element index="0" index-type="keyword" instance-id="uewn" name="image_1" type="image">
+		<dynamic-content language-id="en_US" name="liferay.png" title="liferay.png" type="journal"></dynamic-content>
+	</dynamic-element>
+</root>

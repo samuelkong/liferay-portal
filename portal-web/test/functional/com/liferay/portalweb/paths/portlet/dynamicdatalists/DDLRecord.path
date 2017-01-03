@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>DDLRecord</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">DDLRecord</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>WORKFLOW_STATUS</td>
+	<td>//span[contains(@class,'workflow-status')]/strong | //span[@class='workflow-status']/span </td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD</td>
+	<td>//div[@class='lfr-ddm-container']/div[contains(.,'${key_ddlRecordFieldData}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD_NESTED</td>
+	<td>//div[@class='lfr-ddm-container']/div[contains(.,'${key_ddlRecordFieldData}')]/div[contains(.,'${key_fieldFieldLabel}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD_1</td>
+	<td>//div[@class='lfr-ddm-container']/div[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD_2</td>
+	<td>//div[@class='lfr-ddm-container']/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD_3</td>
+	<td>//div[@class='lfr-ddm-container']/div[3]</td>
+	<td></td>
+</tr>
+<!--NESTED_FIELDS-->
+<tr>
+	<td>NESTED_PARENT_FIELD</td>
+	<td>//div[@data-fieldname='${key_nestedParentFieldFieldName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NESTED_CHILD_FIELD</td>
+	<td>//div[@data-fieldname='${key_nestedParentFieldFieldName}']/div[@class='form-group']/following-sibling::div[@data-fieldname='${key_nestedChildFieldFieldName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NESTED_PARENT_REPEATING_FIELD</td>
+	<td>//div[@data-fieldname='${key_nestedParentFieldFieldName}' and @data-repeatable='true']/following-sibling::div[@data-fieldname='${key_nestedParentFieldFieldName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NESTED_CHILD_REPEATING_FIELD</td>
+	<td>//div[@data-fieldname='${key_nestedParentFieldFieldName}' and @data-repeatable='true']/following-sibling::div[@data-fieldname='${key_nestedParentFieldFieldName}']/div[@class='form-group']/following-sibling::div[@data-fieldname='${key_nestedChildFieldFieldName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--INFO_SIDEBAR-->
+<tr>
+	<td>INFO_SIDEBAR_EXPANDED</td>
+	<td>//div[@class='sidenav-menu-slider' and contains(@style,'width: 320px')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

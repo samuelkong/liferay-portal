@@ -28,7 +28,6 @@ java.lang.String onSubmit = GetterUtil.getString((java.lang.String)request.getAt
 java.lang.String portletNamespace = GetterUtil.getString((java.lang.String)request.getAttribute("aui:form:portletNamespace"));
 boolean useNamespace = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:form:useNamespace")), true);
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:form:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:form:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/form/init-ext.jspf" %>

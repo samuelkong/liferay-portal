@@ -14,14 +14,20 @@
 
 package com.liferay.portal.layoutconfiguration.util.velocity;
 
+import com.liferay.portal.kernel.model.CustomizedPages;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.JSPSupportServlet;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.CustomizedPages;
-import com.liferay.portal.model.Layout;
-import com.liferay.portlet.layoutsadmin.context.LayoutsAdminDisplayContext;
-import com.liferay.portlet.sites.util.SitesUtil;
+import com.liferay.sites.kernel.util.SitesUtil;
 import com.liferay.taglib.aui.InputTag;
 
 import java.io.Writer;
@@ -45,27 +51,41 @@ public class CustomizationSettingsProcessor implements ColumnProcessor {
 
 		JspFactory jspFactory = JspFactory.getDefaultFactory();
 
-		_pageContext = jspFactory.getPageContext(
-			new JSPSupportServlet(request.getServletContext()), request,
-			response, null, false, 0, false);
+		ClassLoader contextClassLoader =
+			ClassLoaderUtil.getContextClassLoader();
+
+		try {
+			ClassLoaderUtil.setContextClassLoader(
+				PortalClassLoaderUtil.getClassLoader());
+
+			_pageContext = jspFactory.getPageContext(
+				new JSPSupportServlet(request.getServletContext()), request,
+				response, null, false, 0, false);
+		}
+		finally {
+			ClassLoaderUtil.setContextClassLoader(contextClassLoader);
+		}
 
 		_writer = _pageContext.getOut();
 
-		LayoutsAdminDisplayContext layoutsAdminDisplayContext =
-			new LayoutsAdminDisplayContext(request, null);
+		Layout selLayout = null;
 
-		Layout selLayout = layoutsAdminDisplayContext.getSelLayout();
+		long selPlid = ParamUtil.getLong(
+			request, "selPlid", LayoutConstants.DEFAULT_PLID);
+
+		if (selPlid != LayoutConstants.DEFAULT_PLID) {
+			selLayout = LayoutLocalServiceUtil.fetchLayout(selPlid);
+		}
 
 		_layoutTypeSettings = selLayout.getTypeSettingsProperties();
 
-		_customizationEnabled = true;
+		if (!SitesUtil.isLayoutUpdateable(selLayout) ||
+			selLayout.isLayoutPrototypeLinkActive()) {
 
-		if (!SitesUtil.isLayoutUpdateable(selLayout)) {
 			_customizationEnabled = false;
 		}
-
-		if (selLayout.isLayoutPrototypeLinkActive()) {
-			_customizationEnabled = false;
+		else {
+			_customizationEnabled = true;
 		}
 	}
 
@@ -99,11 +119,15 @@ public class CustomizationSettingsProcessor implements ColumnProcessor {
 		InputTag inputTag = new InputTag();
 
 		inputTag.setDisabled(!_customizationEnabled);
-		inputTag.setLabel("customizable");
+		inputTag.setDynamicAttribute(
+			StringPool.BLANK, "labelOff", "not-customizable");
+		inputTag.setDynamicAttribute(
+			StringPool.BLANK, "labelOn", "customizable");
+		inputTag.setLabel(StringPool.BLANK);
 		inputTag.setName(
 			"TypeSettingsProperties--".concat(customizableKey).concat("--"));
 		inputTag.setPageContext(_pageContext);
-		inputTag.setType("checkbox");
+		inputTag.setType("toggle-switch");
 		inputTag.setValue(customizable);
 
 		int result = inputTag.doStartTag();
@@ -120,15 +144,6 @@ public class CustomizationSettingsProcessor implements ColumnProcessor {
 	@Override
 	public String processMax() throws Exception {
 		return StringPool.BLANK;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0, replaced by {@link #processMax()}
-	 */
-	@Deprecated
-	@Override
-	public String processMax(String classNames) throws Exception {
-		return processMax();
 	}
 
 	@Override
@@ -148,9 +163,21 @@ public class CustomizationSettingsProcessor implements ColumnProcessor {
 		return processPortlet(portletId);
 	}
 
-	private boolean _customizationEnabled;
-	private UnicodeProperties _layoutTypeSettings;
-	private PageContext _pageContext;
-	private Writer _writer;
+	@Override
+	public String processPortlet(
+			String portletProviderClassName,
+			PortletProvider.Action portletProviderAction)
+		throws Exception {
+
+		String portletId = PortletProviderUtil.getPortletId(
+			portletProviderClassName, portletProviderAction);
+
+		return processPortlet(portletId);
+	}
+
+	private final boolean _customizationEnabled;
+	private final UnicodeProperties _layoutTypeSettings;
+	private final PageContext _pageContext;
+	private final Writer _writer;
 
 }

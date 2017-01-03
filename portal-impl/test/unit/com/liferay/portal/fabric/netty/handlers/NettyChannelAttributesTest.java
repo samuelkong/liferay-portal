@@ -14,17 +14,29 @@
 
 package com.liferay.portal.fabric.netty.handlers;
 
-import com.liferay.portal.fabric.netty.rpc.handlers.NettyRPCChannelHandler;
+import com.liferay.portal.fabric.local.worker.EmbeddedProcessChannel;
+import com.liferay.portal.fabric.local.worker.LocalFabricWorker;
+import com.liferay.portal.fabric.netty.NettyTestUtil;
+import com.liferay.portal.fabric.netty.agent.NettyFabricAgentStub;
+import com.liferay.portal.fabric.repository.MockRepository;
+import com.liferay.portal.fabric.worker.FabricWorker;
 import com.liferay.portal.kernel.concurrent.AsyncBroker;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
-import com.liferay.portal.test.AdviseWith;
-import com.liferay.portal.test.runners.AspectJMockingNewClassLoaderJUnitTestRunner;
+import com.liferay.portal.kernel.concurrent.DefaultNoticeableFuture;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.NewEnv;
+import com.liferay.portal.test.rule.AdviseWith;
+import com.liferay.portal.test.rule.AspectJNewEnvTestRule;
 
+import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.util.Attribute;
 
 import java.io.Serializable;
 
+import java.nio.file.Paths;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -33,30 +45,31 @@ import org.aspectj.lang.annotation.Aspect;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Shuyang Zhou
  */
-@RunWith(AspectJMockingNewClassLoaderJUnitTestRunner.class)
 public class NettyChannelAttributesTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			CodeCoverageAssertor.INSTANCE, AspectJNewEnvTestRule.INSTANCE);
 
 	@AdviseWith(adviceClasses = AttributeAdvice.class)
+	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testConcurrentGetAsyncBroker() {
-		AsyncBroker<Long, Serializable> asyncBroker =
-			new AsyncBroker<Long, Serializable>();
+		AsyncBroker<Long, Serializable> asyncBroker = new AsyncBroker<>();
 
 		AttributeAdvice.setConcurrentValue(asyncBroker);
 
 		Assert.assertSame(
 			asyncBroker,
-				NettyChannelAttributes.getAsyncBroker(_embeddedChannel));
+			NettyChannelAttributes.getAsyncBroker(_embeddedChannel));
 
 		// Get from cache
 
@@ -66,11 +79,40 @@ public class NettyChannelAttributesTest {
 	}
 
 	@AdviseWith(adviceClasses = AttributeAdvice.class)
+	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testConcurrentNextId() {
 		AttributeAdvice.setConcurrentValue(new AtomicLong());
 
 		testNextId();
+	}
+
+	@AdviseWith(adviceClasses = AttributeAdvice.class)
+	@NewEnv(type = NewEnv.Type.CLASSLOADER)
+	@Test
+	public void testConcurrentPutFabricWorker() {
+		AttributeAdvice.setConcurrentValue(
+			new ConcurrentHashMap<Long, FabricWorker<?>>());
+
+		DefaultNoticeableFuture<Serializable> defaultNoticeableFuture =
+			new DefaultNoticeableFuture<>();
+
+		FabricWorker<Serializable> fabricWorker =
+			new LocalFabricWorker<Serializable>(
+				new EmbeddedProcessChannel<Serializable>(
+					defaultNoticeableFuture));
+
+		NettyChannelAttributes.putFabricWorker(
+			_embeddedChannel, 0, fabricWorker);
+
+		Assert.assertSame(
+			fabricWorker,
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 0));
+
+		defaultNoticeableFuture.set(null);
+
+		Assert.assertNull(
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 0));
 	}
 
 	@Test
@@ -89,6 +131,69 @@ public class NettyChannelAttributesTest {
 	}
 
 	@Test
+	public void testGetPutFabricWorker() {
+		Assert.assertNull(
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 0));
+
+		DefaultNoticeableFuture<Serializable> defaultNoticeableFuture1 =
+			new DefaultNoticeableFuture<>();
+
+		FabricWorker<Serializable> fabricWorker1 =
+			new LocalFabricWorker<Serializable>(
+				new EmbeddedProcessChannel<Serializable>(
+					defaultNoticeableFuture1));
+
+		NettyChannelAttributes.putFabricWorker(
+			_embeddedChannel, 0, fabricWorker1);
+
+		Assert.assertSame(
+			fabricWorker1,
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 0));
+
+		defaultNoticeableFuture1.set(null);
+
+		Assert.assertNull(
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 0));
+
+		DefaultNoticeableFuture<Serializable> defaultNoticeableFuture2 =
+			new DefaultNoticeableFuture<>();
+
+		FabricWorker<Serializable> fabricWorker2 =
+			new LocalFabricWorker<Serializable>(
+				new EmbeddedProcessChannel<Serializable>(
+					defaultNoticeableFuture2));
+
+		NettyChannelAttributes.putFabricWorker(
+			_embeddedChannel, 1, fabricWorker2);
+
+		Assert.assertSame(
+			fabricWorker2,
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 1));
+
+		defaultNoticeableFuture2.set(null);
+
+		Assert.assertNull(
+			NettyChannelAttributes.getFabricWorker(_embeddedChannel, 1));
+	}
+
+	@Test
+	public void testGetSetNettyFabricAgentStub() {
+		Assert.assertNull(
+			NettyChannelAttributes.getNettyFabricAgentStub(_embeddedChannel));
+
+		NettyFabricAgentStub nettyFabricAgentStub = new NettyFabricAgentStub(
+			_embeddedChannel, new MockRepository<Channel>(),
+			Paths.get("remoteRepositoryPath"), 0, 0);
+
+		NettyChannelAttributes.setNettyFabricAgentStub(
+			_embeddedChannel, nettyFabricAgentStub);
+
+		Assert.assertSame(
+			nettyFabricAgentStub,
+			NettyChannelAttributes.getNettyFabricAgentStub(_embeddedChannel));
+	}
+
+	@Test
 	public void testNextId() {
 		Assert.assertEquals(0, NettyChannelAttributes.nextId(_embeddedChannel));
 		Assert.assertEquals(1, NettyChannelAttributes.nextId(_embeddedChannel));
@@ -103,7 +208,8 @@ public class NettyChannelAttributesTest {
 
 		@Around(
 			"execution(public Object io.netty.util.Attribute.setIfAbsent(" +
-				"Object))")
+				"Object))"
+		)
 		public Object setIfAbsent(ProceedingJoinPoint proceedingJoinPoint)
 			throws Throwable {
 
@@ -119,7 +225,7 @@ public class NettyChannelAttributesTest {
 
 	}
 
-	private final EmbeddedChannel _embeddedChannel = new EmbeddedChannel(
-		NettyRPCChannelHandler.INSTANCE);
+	private final EmbeddedChannel _embeddedChannel =
+		NettyTestUtil.createEmptyEmbeddedChannel();
 
 }

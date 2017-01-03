@@ -14,14 +14,14 @@
 
 package com.liferay.portal.service.http;
 
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.HttpPrincipal;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.model.CompanyConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.HttpPrincipal;
-import com.liferay.portal.util.test.TestPropsValues;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -104,8 +104,8 @@ public class HttpPrincipalTestUtil {
 			String host = url.substring(pos + 3);
 
 			url =
-				protocol + login + ":" + password + "@" + host +
-					"/api/axis/" + serviceName;
+				protocol + login + ":" + password + "@" + host + "/api/axis/" +
+					serviceName;
 		}
 		else {
 			url += "/api/axis/" + serviceName;

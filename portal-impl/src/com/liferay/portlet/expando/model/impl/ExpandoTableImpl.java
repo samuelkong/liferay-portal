@@ -14,15 +14,12 @@
 
 package com.liferay.portlet.expando.model.impl;
 
-import com.liferay.portlet.expando.model.ExpandoTableConstants;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class ExpandoTableImpl extends ExpandoTableBaseImpl {
-
-	public ExpandoTableImpl() {
-	}
 
 	@Override
 	public boolean isDefaultTable() {

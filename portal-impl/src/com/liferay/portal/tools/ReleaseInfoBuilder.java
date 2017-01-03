@@ -44,8 +44,8 @@ public class ReleaseInfoBuilder {
 			String version = releaseProps.getProperty("lp.version");
 
 			File file = new File(
-				"../portal-service/src/com/liferay/portal/kernel/util/" +
-					"ReleaseInfo.java");
+				"../portal-kernel/src/com/liferay/portal/kernel/util" +
+					"/ReleaseInfo.java");
 
 			String content = _fileUtil.read(file);
 
@@ -92,7 +92,9 @@ public class ReleaseInfoBuilder {
 			content = _fileUtil.read(file);
 
 			x = content.indexOf("insert into Release_");
+
 			y = content.indexOf(", FALSE);", x);
+
 			x = content.lastIndexOf(" ", y - 1) + 1;
 
 			content = content.substring(0, x) + build + content.substring(y);

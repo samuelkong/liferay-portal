@@ -1,0 +1,382 @@
+<definition component-name="portal-polls">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Polls" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Navigator#openURL" />
+
+				<execute macro="ProductMenu#gotoSitesContent">
+					<var name="portlet" value="Polls" />
+				</execute>
+
+				<execute macro="Polls#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
+	</tear-down>
+
+	<command name="AddPollsQuestionWithExpirationDate" priority="4">
+		<var name="pollsQuestionTitle"><![CDATA["Derivative"]]></var>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Polls#addPollCPWithExpirationDate">
+			<var name="expirationDate" value="01/02/3000" />
+			<var name="pollsQuestion"><![CDATA["What is the derivative of x^(2)?"]]></var>
+			<var name="pollsQuestionChoiceA"><![CDATA["x^(2)"]]></var>
+			<var name="pollsQuestionChoiceB"><![CDATA["x/2"]]></var>
+			<var name="pollsQuestionChoiceC"><![CDATA["2x"]]></var>
+			<var name="pollsQuestionChoiceD"><![CDATA["e^(2) "]]></var>
+			<var name="pollsQuestionChoiceE"><![CDATA["None of the previous"]]></var>
+			<var name="pollsQuestionTitle"><![CDATA["Derivative"]]></var>
+		</execute>
+
+		<var name="key_pollsQuestionTitle" value="${pollsQuestionTitle}" />
+
+		<execute function="Click" locator1="Polls#POLLS_TABLE_ACTION" />
+
+		<execute function="AssertClick" locator1="MenuItem#EDIT" value1="Edit" />
+
+		<execute function="AssertNotChecked" locator1="Checkbox#NEVER_EXPIRE" value1="Never Expire" />
+
+		<execute function="AssertTextEquals" locator1="TextInput#EXPIRATION_DATE" value1="01/02/3000" />
+	</command>
+
+	<command name="AddPollsQuestionWithSpecialCharacters" priority="4">
+		<var name="pollsQuestionChoiceA"><![CDATA["Black"]]></var>
+		<var name="pollsQuestionChoiceB"><![CDATA["Brown"]]></var>
+		<var name="pollsQuestionChoiceC"><![CDATA["Blonde"]]></var>
+		<var name="pollsQuestionChoiceD"><![CDATA["Red"]]></var>
+		<var name="pollsQuestionChoiceE"><![CDATA["Other"]]></var>
+		<var name="pollsQuestionChoiceList" value="${pollsQuestionChoiceA},${pollsQuestionChoiceB},${pollsQuestionChoiceC},${pollsQuestionChoiceD},${pollsQuestionChoiceE}" />
+		<var name="pollsQuestionTitle"><![CDATA["Hair Color"]]></var>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Polls#addPollCP">
+			<var name="pollsQuestion"><![CDATA["What is your hair color? Frank & John want to know."]]></var>
+			<var name="pollsQuestionChoiceA"><![CDATA["Black"]]></var>
+			<var name="pollsQuestionChoiceB"><![CDATA["Brown"]]></var>
+			<var name="pollsQuestionChoiceC"><![CDATA["Blonde"]]></var>
+			<var name="pollsQuestionChoiceD"><![CDATA["Red"]]></var>
+			<var name="pollsQuestionChoiceE"><![CDATA["Other"]]></var>
+			<var name="pollsQuestionTitle"><![CDATA["Hair Color"]]></var>
+		</execute>
+
+		<var name="key_pollsQuestionTitle" value="${pollsQuestionTitle}" />
+
+		<execute function="AssertTextEquals" locator1="Polls#POLLS_TABLE_TITLE" value1="${pollsQuestionTitle}" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="Polls#selectPollPG">
+			<var name="pollsQuestionTitle"><![CDATA["Hair Color"]]></var>
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#viewPollPG">
+			<var name="pollsQuestion"><![CDATA["What is your hair color? Frank & John want to know."]]></var>
+			<var name="pollsQuestionChoiceList" value="${pollsQuestionChoiceList}" />
+		</execute>
+
+		<execute macro="Polls#votePollPG">
+			<var name="pollsQuestionChoice"><![CDATA["Blonde"]]></var>
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#viewVotedPollPG">
+			<var name="pollsQuestionChoice"><![CDATA["Blonde"]]></var>
+			<var name="pollsQuestionTotalVotes" value="1" />
+			<var name="pollsQuestionVoteCount" value="1" />
+			<var name="pollsQuestionVotePercent" value="100%" />
+		</execute>
+	</command>
+
+	<command name="AddPollWithEmptyChoicesAndViewErrorMessage" priority="3">
+		<description message="This is a use case for LPS-66544." />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Polls#addPollCP">
+			<var name="pollsQuestion" value="Test Poll Question" />
+			<var name="pollsQuestionChoiceA" value="" />
+			<var name="pollsQuestionChoiceB" value="" />
+			<var name="pollsQuestionTitle" value="Test Poll Title" />
+		</execute>
+
+		<execute macro="Polls#viewEmptyChoiceErrorMessage" />
+
+		<execute macro="Polls#addPollChoice">
+			<var name="choiceField" value="a" />
+			<var name="pollsQuestionChoice" value="Choice A" />
+		</execute>
+
+		<execute macro="Polls#addPollChoice">
+			<var name="choiceField" value="b" />
+			<var name="pollsQuestionChoice" value="Choice B" />
+		</execute>
+
+		<execute macro="Button#clickSave" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="AddViaPollDisplay" priority="4">
+		<description message="This is a use case for LPS-60143." />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="pageName" value="Form Page" />
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="Polls#addPollPG">
+			<var name="pollsQuestion" value="Test Poll Display" />
+			<var name="pollsQuestionChoiceA" value="Yes" />
+			<var name="pollsQuestionChoiceB" value="No" />
+			<var name="pollsQuestionTitle" value="Polls Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#selectPollPG">
+			<var name="pollsQuestionTitle" value="Polls Name" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#viewPollPG">
+			<var name="pollsQuestion" value="Test Poll Display" />
+			<var name="pollsQuestionChoiceList" value="Yes,No" />
+		</execute>
+
+		<execute macro="Polls#votePollPG">
+			<var name="pollsQuestionChoice" value="Yes" />
+		</execute>
+
+		<execute macro="Polls#viewVotedPollPG">
+			<var name="pollsQuestionChoice" value="Yes" />
+			<var name="pollsQuestionTotalVotes" value="1" />
+			<var name="pollsQuestionVoteCount" value="1" />
+			<var name="pollsQuestionVotePercent" value="100%" />
+		</execute>
+	</command>
+
+	<command name="ViewChart" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Polls#addPollCP">
+			<var name="pollsQuestion" value="What is your favorite color?" />
+			<var name="pollsQuestionChoiceA" value="Blue" />
+			<var name="pollsQuestionChoiceB" value="Green" />
+			<var name="pollsQuestionChoiceC" value="Red" />
+			<var name="pollsQuestionChoiceD" value="Yellow" />
+			<var name="pollsQuestionChoiceE" value="Other" />
+			<var name="pollsQuestionTitle" value="Color" />
+		</execute>
+
+		<var name="key_pollsQuestionTitle" value="Color" />
+
+		<execute function="AssertTextEquals" locator1="Polls#POLLS_TABLE_TITLE" value1="Color" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="Polls#selectPollPG">
+			<var name="pollsQuestionTitle" value="Color" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#viewPollPG">
+			<var name="pollsQuestion" value="What is your favorite color?" />
+			<var name="pollsQuestionChoiceList" value="Blue,Green,Red,Yellow,Other" />
+		</execute>
+
+		<execute macro="Polls#votePollPG">
+			<var name="pollsQuestionChoice" value="Red" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Polls#viewPollChartArea">
+			<var name="pollsQuestionTitle" value="Color" />
+		</execute>
+	</command>
+
+	<command name="VotePollsQuestionWithGuestPermissions" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="Polls#addPollCP">
+			<var name="permissions" value="true" />
+			<var name="permissionsViewRole" value="Anyone (Guest Role)" />
+			<var name="pollsQuestion" value="What is your favorite Liferay portlet?" />
+			<var name="pollsQuestionChoiceA" value="Blogs" />
+			<var name="pollsQuestionChoiceB" value="Wiki" />
+			<var name="pollsQuestionChoiceC" value="Message Boards" />
+			<var name="pollsQuestionTitle" value="Favorite Liferay Portlet" />
+		</execute>
+
+		<var name="key_pollsQuestionTitle" value="Favorite Liferay Portlet" />
+
+		<execute function="AssertTextEquals" locator1="Polls#POLLS_TABLE_TITLE" value1="Favorite Liferay Portlet" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Page#add">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Polls Display" />
+		</execute>
+
+		<execute macro="Polls#selectPollPG">
+			<var name="pollsQuestionTitle" value="Favorite Liferay Portlet" />
+		</execute>
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#viewPollAsGuestPG">
+			<var name="pollsQuestion" value="What is your favorite Liferay portlet?" />
+			<var name="pollsQuestionChoiceList" value="Blogs,Wiki,Message Boards" />
+			<var name="pollsQuestionTitle" value="Favorite Liferay Portlet" />
+		</execute>
+
+		<execute function="AssertClick" locator1="Message#INFO_LINK" value1="Please sign in to vote." />
+
+		<execute function="Type" locator1="TextInput#EMAIL_ADDRESS" value1="test@liferay.com" />
+		<execute function="Type" locator1="TextInput#PASSWORD" value1="test" />
+		<execute function="Click" locator1="Button#SIGN_IN" value1="Sign In" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
+		</execute>
+
+		<execute macro="PermissionsInline#gotoPollPermissionsCP">
+			<var name="pollsQuestionTitle" value="Favorite Liferay Portlet" />
+		</execute>
+
+		<execute macro="Role#definePermissionPG">
+			<var name="permissionDefinitionKey" value="CONTENT_PERMISSIONS_ADD_VOTE_CHECKBOX" />
+			<var name="roleTitle" value="Guest" />
+		</execute>
+
+		<execute function="SelectFrame" value1="relative=top" />
+
+		<execute macro="User#logoutPG" />
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#votePollPG">
+			<var name="pollsQuestionChoice" value="Blogs" />
+		</execute>
+
+		<execute macro="Navigator#gotoPage">
+			<var name="pageName" value="Polls Page" />
+		</execute>
+
+		<execute macro="Polls#viewVotedPollPG">
+			<var name="pollsQuestionChoice" value="Blogs" />
+			<var name="pollsQuestionTotalVotes" value="1" />
+			<var name="pollsQuestionVoteCount" value="1" />
+			<var name="pollsQuestionVotePercent" value="100%" />
+		</execute>
+
+		<execute macro="User#loginPG" />
+	</command>
+</definition>

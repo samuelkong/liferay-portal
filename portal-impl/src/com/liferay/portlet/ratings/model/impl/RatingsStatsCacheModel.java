@@ -16,10 +16,11 @@ package com.liferay.portlet.ratings.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.model.CacheModel;
 
-import com.liferay.portlet.ratings.model.RatingsStats;
+import com.liferay.ratings.kernel.model.RatingsStats;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,11 +38,37 @@ import java.io.ObjectOutput;
 public class RatingsStatsCacheModel implements CacheModel<RatingsStats>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof RatingsStatsCacheModel)) {
+			return false;
+		}
+
+		RatingsStatsCacheModel ratingsStatsCacheModel = (RatingsStatsCacheModel)obj;
+
+		if (statsId == ratingsStatsCacheModel.statsId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, statsId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(15);
 
 		sb.append("{statsId=");
 		sb.append(statsId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", classNameId=");
 		sb.append(classNameId);
 		sb.append(", classPK=");
@@ -62,6 +89,7 @@ public class RatingsStatsCacheModel implements CacheModel<RatingsStats>,
 		RatingsStatsImpl ratingsStatsImpl = new RatingsStatsImpl();
 
 		ratingsStatsImpl.setStatsId(statsId);
+		ratingsStatsImpl.setCompanyId(companyId);
 		ratingsStatsImpl.setClassNameId(classNameId);
 		ratingsStatsImpl.setClassPK(classPK);
 		ratingsStatsImpl.setTotalEntries(totalEntries);
@@ -76,10 +104,17 @@ public class RatingsStatsCacheModel implements CacheModel<RatingsStats>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		statsId = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
+
 		totalEntries = objectInput.readInt();
+
 		totalScore = objectInput.readDouble();
+
 		averageScore = objectInput.readDouble();
 	}
 
@@ -87,14 +122,22 @@ public class RatingsStatsCacheModel implements CacheModel<RatingsStats>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(statsId);
+
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
+
 		objectOutput.writeInt(totalEntries);
+
 		objectOutput.writeDouble(totalScore);
+
 		objectOutput.writeDouble(averageScore);
 	}
 
 	public long statsId;
+	public long companyId;
 	public long classNameId;
 	public long classPK;
 	public int totalEntries;

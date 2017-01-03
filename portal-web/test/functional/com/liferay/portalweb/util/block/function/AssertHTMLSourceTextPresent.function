@@ -1,5 +1,0 @@
-<definition>
-	<command name="assertHTMLSourceTextPresent">
-		<execute selenium="assertHTMLSourceTextPresent" />
-	</command>
-</definition>

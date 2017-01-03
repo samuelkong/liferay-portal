@@ -1,17 +1,38 @@
 <?xml version="1.0"?>
 
-<project name="benchmarks" basedir="." default="run">
+<project basedir="." default="run" name="benchmarks">
 	<import file="../build-common.xml" />
 
 	<target name="build-sample-sql">
+		<gradle-execute
+			dir="../modules/util/portal-tools-sample-sql-builder"
+			task="jar"
+		/>
+
+		<path id="sample.sql.builder.classpath">
+			<fileset dir="${sdk.dir}/dist" includes="com.liferay.blogs.*.jar" />
+			<fileset dir="${sdk.dir}/dist" includes="com.liferay.dynamic.data.*.jar" />
+			<fileset dir="${sdk.dir}/dist" includes="com.liferay.friendly.url.*.jar" />
+			<fileset dir="${sdk.dir}/dist" includes="com.liferay.journal.*.jar" />
+			<fileset dir="${sdk.dir}/dist" includes="com.liferay.portal.tools.sample.sql.builder*.jar" />
+			<fileset dir="${sdk.dir}/dist" includes="com.liferay.wiki.*.jar" />
+			<path refid="project.classpath" />
+		</path>
+
 		<property name="sample.sql.properties.file" value="${basedir}/benchmarks.properties" />
 
 		<java
-			classname="com.liferay.portal.tools.samplesqlbuilder.SampleSQLBuilder"
-			classpathref="project.classpath"
+			classname="com.liferay.portal.tools.sample.sql.builder.SampleSQLBuilder"
+			classpathref="sample.sql.builder.classpath"
 		>
 			<sysproperty key="external-properties" value="com/liferay/portal/tools/dependencies/portal-tools.properties" />
 			<arg value="${sample.sql.properties.file}" />
 		</java>
+	</target>
+
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="." includes="*.csv,*.sql,benchmarks-actual.properties,output/**,temp/**" />
+		</delete>
 	</target>
 </project>

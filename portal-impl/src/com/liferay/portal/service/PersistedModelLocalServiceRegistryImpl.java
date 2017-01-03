@@ -16,6 +16,9 @@ package com.liferay.portal.service;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.PermissionedModelLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
@@ -82,7 +85,6 @@ public class PersistedModelLocalServiceRegistryImpl
 		PersistedModelLocalServiceRegistryImpl.class);
 
 	private final Map<String, PersistedModelLocalService>
-		_persistedModelLocalServices =
-			new ConcurrentHashMap<String, PersistedModelLocalService>();
+		_persistedModelLocalServices = new ConcurrentHashMap<>();
 
 }

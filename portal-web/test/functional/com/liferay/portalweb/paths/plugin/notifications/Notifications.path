@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>Notifications</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Notifications</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>USER_BAR_BADGE_COUNT</td>
+	<td>//*[@data-qa-id='productMenuUserPanelCategory']//span[contains(@class,'notifications-count') and contains(@class,'sticker')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_NAVIGATION_BAR_BADGE_COUNT</td>
+	<td>//div[contains(@class,'user-personal-bar')]//span[@class='user-avatar-link']//span[contains(@class,'panel-notifications-count')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PROFILE_BADGE_COUNT</td>
+	<td>//span[contains(@class,'notifications-count')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MY_ACCOUNT_BADGE_COUNT</td>
+	<td>//a[contains(@class,'list-group-heading') and (@aria-expanded='false')]//span[contains(@class,'panel-notifications-count')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATIONS_BADGE_COUNT</td>
+	<td>//a[contains(@class,'list-group-heading') and (@aria-expanded='true')]/..//span[contains(@class,'badge')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--NOTIFICATIONS-->
+<tr>
+	<td>MARK_AS_READ</td>
+	<td>//a[contains(.,'Mark as Read')]/span[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATIONS_TITLE</td>
+	<td>//div[@class='title']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATIONS_WORKFLOW_TITLE</td>
+	<td>//div[@class='body-container']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATIONS_CONTENT</td>
+	<td>//div[@class='body-container']//div[@class='body' and contains(.,'${key_contentBody}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATIONS_CONTENT_GENERIC</td>
+	<td>//div[@class='body-container']//div[@class='body']</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--NOTIFICATIONS_CONFIGURATION-->
+<tr>
+	<td>NOTIFICATIONS_CONFIGURATION_EMAIL_SWITCH</td>
+	<td>//div[contains(@id,'${key_contentType}Content')]//td[contains(.,'${key_actionType}')]//following-sibling::td[contains(@class,'lfr-email-column')]//span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATIONS_CONFIGURATION_WEBSITE_SWITCH</td>
+	<td>//div[contains(@id,'${key_contentType}Content')]//td[contains(.,'${key_actionType}')]//following-sibling::td/following-sibling::td[contains(@class,'lfr-website-column')]//span</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--NOTIFICATIONS_DELIVERY-->
+<tr>
+	<td>NOTIFICATION_DELIVERY_CHECKBOX</td>
+	<td>//table[contains(.,'${key_contentType}')]//tr[contains(.,'${key_actionType}')]//label[contains(.,'${key_notificationType}')]/input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_CHECKBOX_1</td>
+	<td>//table[contains(.,'${key_contentType}')]//tr/td[2]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_CHECKBOX_2</td>
+	<td>//table[contains(.,'${key_contentType}')]//div[2]/div/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_EMAIL_OPTION</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//th[contains(.,'Email')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_MOBILE_OPTION</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//th[contains(.,'Mobile')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_WEBSITE_OPTION</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//th[contains(.,'Website')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_PANEL</td>
+	<td>//div[contains(@class,'panel-title')]/a[contains(.,'${key_contentType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_TEXT_1</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//tr[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_TEXT_2</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//tr[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_TEXT_3</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//tr[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_TEXT_4</td>
+	<td>//div[contains(@id,'${key_contentType}')]//table//tr[5]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_CONTACTS_CENTER_WEBSITE_CHECKBOX</td>
+	<td>//table[contains(.,'Contacts Center')]//tr[contains(.,'sends you a social relationship request.')]//label[contains(.,'Website')]/input[@type='checkbox' and contains(@class,'disabled')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NOTIFICATION_DELIVERY_INVITE_MEMBERS_WEBSITE_CHECKBOX</td>
+	<td>//table[contains(.,'Invite Members')]//tr[contains(.,'sends you a membership request.')]//label[contains(.,'Website')]/input[@type='checkbox' and contains(@class,'disabled')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--REQUESTS-->
+<tr>
+	<td>REQUESTS_LIST_TAB</td>
+	<td>//a[@title='Requests List']</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

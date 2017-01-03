@@ -1,0 +1,65 @@
+apply plugin: "com.liferay.lang.merger"
+
+dependencies {
+	provided group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	provided group: "com.liferay", name: "com.liferay.application.list.api", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.api", version: "3.6.0-20161227.164832-3"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.data.provider.web", version: "1.0.0"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.expression", version: "2.1.0-20161227.164930-2"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.form.field.type", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.form.renderer", version: "2.2.0-20161227.165132-2"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.form.values.factory", version: "2.0.7-20161227.165201-2"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.form.values.query", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.io", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.validator", version: "2.1.0"
+	provided group: "com.liferay", name: "com.liferay.exportimport.api", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.exportimport.service", version: "3.0.0"
+	provided group: "com.liferay", name: "com.liferay.frontend.taglib", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	provided group: "com.liferay", name: "com.liferay.portal.configuration.metatype", version: "2.0.0"
+	provided group: "com.liferay", name: "com.liferay.registry.api", version: "1.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.7.0"
+	provided group: "com.liferay.portal", name: "com.liferay.util.java", version: "2.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"
+	provided group: "javax.mail", name: "mail", version: "1.4"
+	provided group: "javax.portlet", name: "portlet-api", version: "2.0"
+	provided group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
+	provided group: "javax.servlet.jsp", name: "javax.servlet.jsp-api", version: "2.3.1"
+	provided group: "org.osgi", name: "org.osgi.core", version: "5.0.0"
+	provided group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+	provided project(":apps:forms-and-workflow:dynamic-data-lists:dynamic-data-lists-api")
+	provided project(":apps:forms-and-workflow:dynamic-data-lists:dynamic-data-lists-service")
+
+	testCompile group: "com.liferay", name: "com.liferay.osgi.service.tracker.collections", version: "2.0.0"
+	testCompile group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+}
+
+mergeLang {
+	sourceDirs = [
+		"../../dynamic-data-mapping/dynamic-data-mapping-lang/src/main/resources/content",
+		"src/main/resources/content"
+	]
+}
+
+processResources {
+	doLast {
+		FileTree soyJsFileTree = fileTree(dir: destinationDir, include: "**/*.soy.js")
+
+		soyJsFileTree.each {
+			String fileName = it.name[0 .. -8]
+
+			String moduleName = "liferay-ddl-form-builder-" + fileName.replaceAll("_", "-") + "-template"
+
+			String soyJsWrapperHeader = "AUI.add('${moduleName}', function(A) {"
+			String soyJsWrapperFooter = "}, '', {requires: ['soyutils']});";
+
+			it.text = soyJsWrapperHeader + it.text.replace("(typeof ddl == 'undefined') { var ddl = {}; }", "(typeof ddl == 'undefined') { window.ddl = {}; }") + soyJsWrapperFooter
+		}
+	}
+}
+
+transpileJS {
+	soySrcIncludes = ""
+	srcIncludes = "**/*.es.js"
+}

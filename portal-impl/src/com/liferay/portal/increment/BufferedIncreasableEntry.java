@@ -16,6 +16,10 @@ package com.liferay.portal.increment;
 
 import com.liferay.portal.kernel.concurrent.IncreasableEntry;
 import com.liferay.portal.kernel.increment.Increment;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
+
+import java.util.Arrays;
 
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -34,10 +38,10 @@ public class BufferedIncreasableEntry<K, T>
 	}
 
 	@Override
-	public Increment<T> doIncrease(
-		Increment<T> originalValue, Increment<T> deltaValue) {
-
-		return originalValue.increaseForNew(deltaValue.getValue());
+	public BufferedIncreasableEntry<K, T> increase(Increment<T> deltaValue) {
+		return new BufferedIncreasableEntry<K, T>(
+			_methodInvocation, key,
+			value.increaseForNew(deltaValue.getValue()));
 	}
 
 	public void proceed() throws Throwable {
@@ -50,7 +54,14 @@ public class BufferedIncreasableEntry<K, T>
 
 	@Override
 	public String toString() {
-		return _methodInvocation.toString();
+		StringBundler sb = new StringBundler();
+
+		sb.append(_methodInvocation.toString());
+		sb.append(StringPool.OPEN_PARENTHESIS);
+		sb.append(Arrays.toString(_methodInvocation.getArguments()));
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
 	}
 
 	private final MethodInvocation _methodInvocation;

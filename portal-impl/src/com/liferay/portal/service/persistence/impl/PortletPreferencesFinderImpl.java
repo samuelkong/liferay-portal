@@ -21,15 +21,16 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.PortletConstants;
+import com.liferay.portal.kernel.model.PortletInstance;
+import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.service.persistence.PortletPreferencesFinder;
+import com.liferay.portal.kernel.service.persistence.PortletPreferencesUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.PortletConstants;
-import com.liferay.portal.model.PortletPreferences;
 import com.liferay.portal.model.impl.PortletPreferencesImpl;
 import com.liferay.portal.model.impl.PortletPreferencesModelImpl;
-import com.liferay.portal.service.persistence.PortletPreferencesFinder;
-import com.liferay.portal.service.persistence.PortletPreferencesUtil;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.io.Serializable;
@@ -44,7 +45,7 @@ import java.util.Set;
  * @author Hugo Huijser
  */
 public class PortletPreferencesFinderImpl
-	extends BasePersistenceImpl<PortletPreferences>
+	extends PortletPreferencesFinderBaseImpl
 	implements PortletPreferencesFinder {
 
 	public static final String COUNT_BY_O_O_P =
@@ -71,8 +72,7 @@ public class PortletPreferencesFinderImpl
 				Long.class.getName(), Long.class.getName(),
 				Long.class.getName(), Integer.class.getName(),
 				String.class.getName(), Boolean.class.getName()
-			}
-		);
+			});
 
 	@Override
 	public long countByO_O_P(
@@ -213,6 +213,13 @@ public class PortletPreferencesFinderImpl
 	}
 
 	@Override
+	public Map<Serializable, PortletPreferences> fetchByPrimaryKeys(
+		Set<Serializable> primaryKeys) {
+
+		return PortletPreferencesUtil.fetchByPrimaryKeys(primaryKeys);
+	}
+
+	@Override
 	public List<PortletPreferences> findByPortletId(String portletId) {
 		Session session = null;
 
@@ -237,13 +244,6 @@ public class PortletPreferencesFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public Map<Serializable, PortletPreferences> fetchByPrimaryKeys(
-		Set<Serializable> primaryKeys) {
-
-		return PortletPreferencesUtil.fetchByPrimaryKeys(primaryKeys);
 	}
 
 	@Override
@@ -327,13 +327,10 @@ public class PortletPreferencesFinderImpl
 			return true;
 		}
 
-		if (portletPreferencesPortletId.startsWith(
-				portletId.concat(PortletConstants.INSTANCE_SEPARATOR))) {
+		PortletInstance portletInstance =
+			PortletInstance.fromPortletInstanceKey(portletPreferencesPortletId);
 
-			return true;
-		}
-
-		return false;
+		return portletInstance.hasIdenticalPortletName(portletId);
 	}
 
 	private static final String _OWNER_ID_SQL =
@@ -345,7 +342,7 @@ public class PortletPreferencesFinderImpl
 		"OR (PortletPreferences.portletId LIKE ?)";
 
 	private static final String _PREFERENCES_SQL =
-		"AND (PortletPreferences.preferences != " +
+		"AND (CAST_CLOB_TEXT(PortletPreferences.preferences) != " +
 			"'[$PORTLET_PREFERENCES_PREFERENCES_DEFAULT$]')";
 
 }

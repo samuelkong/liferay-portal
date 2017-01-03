@@ -73,6 +73,17 @@ public class FileHelperUtil {
 						}
 
 						@Override
+						public FileVisitResult visitFile(
+								Path file,
+								BasicFileAttributes basicFileAttributes)
+							throws IOException {
+
+							Files.delete(file);
+
+							return FileVisitResult.CONTINUE;
+						}
+
+						@Override
 						public FileVisitResult visitFileFailed(
 								Path file, IOException ioe)
 							throws IOException {
@@ -82,17 +93,6 @@ public class FileHelperUtil {
 							}
 
 							throw ioe;
-						}
-
-						@Override
-						public FileVisitResult visitFile(
-								Path file,
-								BasicFileAttributes basicFileAttributes)
-							throws IOException {
-
-							Files.delete(file);
-
-							return FileVisitResult.CONTINUE;
 						}
 
 					});
@@ -121,7 +121,7 @@ public class FileHelperUtil {
 
 		final AtomicBoolean atomicMove = new AtomicBoolean(tryAtomicMove);
 		final AtomicBoolean touched = new AtomicBoolean();
-		final Map<Path, FileTime> fileTimes = new HashMap<Path, FileTime>();
+		final Map<Path, FileTime> fileTimes = new HashMap<>();
 
 		try {
 			Files.walkFileTree(
@@ -140,6 +140,21 @@ public class FileHelperUtil {
 						if (atomicMove.get()) {
 							Files.delete(dir);
 						}
+
+						return FileVisitResult.CONTINUE;
+					}
+
+					@Override
+					public FileVisitResult preVisitDirectory(
+							Path dir, BasicFileAttributes basicFileAttributes)
+						throws IOException {
+
+						Files.copy(
+							dir, toPath.resolve(fromPath.relativize(dir)),
+							StandardCopyOption.COPY_ATTRIBUTES,
+							StandardCopyOption.REPLACE_EXISTING);
+
+						fileTimes.put(dir, Files.getLastModifiedTime(dir));
 
 						return FileVisitResult.CONTINUE;
 					}
@@ -174,22 +189,7 @@ public class FileHelperUtil {
 						return FileVisitResult.CONTINUE;
 					}
 
-				@Override
-				public FileVisitResult preVisitDirectory(
-						Path dir, BasicFileAttributes basicFileAttributes)
-					throws IOException {
-
-					Files.copy(
-						dir, toPath.resolve(fromPath.relativize(dir)),
-						StandardCopyOption.COPY_ATTRIBUTES,
-						StandardCopyOption.REPLACE_EXISTING);
-
-					fileTimes.put(dir, Files.getLastModifiedTime(dir));
-
-					return FileVisitResult.CONTINUE;
-				}
-
-			});
+				});
 		}
 		catch (IOException ioe) {
 			delete(true, toPath);
@@ -286,9 +286,8 @@ public class FileHelperUtil {
 
 				if (size != length) {
 					throw new IOException(
-						"Zip stream for entry " + zipEntry.getName() +
-							" is " + size + " bytes but should " + length +
-								" bytes");
+						"Zip stream for entry " + zipEntry.getName() + " is " +
+							size + " bytes but should " + length + " bytes");
 				}
 			}
 		}

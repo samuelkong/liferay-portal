@@ -14,8 +14,8 @@
 
 package com.liferay.portlet;
 
+import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.util.InstanceFactory;
-import com.liferay.portal.model.PortletApp;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +32,7 @@ import javax.portlet.filter.PortletFilter;
 public class PortletFilterFactory {
 
 	public static PortletFilter create(
-			com.liferay.portal.model.PortletFilter portletFilterModel,
+			com.liferay.portal.kernel.model.PortletFilter portletFilterModel,
 			PortletContext ctx)
 		throws PortletException {
 
@@ -40,18 +40,17 @@ public class PortletFilterFactory {
 	}
 
 	public static void destroy(
-		com.liferay.portal.model.PortletFilter portletFilterModel) {
+		com.liferay.portal.kernel.model.PortletFilter portletFilterModel) {
 
 		_instance._destroy(portletFilterModel);
 	}
 
 	private PortletFilterFactory() {
-		_portletFilters =
-			new ConcurrentHashMap<String, Map<String, PortletFilter>>();
+		_portletFilters = new ConcurrentHashMap<>();
 	}
 
 	private PortletFilter _create(
-			com.liferay.portal.model.PortletFilter portletFilterModel,
+			com.liferay.portal.kernel.model.PortletFilter portletFilterModel,
 			PortletContext portletContext)
 		throws PortletException {
 
@@ -61,7 +60,7 @@ public class PortletFilterFactory {
 			portletApp.getServletContextName());
 
 		if (portletFilters == null) {
-			portletFilters = new ConcurrentHashMap<String, PortletFilter>();
+			portletFilters = new ConcurrentHashMap<>();
 
 			_portletFilters.put(
 				portletApp.getServletContextName(), portletFilters);
@@ -100,7 +99,7 @@ public class PortletFilterFactory {
 	}
 
 	private void _destroy(
-		com.liferay.portal.model.PortletFilter portletFilterModel) {
+		com.liferay.portal.kernel.model.PortletFilter portletFilterModel) {
 
 		PortletApp portletApp = portletFilterModel.getPortletApp();
 
@@ -126,7 +125,7 @@ public class PortletFilterFactory {
 	}
 
 	private PortletFilter _init(
-			com.liferay.portal.model.PortletFilter portletFilterModel,
+			com.liferay.portal.kernel.model.PortletFilter portletFilterModel,
 			FilterConfig filterConfig)
 		throws PortletException {
 
@@ -134,7 +133,7 @@ public class PortletFilterFactory {
 	}
 
 	private PortletFilter _init(
-			com.liferay.portal.model.PortletFilter portletFilterModel,
+			com.liferay.portal.kernel.model.PortletFilter portletFilterModel,
 			FilterConfig filterConfig, PortletFilter portletFilter)
 		throws PortletException {
 

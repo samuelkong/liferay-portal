@@ -14,7 +14,9 @@
 
 package com.liferay.portal.metadata;
 
-import com.liferay.portal.kernel.lar.PortletDataContext;
+import com.liferay.document.library.kernel.util.AudioProcessorUtil;
+import com.liferay.document.library.kernel.util.VideoProcessorUtil;
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -24,8 +26,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xuggler.XugglerUtil;
-import com.liferay.portlet.documentlibrary.util.AudioProcessorUtil;
-import com.liferay.portlet.documentlibrary.util.VideoProcessorUtil;
 
 import com.xuggle.xuggler.IContainer;
 
@@ -45,20 +45,14 @@ public class XugglerRawMetadataProcessor extends BaseRawMetadataProcessor {
 
 	@Override
 	public void exportGeneratedFiles(
-			PortletDataContext portletDataContext, FileEntry fileEntry,
-			Element fileEntryElement)
-		throws Exception {
-
-		return;
+		PortletDataContext portletDataContext, FileEntry fileEntry,
+		Element fileEntryElement) {
 	}
 
 	@Override
 	public void importGeneratedFiles(
-			PortletDataContext portletDataContext, FileEntry fileEntry,
-			FileEntry importedFileEntry, Element fileEntryElement)
-		throws Exception {
-
-		return;
+		PortletDataContext portletDataContext, FileEntry fileEntry,
+		FileEntry importedFileEntry, Element fileEntryElement) {
 	}
 
 	protected String convertTime(long microseconds) {

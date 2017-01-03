@@ -16,11 +16,12 @@ package com.liferay.portlet.documentlibrary.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.document.library.kernel.model.DLFileVersion;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.documentlibrary.model.DLFileVersion;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -40,8 +41,32 @@ import java.util.Date;
 public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof DLFileVersionCacheModel)) {
+			return false;
+		}
+
+		DLFileVersionCacheModel dlFileVersionCacheModel = (DLFileVersionCacheModel)obj;
+
+		if (fileVersionId == dlFileVersionCacheModel.fileVersionId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, fileVersionId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -89,6 +114,8 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 		sb.append(size);
 		sb.append(", checksum=");
 		sb.append(checksum);
+		sb.append(", lastPublishDate=");
+		sb.append(lastPublishDate);
 		sb.append(", status=");
 		sb.append(status);
 		sb.append(", statusByUserId=");
@@ -217,6 +244,13 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 			dlFileVersionImpl.setChecksum(checksum);
 		}
 
+		if (lastPublishDate == Long.MIN_VALUE) {
+			dlFileVersionImpl.setLastPublishDate(null);
+		}
+		else {
+			dlFileVersionImpl.setLastPublishDate(new Date(lastPublishDate));
+		}
+
 		dlFileVersionImpl.setStatus(status);
 		dlFileVersionImpl.setStatusByUserId(statusByUserId);
 
@@ -242,15 +276,22 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		fileVersionId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		repositoryId = objectInput.readLong();
+
 		folderId = objectInput.readLong();
+
 		fileEntryId = objectInput.readLong();
 		treePath = objectInput.readUTF();
 		fileName = objectInput.readUTF();
@@ -260,11 +301,16 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 		description = objectInput.readUTF();
 		changeLog = objectInput.readUTF();
 		extraSettings = objectInput.readUTF();
+
 		fileEntryTypeId = objectInput.readLong();
 		version = objectInput.readUTF();
+
 		size = objectInput.readLong();
 		checksum = objectInput.readUTF();
+		lastPublishDate = objectInput.readLong();
+
 		status = objectInput.readInt();
+
 		statusByUserId = objectInput.readLong();
 		statusByUserName = objectInput.readUTF();
 		statusDate = objectInput.readLong();
@@ -281,8 +327,11 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 		}
 
 		objectOutput.writeLong(fileVersionId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -294,8 +343,11 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(repositoryId);
+
 		objectOutput.writeLong(folderId);
+
 		objectOutput.writeLong(fileEntryId);
 
 		if (treePath == null) {
@@ -372,7 +424,10 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 			objectOutput.writeUTF(checksum);
 		}
 
+		objectOutput.writeLong(lastPublishDate);
+
 		objectOutput.writeInt(status);
+
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
@@ -408,6 +463,7 @@ public class DLFileVersionCacheModel implements CacheModel<DLFileVersion>,
 	public String version;
 	public long size;
 	public String checksum;
+	public long lastPublishDate;
 	public int status;
 	public long statusByUserId;
 	public String statusByUserName;

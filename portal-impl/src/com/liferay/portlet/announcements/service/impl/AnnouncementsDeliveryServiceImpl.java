@@ -14,12 +14,13 @@
 
 package com.liferay.portlet.announcements.service.impl;
 
+import com.liferay.announcements.kernel.model.AnnouncementsDelivery;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.service.permission.PortalPermissionUtil;
-import com.liferay.portal.service.permission.UserPermissionUtil;
-import com.liferay.portlet.announcements.model.AnnouncementsDelivery;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portlet.announcements.service.base.AnnouncementsDeliveryServiceBaseImpl;
 
 /**
@@ -34,12 +35,15 @@ public class AnnouncementsDeliveryServiceImpl
 			boolean website)
 		throws PortalException {
 
-		if (!PortalPermissionUtil.contains(
-				getPermissionChecker(), ActionKeys.ADD_USER) &&
-			!UserPermissionUtil.contains(
-				getPermissionChecker(), userId, ActionKeys.UPDATE)) {
+		PermissionChecker permissionChecker = getPermissionChecker();
 
-			throw new PrincipalException();
+		if (!PortalPermissionUtil.contains(
+				permissionChecker, ActionKeys.ADD_USER) &&
+			!UserPermissionUtil.contains(
+				permissionChecker, userId, ActionKeys.UPDATE)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, ActionKeys.ADD_USER, ActionKeys.UPDATE);
 		}
 
 		return announcementsDeliveryLocalService.updateDelivery(

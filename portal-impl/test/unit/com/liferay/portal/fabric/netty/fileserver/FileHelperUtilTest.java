@@ -15,15 +15,16 @@
 package com.liferay.portal.fabric.netty.fileserver;
 
 import com.liferay.portal.fabric.netty.fileserver.handlers.FileServerTestUtil;
-import com.liferay.portal.fabric.netty.fileserver.handlers.FileSystemProviderWrapper;
-import com.liferay.portal.fabric.netty.fileserver.handlers.FileSystemWrapper;
-import com.liferay.portal.fabric.netty.fileserver.handlers.PathWrapper;
 import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.portal.kernel.nio.FileSystemProviderWrapper;
+import com.liferay.portal.kernel.nio.FileSystemWrapper;
+import com.liferay.portal.kernel.nio.PathWrapper;
 import com.liferay.portal.kernel.test.CaptureHandler;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
 import com.liferay.portal.kernel.test.SwappableSecurityManager;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.ReflectionUtil;
 
 import java.io.File;
@@ -62,8 +63,8 @@ import org.junit.Test;
 public class FileHelperUtilTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@After
 	public void tearDown() {
@@ -140,7 +141,12 @@ public class FileHelperUtilTest {
 			Assert.fail();
 		}
 		catch (Exception e) {
-			Assert.assertSame(ioException, e);
+			if (JavaDetector.isJDK8()) {
+				Assert.assertSame(ioException, e.getCause());
+			}
+			else {
+				Assert.assertSame(ioException, e);
+			}
 		}
 		finally {
 			Files.delete(undeleteableFilePath);
@@ -315,9 +321,12 @@ public class FileHelperUtilTest {
 	@Test
 	public void testMoveRegularDirectoryWithRegularFile() throws IOException {
 		Path regularFromDirectoryPath = Paths.get("RegularFromDirectory");
+
 		Path regularFromFilePath = regularFromDirectoryPath.resolve(
 			"RegularFromFile");
+
 		Path regularToDirectoryPath = Paths.get("RegularToDirectory");
+
 		Path regularToFilePath = regularToDirectoryPath.resolve(
 			regularFromDirectoryPath.relativize(regularFromFilePath));
 
@@ -427,7 +436,9 @@ public class FileHelperUtilTest {
 
 		Path regularFromFilePath = unmoveableFromDirectoryPath.resolve(
 			"RegularFromFile");
+
 		Path regularToDirectoryPath = Paths.get("RegularToDirectoryPath");
+
 		Path regularToFilePath = regularToDirectoryPath.resolve(
 			unmoveableFromDirectoryPath.relativize(regularFromFilePath));
 
@@ -567,8 +578,8 @@ public class FileHelperUtilTest {
 	public void testUnzipImpossibleScenario() throws IOException {
 		FileSystem fileSystem = FileSystems.getDefault();
 
-		FileSystemProvider fileSystemProvider = new FileSystemProviderWrapper(
-			fileSystem.provider()) {
+		FileSystemProvider fileSystemProvider =
+			new FileSystemProviderWrapper(fileSystem.provider()) {
 
 				@Override
 				public InputStream newInputStream(
@@ -645,10 +656,10 @@ public class FileHelperUtilTest {
 
 		String folderName = "TestFolder";
 
-		CaptureHandler captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			FileHelperUtil.class.getName(), Level.FINEST);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					FileHelperUtil.class.getName(), Level.FINEST)) {
 
-		try {
 			Path folderPath = FileServerTestUtil.createFolderWithFiles(
 				Paths.get(folderName));
 
@@ -690,16 +701,13 @@ public class FileHelperUtilTest {
 
 			FileServerTestUtil.assertFileEquals(folderPath, unzipFolderPath);
 		}
-		finally {
-			captureHandler.close();
-		}
 
 		// Without log
 
-		captureHandler = JDKLoggerTestUtil.configureJDKLogger(
-			FileHelperUtil.class.getName(), Level.OFF);
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					FileHelperUtil.class.getName(), Level.OFF)) {
 
-		try {
 			Path folderPath = FileServerTestUtil.createFolderWithFiles(
 				Paths.get(folderName));
 
@@ -729,17 +737,14 @@ public class FileHelperUtilTest {
 
 			FileServerTestUtil.assertFileEquals(folderPath, unzipFolderPath);
 		}
-		finally {
-			captureHandler.close();
-		}
 	}
 
 	@Test
 	public void testZipImpossibleScenario() throws IOException {
 		FileSystem fileSystem = FileSystems.getDefault();
 
-		FileSystemProvider fileSystemProvider = new FileSystemProviderWrapper(
-			fileSystem.provider()) {
+		FileSystemProvider fileSystemProvider =
+			new FileSystemProviderWrapper(fileSystem.provider()) {
 
 				@Override
 				public OutputStream newOutputStream(

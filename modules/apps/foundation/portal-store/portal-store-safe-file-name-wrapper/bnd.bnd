@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Portal Store Safe File Name Wrapper
+Bundle-SymbolicName: com.liferay.portal.store.safe.file.name.wrapper
+Bundle-Version: 1.0.2
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Data Stores

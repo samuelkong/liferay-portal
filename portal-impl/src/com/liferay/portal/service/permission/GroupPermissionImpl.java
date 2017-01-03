@@ -15,22 +15,26 @@
 package com.liferay.portal.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.BaseModelPermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.GroupPermission;
+import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.BaseModelPermissionChecker;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.util.PropsValues;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Raymond Augé
  */
 @OSGiBeanProperties(
-	property = {"model.class.name=com.liferay.portal.model.Group"}
+	property = {"model.class.name=com.liferay.portal.kernel.model.Group"}
 )
 public class GroupPermissionImpl
 	implements BaseModelPermissionChecker, GroupPermission {
@@ -41,7 +45,9 @@ public class GroupPermissionImpl
 		throws PortalException {
 
 		if (!contains(permissionChecker, group, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Group.class.getName(), group.getGroupId(),
+				actionId);
 		}
 	}
 
@@ -51,7 +57,8 @@ public class GroupPermissionImpl
 		throws PortalException {
 
 		if (!contains(permissionChecker, groupId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Group.class.getName(), groupId, actionId);
 		}
 	}
 
@@ -60,7 +67,9 @@ public class GroupPermissionImpl
 		throws PortalException {
 
 		if (!contains(permissionChecker, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Group.class.getName(), Long.valueOf(0),
+				actionId);
 		}
 	}
 
@@ -80,7 +89,8 @@ public class GroupPermissionImpl
 
 		if ((actionId.equals(ActionKeys.ADD_LAYOUT) ||
 			 actionId.equals(ActionKeys.MANAGE_LAYOUTS)) &&
-			(group.hasLocalOrRemoteStagingGroup() ||
+			((group.hasLocalOrRemoteStagingGroup() &&
+			  PropsValues.STAGING_LIVE_GROUP_LOCKING_ENABLED) ||
 			 group.isLayoutPrototype())) {
 
 			return false;
@@ -115,19 +125,20 @@ public class GroupPermissionImpl
 				groupId, Group.class.getName(), groupId,
 				ActionKeys.MANAGE_SUBGROUPS) ||
 			 PortalPermissionUtil.contains(
-				permissionChecker, ActionKeys.ADD_COMMUNITY))) {
+				 permissionChecker, ActionKeys.ADD_COMMUNITY))) {
 
 			return true;
 		}
 		else if (actionId.equals(ActionKeys.ADD_LAYOUT) &&
 				 permissionChecker.hasPermission(
-					groupId, Group.class.getName(), groupId,
-					ActionKeys.MANAGE_LAYOUTS)) {
+					 groupId, Group.class.getName(), groupId,
+					 ActionKeys.MANAGE_LAYOUTS)) {
 
 			return true;
 		}
 		else if ((actionId.equals(ActionKeys.EXPORT_IMPORT_LAYOUTS) ||
-				  actionId.equals(ActionKeys.EXPORT_IMPORT_PORTLET_INFO)) &&
+				  actionId.equals(ActionKeys.EXPORT_IMPORT_PORTLET_INFO) ||
+				  actionId.equals(ActionKeys.PUBLISH_PORTLET_INFO)) &&
 				 permissionChecker.hasPermission(
 					 groupId, Group.class.getName(), groupId,
 					 ActionKeys.PUBLISH_STAGING)) {
@@ -203,7 +214,7 @@ public class GroupPermissionImpl
 		PermissionChecker permissionChecker, String actionId) {
 
 		return permissionChecker.hasPermission(
-			0, Group.class.getName(), 0, actionId);
+			0, Group.class.getName(), Group.class.getName(), actionId);
 	}
 
 }

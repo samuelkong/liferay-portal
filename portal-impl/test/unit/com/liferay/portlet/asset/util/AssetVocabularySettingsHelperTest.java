@@ -14,7 +14,7 @@
 
 package com.liferay.portlet.asset.util;
 
-import com.liferay.portlet.asset.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
 
 import org.junit.Assert;
 import org.junit.Test;

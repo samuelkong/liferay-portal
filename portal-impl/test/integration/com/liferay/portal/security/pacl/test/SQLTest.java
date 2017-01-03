@@ -15,27 +15,42 @@
 package com.liferay.portal.security.pacl.test;
 
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
+import com.liferay.portal.test.rule.PACLTestRule;
+import com.liferay.portal.test.rule.PACLTestRule.PACLTestRuleThreadLocal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class SQLTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
+
+	@BeforeClass
+	public static void setUpClass() {
+		PACLTestRuleThreadLocal.setDummyDataSourceEnabled(true);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		PACLTestRuleThreadLocal.setDummyDataSourceEnabled(false);
+	}
 
 	@Test
 	public void testCreate1() throws Exception {
@@ -46,6 +61,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -58,33 +77,26 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
 	@Test
 	public void testCreate3() throws Exception {
-		try {
-			executePreparedStatement(
-				"create table TestPACL_CreateSuccess (userId bigint)");
+		executePreparedStatement(
+			"create table TestPACL_CreateSuccess (userId bigint)");
 
-			executePreparedStatement("drop table TestPACL_CreateSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("drop table TestPACL_CreateSuccess");
 	}
 
 	@Test
 	public void testCreate4() throws Exception {
-		try {
-			executeStatement(
-				"create table TestPACL_CreateSuccess (userId bigint)");
+		executeStatement("create table TestPACL_CreateSuccess (userId bigint)");
 
-			executeStatement("drop table TestPACL_CreateSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("drop table TestPACL_CreateSuccess");
 	}
 
 	@Test
@@ -95,6 +107,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -106,33 +122,26 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
 	@Test
 	public void testDrop3() throws Exception {
-		try {
-			executePreparedStatement(
-				"create table TestPACL_DropSuccess (userId bigint)");
+		executePreparedStatement(
+			"create table TestPACL_DropSuccess (userId bigint)");
 
-			executePreparedStatement("drop table TestPACL_DropSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("drop table TestPACL_DropSuccess");
 	}
 
 	@Test
 	public void testDrop4() throws Exception {
-		try {
-			executeStatement(
-				"create table TestPACL_DropSuccess (userId bigint)");
+		executeStatement("create table TestPACL_DropSuccess (userId bigint)");
 
-			executeStatement("drop table TestPACL_DropSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("drop table TestPACL_DropSuccess");
 	}
 
 	@Test
@@ -144,6 +153,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -156,29 +169,23 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
 	@Test
 	public void testIndex3() throws Exception {
-		try {
-			executePreparedStatement(
-				"create index index1 ON TestPACL_CreateSuccess (userId)");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement(
+			"create index index1 ON TestPACL_CreateSuccess (userId)");
 	}
 
 	@Test
 	public void testIndex4() throws Exception {
-		try {
-			executeStatement(
-				"create index index1 ON TestPACL_CreateSuccess (userId)");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement(
+			"create index index1 ON TestPACL_CreateSuccess (userId)");
 	}
 
 	@Test
@@ -190,6 +197,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -201,38 +212,31 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
 	@Test
 	public void testInsert3() throws Exception {
-		try {
-			executePreparedStatement(
-				"create table TestPACL_InsertSuccess (userId bigint)");
+		executePreparedStatement(
+			"create table TestPACL_InsertSuccess (userId bigint)");
 
-			executePreparedStatement(
-				"insert into TestPACL_InsertSuccess values (1)");
+		executePreparedStatement(
+			"insert into TestPACL_InsertSuccess values (1)");
 
-			executePreparedStatement("drop table TestPACL_InsertSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("drop table TestPACL_InsertSuccess");
 	}
 
 	@Test
 	public void testInsert4() throws Exception {
-		try {
-			executeStatement(
-				"create table TestPACL_InsertSuccess (userId bigint)");
+		executeStatement("create table TestPACL_InsertSuccess (userId bigint)");
 
-			executeStatement("insert into TestPACL_InsertSuccess values (1)");
+		executeStatement("insert into TestPACL_InsertSuccess values (1)");
 
-			executeStatement("drop table TestPACL_InsertSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("drop table TestPACL_InsertSuccess");
 	}
 
 	@Test
@@ -248,6 +252,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -264,6 +272,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -273,18 +285,13 @@ public class SQLTest {
 			return;
 		}
 
-		try {
-			executePreparedStatement(
-				"create table TestPACL_ReplaceSuccess (userId bigint)");
+		executePreparedStatement(
+			"create table TestPACL_ReplaceSuccess (userId bigint)");
 
-			executePreparedStatement(
-				"replace TestPACL_ReplaceSuccess (userId) values (1)");
+		executePreparedStatement(
+			"replace TestPACL_ReplaceSuccess (userId) values (1)");
 
-			executePreparedStatement("drop table TestPACL_ReplaceSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("drop table TestPACL_ReplaceSuccess");
 	}
 
 	@Test
@@ -293,18 +300,12 @@ public class SQLTest {
 			return;
 		}
 
-		try {
-			executeStatement(
-				"create table TestPACL_ReplaceSuccess (userId bigint)");
+		executeStatement(
+			"create table TestPACL_ReplaceSuccess (userId bigint)");
 
-			executeStatement(
-				"replace TestPACL_ReplaceSuccess (userId) values (1)");
+		executeStatement("replace TestPACL_ReplaceSuccess (userId) values (1)");
 
-			executeStatement("drop table TestPACL_ReplaceSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("drop table TestPACL_ReplaceSuccess");
 	}
 
 	@Test
@@ -317,6 +318,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -330,47 +335,31 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
 	@Test
 	public void testSelect3() throws Exception {
-		try {
-			executePreparedStatement("select * from Counter");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("select * from Counter");
 	}
 
 	@Test
 	public void testSelect4() throws Exception {
-		try {
-			executeStatement("select * from Counter");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("select * from Counter");
 	}
 
 	@Test
 	public void testSelect5() throws Exception {
-		try {
-			executePreparedStatement("select * from TestPACL_Bar");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("select * from TestPACL_Bar");
 	}
 
 	@Test
 	public void testSelect6() throws Exception {
-		try {
-			executeStatement("select * from TestPACL_Bar");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("select * from TestPACL_Bar");
 	}
 
 	@Test
@@ -381,6 +370,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -392,6 +385,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -407,6 +404,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -422,6 +423,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -431,17 +436,12 @@ public class SQLTest {
 			return;
 		}
 
-		try {
-			executePreparedStatement(
-				"create table TestPACL_TruncateSuccess (userId bigint)");
+		executePreparedStatement(
+			"create table TestPACL_TruncateSuccess (userId bigint)");
 
-			executePreparedStatement("truncate table TestPACL_TruncateSuccess");
+		executePreparedStatement("truncate table TestPACL_TruncateSuccess");
 
-			executePreparedStatement("drop table TestPACL_TruncateSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement("drop table TestPACL_TruncateSuccess");
 	}
 
 	@Test
@@ -450,53 +450,30 @@ public class SQLTest {
 			return;
 		}
 
-		try {
-			executeStatement(
-				"create table TestPACL_TruncateSuccess (userId bigint)");
+		executeStatement(
+			"create table TestPACL_TruncateSuccess (userId bigint)");
 
-			executeStatement("truncate table TestPACL_TruncateSuccess");
+		executeStatement("truncate table TestPACL_TruncateSuccess");
 
-			executeStatement("drop table TestPACL_TruncateSuccess");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement("drop table TestPACL_TruncateSuccess");
 	}
 
 	@Test
 	public void testUpdate1() throws Exception {
-		try {
-			executeDB(
-				"update ListType set name = 'Test PACL' where listTypeId = " +
-					"-123");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeDB(
+			"update ListType set name = 'Test PACL' where listTypeId = -123");
 	}
 
 	@Test
 	public void testUpdate2() throws Exception {
-		try {
-			executePreparedStatement(
-				"update ListType set name = 'Test PACL' where listTypeId = " +
-					"-123");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executePreparedStatement(
+			"update ListType set name = 'Test PACL' where listTypeId = -123");
 	}
 
 	@Test
 	public void testUpdate3() throws Exception {
-		try {
-			executeStatement(
-				"update ListType set name = 'Test PACL' where listTypeId = " +
-					"-123");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		executeStatement(
+			"update ListType set name = 'Test PACL' where listTypeId = -123");
 	}
 
 	@Test
@@ -509,6 +486,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -522,6 +503,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -535,6 +520,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -547,6 +536,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -559,6 +552,10 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
@@ -571,11 +568,15 @@ public class SQLTest {
 			Assert.fail();
 		}
 		catch (SecurityException se) {
+			String message = se.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith("Attempted to execute unapproved SQL"));
 		}
 	}
 
 	protected void executeDB(String sql) throws Exception {
-		DB db = DBFactoryUtil.getDB();
+		DB db = DBManagerUtil.getDB();
 
 		db.runSQL(sql);
 	}
@@ -591,7 +592,7 @@ public class SQLTest {
 
 			preparedStatement.execute();
 		}
-		catch (SQLException se) {
+		catch (SQLException sqle) {
 		}
 		finally {
 			DataAccess.cleanUp(connection, preparedStatement);
@@ -609,7 +610,7 @@ public class SQLTest {
 
 			statement.execute(sql);
 		}
-		catch (SQLException se) {
+		catch (SQLException sqle) {
 		}
 		finally {
 			DataAccess.cleanUp(connection, statement);
@@ -617,11 +618,9 @@ public class SQLTest {
 	}
 
 	protected boolean isMySQL() {
-		DB db = DBFactoryUtil.getDB();
+		DB db = DBManagerUtil.getDB();
 
-		String dbType = db.getType();
-
-		if (dbType.equals(DB.TYPE_MYSQL)) {
+		if (db.getDBType() == DBType.MYSQL) {
 			return true;
 		}
 

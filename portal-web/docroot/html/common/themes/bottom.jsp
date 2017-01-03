@@ -16,6 +16,8 @@
 
 <%@ include file="/html/common/themes/init.jsp" %>
 
+<liferay-util:dynamic-include key="/html/common/themes/bottom.jsp#pre" />
+
 <%
 List<Portlet> portlets = (List<Portlet>)request.getAttribute(WebKeys.LAYOUT_PORTLETS);
 %>
@@ -60,9 +62,7 @@ StringBundler pageBottomSB = OutputTag.getData(request, WebKeys.PAGE_BOTTOM);
 
 <script src="<%= HtmlUtil.escape(PortalUtil.getStaticResourceURL(request, themeDisplay.getPathThemeJavaScript() + "/main.js")) %>" type="text/javascript"></script>
 
-<c:if test="<%= PropsValues.MONITORING_PORTAL_REQUEST %>">
-	<%@ include file="/html/common/themes/bottom_monitoring.jspf" %>
-</c:if>
-
 <liferay-util:include page="/html/common/themes/bottom-ext.jsp" />
 <liferay-util:include page="/html/common/themes/bottom-test.jsp" />
+
+<liferay-util:dynamic-include key="/html/common/themes/bottom.jsp#post" />

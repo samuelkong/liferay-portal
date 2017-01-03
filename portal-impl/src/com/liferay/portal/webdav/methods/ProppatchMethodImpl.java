@@ -15,8 +15,11 @@
 package com.liferay.portal.webdav.methods;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.WebDAVProps;
+import com.liferay.portal.kernel.service.WebDAVPropsLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -30,12 +33,9 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Namespace;
 import com.liferay.portal.kernel.xml.QName;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.model.Lock;
-import com.liferay.portal.model.WebDAVProps;
-import com.liferay.portal.service.WebDAVPropsLocalServiceUtil;
 import com.liferay.portal.webdav.InvalidRequestException;
 import com.liferay.portal.webdav.LockException;
-import com.liferay.util.xml.XMLFormatter;
+import com.liferay.util.xml.Dom4jUtil;
 
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +64,13 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 			return HttpServletResponse.SC_BAD_REQUEST;
 		}
 		catch (LockException le) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(le, le);
+			}
+
 			return WebDAVUtil.SC_LOCKED;
 		}
 		catch (Exception e) {
@@ -108,7 +115,7 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 		throws InvalidRequestException, LockException {
 
 		try {
-			Set<QName> newProps = new HashSet<QName>();
+			Set<QName> newProps = new HashSet<>();
 
 			HttpServletRequest request = webDAVRequest.getHttpServletRequest();
 
@@ -124,7 +131,7 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 			if (_log.isInfoEnabled()) {
 				_log.info(
 					"Request XML: \n" +
-						XMLFormatter.toString(xml, StringPool.FOUR_SPACES));
+						Dom4jUtil.toString(xml, StringPool.FOUR_SPACES));
 			}
 
 			Document document = SAXReaderUtil.read(xml);

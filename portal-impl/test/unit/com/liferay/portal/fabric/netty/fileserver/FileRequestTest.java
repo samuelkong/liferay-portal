@@ -14,7 +14,7 @@
 
 package com.liferay.portal.fabric.netty.fileserver;
 
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
@@ -32,8 +32,8 @@ import org.junit.Test;
 public class FileRequestTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Before
 	public void setUp() {
@@ -51,9 +51,7 @@ public class FileRequestTest {
 		catch (NullPointerException npe) {
 		}
 
-		Path absolutePath = _fileRequest.getPath();
-
-		Assert.assertTrue(absolutePath.isAbsolute());
+		Assert.assertEquals(_path, _fileRequest.getPath());
 		Assert.assertEquals(
 			_LAST_MODIFIED_TIME, _fileRequest.getLastModifiedTime());
 		Assert.assertEquals(
@@ -90,8 +88,7 @@ public class FileRequestTest {
 		hash = HashUtil.hash(hash, _LAST_MODIFIED_TIME);
 
 		Assert.assertEquals(
-			HashUtil.hash(hash, _path.toAbsolutePath()),
-			_fileRequest.hashCode());
+			HashUtil.hash(hash, _path), _fileRequest.hashCode());
 	}
 
 	@Test
@@ -102,8 +99,8 @@ public class FileRequestTest {
 		sb.append(_DELETE_AFTER_FETCH);
 		sb.append(", lastModifiedTime=");
 		sb.append(_LAST_MODIFIED_TIME);
-		sb.append(", path=");
-		sb.append(_path.toAbsolutePath());
+		sb.append(", pathHolder=");
+		sb.append(_path);
 		sb.append("}");
 
 		Assert.assertEquals(sb.toString(), _fileRequest.toString());

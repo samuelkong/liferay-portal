@@ -14,32 +14,32 @@
 
 package com.liferay.portal.repository.liferayrepository;
 
+import com.liferay.document.library.kernel.model.DLFileEntryType;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppHelperLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryService;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileShortcutLocalService;
+import com.liferay.document.library.kernel.service.DLFileShortcutService;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
+import com.liferay.document.library.kernel.service.DLFileVersionService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
+import com.liferay.document.library.kernel.service.DLFolderService;
+import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
+import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
+import com.liferay.dynamic.data.mapping.kernel.StorageEngineManagerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.capabilities.Capability;
 import com.liferay.portal.kernel.repository.capabilities.CapabilityProvider;
+import com.liferay.portal.kernel.service.RepositoryLocalService;
+import com.liferay.portal.kernel.service.RepositoryService;
+import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.SortedArrayList;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.service.RepositoryLocalService;
-import com.liferay.portal.service.RepositoryService;
-import com.liferay.portal.service.ResourceLocalService;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portlet.documentlibrary.model.DLFileEntry;
-import com.liferay.portlet.documentlibrary.model.DLFileEntryConstants;
-import com.liferay.portlet.documentlibrary.model.DLFileEntryType;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portlet.documentlibrary.service.DLAppHelperLocalService;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalService;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryService;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryTypeLocalService;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryTypeLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLFileVersionLocalService;
-import com.liferay.portlet.documentlibrary.service.DLFileVersionService;
-import com.liferay.portlet.documentlibrary.service.DLFolderLocalService;
-import com.liferay.portlet.documentlibrary.service.DLFolderService;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.storage.Fields;
-import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +57,8 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 		DLFileEntryLocalService dlFileEntryLocalService,
 		DLFileEntryService dlFileEntryService,
 		DLFileEntryTypeLocalService dlFileEntryTypeLocalService,
+		DLFileShortcutLocalService dlFileShortcutLocalService,
+		DLFileShortcutService dlFileShortcutService,
 		DLFileVersionLocalService dlFileVersionLocalService,
 		DLFileVersionService dlFileVersionService,
 		DLFolderLocalService dlFolderLocalService,
@@ -70,13 +72,15 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 		this.dlFileEntryLocalService = dlFileEntryLocalService;
 		this.dlFileEntryService = dlFileEntryService;
 		this.dlFileEntryTypeLocalService = dlFileEntryTypeLocalService;
+		this.dlFileShortcutLocalService = dlFileShortcutLocalService;
+		this.dlFileShortcutService = dlFileShortcutService;
 		this.dlFileVersionLocalService = dlFileVersionLocalService;
 		this.dlFileVersionService = dlFileVersionService;
 		this.dlFolderLocalService = dlFolderLocalService;
 		this.dlFolderService = dlFolderService;
 		this.resourceLocalService = resourceLocalService;
-		_repositoryId = repositoryId;
 		_groupId = groupId;
+		_repositoryId = repositoryId;
 		_dlFolderId = dlFolderId;
 	}
 
@@ -99,34 +103,38 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 		return false;
 	}
 
-	protected void addFileEntryResources(
-			DLFileEntry dlFileEntry, ServiceContext serviceContext)
+	protected HashMap<String, DDMFormValues> getDDMFormValuesMap(
+			ServiceContext serviceContext, long fileEntryTypeId)
 		throws PortalException {
 
-		if (serviceContext.isAddGroupPermissions() ||
-			serviceContext.isAddGuestPermissions()) {
+		HashMap<String, DDMFormValues> ddmFormValuesMap = new HashMap<>();
 
-			resourceLocalService.addResources(
-				dlFileEntry.getCompanyId(), dlFileEntry.getGroupId(),
-				dlFileEntry.getUserId(), DLFileEntry.class.getName(),
-				dlFileEntry.getFileEntryId(), false,
-				serviceContext.isAddGroupPermissions(),
-				serviceContext.isAddGuestPermissions());
+		if (fileEntryTypeId <= 0) {
+			return ddmFormValuesMap;
 		}
-		else {
-			if (serviceContext.isDeriveDefaultPermissions()) {
-				serviceContext.deriveDefaultPermissions(
-					dlFileEntry.getRepositoryId(),
-					DLFileEntryConstants.getClassName());
+
+		DLFileEntryType fileEntryType =
+			DLFileEntryTypeLocalServiceUtil.getFileEntryType(fileEntryTypeId);
+
+		List<DDMStructure> ddmStructures = fileEntryType.getDDMStructures();
+
+		for (DDMStructure ddmStructure : ddmStructures) {
+			String namespace = String.valueOf(ddmStructure.getStructureId());
+
+			DDMFormValues ddmFormValues =
+				(DDMFormValues)serviceContext.getAttribute(
+					DDMFormValues.class.getName() +
+						ddmStructure.getStructureId());
+
+			if (ddmFormValues == null) {
+				ddmFormValues = StorageEngineManagerUtil.getDDMFormValues(
+					ddmStructure.getStructureId(), namespace, serviceContext);
 			}
 
-			resourceLocalService.addModelResources(
-				dlFileEntry.getCompanyId(), dlFileEntry.getGroupId(),
-				dlFileEntry.getUserId(), DLFileEntry.class.getName(),
-				dlFileEntry.getFileEntryId(),
-				serviceContext.getGroupPermissions(),
-				serviceContext.getGuestPermissions());
+			ddmFormValuesMap.put(ddmStructure.getStructureKey(), ddmFormValues);
 		}
+
+		return ddmFormValuesMap;
 	}
 
 	protected long getDefaultFileEntryTypeId(
@@ -139,38 +147,6 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 		return dlFileEntryTypeLocalService.getDefaultFileEntryTypeId(folderId);
 	}
 
-	protected HashMap<String, Fields> getFieldsMap(
-			ServiceContext serviceContext, long fileEntryTypeId)
-		throws PortalException {
-
-		HashMap<String, Fields> fieldsMap = new HashMap<String, Fields>();
-
-		if (fileEntryTypeId <= 0) {
-			return fieldsMap;
-		}
-
-		DLFileEntryType fileEntryType =
-			DLFileEntryTypeLocalServiceUtil.getFileEntryType(fileEntryTypeId);
-
-		List<DDMStructure> ddmStructures = fileEntryType.getDDMStructures();
-
-		for (DDMStructure ddmStructure : ddmStructures) {
-			String namespace = String.valueOf(ddmStructure.getStructureId());
-
-			Fields fields = (Fields)serviceContext.getAttribute(
-				Fields.class.getName() + ddmStructure.getStructureId());
-
-			if (fields == null) {
-				fields = DDMUtil.getFields(
-					ddmStructure.getStructureId(), namespace, serviceContext);
-			}
-
-			fieldsMap.put(ddmStructure.getStructureKey(), fields);
-		}
-
-		return fieldsMap;
-	}
-
 	protected long getGroupId() {
 		return _groupId;
 	}
@@ -181,12 +157,12 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 		String value = ParamUtil.getString(serviceContext, name);
 
 		if (value == null) {
-			return new SortedArrayList<Long>();
+			return new SortedArrayList<>();
 		}
 
 		long[] longArray = StringUtil.split(value, 0L);
 
-		SortedArrayList<Long> longList = new SortedArrayList<Long>();
+		SortedArrayList<Long> longList = new SortedArrayList<>();
 
 		for (long longValue : longArray) {
 			longList.add(longValue);
@@ -214,7 +190,7 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 	}
 
 	protected List<Long> toFolderIds(List<Long> folderIds) {
-		List<Long> toFolderIds = new ArrayList<Long>(folderIds.size());
+		List<Long> toFolderIds = new ArrayList<>(folderIds.size());
 
 		for (long folderId : folderIds) {
 			toFolderIds.add(toFolderId(folderId));
@@ -227,6 +203,8 @@ public abstract class LiferayRepositoryBase implements CapabilityProvider {
 	protected DLFileEntryLocalService dlFileEntryLocalService;
 	protected DLFileEntryService dlFileEntryService;
 	protected DLFileEntryTypeLocalService dlFileEntryTypeLocalService;
+	protected DLFileShortcutLocalService dlFileShortcutLocalService;
+	protected DLFileShortcutService dlFileShortcutService;
 	protected DLFileVersionLocalService dlFileVersionLocalService;
 	protected DLFileVersionService dlFileVersionService;
 	protected DLFolderLocalService dlFolderLocalService;

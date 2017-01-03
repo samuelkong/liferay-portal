@@ -14,28 +14,17 @@
 
 package com.liferay.taglib.ui;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portletdisplaytemplate.PortletDisplayTemplateManagerUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.taglib.aui.AUIUtil;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,8 +34,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class BreadcrumbTag extends IncludeTag {
 
-	public void setDisplayStyle(String displayStyle) {
-		_displayStyle = displayStyle;
+	public void setDdmTemplateGroupId(long ddmTemplateGroupId) {
+		_ddmTemplateGroupId = ddmTemplateGroupId;
+	}
+
+	public void setDdmTemplateKey(String ddmTemplateKey) {
+		_ddmTemplateKey = ddmTemplateKey;
 	}
 
 	public void setShowCurrentGroup(boolean showCurrentGroup) {
@@ -69,213 +62,72 @@ public class BreadcrumbTag extends IncludeTag {
 		_showPortletBreadcrumb = showPortletBreadcrumb;
 	}
 
-	protected void buildGuestGroupBreadcrumb(
-			ThemeDisplay themeDisplay, StringBundler sb)
-		throws Exception {
-
-		BreadcrumbEntry breadcrumbEntry =
-			BreadcrumbUtil.getGuestGroupBreadcrumbEntry(themeDisplay);
-
-		if (breadcrumbEntry == null) {
-			return;
-		}
-
-		sb.append("<li><a href=\"");
-		sb.append(breadcrumbEntry.getURL());
-		sb.append("\">");
-		sb.append(HtmlUtil.escape(breadcrumbEntry.getTitle()));
-		sb.append("</a></li>");
-	}
-
-	protected void buildLayoutBreadcrumb(
-			ThemeDisplay themeDisplay, StringBundler sb)
-		throws Exception {
-
-		List<BreadcrumbEntry> breadcrumbEntries =
-			BreadcrumbUtil.getLayoutBreadcrumbEntries(themeDisplay);
-
-		for (BreadcrumbEntry breadcrumbEntry : breadcrumbEntries) {
-			sb.append("<li><a href=\"");
-			sb.append(breadcrumbEntry.getURL());
-			sb.append("\" ");
-
-			Layout layout = (Layout)breadcrumbEntry.getBaseModel();
-
-			if (layout.isTypeControlPanel()) {
-				sb.append("target=\"_top\"");
-			}
-			else {
-				sb.append(PortalUtil.getLayoutTarget(layout));
-			}
-
-			sb.append(StringPool.GREATER_THAN);
-			sb.append(HtmlUtil.escape(breadcrumbEntry.getTitle()));
-			sb.append("</a></li>");
-		}
-	}
-
-	protected void buildParentGroupsBreadcrumb(
-			ThemeDisplay themeDisplay, StringBundler sb)
-		throws Exception {
-
-		List<BreadcrumbEntry> breadcrumbEntries =
-			BreadcrumbUtil.getParentGroupBreadcrumbEntries(themeDisplay);
-
-		for (BreadcrumbEntry breadcrumbEntry : breadcrumbEntries) {
-			sb.append("<li><a href=\"");
-			sb.append(breadcrumbEntry.getURL());
-			sb.append("\">");
-			sb.append(HtmlUtil.escape(breadcrumbEntry.getTitle()));
-			sb.append("</a></li>");
-		}
-	}
-
-	protected void buildPortletBreadcrumb(
-			HttpServletRequest request, ThemeDisplay themeDisplay,
-			StringBundler sb)
-		throws Exception {
-
-		List<BreadcrumbEntry> breadcrumbEntries =
-			BreadcrumbUtil.getPortletBreadcrumbEntries(request);
-
-		for (BreadcrumbEntry breadcrumbEntry : breadcrumbEntries) {
-			if (!_showCurrentGroup) {
-				String siteGroupName = themeDisplay.getSiteGroupName();
-
-				if (siteGroupName.equals(breadcrumbEntry.getTitle())) {
-					continue;
-				}
-			}
-
-			sb.append("<li>");
-
-			if (Validator.isNotNull(breadcrumbEntry.getURL())) {
-				sb.append("<a href=\"");
-				sb.append(HtmlUtil.escape(breadcrumbEntry.getURL()));
-				sb.append("\"");
-				sb.append(AUIUtil.buildData(breadcrumbEntry.getData()));
-				sb.append(StringPool.GREATER_THAN);
-
-				sb.append(HtmlUtil.escape(breadcrumbEntry.getTitle()));
-
-				sb.append("</a>");
-			}
-			else {
-				sb.append(HtmlUtil.escape(breadcrumbEntry.getTitle()));
-			}
-
-			sb.append("</li>");
-		}
-	}
-
-	protected void buildScopeGroupBreadcrumb(
-			ThemeDisplay themeDisplay, StringBundler sb)
-		throws Exception {
-
-		BreadcrumbEntry breadcrumbEntry =
-			BreadcrumbUtil.getScopeGroupBreadcrumbEntry(themeDisplay);
-
-		if (breadcrumbEntry == null) {
-			return;
-		}
-
-		sb.append("<li><a href=\"");
-		sb.append(breadcrumbEntry.getURL());
-		sb.append("\">");
-		sb.append(HtmlUtil.escape(breadcrumbEntry.getTitle()));
-		sb.append("</a></li>");
-	}
-
 	@Override
 	protected void cleanUp() {
-		_displayStyle = _DISPLAY_STYLE;
+		_ddmTemplateGroupId = 0;
+		_ddmTemplateKey = null;
 		_showCurrentGroup = true;
-		_showGuestGroup = _SHOW_GUEST_GROUP;
+		_showGuestGroup = false;
 		_showLayout = true;
-		_showParentGroups = null;
+		_showParentGroups = true;
 		_showPortletBreadcrumb = true;
 	}
 
-	protected String getBreadcrumbString(HttpServletRequest request) {
+	protected List<BreadcrumbEntry> getBreadcrumbEntries(
+		HttpServletRequest request) {
+
+		List<BreadcrumbEntry> breadcrumbEntries = Collections.emptyList();
+
+		List<Integer> breadcrumbEntryTypes = new ArrayList<>();
+
+		if (_showCurrentGroup) {
+			breadcrumbEntryTypes.add(BreadcrumbUtil.ENTRY_TYPE_CURRENT_GROUP);
+		}
+
+		if (_showGuestGroup) {
+			breadcrumbEntryTypes.add(BreadcrumbUtil.ENTRY_TYPE_GUEST_GROUP);
+		}
+
+		if (_showLayout) {
+			breadcrumbEntryTypes.add(BreadcrumbUtil.ENTRY_TYPE_LAYOUT);
+		}
+
+		if (_showParentGroups) {
+			breadcrumbEntryTypes.add(BreadcrumbUtil.ENTRY_TYPE_PARENT_GROUP);
+		}
+
+		if (_showPortletBreadcrumb) {
+			breadcrumbEntryTypes.add(BreadcrumbUtil.ENTRY_TYPE_PORTLET);
+		}
+
+		try {
+			breadcrumbEntries = BreadcrumbUtil.getBreadcrumbEntries(
+				request, ArrayUtil.toIntArray(breadcrumbEntryTypes));
+		}
+		catch (Exception e) {
+		}
+
+		return breadcrumbEntries;
+	}
+
+	protected String getDisplayStyle() {
+		if (Validator.isNotNull(_ddmTemplateKey)) {
+			return PortletDisplayTemplateManagerUtil.getDisplayStyle(
+				_ddmTemplateKey);
+		}
+
+		return null;
+	}
+
+	protected long getDisplayStyleGroupId() {
+		if (_ddmTemplateGroupId > 0) {
+			return _ddmTemplateGroupId;
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		StringBundler sb = new StringBundler();
-
-		try {
-			if (_showGuestGroup) {
-				buildGuestGroupBreadcrumb(themeDisplay, sb);
-			}
-
-			if (_showParentGroups) {
-				buildParentGroupsBreadcrumb(themeDisplay, sb);
-			}
-
-			if (_showCurrentGroup) {
-				buildScopeGroupBreadcrumb(themeDisplay, sb);
-			}
-
-			if (_showLayout) {
-				buildLayoutBreadcrumb(themeDisplay, sb);
-			}
-
-			if (_showPortletBreadcrumb) {
-				buildPortletBreadcrumb(request, themeDisplay, sb);
-			}
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
-
-		String breadcrumbString = sb.toString();
-
-		if (Validator.isNull(breadcrumbString)) {
-			return StringPool.BLANK;
-		}
-
-		String breadcrumbTruncateClass = StringPool.BLANK;
-
-		String[] breadcrumbArray = breadcrumbString.split("<li", -1);
-
-		boolean breadcrumbTruncate = false;
-
-		if (breadcrumbArray.length > 3) {
-			breadcrumbTruncate = true;
-		}
-
-		if (breadcrumbTruncate) {
-			breadcrumbTruncateClass = " breadcrumb-truncate";
-		}
-
-		int x = breadcrumbString.indexOf("<li") + 3;
-		int y = breadcrumbString.lastIndexOf("<li") + 3;
-
-		if (x == y) {
-			breadcrumbString = StringUtil.insert(
-				breadcrumbString,
-				" class=\"active only" + breadcrumbTruncateClass + "\"", x);
-		}
-		else {
-			breadcrumbString = StringUtil.insert(
-				breadcrumbString,
-				" class=\"active last" + breadcrumbTruncateClass + "\"", y);
-
-			breadcrumbString = StringUtil.insert(
-				breadcrumbString,
-				" class=\"first" + breadcrumbTruncateClass + "\"", x);
-		}
-
-		if (breadcrumbTruncate) {
-			y = breadcrumbString.lastIndexOf("<li");
-
-			int z = breadcrumbString.lastIndexOf("<li", y - 1) + 3;
-
-			breadcrumbString = StringUtil.insert(
-				breadcrumbString,
-				" class=\"current-parent" + breadcrumbTruncateClass + "\"", z);
-		}
-
-		return breadcrumbString;
+		return themeDisplay.getScopeGroupId();
 	}
 
 	@Override
@@ -283,85 +135,26 @@ public class BreadcrumbTag extends IncludeTag {
 		return _PAGE;
 	}
 
-	protected void initShowParentGroups(HttpServletRequest request) {
-		if (_showParentGroups != null) {
-			return;
-		}
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		try {
-			Layout layout = themeDisplay.getLayout();
-
-			Group group = layout.getGroup();
-
-			UnicodeProperties typeSettingsProperties =
-				group.getTypeSettingsProperties();
-
-			_showParentGroups = GetterUtil.getBoolean(
-				typeSettingsProperties.getProperty(
-					"breadcrumbShowParentGroups"),
-				_SHOW_PARENT_GROUPS);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
-	}
-
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
-		initShowParentGroups(request);
-
 		request.setAttribute(
-			"liferay-ui:breadcrumb:breadcrumbString",
-			getBreadcrumbString(request));
-
-		String displayStyle = _displayStyle;
-
-		if (!ArrayUtil.contains(_DISPLAY_STYLE_OPTIONS, displayStyle)) {
-			displayStyle = _DISPLAY_STYLE_OPTIONS[0];
-		}
-
+			"liferay-ui:breadcrumb:breadcrumbEntries",
+			getBreadcrumbEntries(request));
 		request.setAttribute(
-			"liferay-ui:breadcrumb:displayStyle", displayStyle);
+			"liferay-ui:breadcrumb:displayStyle", getDisplayStyle());
 		request.setAttribute(
-			"liferay-ui:breadcrumb:showCurrentGroup",
-			String.valueOf(_showCurrentGroup));
-		request.setAttribute(
-			"liferay-ui:breadcrumb:showGuestGroup",
-			String.valueOf(_showGuestGroup));
-		request.setAttribute(
-			"liferay-ui:breadcrumb:showLayout", String.valueOf(_showLayout));
-		request.setAttribute(
-			"liferay-ui:breadcrumb:showParentGroups",
-			String.valueOf(_showParentGroups));
-		request.setAttribute(
-			"liferay-ui:breadcrumb:showPortletBreadcrumb",
-			String.valueOf(_showPortletBreadcrumb));
+			"liferay-ui:breadcrumb:displayStyleGroupId",
+			getDisplayStyleGroupId());
 	}
-
-	private static final String _DISPLAY_STYLE = GetterUtil.getString(
-		PropsUtil.get(PropsKeys.BREADCRUMB_DISPLAY_STYLE_DEFAULT));
-
-	private static final String[] _DISPLAY_STYLE_OPTIONS = PropsUtil.getArray(
-		PropsKeys.BREADCRUMB_DISPLAY_STYLE_OPTIONS);
 
 	private static final String _PAGE = "/html/taglib/ui/breadcrumb/page.jsp";
 
-	private static final boolean _SHOW_GUEST_GROUP = GetterUtil.getBoolean(
-		PropsUtil.get(PropsKeys.BREADCRUMB_SHOW_GUEST_GROUP));
-
-	private static final boolean _SHOW_PARENT_GROUPS = GetterUtil.getBoolean(
-		PropsUtil.get(PropsKeys.BREADCRUMB_SHOW_PARENT_GROUPS));
-
-	private static final Log _log = LogFactoryUtil.getLog(BreadcrumbTag.class);
-
-	private String _displayStyle = _DISPLAY_STYLE;
+	private long _ddmTemplateGroupId;
+	private String _ddmTemplateKey;
 	private boolean _showCurrentGroup = true;
-	private boolean _showGuestGroup = _SHOW_GUEST_GROUP;
+	private boolean _showGuestGroup;
 	private boolean _showLayout = true;
-	private Boolean _showParentGroups = null;
+	private boolean _showParentGroups = true;
 	private boolean _showPortletBreadcrumb = true;
 
 }

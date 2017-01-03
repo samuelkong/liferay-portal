@@ -14,9 +14,10 @@
 
 package com.liferay.portal.service.permission;
 
-import com.liferay.portal.model.Role;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.RolePermission;
 
 /**
  * @author Charles May
@@ -29,7 +30,8 @@ public class RolePermissionImpl implements RolePermission {
 		throws PrincipalException {
 
 		if (!contains(permissionChecker, roleId, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Role.class.getName(), roleId, actionId);
 		}
 	}
 

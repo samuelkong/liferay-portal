@@ -15,10 +15,12 @@
 package com.liferay.portal.resiliency.spi.agent;
 
 import com.liferay.portal.kernel.io.AutoDeleteFileInputStream;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.resiliency.spi.SPIUtil;
 import com.liferay.portal.kernel.resiliency.spi.agent.annotation.Direction;
 import com.liferay.portal.kernel.servlet.PersistentHttpServletRequestWrapper;
 import com.liferay.portal.kernel.servlet.ServletInputStreamAdapter;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.FileItem;
 import com.liferay.portal.kernel.upload.UploadServletRequest;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -30,10 +32,8 @@ import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.upload.UploadServletRequestImpl;
-import com.liferay.portal.util.WebKeys;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -123,7 +123,7 @@ public class SPIAgentRequest extends SPIAgentSerializable {
 		distributedRequestAttributes = extractDistributedRequestAttributes(
 			request, Direction.REQUEST);
 		headerMap = extractRequestHeaders(request);
-		parameterMap = new HashMap<String, String[]>(request.getParameterMap());
+		parameterMap = new HashMap<>(request.getParameterMap());
 		remoteAddr = request.getRemoteAddr();
 		remoteHost = request.getRemoteHost();
 		remotePort = request.getRemotePort();
@@ -185,7 +185,7 @@ public class SPIAgentRequest extends SPIAgentSerializable {
 			WebKeys.THEME_DISPLAY);
 
 		if ((themeDisplay != null) && themeDisplay.isAjax()) {
-			parameterMap = new HashMap<String, String[]>(parameterMap);
+			parameterMap = new HashMap<>(parameterMap);
 
 			parameterMap.put(
 				"portalResiliencyPortletShowFooter",
@@ -247,6 +247,7 @@ public class SPIAgentRequest extends SPIAgentSerializable {
 				Cookie cookie = CookieUtil.deserialize(cookieBytes);
 
 				sb.append(CookieUtil.toString(cookie));
+
 				sb.append(", ");
 			}
 

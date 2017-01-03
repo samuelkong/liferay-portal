@@ -14,6 +14,7 @@
 
 package com.liferay.portal.dao.jdbc.aop;
 
+import com.liferay.portal.kernel.dao.jdbc.aop.DynamicDataSourceTargetSource;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.spring.transaction.TransactionInterceptor;
 
@@ -28,8 +29,7 @@ public class DynamicDataSourceAdviceFactoryUtil {
 		TransactionInterceptor transactionInterceptor) {
 
 		DynamicDataSourceTargetSource dynamicDataSourceTargetSource =
-			(DynamicDataSourceTargetSource)
-				InfrastructureUtil.getDynamicDataSourceTargetSource();
+			InfrastructureUtil.getDynamicDataSourceTargetSource();
 
 		if (dynamicDataSourceTargetSource == null) {
 			return transactionInterceptor;

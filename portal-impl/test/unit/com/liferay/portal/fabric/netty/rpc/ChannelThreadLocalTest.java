@@ -15,7 +15,7 @@
 package com.liferay.portal.fabric.netty.rpc;
 
 import com.liferay.portal.fabric.netty.NettyTestUtil;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 
 import io.netty.channel.embedded.EmbeddedChannel;
 
@@ -29,8 +29,8 @@ import org.junit.Test;
 public class ChannelThreadLocalTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Test
 	public void testConstructor() {

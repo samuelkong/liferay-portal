@@ -14,7 +14,10 @@
 
 package com.liferay.taglib;
 
+import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
+import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.URL;
@@ -32,6 +35,22 @@ import javax.servlet.ServletContext;
  */
 public class FileAvailabilityUtil {
 
+	public static void clearAvailabilities() {
+		String servletContextName = PortalUtil.getServletContextName();
+
+		ServletContext servletContext = ServletContextPool.get(
+			servletContextName);
+
+		Map<String, Boolean> availabilities =
+			(Map<String, Boolean>)servletContext.getAttribute(
+				FileAvailabilityUtil.class.getName());
+
+		if (availabilities != null) {
+			servletContext.removeAttribute(
+				FileAvailabilityUtil.class.getName());
+		}
+	}
+
 	public static boolean isAvailable(
 		ServletContext servletContext, String path) {
 
@@ -43,7 +62,10 @@ public class FileAvailabilityUtil {
 			return true;
 		}
 
-		Boolean available = _availabilities.get(path);
+		Map<String, Boolean> availabilities = _getAvailabilities(
+			servletContext);
+
+		Boolean available = availabilities.get(path);
 
 		if (available != null) {
 			return available;
@@ -58,24 +80,34 @@ public class FileAvailabilityUtil {
 		catch (Exception e) {
 		}
 
-		if (url == null) {
+		if ((url == null) && !PortalWebResourcesUtil.isAvailable(path)) {
 			available = Boolean.FALSE;
 		}
 		else {
 			available = Boolean.TRUE;
 		}
 
-		_availabilities.put(path, available);
+		availabilities.put(path, available);
 
 		return available;
 	}
 
-	public static void reset() {
-		_availabilities.clear();
-	}
+	private static Map<String, Boolean> _getAvailabilities(
+		ServletContext servletContext) {
 
-	private static final Map<String, Boolean> _availabilities =
-		new ConcurrentHashMap<String, Boolean>();
+		Map<String, Boolean> availabilities =
+			(Map<String, Boolean>)servletContext.getAttribute(
+				FileAvailabilityUtil.class.getName());
+
+		if (availabilities == null) {
+			availabilities = new ConcurrentHashMap<>();
+
+			servletContext.setAttribute(
+				FileAvailabilityUtil.class.getName(), availabilities);
+		}
+
+		return availabilities;
+	}
 
 	private static class ResourcePrivilegedExceptionAction
 		implements PrivilegedExceptionAction<URL> {

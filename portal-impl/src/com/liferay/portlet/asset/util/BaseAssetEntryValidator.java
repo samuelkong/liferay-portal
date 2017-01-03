@@ -14,103 +14,37 @@
 
 package com.liferay.portlet.asset.util;
 
-import com.liferay.portal.NoSuchGroupException;
+import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.service.ClassNameLocalServiceUtil;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.asset.AssetCategoryException;
-import com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil;
-import com.liferay.portlet.asset.model.AssetRendererFactory;
-import com.liferay.portlet.asset.model.AssetVocabulary;
-import com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil;
-
-import java.util.List;
 
 /**
- * @author Juan Fernández
+ * @author     Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class BaseAssetEntryValidator implements AssetEntryValidator {
 
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public void validate(
 			long groupId, String className, long classTypePK,
 			long[] categoryIds, String[] entryNames)
 		throws PortalException {
-
-		List<AssetVocabulary> vocabularies =
-			AssetVocabularyLocalServiceUtil.getGroupVocabularies(
-				groupId, false);
-
-		Group group = GroupLocalServiceUtil.getGroup(groupId);
-
-		if (!group.isCompany()) {
-			try {
-				Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
-					group.getCompanyId());
-
-				vocabularies = ListUtil.copy(vocabularies);
-
-				vocabularies.addAll(
-					AssetVocabularyLocalServiceUtil.getGroupVocabularies(
-						companyGroup.getGroupId()));
-			}
-			catch (NoSuchGroupException nsge) {
-			}
-		}
-
-		long classNameId = ClassNameLocalServiceUtil.getClassNameId(className);
-
-		for (AssetVocabulary vocabulary : vocabularies) {
-			validate(classNameId, classTypePK, categoryIds, vocabulary);
-		}
 	}
 
 	protected boolean isAssetCategorizable(long classNameId) {
-		String className = PortalUtil.getClassName(classNameId);
-
-		AssetRendererFactory assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				className);
-
-		if ((assetRendererFactory == null) ||
-			!assetRendererFactory.isCategorizable()) {
-
-			return false;
-		}
-
 		return true;
 	}
 
+	/**
+	 * @throws PortalException
+	 */
 	protected void validate(
 			long classNameId, long classTypePK, final long[] categoryIds,
 			AssetVocabulary vocabulary)
 		throws PortalException {
-
-		if (!vocabulary.isAssociatedToClassNameIdAndClassTypePK(
-				classNameId, classTypePK)) {
-
-			return;
-		}
-
-		if (!isAssetCategorizable(classNameId)) {
-			return;
-		}
-
-		if (vocabulary.isMissingRequiredCategory(
-				classNameId, classTypePK, categoryIds)) {
-
-			throw new AssetCategoryException(
-				vocabulary, AssetCategoryException.AT_LEAST_ONE_CATEGORY);
-		}
-
-		if (!vocabulary.isMultiValued() &&
-			vocabulary.hasMoreThanOneCategorySelected(categoryIds)) {
-				throw new AssetCategoryException(
-					vocabulary, AssetCategoryException.TOO_MANY_CATEGORIES);
-		}
 	}
 
 }

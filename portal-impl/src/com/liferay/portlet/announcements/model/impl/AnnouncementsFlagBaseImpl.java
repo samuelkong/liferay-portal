@@ -16,8 +16,8 @@ package com.liferay.portlet.announcements.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portlet.announcements.model.AnnouncementsFlag;
-import com.liferay.portlet.announcements.service.AnnouncementsFlagLocalServiceUtil;
+import com.liferay.announcements.kernel.model.AnnouncementsFlag;
+import com.liferay.announcements.kernel.service.AnnouncementsFlagLocalServiceUtil;
 
 /**
  * The extended model base implementation for the AnnouncementsFlag service. Represents a row in the &quot;AnnouncementsFlag&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portlet.announcements.service.AnnouncementsFlagLocalServiceUt
  *
  * @author Brian Wing Shun Chan
  * @see AnnouncementsFlagImpl
- * @see com.liferay.portlet.announcements.model.AnnouncementsFlag
+ * @see AnnouncementsFlag
  * @generated
  */
 @ProviderType

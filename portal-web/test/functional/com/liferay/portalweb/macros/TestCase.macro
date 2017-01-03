@@ -1,0 +1,66 @@
+<definition>
+	<command name="getSiteName" returns="siteName">
+		<var method="TestPropsUtil#get('test.name.skip.portal.instance')" name="testNameSkipPortalInstance" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<or>
+				<equals arg1="${siteName}" arg2="Liferay" />
+				<not>
+					<isset var="siteName" />
+				</not>
+			</or>
+			<then>
+				<if>
+					<and>
+						<equals arg1="${testPortalInstance}" arg2="true" />
+						<not>
+							<condition function="IsTestName" locator1="" value1="${testNameSkipPortalInstance}" />
+						</not>
+					</and>
+					<then>
+						<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
+						<var method="StringUtil#replace('${portalURL}', 'http://', '')" name="portalURL" />
+						<var method="StringUtil#replace('${portalURL}', ':8080', '')" name="portalURL" />
+
+						<return name="siteName" value="${portalURL}" />
+					</then>
+					<else>
+						<var method="TestPropsUtil#get('liferay.portal.branch')" name="testPortalBranch" />
+
+						<if>
+							<equals arg1="${testPortalBranch}" arg2="ee-7.0.x" />
+							<then>
+								<return name="siteName" value="Liferay DXP" />
+							</then>
+							<else>
+								<return name="siteName" value="Liferay" />
+							</else>
+						</if>
+					</else>
+				</if>
+			</then>
+			<else>
+				<return name="siteName" value="${siteName}" />
+			</else>
+		</if>
+	</command>
+
+	<command name="setUpPortalInstance">
+		<var method="TestPropsUtil#get('test.name.skip.portal.instance')" name="testNameSkipPortalInstance" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<and>
+				<equals arg1="${testPortalInstance}" arg2="true" />
+				<not>
+					<condition function="IsTestName" locator1="" value1="${testNameSkipPortalInstance}" />
+				</not>
+			</and>
+			<then>
+				<execute macro="SignIn#signInPortalInstanceSetUp" />
+			</then>
+		</if>
+	</command>
+</definition>

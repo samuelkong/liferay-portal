@@ -14,12 +14,12 @@
 
 package com.liferay.portlet.asset.service.impl;
 
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetTagStats;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portlet.asset.model.AssetTag;
-import com.liferay.portlet.asset.model.AssetTagStats;
 import com.liferay.portlet.asset.service.base.AssetTagStatsLocalServiceBaseImpl;
 
 import java.util.List;
@@ -73,7 +73,7 @@ public class AssetTagStatsLocalServiceImpl
 	/**
 	 * Deletes the asset tag statistics instance.
 	 *
-	 * @param  tagStats the asset tag statistics instance
+	 * @param tagStats the asset tag statistics instance
 	 */
 	@Override
 	public void deleteTagStats(AssetTagStats tagStats) {
@@ -83,9 +83,7 @@ public class AssetTagStatsLocalServiceImpl
 	/**
 	 * Deletes the asset tag statistics instance matching the tag statistics ID.
 	 *
-	 * @param  tagStatsId the primary key of the asset tag statistics instance
-	 * @throws PortalException if the assetTagStats with the primary key could
-	 *         not be found
+	 * @param tagStatsId the primary key of the asset tag statistics instance
 	 */
 	@Override
 	public void deleteTagStats(long tagStatsId) throws PortalException {
@@ -99,7 +97,7 @@ public class AssetTagStatsLocalServiceImpl
 	 * Deletes all asset tag statistics instances associated with the asset
 	 * entry matching the class name ID.
 	 *
-	 * @param  classNameId the asset entry's class name ID
+	 * @param classNameId the asset entry's class name ID
 	 */
 	@Override
 	public void deleteTagStatsByClassNameId(long classNameId) {
@@ -114,7 +112,7 @@ public class AssetTagStatsLocalServiceImpl
 	/**
 	 * Deletes all asset tag statistics instances associated with the tag.
 	 *
-	 * @param  tagId the primary key of the tag
+	 * @param tagId the primary key of the tag
 	 */
 	@Override
 	public void deleteTagStatsByTagId(long tagId) {
@@ -182,8 +180,6 @@ public class AssetTagStatsLocalServiceImpl
 	 * @param  tagId the primary key of the tag
 	 * @param  classNameId the asset entry's class name ID
 	 * @return the updated asset tag statistics instance
-	 * @throws PortalException if an asset tag with the tag ID could not be
-	 *         found
 	 */
 	@Override
 	public AssetTagStats updateTagStats(long tagId, long classNameId)

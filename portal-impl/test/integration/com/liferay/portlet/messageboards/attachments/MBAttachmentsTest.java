@@ -14,49 +14,53 @@
 
 package com.liferay.portlet.messageboards.attachments;
 
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
+import com.liferay.message.boards.kernel.model.MBCategory;
+import com.liferay.message.boards.kernel.model.MBCategoryConstants;
+import com.liferay.message.boards.kernel.model.MBMessage;
+import com.liferay.message.boards.kernel.model.MBMessageConstants;
+import com.liferay.message.boards.kernel.service.MBCategoryServiceUtil;
+import com.liferay.message.boards.kernel.service.MBMessageLocalServiceUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.User;
-import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.test.DeleteAfterTestRun;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.util.test.GroupTestUtil;
-import com.liferay.portal.util.test.ServiceContextTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
-import com.liferay.portlet.documentlibrary.model.DLFileEntryConstants;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
-import com.liferay.portlet.messageboards.model.MBCategory;
-import com.liferay.portlet.messageboards.model.MBCategoryConstants;
-import com.liferay.portlet.messageboards.model.MBMessage;
-import com.liferay.portlet.messageboards.model.MBMessageConstants;
-import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.messageboards.util.test.MBTestUtil;
-import com.liferay.portlet.trash.service.TrashEntryServiceUtil;
 
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Julio Camarero
  * @author Roberto Díaz
  * @author Sergio González
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class MBAttachmentsTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
 
 	@Before
 	public void setUp() throws Exception {
@@ -70,9 +74,7 @@ public class MBAttachmentsTest {
 
 		addMessageAttachment();
 
-		_message = MBTestUtil.addMessage(
-			_message.getGroupId(), _message.getCategoryId(),
-			_message.getThreadId(), _message.getMessageId());
+		_message = replyMessage();
 
 		addMessageAttachment();
 
@@ -132,9 +134,7 @@ public class MBAttachmentsTest {
 
 		addMessage();
 
-		_message = MBTestUtil.addMessage(
-			_message.getGroupId(), _message.getCategoryId(),
-			_message.getThreadId(), _message.getMessageId());
+		_message = replyMessage();
 
 		Assert.assertEquals(
 			initialFoldersCount, DLFolderLocalServiceUtil.getDLFoldersCount());
@@ -164,9 +164,7 @@ public class MBAttachmentsTest {
 
 		foldersCount = DLFolderLocalServiceUtil.getDLFoldersCount();
 
-		_message = MBTestUtil.addMessage(
-			_message.getGroupId(), _message.getCategoryId(),
-			_message.getThreadId(), _message.getMessageId());
+		_message = replyMessage();
 
 		addMessageAttachment();
 
@@ -211,9 +209,7 @@ public class MBAttachmentsTest {
 
 		addMessageAttachment();
 
-		_message = MBTestUtil.addMessage(
-			_message.getGroupId(), _message.getCategoryId(),
-			_message.getThreadId(), _message.getMessageId());
+		_message = replyMessage();
 
 		addMessageAttachment();
 
@@ -236,9 +232,7 @@ public class MBAttachmentsTest {
 
 		addMessage();
 
-		_message = MBTestUtil.addMessage(
-			_message.getGroupId(), _message.getCategoryId(),
-			_message.getThreadId(), _message.getMessageId());
+		_message = replyMessage();
 
 		Assert.assertEquals(
 			initialFoldersCount, DLFolderLocalServiceUtil.getDLFoldersCount());
@@ -305,9 +299,13 @@ public class MBAttachmentsTest {
 		}
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
 
-		_category = MBTestUtil.addCategory(serviceContext);
+		_category = MBCategoryServiceUtil.addCategory(
+			TestPropsValues.getUserId(),
+			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, serviceContext);
 	}
 
 	protected void addMessage() throws Exception {
@@ -316,10 +314,14 @@ public class MBAttachmentsTest {
 		}
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
 
-		_message = MBTestUtil.addMessage(
-			_category.getGroupId(), _category.getCategoryId(), serviceContext);
+		_message = MBMessageLocalServiceUtil.addMessage(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			_category.getGroupId(), _category.getCategoryId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
 	}
 
 	protected void addMessageAttachment() throws Exception {
@@ -339,7 +341,8 @@ public class MBAttachmentsTest {
 					"company_logo.png", getClass(), StringPool.BLANK);
 
 			ServiceContext serviceContext =
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId());
 
 			_message = MBMessageLocalServiceUtil.addMessage(
 				user.getUserId(), user.getFullName(), _group.getGroupId(),
@@ -349,13 +352,14 @@ public class MBAttachmentsTest {
 		}
 		else {
 			ServiceContext serviceContext =
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId());
 
 			List<ObjectValuePair<String, InputStream>> objectValuePairs =
 				MBTestUtil.getInputStreamOVPs(
 					"OSX_Test.docx", getClass(), StringPool.BLANK);
 
-			List<String> existingFiles = new ArrayList<String>();
+			List<String> existingFiles = new ArrayList<>();
 
 			List<FileEntry> fileEntries = _message.getAttachmentsFileEntries();
 
@@ -370,6 +374,23 @@ public class MBAttachmentsTest {
 		}
 	}
 
+	protected MBMessage replyMessage() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		List<ObjectValuePair<String, InputStream>> inputStreamOVPs =
+			Collections.emptyList();
+
+		return MBMessageLocalServiceUtil.addMessage(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			_message.getGroupId(), _message.getCategoryId(),
+			_message.getThreadId(), _message.getMessageId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			MBMessageConstants.DEFAULT_FORMAT, inputStreamOVPs, false, 0.0,
+			false, serviceContext);
+	}
+
 	private void _trashMBAttachments(boolean restore) throws Exception {
 		int initialNotInTrashCount = _message.getAttachmentsFileEntriesCount();
 		int initialTrashEntriesCount =
@@ -377,14 +398,15 @@ public class MBAttachmentsTest {
 
 		List<FileEntry> fileEntries = _message.getAttachmentsFileEntries();
 
-		List<String> existingFiles = new ArrayList<String>();
+		List<String> existingFiles = new ArrayList<>();
 
 		for (FileEntry fileEntry : fileEntries) {
 			existingFiles.add(String.valueOf(fileEntry.getFileEntryId()));
 		}
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
 
 		String fileName = "OSX_Test.docx";
 
@@ -417,8 +439,8 @@ public class MBAttachmentsTest {
 			_message.getDeletedAttachmentsFileEntriesCount());
 
 		if (restore) {
-			TrashEntryServiceUtil.restoreEntry(
-				DLFileEntryConstants.getClassName(), fileEntryId);
+			MBMessageLocalServiceUtil.restoreMessageAttachmentFromTrash(
+				TestPropsValues.getUserId(), _message.getMessageId(), fileName);
 
 			Assert.assertEquals(
 				initialNotInTrashCount + 1,

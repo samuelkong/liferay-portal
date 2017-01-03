@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false" package-path="com.liferay.knowledge.base">
+	<namespace>KB</namespace>
+	<entity local-service="true" name="KBArticle" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="kbArticleId" primary="true" type="long" />
+
+		<!-- Resource -->
+
+		<column name="resourcePrimKey" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column filter-primary="true" name="rootResourcePrimKey" type="long" />
+		<column name="parentResourceClassNameId" type="long" />
+		<column name="parentResourcePrimKey" type="long" />
+		<column name="kbFolderId" type="long" />
+		<column name="version" type="int" />
+		<column name="title" type="String" />
+		<column name="urlTitle" type="String" />
+		<column name="content" type="String" />
+		<column name="description" type="String" />
+		<column name="priority" type="double" />
+		<column name="sections" type="String" />
+		<column name="viewCount" type="int" />
+		<column name="latest" type="boolean" />
+		<column name="main" type="boolean" />
+		<column name="sourceURL" type="String" />
+		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="modifiedDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="ResourcePrimKey" return-type="Collection">
+			<finder-column name="resourcePrimKey" />
+		</finder>
+		<finder name="R_G" return-type="Collection">
+			<finder-column name="resourcePrimKey" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="R_V" return-type="KBArticle" unique="true">
+			<finder-column name="resourcePrimKey" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="R_L" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="resourcePrimKey" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="R_M" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="resourcePrimKey" />
+			<finder-column name="main" />
+		</finder>
+		<finder name="R_S" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="resourcePrimKey" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_L" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="G_M" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="main" />
+		</finder>
+		<finder name="G_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_L" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="C_M" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="main" />
+		</finder>
+		<finder name="C_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="P_L" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="P_M" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
+			<finder-column name="main" />
+		</finder>
+		<finder name="P_S" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="R_G_V" return-type="KBArticle" unique="true">
+			<finder-column name="resourcePrimKey" />
+			<finder-column name="groupId" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="R_G_L" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="resourcePrimKey" />
+			<finder-column name="groupId" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="R_G_M" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="resourcePrimKey" />
+			<finder-column name="groupId" />
+			<finder-column name="main" />
+		</finder>
+		<finder name="R_G_S" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="resourcePrimKey" />
+			<finder-column name="groupId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_P_L" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="G_P_M" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
+			<finder-column name="main" />
+		</finder>
+		<finder name="G_P_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_KBFI_UT" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="kbFolderId" />
+			<finder-column name="urlTitle" />
+		</finder>
+		<finder name="G_KBFI_L" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="kbFolderId" />
+			<finder-column name="latest" />
+		</finder>
+		<finder name="G_KBFI_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="kbFolderId" />
+			<finder-column name="status" />
+		</finder>
+		<finder db-index="false" name="G_S_L" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" comparator="LIKE" name="sections" />
+			<finder-column name="latest" />
+		</finder>
+		<finder db-index="false" name="G_S_M" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" comparator="LIKE" name="sections" />
+			<finder-column name="main" />
+		</finder>
+		<finder db-index="false" name="G_S_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" comparator="LIKE" name="sections" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_KBFI_UT_ST" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="kbFolderId" />
+			<finder-column name="urlTitle" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="ClassName" package-path="com.liferay.portal" />
+		<reference entity="Company" package-path="com.liferay.portal" />
+		<reference entity="Group" package-path="com.liferay.portal" />
+		<reference entity="Layout" package-path="com.liferay.portal" />
+		<reference entity="PortletPreferences" package-path="com.liferay.portal" />
+		<reference entity="Subscription" package-path="com.liferay.portal" />
+		<reference entity="Ticket" package-path="com.liferay.portal" />
+		<reference entity="WorkflowInstanceLink" package-path="com.liferay.portal" />
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+		<reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
+		<reference entity="ExpandoRow" package-path="com.liferay.portlet.expando" />
+		<reference entity="RatingsStats" package-path="com.liferay.portlet.ratings" />
+		<reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
+	</entity>
+	<entity local-service="true" name="KBComment" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="kbCommentId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="content" type="String" />
+		<column name="userRating" type="int" />
+		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="modifiedDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="U_C_C" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_S" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="ClassName" package-path="com.liferay.portal" />
+		<reference entity="PortletPreferences" package-path="com.liferay.portal" />
+		<reference entity="RatingsEntry" package-path="com.liferay.portlet.ratings" />
+		<reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
+	</entity>
+	<entity local-service="true" name="KBFolder" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="kbFolderId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentKBFolderId" type="long" />
+		<column name="name" type="String" />
+		<column name="urlTitle" type="String" />
+		<column name="description" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="G_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentKBFolderId" />
+		</finder>
+		<finder name="G_P_N" return-type="KBFolder">
+			<finder-column name="groupId" />
+			<finder-column name="parentKBFolderId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="G_P_UT" return-type="KBFolder">
+			<finder-column name="groupId" />
+			<finder-column name="parentKBFolderId" />
+			<finder-column name="urlTitle" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="ClassName" package-path="com.liferay.portal" />
+		<reference entity="ExpandoRow" package-path="com.liferay.portlet.expando" />
+	</entity>
+	<entity local-service="true" name="KBTemplate" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="kbTemplateId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="title" type="String" />
+		<column name="content" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="modifiedDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+		<reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
+	</entity>
+	<exceptions>
+		<exception>DuplicateKBFolderName</exception>
+		<exception>InvalidKBFolderName</exception>
+		<exception>KBArticleContent</exception>
+		<exception>KBArticleImport</exception>
+		<exception>KBArticleParent</exception>
+		<exception>KBArticlePriority</exception>
+		<exception>KBArticleSourceURL</exception>
+		<exception>KBArticleStatus</exception>
+		<exception>KBArticleTitle</exception>
+		<exception>KBArticleUrlTitle</exception>
+		<exception>KBCommentContent</exception>
+		<exception>KBFolderParent</exception>
+		<exception>KBTemplateContent</exception>
+		<exception>KBTemplateTitle</exception>
+		<exception>NoSuchKBArticleSelector</exception>
+	</exceptions>
+</service-builder>

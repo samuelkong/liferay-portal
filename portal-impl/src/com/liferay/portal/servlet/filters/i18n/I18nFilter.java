@@ -14,22 +14,25 @@
 
 package com.liferay.portal.servlet.filters.i18n;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.CookieKeys;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.LayoutSet;
-import com.liferay.portal.model.User;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -49,14 +52,14 @@ import org.apache.struts.Globals;
 public class I18nFilter extends BasePortalFilter {
 
 	public static final String SKIP_FILTER =
-		I18nFilter.class.getName() + "SKIP_FILTER";
+		I18nFilter.class.getName() + "#SKIP_FILTER";
 
 	public static Set<String> getLanguageIds() {
 		return _languageIds;
 	}
 
 	public static void setLanguageIds(Set<String> languageIds) {
-		_languageIds = new HashSet<String>();
+		_languageIds = new HashSet<>();
 
 		for (String languageId : languageIds) {
 			languageId = languageId.substring(1);
@@ -71,12 +74,43 @@ public class I18nFilter extends BasePortalFilter {
 	public boolean isFilterEnabled(
 		HttpServletRequest request, HttpServletResponse response) {
 
-		if (!isAlreadyFiltered(request) && !isForwardedByI18nServlet(request)) {
+		if (!isAlreadyFiltered(request) && !isForwardedByI18nServlet(request) &&
+			!isWidget(request)) {
+
 			return true;
 		}
 		else {
 			return false;
 		}
+	}
+
+	protected String getDefaultLanguageId(HttpServletRequest request) {
+		String defaultLanguageId = getSiteDefaultLanguageId(request);
+
+		if (Validator.isNull(defaultLanguageId)) {
+			defaultLanguageId = LocaleUtil.toLanguageId(
+				LocaleUtil.getDefault());
+		}
+
+		return defaultLanguageId;
+	}
+
+	protected String getFriendlyURL(HttpServletRequest request) {
+		String friendlyURL = StringPool.BLANK;
+
+		String pathInfo = request.getPathInfo();
+
+		if (Validator.isNotNull(pathInfo)) {
+			String[] pathInfoElements = pathInfo.split("/");
+
+			if (Validator.isNotNull(pathInfoElements) &&
+				(pathInfoElements.length > 1)) {
+
+				friendlyURL = StringPool.SLASH + pathInfoElements[1];
+			}
+		}
+
+		return friendlyURL;
 	}
 
 	protected String getRedirect(HttpServletRequest request) throws Exception {
@@ -127,6 +161,34 @@ public class I18nFilter extends BasePortalFilter {
 
 		String redirect = contextPath + i18nPath + requestURI;
 
+		int[] groupFriendlyURLIndex = PortalUtil.getGroupFriendlyURLIndex(
+			requestURI);
+
+		String groupFriendlyURL = StringPool.BLANK;
+
+		int friendlyURLStart = 0;
+		int friendlyURLEnd = 0;
+
+		if (groupFriendlyURLIndex != null) {
+			friendlyURLStart = groupFriendlyURLIndex[0];
+			friendlyURLEnd = groupFriendlyURLIndex[1];
+
+			groupFriendlyURL = requestURI.substring(
+				friendlyURLStart, friendlyURLEnd);
+		}
+
+		long companyId = PortalUtil.getCompanyId(request);
+
+		Group friendlyURLGroup = GroupLocalServiceUtil.fetchFriendlyURLGroup(
+			companyId, groupFriendlyURL);
+
+		if ((friendlyURLGroup != null) &&
+			!LanguageUtil.isAvailableLocale(
+				friendlyURLGroup.getGroupId(), i18nLanguageId)) {
+
+			return null;
+		}
+
 		LayoutSet layoutSet = (LayoutSet)request.getAttribute(
 			WebKeys.VIRTUAL_HOST_LAYOUT_SET);
 
@@ -134,30 +196,75 @@ public class I18nFilter extends BasePortalFilter {
 			requestURI.startsWith(
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING)) {
 
-			int[] groupFriendlyURLIndex = PortalUtil.getGroupFriendlyURLIndex(
-				requestURI);
+			Group group = layoutSet.getGroup();
 
-			if (groupFriendlyURLIndex != null) {
-				int x = groupFriendlyURLIndex[0];
-				int y = groupFriendlyURLIndex[1];
-
-				String groupFriendlyURL = requestURI.substring(x, y);
-
-				Group group = layoutSet.getGroup();
-
-				if (groupFriendlyURL.equals(group.getFriendlyURL())) {
-					redirect = contextPath + i18nPath + requestURI.substring(y);
-				}
+			if (groupFriendlyURL.equals(group.getFriendlyURL())) {
+				redirect =
+					contextPath + i18nPath +
+						requestURI.substring(friendlyURLEnd);
 			}
 		}
 
 		String queryString = request.getQueryString();
+
+		if (Validator.isNull(queryString)) {
+			queryString = (String)request.getAttribute(
+				JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
+		}
 
 		if (Validator.isNotNull(queryString)) {
 			redirect += StringPool.QUESTION + request.getQueryString();
 		}
 
 		return redirect;
+	}
+
+	protected String getRequestedLanguageId(
+		HttpServletRequest request, String userLanguageId) {
+
+		HttpSession session = request.getSession();
+
+		Locale locale = (Locale)session.getAttribute(Globals.LOCALE_KEY);
+
+		String requestedLanguageId = null;
+
+		if (Validator.isNotNull(locale)) {
+			requestedLanguageId = LocaleUtil.toLanguageId(locale);
+		}
+
+		if (Validator.isNull(requestedLanguageId)) {
+			requestedLanguageId = userLanguageId;
+		}
+
+		if (Validator.isNull(requestedLanguageId)) {
+			requestedLanguageId = CookieKeys.getCookie(
+				request, CookieKeys.GUEST_LANGUAGE_ID, false);
+		}
+
+		return requestedLanguageId;
+	}
+
+	protected String getSiteDefaultLanguageId(HttpServletRequest request) {
+		String friendlyURL = getFriendlyURL(request);
+
+		long companyId = PortalUtil.getCompanyId(request);
+
+		try {
+			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
+				companyId, friendlyURL);
+
+			Locale siteDefaultLocale = PortalUtil.getSiteDefaultLocale(
+				group.getGroupId());
+
+			return LocaleUtil.toLanguageId(siteDefaultLocale);
+		}
+		catch (PortalException pe) {
+			if (_log.isDebugEnabled()) {
+				pe.printStackTrace();
+			}
+
+			return StringPool.BLANK;
+		}
 	}
 
 	protected boolean isAlreadyFiltered(HttpServletRequest request) {
@@ -180,53 +287,67 @@ public class I18nFilter extends BasePortalFilter {
 		}
 	}
 
+	protected boolean isWidget(HttpServletRequest request) {
+		if (request.getAttribute(WebKeys.WIDGET) != null) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	protected String prependI18nLanguageId(
 		HttpServletRequest request, int prependFriendlyUrlStyle) {
 
-		String userLanguageId = null;
-
 		User user = (User)request.getAttribute(WebKeys.USER);
+
+		String userLanguageId = null;
 
 		if (user != null) {
 			userLanguageId = user.getLanguageId();
 		}
 
-		String guestLanguageId = userLanguageId;
+		String requestedLanguageId = getRequestedLanguageId(
+			request, userLanguageId);
 
-		if (Validator.isNull(guestLanguageId)) {
-			guestLanguageId = CookieKeys.getCookie(
-				request, CookieKeys.GUEST_LANGUAGE_ID, false);
-		}
+		String defaultLanguageId = getDefaultLanguageId(request);
 
-		String defaultLanguageId = LocaleUtil.toLanguageId(
-			LocaleUtil.getDefault());
-
-		if (Validator.isNull(guestLanguageId)) {
-			guestLanguageId = defaultLanguageId;
+		if (Validator.isNull(requestedLanguageId)) {
+			requestedLanguageId = defaultLanguageId;
 		}
 
 		if (prependFriendlyUrlStyle == 1) {
-			if (!defaultLanguageId.equals(guestLanguageId)) {
-				return guestLanguageId;
-			}
-			else {
-				return null;
-			}
+			return prependIfRequestedLocaleDiffersFromDefaultLocale(
+				defaultLanguageId, requestedLanguageId);
 		}
 		else if (prependFriendlyUrlStyle == 2) {
-			return LocaleUtil.toLanguageId(PortalUtil.getLocale(request));
+			return requestedLanguageId;
 		}
 		else if (prependFriendlyUrlStyle == 3) {
 			if (user != null) {
-				HttpSession session = request.getSession();
+				if (userLanguageId.equals(requestedLanguageId)) {
+					return null;
+				}
 
-				session.setAttribute(Globals.LOCALE_KEY, user.getLocale());
+				return requestedLanguageId;
 			}
-
-			return null;
+			else {
+				return prependIfRequestedLocaleDiffersFromDefaultLocale(
+					defaultLanguageId, requestedLanguageId);
+			}
 		}
 
 		return null;
+	}
+
+	protected String prependIfRequestedLocaleDiffersFromDefaultLocale(
+		String defaultLanguageId, String guestLanguageId) {
+
+		if (defaultLanguageId.equals(guestLanguageId)) {
+			return null;
+		}
+
+		return guestLanguageId;
 	}
 
 	@Override
@@ -240,7 +361,8 @@ public class I18nFilter extends BasePortalFilter {
 		String redirect = getRedirect(request);
 
 		if (redirect == null) {
-			processFilter(I18nFilter.class, request, response, filterChain);
+			processFilter(
+				I18nFilter.class.getName(), request, response, filterChain);
 
 			return;
 		}
@@ -252,7 +374,7 @@ public class I18nFilter extends BasePortalFilter {
 		response.sendRedirect(redirect);
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(I18nFilter.class);
+	private static final Log _log = LogFactoryUtil.getLog(I18nFilter.class);
 
 	private static Set<String> _languageIds;
 

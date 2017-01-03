@@ -22,12 +22,21 @@ String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_asset_
 String className = (String)request.getAttribute("liferay-ui:asset-categories-selector:className");
 long classPK = GetterUtil.getLong((String)request.getAttribute("liferay-ui:asset-categories-selector:classPK"));
 long classTypePK = GetterUtil.getLong((String)request.getAttribute("liferay-ui:asset-categories-selector:classTypePK"));
-String hiddenInput = (String)request.getAttribute("liferay-ui:asset-categories-selector:hiddenInput");
 String curCategoryIds = GetterUtil.getString((String)request.getAttribute("liferay-ui:asset-categories-selector:curCategoryIds"), "");
 String curCategoryNames = StringPool.BLANK;
+long[] groupIds = (long[])request.getAttribute("liferay-ui:asset-categories-selector:groupIds");
+String hiddenInput = (String)request.getAttribute("liferay-ui:asset-categories-selector:hiddenInput");
+boolean ignoreRequestValue = GetterUtil.getBoolean(request.getAttribute("liferay-ui:asset-categories-selector:ignoreRequestValue"));
+boolean showRequiredLabel = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:asset-categories-selector:showRequiredLabel"), true);
+
 int maxEntries = GetterUtil.getInteger(PropsUtil.get(PropsKeys.ASSET_CATEGORIES_SELECTOR_MAX_ENTRIES));
 
-long[] groupIds = PortalUtil.getCurrentAndAncestorSiteGroupIds(scopeGroupId);
+if (ArrayUtil.isEmpty(groupIds)) {
+	groupIds = PortalUtil.getCurrentAndAncestorSiteGroupIds(scopeGroupId);
+}
+else {
+	groupIds = PortalUtil.getCurrentAndAncestorSiteGroupIds(groupIds);
+}
 
 List<AssetVocabulary> vocabularies = AssetVocabularyServiceUtil.getGroupVocabularies(groupIds);
 
@@ -50,15 +59,17 @@ if (Validator.isNotNull(className)) {
 			curCategoryNames = ListUtil.toString(categories, AssetCategory.NAME_ACCESSOR);
 		}
 
-		String curCategoryIdsParam = request.getParameter(hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId());
+		if (!ignoreRequestValue) {
+			String curCategoryIdsParam = request.getParameter(hiddenInput + StringPool.UNDERLINE + vocabulary.getVocabularyId());
 
-		if (Validator.isNotNull(curCategoryIdsParam)) {
-			curCategoryIds = curCategoryIdsParam;
-			curCategoryNames = StringPool.BLANK;
+			if (Validator.isNotNull(curCategoryIdsParam)) {
+				curCategoryIds = curCategoryIdsParam;
+				curCategoryNames = StringPool.BLANK;
+			}
 		}
 
 		String[] categoryIdsTitles = AssetCategoryUtil.getCategoryIdsTitles(curCategoryIds, curCategoryNames, vocabulary.getVocabularyId(), themeDisplay);
-	%>
+%>
 
 		<span class="field-content">
 			<label id="<%= namespace %>assetCategoriesLabel_<%= vocabulary.getVocabularyId() %>">
@@ -73,8 +84,10 @@ if (Validator.isNotNull(className)) {
 					(<%= vocabularyGroup.getDescriptiveName(locale) %>)
 				</c:if>
 
-				<c:if test="<%= vocabulary.isRequired(classNameId, classTypePK) %>">
-					<span class="label-required"><liferay-ui:message key="required" /></span>
+				<c:if test="<%= vocabulary.isRequired(classNameId, classTypePK) && showRequiredLabel %>">
+					<span class="icon-asterisk text-warning">
+						<span class="hide-accessible"><liferay-ui:message key="required" /></span>
+					</span>
 				</c:if>
 			</label>
 
@@ -94,7 +107,7 @@ if (Validator.isNotNull(className)) {
 					instanceVar: '<%= namespace + randomNamespace %>',
 					labelNode: '#<%= namespace %>assetCategoriesLabel_<%= vocabulary.getVocabularyId() %>',
 					maxEntries: <%= maxEntries %>,
-					moreResultsLabel: '<%= UnicodeLanguageUtil.get(request, "load-more-results") %>',
+					moreResultsLabel: '<%= UnicodeLanguageUtil.get(resourceBundle, "load-more-results") %>',
 					portalModelResource: <%= Validator.isNotNull(className) && (ResourceActionsUtil.isPortalModelResource(className) || className.equals(Group.class.getName())) %>,
 					singleSelect: <%= !vocabulary.isMultiValued() %>,
 					title: '<%= UnicodeLanguageUtil.format(request, "select-x", vocabulary.getTitle(locale), false) %>',
@@ -104,14 +117,16 @@ if (Validator.isNotNull(className)) {
 			).render();
 		</aui:script>
 
-	<%
+<%
 	}
 }
 else {
-	String curCategoryIdsParam = request.getParameter(hiddenInput);
+	if (!ignoreRequestValue) {
+		String curCategoryIdsParam = request.getParameter(hiddenInput);
 
-	if (curCategoryIdsParam != null) {
-		curCategoryIds = curCategoryIdsParam;
+		if (curCategoryIdsParam != null) {
+			curCategoryIds = curCategoryIdsParam;
+		}
 	}
 
 	String[] categoryIdsTitles = AssetCategoryUtil.getCategoryIdsTitles(curCategoryIds, curCategoryNames, 0, themeDisplay);
@@ -131,7 +146,7 @@ else {
 				hiddenInput: '#<%= namespace + hiddenInput %>',
 				instanceVar: '<%= namespace + randomNamespace %>',
 				maxEntries: <%= maxEntries %>,
-				moreResultsLabel: '<%= UnicodeLanguageUtil.get(request, "load-more-results") %>',
+				moreResultsLabel: '<%= UnicodeLanguageUtil.get(resourceBundle, "load-more-results") %>',
 				portalModelResource: <%= Validator.isNotNull(className) && (ResourceActionsUtil.isPortalModelResource(className) || className.equals(Group.class.getName())) %>,
 				vocabularyGroupIds: '<%= StringUtil.merge(groupIds) %>',
 				vocabularyIds: '<%= ListUtil.toString(vocabularies, "vocabularyId") %>'

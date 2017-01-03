@@ -1,0 +1,25 @@
+<definition>
+	<command name="configureSetupPG">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Wiki Display" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="Select" locator1="WikiConfiguration#COMMUNICATION_SELECT_NODE_ID" value1="${wikiNodeName}" />
+
+		<execute macro="PortletEntry#save" />
+
+		<execute function="AssertSelectedLabel" locator1="WikiConfiguration#COMMUNICATION_SELECT_NODE_ID" value1="${wikiNodeName}" />
+
+		<execute function="Select" locator1="WikiConfiguration#COMMUNICATION_SELECT_TITLE" value1="${wikiPageName}" />
+
+		<execute macro="Button#clickSave" />
+
+		<execute function="AssertSelectedLabel" locator1="WikiConfiguration#COMMUNICATION_SELECT_TITLE" value1="${wikiPageName}" />
+		<execute macro="Alert#viewSuccessMessage" />
+
+		<execute function="SelectFrame" value1="relative=top" />
+	</command>
+</definition>

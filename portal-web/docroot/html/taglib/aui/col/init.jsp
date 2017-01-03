@@ -28,7 +28,6 @@ int span = GetterUtil.getInteger(String.valueOf(request.getAttribute("aui:col:sp
 int width = GetterUtil.getInteger(String.valueOf(request.getAttribute("aui:col:width")));
 java.lang.String xs = GetterUtil.getString((java.lang.String)request.getAttribute("aui:col:xs"));
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:col:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:col:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/col/init-ext.jspf" %>

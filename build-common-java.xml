@@ -1,20 +1,14 @@
 <?xml version="1.0"?>
 
-<project name="build-common-java" xmlns:antelope="antlib:ise.antelope.tasks">
+<project name="build-common-java" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:artifact="antlib:org.apache.maven.artifact.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<import file="build-common.xml" />
 
-	<if>
+	<condition else="${project.dir}/portal-impl/classes" property="portal-impl.classes.dir" value="${project.dir}/portal-web/docroot/WEB-INF/classes">
 		<and>
 			<equals arg1="${app.server.type}" arg2="tomcat" />
 			<antelope:endswith string="${app.server.portal.dir}" with="/portal-web/docroot" />
 		</and>
-		<then>
-			<property name="portal-impl.classes.dir" value="${project.dir}/portal-web/docroot/WEB-INF/classes" />
-		</then>
-		<else>
-			<property name="portal-impl.classes.dir" value="${project.dir}/portal-impl/classes" />
-		</else>
-	</if>
+	</condition>
 
 	<target name="clean">
 		<delete dir="classes" />
@@ -23,47 +17,27 @@
 		<delete dir="test-results" />
 		<delete dir="woven-classes" />
 		<delete dir="${doc.dir}/${ant.project.name}/javadocs" />
-		<delete file="${jar.file}.jar" failonerror="false" />
-		<delete file="${jar.file}-javadoc.jar" failonerror="false" />
-		<delete file="${jar.file}-sources.jar" failonerror="false" />
+		<delete failonerror="false" file="${deploy.dir}/${jar.file}.jar" />
+		<delete failonerror="false" file="${jar.file}.jar" />
+		<delete failonerror="false" file="${jar.file}-javadoc.jar" />
+		<delete failonerror="false" file="${jar.file}-sources.jar" />
 	</target>
 
-	<target name="compile">
-		<if>
-			<not>
-				<uptodate targetfile="classes/.touch">
-					<srcfiles dir="src" includes="**/*.*" />
-				</uptodate>
-			</not>
-			<then>
-				<if>
-					<available file="$${javac.destdir}" />
-					<then>
+	<target depends="init-compile" name="compile" unless="compile.uptodate">
+		<property name="javac.destdir" value="classes" />
+		<property name="javac.srcdir" value="src" />
+		<property name="javac.classpathref" value="project.classpath" />
 
-						<!--
-						Clean up stale dir that was accidentally introduced in
-						0b63ac06aec90d42d428a1b23140303324125042.
-						-->
-
-						<delete dir="$${javac.destdir}" />
-					</then>
-				</if>
-
-				<mkdir dir="classes" />
-
-				<antcall target="compile-java">
-					<param name="javac.classpathref" value="project.classpath" />
-					<param name="javac.destdir" value="classes" />
-					<param name="javac.srcdir" value="src" />
-				</antcall>
-			</then>
-		</if>
-	</target>
-
-	<target name="compile-java">
-		<copy todir="${javac.destdir}" preservelastmodified="true">
+		<copy preservelastmodified="true" todir="${javac.destdir}">
 			<fileset dir="${javac.srcdir}" excludes="**/*.java" />
 		</copy>
+
+		<if>
+			<equals arg1="${javac.deprecation}" arg2="on" />
+			<then>
+				<record action="start" name="${project.dir}/${ant.project.name}/javac.output.txt" />
+			</then>
+		</if>
 
 		<javac
 			classpathref="${javac.classpathref}"
@@ -77,56 +51,192 @@
 			srcdir="${javac.srcdir}"
 		/>
 
-		<echo file="${javac.destdir}/.touch"></echo>
-	</target>
-
-	<target name="deploy" depends="jar">
 		<if>
-			<not>
-				<uptodate targetfile="${deploy.dir}/${jar.file}.jar">
-					<srcfiles dir="${basedir}" includes="${jar.file}.jar" />
-				</uptodate>
-			</not>
+			<equals arg1="${javac.deprecation}" arg2="on" />
 			<then>
-				<copy file="${jar.file}.jar" todir="${deploy.dir}" preservelastmodified="true" />
-			</then>
-		</if>
-	</target>
+				<record action="stop" name="${project.dir}/${ant.project.name}/javac.output.txt" />
 
-	<target name="jar" depends="compile">
-		<if>
-			<not>
-				<uptodate targetfile="${jar.file}.jar">
-					<srcfiles dir="classes" includes="**/*.*" />
-				</uptodate>
-			</not>
-			<then>
+				<loadfile property="javac.output.txt.content" srcfile="${project.dir}/${ant.project.name}/javac.output.txt" />
+
+				<delete file="${project.dir}/${ant.project.name}/javac.output.txt" />
+
 				<if>
-					<available file="bnd.bnd" />
+					<or>
+						<contains string="${javac.output.txt.content}" substring="a deprecated API" />
+						<contains string="${javac.output.txt.content}" substring="[deprecation]" />
+					</or>
 					<then>
-						<baseline-jar-macro
-							bndRootFile="${project.dir}/common.bnd"
-							file="bnd.bnd"
-							outputPath="."
-							rootProjectDir="${project.dir}"
-							sourcePath="."
-						/>
+						<echo append="true" file="${project.dir}/javac.output.txt" message="${line.separator}${ant.project.name}${line.separator}" />
+						<echo append="true" file="${project.dir}/javac.output.txt" message="${javac.output.txt.content}" />
 					</then>
-					<else>
-						<antcall target="manifest" />
-
-						<jar
-							basedir="classes"
-							jarfile="${jar.file}.jar"
-							manifest="classes/META-INF/MANIFEST.MF"
-						/>
-					</else>
 				</if>
 			</then>
 		</if>
+
+		<echo file="${javac.destdir}/.touch"></echo>
 	</target>
 
-	<target name="jar-javadoc" depends="javadoc">
+	<target depends="init-deploy,jar" if="${copy.jar}" name="deploy" unless="deploy.uptodate">
+		<copy file="${jar.file}.jar" preservelastmodified="true" todir="${deploy.dir}" />
+	</target>
+
+	<target name="init-compile">
+		<condition property="compile.uptodate">
+			<uptodate targetfile="classes/.touch">
+				<srcfiles dir="${basedir}" includes="bnd.bnd,build.xml,ivy.xml,src/**/*.*" />
+			</uptodate>
+		</condition>
+	</target>
+
+	<target depends="jar" name="init-deploy">
+		<property name="copy.jar" value="true" />
+		<property name="src.dir" value="${basedir}" />
+
+		<condition property="deploy.uptodate">
+			<uptodate srcfile="${jar.file}.jar" targetfile="${deploy.dir}/${jar.file}.jar" />
+		</condition>
+	</target>
+
+	<target depends="compile" name="init-jar">
+		<condition property="jar.uptodate">
+			<uptodate targetfile="${jar.file}.jar">
+				<srcfiles dir="${basedir}" includes="bnd.bnd,build.xml,ivy.xml,src/**/*.*" />
+			</uptodate>
+		</condition>
+	</target>
+
+	<target depends="jar,jar-sources" name="install-portal-release">
+		<install-portal-artifact>
+			<attach classifier="sources" file="${artifact.name}-sources.jar" />
+		</install-portal-artifact>
+	</target>
+
+	<target depends="jar,jar-sources" name="install-portal-snapshot">
+		<install-portal-artifact snapshot="true">
+			<attach classifier="sources" file="${artifact.name}-sources.jar" />
+		</install-portal-artifact>
+	</target>
+
+	<target depends="compile,init-jar" name="jar" unless="jar.uptodate">
+		<if>
+			<available file="bnd.bnd" />
+			<then>
+				<manifest-helper />
+
+				<bndexpand propertyfile="${project.dir}/common.bnd" />
+
+				<bnd eclipse="false" exceptions="true" failok="false" inherit="true" output="${jar.file}.jar">
+					<bndfiles>
+						<fileset dir=".">
+							<include name="bnd.bnd" />
+						</fileset>
+					</bndfiles>
+					<classpath>
+						<pathelement location="classes" />
+					</classpath>
+					<property name="-sourcepath" value="." />
+				</bnd>
+
+				<var name="-baseline" unset="true" />
+
+				<if>
+					<not>
+						<equals arg1="${baseline.jar.report.level}" arg2="off" />
+					</not>
+					<then>
+						<loadproperties srcFile="bnd.bnd">
+							<filterchain>
+								<linecontains>
+									<contains value="-baseline" />
+								</linecontains>
+							</filterchain>
+						</loadproperties>
+					</then>
+				</if>
+
+				<if>
+					<isset property="-baseline" />
+					<then>
+						<antelope:stringutil property="baseline.file.beginindex" string="${-baseline}">
+							<indexof string="=" />
+						</antelope:stringutil>
+
+						<math
+							datatype="int"
+							operand1="${baseline.file.beginindex}"
+							operand2="1"
+							operation="+"
+							result="baseline.file.beginindex"
+						/>
+
+						<antelope:stringutil property="baseline.file" string="${-baseline}">
+							<substring beginindex="${baseline.file.beginindex}" />
+						</antelope:stringutil>
+
+						<var name="-baseline" unset="true" />
+
+						<antelope:stringutil property="baseline.file.name.beginindex" string="${baseline.file}">
+							<lastindexof string="/" />
+						</antelope:stringutil>
+
+						<math
+							datatype="int"
+							operand1="${baseline.file.name.beginindex}"
+							operand2="1"
+							operation="+"
+							result="baseline.file.name.beginindex"
+						/>
+
+						<antelope:stringutil property="baseline.file.name.endindex" string="${baseline.file}">
+							<lastindexof string="-" />
+						</antelope:stringutil>
+
+						<antelope:stringutil property="baseline.file.name" string="${baseline.file}">
+							<substring beginindex="${baseline.file.name.beginindex}" endindex="${baseline.file.name.endindex}" />
+						</antelope:stringutil>
+
+						<math
+							datatype="int"
+							operand1="${baseline.file.name.endindex}"
+							operand2="1"
+							operation="+"
+							result="baseline.file.version.beginindex"
+						/>
+
+						<antelope:stringutil property="baseline.file.version.endindex" string="${baseline.file}">
+							<lastindexof string="." />
+						</antelope:stringutil>
+
+						<antelope:stringutil property="baseline.file.version" string="${baseline.file}">
+							<substring beginindex="${baseline.file.version.beginindex}" endindex="${baseline.file.version.endindex}" />
+						</antelope:stringutil>
+
+						<mirrors-get
+							dest="${baseline.file}"
+							src="${baseline.jar.url}/com/liferay/portal/${baseline.file.name}/${baseline.file.version}/${baseline.file.name}-${baseline.file.version}.jar"
+						/>
+					</then>
+				</if>
+
+				<baseline-jar
+					bndFile="bnd.bnd"
+					bndRootFile="${project.dir}/common.bnd"
+					newJarFile="${jar.file}.jar"
+				/>
+			</then>
+			<else>
+				<antcall target="manifest" />
+
+				<jar
+					basedir="classes"
+					jarfile="${jar.file}.jar"
+					manifest="classes/META-INF/MANIFEST.MF"
+				/>
+			</else>
+		</if>
+	</target>
+
+	<target depends="javadoc" name="jar-javadoc">
 		<jar
 			basedir="${doc.dir}/${ant.project.name}/javadocs"
 			jarfile="${jar.file}-javadoc.jar"
@@ -151,7 +261,7 @@
 			maxmemory="2048m"
 			packagenames="*.*"
 			sourcepath="src"
-			stylesheetfile="${project.dir}/tools/javadoc.css"
+			stylesheetfile="${project.dir}/tools/styles/javadoc.css"
 			useexternalfile="yes"
 		>
 			<arg line="-quiet -tag generated" />
@@ -169,14 +279,14 @@
 				<mkdir dir="classes/META-INF" />
 
 				<tstamp>
-					<format property="build.time" pattern="EEE MMM d HH:mm:ss z yyyy" />
+					<format pattern="EEE MMM d HH:mm:ss z yyyy" property="build.time" />
 				</tstamp>
 
 				<manifest file="classes/META-INF/MANIFEST.MF">
 					<attribute name="Bundle-ManifestVersion" value="2" />
 					<attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5" />
 					<attribute name="Bundle-Vendor" value="${release.info.vendor}" />
-					<attribute name="Bundle-Version" value="${release.info.version}" />
+					<attribute name="Bundle-Version" value="${artifact.version}" />
 					<attribute name="Export-Package" value="${export.packages}" />
 					<attribute name="Import-Package" value="${import.packages}" />
 					<attribute name="Javac-Compiler" value="${javac.compiler}" />
@@ -222,11 +332,27 @@
 		</if>
 	</target>
 
-	<target name="release" depends="jar">
+	<target depends="jar,jar-javadoc,jar-sources" name="publish-portal-release">
+		<publish-portal-artifact >
+			<attach classifier="javadoc" file="${artifact.name}-javadoc.jar" />
+			<attach classifier="sources" file="${artifact.name}-sources.jar" />
+		</publish-portal-artifact>
+	</target>
+
+	<target depends="jar,jar-javadoc,jar-sources" name="publish-portal-snapshot">
+		<publish-portal-artifact snapshot="true">
+			<attach classifier="javadoc" file="${artifact.name}-javadoc.jar" />
+			<attach classifier="sources" file="${artifact.name}-sources.jar" />
+		</publish-portal-artifact>
+	</target>
+
+	<target depends="jar" name="release">
 		<if>
 			<available file="bnd.bnd" />
 			<then>
-				<release-to-repo-macro
+				<bndexpand propertyfile="${project.dir}/common.bnd" />
+
+				<release-to-repo
 					bndRootFile="${project.dir}/common.bnd"
 					file="${jar.file}.jar"
 				/>

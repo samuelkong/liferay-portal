@@ -16,10 +16,11 @@ package com.liferay.portlet.messageboards.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.model.CacheModel;
+import com.liferay.message.boards.kernel.model.MBStatsUser;
 
-import com.liferay.portlet.messageboards.model.MBStatsUser;
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,13 +40,39 @@ import java.util.Date;
 public class MBStatsUserCacheModel implements CacheModel<MBStatsUser>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MBStatsUserCacheModel)) {
+			return false;
+		}
+
+		MBStatsUserCacheModel mbStatsUserCacheModel = (MBStatsUserCacheModel)obj;
+
+		if (statsUserId == mbStatsUserCacheModel.statsUserId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, statsUserId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{statsUserId=");
 		sb.append(statsUserId);
 		sb.append(", groupId=");
 		sb.append(groupId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", userId=");
 		sb.append(userId);
 		sb.append(", messageCount=");
@@ -63,6 +90,7 @@ public class MBStatsUserCacheModel implements CacheModel<MBStatsUser>,
 
 		mbStatsUserImpl.setStatsUserId(statsUserId);
 		mbStatsUserImpl.setGroupId(groupId);
+		mbStatsUserImpl.setCompanyId(companyId);
 		mbStatsUserImpl.setUserId(userId);
 		mbStatsUserImpl.setMessageCount(messageCount);
 
@@ -81,8 +109,13 @@ public class MBStatsUserCacheModel implements CacheModel<MBStatsUser>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		statsUserId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
+
 		messageCount = objectInput.readInt();
 		lastPostDate = objectInput.readLong();
 	}
@@ -91,14 +124,20 @@ public class MBStatsUserCacheModel implements CacheModel<MBStatsUser>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(statsUserId);
+
 		objectOutput.writeLong(groupId);
+
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
+
 		objectOutput.writeInt(messageCount);
 		objectOutput.writeLong(lastPostDate);
 	}
 
 	public long statsUserId;
 	public long groupId;
+	public long companyId;
 	public long userId;
 	public int messageCount;
 	public long lastPostDate;

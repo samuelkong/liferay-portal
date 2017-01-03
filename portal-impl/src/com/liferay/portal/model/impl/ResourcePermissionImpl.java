@@ -14,8 +14,9 @@
 
 package com.liferay.portal.model.impl;
 
-import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.service.ResourceActionLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 
 /**
  * Stores the permissions assigned to roles under permissions version 6. A
@@ -88,7 +89,27 @@ import com.liferay.portal.service.ResourceActionLocalServiceUtil;
  */
 public class ResourcePermissionImpl extends ResourcePermissionBaseImpl {
 
-	public ResourcePermissionImpl() {
+	@Override
+	public void addResourceAction(String actionId) throws PortalException {
+		ResourceAction resourceAction =
+			ResourceActionLocalServiceUtil.getResourceAction(
+				getName(), actionId);
+
+		long actionIds = getActionIds() | resourceAction.getBitwiseValue();
+
+		setActionIds(actionIds);
+		setViewActionId(actionIds % 2 == 1);
+	}
+
+	@Override
+	public boolean hasAction(ResourceAction resourceAction) {
+		if ((resourceAction != null) &&
+			((getActionIds() & resourceAction.getBitwiseValue()) != 0)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -97,16 +118,19 @@ public class ResourcePermissionImpl extends ResourcePermissionBaseImpl {
 			ResourceActionLocalServiceUtil.fetchResourceAction(
 				getName(), actionId);
 
-		if (resourceAction != null) {
-			long actionIds = getActionIds();
-			long bitwiseValue = resourceAction.getBitwiseValue();
+		return hasAction(resourceAction);
+	}
 
-			if ((actionIds & bitwiseValue) == bitwiseValue) {
-				return true;
-			}
-		}
+	@Override
+	public void removeResourceAction(String actionId) throws PortalException {
+		ResourceAction resourceAction =
+			ResourceActionLocalServiceUtil.getResourceAction(
+				getName(), actionId);
 
-		return false;
+		long actionIds = getActionIds() & (~resourceAction.getBitwiseValue());
+
+		setActionIds(actionIds);
+		setViewActionId(actionIds % 2 == 1);
 	}
 
 }

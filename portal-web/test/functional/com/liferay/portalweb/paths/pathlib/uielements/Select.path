@@ -1,0 +1,219 @@
+<html>
+<head>
+<title>Select</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Select</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>PERMISSIONS_VIEW_ROLE</td>
+	<td>//select[contains(.,'${key_permissionsViewRole}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>AVAILABLE</td>
+	<td>//div[label[contains(.,'Available')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BULLET_STYLE</td>
+	<td>//div[label[contains(.,'Bullet Style')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTENT_ALL_CONTENT</td>
+	<td>//option[contains(@id,'allContent')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONTENT_CHOOSE_CONTENT</td>
+	<td>//option[contains(@id,'chooseContent')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>COUNTRY</td>
+	<td>//div[label[contains(.,'Country')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATE_RANGE_START_DATE</td>
+	<td>xpath=(//ul[contains(@class,'date-range-options')]//input[contains(@name,'startDate') and contains(@type,'text')])[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATE_RANGE_END_DATE</td>
+	<td>xpath=(//ul[contains(@class,'date-range-options')]//input[contains(@name,'endDate') and contains(@type,'text')])[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEFAULT_LANGUAGE</td>
+	<td>//div[contains(.,'Default Language')]//select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEFAULT_VALUE_SELECT</td>
+	<td>//select[contains(@id,'defaultValue')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DISPLAY_STYLE</td>
+	<td>//div[label[contains(.,'Display Style')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DISPLAY_TEMPLATE</td>
+	<td>//div[label[contains(.,'Display Template')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DOCUMENT_TYPE</td>
+	<td>//select[contains(@id,'fileEntryTypeId')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FEED_ITEM_CONTENT</td>
+	<td>//select[contains(@id,'contentFieldSelector')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FEED_TYPE</td>
+	<td>//select[contains(@id,'feedType')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EXPORT_IMPORT_CONTENT</td>
+	<td>//select[contains(@id,'PORTLET_DATA')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GENDER</td>
+	<td>//div[label[contains(.,'Gender')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>HEADER</td>
+	<td>//div[label[contains(.,'Header')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INCLUDED_PAGES</td>
+	<td>//div[label[contains(.,'Included Pages')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>KNOWLEDGE_BASE_RATING</td>
+	<td>//select[contains(@id,'knowledge-base')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LANGUAGE</td>
+	<td>//div[label[contains(.,'Language')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LAST_TIME</td>
+	<td>//select[contains(@id, 'last')]/option[contains(.,'${key_lastDateRange}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LENGTH</td>
+	<td>//select[contains(@id,'length')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LOCKOUT_DURATION</td>
+	<td>//div[label[contains(.,'Lockout Duration')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MINIMUM_AGE</td>
+	<td>//div[label[contains(.,'Minimum Age')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NESTED_CHILDREN</td>
+	<td>//div[label[contains(.,'Nested Children')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_NODE</td>
+	<td>//div[label[contains(.,'New Node')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEW_PARENT</td>
+	<td>//div[label[contains(.,'New Parent')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>QUESTION</td>
+	<td>//div[label[contains(.,'Question')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REGION</td>
+	<td>//div[label[contains(.,'Region')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REMOTE_PORTLET</td>
+	<td>//div[label[contains(.,'Remote Portlet')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RESET_FAILURE_COUNT</td>
+	<td>//div[label[contains(.,'Reset Failure Count')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RESET_TICKET_MAX_AGE</td>
+	<td>//div[label[contains(.,'Reset Ticket Max Age')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROOT_PAGE</td>
+	<td>//div[label[contains(.,'Root Page')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ROOT_PAGE_LEVEL</td>
+	<td>//div[label[contains(.,'Root Page Level')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SITES</td>
+	<td>//div[label[contains(.,'Sites')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SCOPE</td>
+	<td>//div[label[contains(.,'Scope')]]/select | //div/select[@title='Scope']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TIME_ZONE</td>
+	<td>//select[contains(@id,'timeZoneId')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TYPE</td>
+	<td>//div[label[contains(.,'Type')]]/select</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USER_STATUS</td>
+	<td>//select[contains(@id,'StatusSelect')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VERSION</td>
+	<td>//div[label[contains(.,'Version')]]/select</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

@@ -16,12 +16,12 @@ package com.liferay.portal.model.impl;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTracker;
+import com.liferay.portal.kernel.model.UserTrackerPath;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserTracker;
-import com.liferay.portal.model.UserTrackerPath;
-import com.liferay.portal.service.UserLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,6 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  */
 public class UserTrackerImpl extends UserTrackerBaseImpl {
-
-	public UserTrackerImpl() {
-	}
 
 	@Override
 	public void addPath(UserTrackerPath path) {
@@ -119,8 +116,7 @@ public class UserTrackerImpl extends UserTrackerBaseImpl {
 
 	private String _emailAddress;
 	private String _fullName;
-	private final List<UserTrackerPath> _paths =
-		new ArrayList<UserTrackerPath>();
+	private final List<UserTrackerPath> _paths = new ArrayList<>();
 	private User _user;
 
 }

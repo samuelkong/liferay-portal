@@ -16,10 +16,11 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.ResourceBlockPermission;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.model.MVCCModel;
-import com.liferay.portal.model.ResourceBlockPermission;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,33 @@ import java.io.ObjectOutput;
 public class ResourceBlockPermissionCacheModel implements CacheModel<ResourceBlockPermission>,
 	Externalizable, MVCCModel {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ResourceBlockPermissionCacheModel)) {
+			return false;
+		}
+
+		ResourceBlockPermissionCacheModel resourceBlockPermissionCacheModel = (ResourceBlockPermissionCacheModel)obj;
+
+		if ((resourceBlockPermissionId == resourceBlockPermissionCacheModel.resourceBlockPermissionId) &&
+				(mvccVersion == resourceBlockPermissionCacheModel.mvccVersion)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = HashUtil.hash(0, resourceBlockPermissionId);
+
+		return HashUtil.hash(hashCode, mvccVersion);
+	}
+
+	@Override
 	public long getMvccVersion() {
 		return mvccVersion;
 	}
@@ -48,12 +76,14 @@ public class ResourceBlockPermissionCacheModel implements CacheModel<ResourceBlo
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", resourceBlockPermissionId=");
 		sb.append(resourceBlockPermissionId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", resourceBlockId=");
 		sb.append(resourceBlockId);
 		sb.append(", roleId=");
@@ -71,6 +101,7 @@ public class ResourceBlockPermissionCacheModel implements CacheModel<ResourceBlo
 
 		resourceBlockPermissionImpl.setMvccVersion(mvccVersion);
 		resourceBlockPermissionImpl.setResourceBlockPermissionId(resourceBlockPermissionId);
+		resourceBlockPermissionImpl.setCompanyId(companyId);
 		resourceBlockPermissionImpl.setResourceBlockId(resourceBlockId);
 		resourceBlockPermissionImpl.setRoleId(roleId);
 		resourceBlockPermissionImpl.setActionIds(actionIds);
@@ -83,9 +114,15 @@ public class ResourceBlockPermissionCacheModel implements CacheModel<ResourceBlo
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
+
 		resourceBlockPermissionId = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+
 		resourceBlockId = objectInput.readLong();
+
 		roleId = objectInput.readLong();
+
 		actionIds = objectInput.readLong();
 	}
 
@@ -93,14 +130,21 @@ public class ResourceBlockPermissionCacheModel implements CacheModel<ResourceBlo
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
 		objectOutput.writeLong(resourceBlockPermissionId);
+
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(resourceBlockId);
+
 		objectOutput.writeLong(roleId);
+
 		objectOutput.writeLong(actionIds);
 	}
 
 	public long mvccVersion;
 	public long resourceBlockPermissionId;
+	public long companyId;
 	public long resourceBlockId;
 	public long roleId;
 	public long actionIds;

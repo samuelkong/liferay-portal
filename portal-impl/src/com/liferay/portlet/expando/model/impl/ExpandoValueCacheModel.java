@@ -16,11 +16,12 @@ package com.liferay.portlet.expando.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.expando.kernel.model.ExpandoValue;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.expando.model.ExpandoValue;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,6 +38,30 @@ import java.io.ObjectOutput;
 @ProviderType
 public class ExpandoValueCacheModel implements CacheModel<ExpandoValue>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ExpandoValueCacheModel)) {
+			return false;
+		}
+
+		ExpandoValueCacheModel expandoValueCacheModel = (ExpandoValueCacheModel)obj;
+
+		if (valueId == expandoValueCacheModel.valueId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, valueId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(17);
@@ -89,11 +114,17 @@ public class ExpandoValueCacheModel implements CacheModel<ExpandoValue>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		valueId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		tableId = objectInput.readLong();
+
 		columnId = objectInput.readLong();
+
 		rowId = objectInput.readLong();
+
 		classNameId = objectInput.readLong();
+
 		classPK = objectInput.readLong();
 		data = objectInput.readUTF();
 	}
@@ -102,11 +133,17 @@ public class ExpandoValueCacheModel implements CacheModel<ExpandoValue>,
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(valueId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(tableId);
+
 		objectOutput.writeLong(columnId);
+
 		objectOutput.writeLong(rowId);
+
 		objectOutput.writeLong(classNameId);
+
 		objectOutput.writeLong(classPK);
 
 		if (data == null) {

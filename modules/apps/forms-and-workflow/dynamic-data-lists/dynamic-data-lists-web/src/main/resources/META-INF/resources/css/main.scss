@@ -1,0 +1,55 @@
+.document-library-file-entry-cell-editor-hidden, .link-to-page-cell-editor-hidden {
+	display: none;
+}
+
+.portlet-dynamic-data-lists, .portlet-dynamic-data-lists-display {
+	.form-group.geolocation-field .button-holder .btn {
+		margin-top: 0;
+	}
+
+	.lfr-spreadsheet-container .table {
+		overflow: auto;
+
+		&.yui3-datatable td:after {
+			content: '\0000a0';
+		}
+	}
+
+	.asset-icon .lexicon-icon {
+		height: 32px;
+		width: 32px;
+	}
+
+	.record-set-id, .record-set-modified-date {
+		margin-right: 20px;
+	}
+
+	.lfr-ddm-container{
+		background-color: #FFF;
+	}
+
+}
+
+.portlet-dynamic-data-lists {
+	.sidebar-header {
+		text-align: right;
+	}
+
+	.sidenav-close {
+		display: inline-block;
+	}
+}
+
+.portlet-dynamic-data-lists-display {
+	.view-records-container {
+		overflow: auto;
+	}
+
+	.icons-container .add-record-button-container {
+		float: left;
+	}
+
+	.icons-container .lfr-icon-actions {
+		float: right;
+	}
+}

@@ -1,0 +1,41 @@
+<definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
+	<property name="testray.main.component.name" value="Look And Feel" />
+
+	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
+		<execute macro="User#firstLoginPG" />
+	</set-up>
+
+	<tear-down>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+		</if>
+	</tear-down>
+
+	<command name="ConfigureCustomStylesViaLookAndFeelPG" priority="5">
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="Portlet#addPG">
+			<var name="portletName" value="Sign In" />
+		</execute>
+
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Sign In" />
+			<var name="portletOption" value="Look and Feel Configuration" />
+		</execute>
+
+		<execute macro="Portlet#configureCustomStylesViaLookandfeelPG" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="Portlet#viewCustomStylesViaLookandfeelPG" />
+	</command>
+</definition>

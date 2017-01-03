@@ -18,27 +18,28 @@
 
 <%
 ToolbarItem toolbarItem = (ToolbarItem)request.getAttribute("liferay-ui:toolbar-item:toolbarItem");
-String var = (String)request.getAttribute("liferay-ui:toolbar-item:var");
 %>
 
 <c:choose>
-	<c:when test="<%= toolbarItem instanceof JavascriptToolbarItem %>">
+	<c:when test="<%= toolbarItem instanceof JavaScriptToolbarItem %>">
 
 		<%
-		JavascriptToolbarItem javascriptToolbarItem = (JavascriptToolbarItem)toolbarItem;
+		JavaScriptToolbarItem javaScriptToolbarItem = (JavaScriptToolbarItem)toolbarItem;
 		%>
 
-		<%= var %>.push(
-			{
-				icon: '<%= javascriptToolbarItem.getIcon() %>',
-				label: '<%= javascriptToolbarItem.getLabel() %>',
-				on: {
-					click: function(event) {
-						<%= javascriptToolbarItem.getOnClick() %>
-					}
-				}
-			}
-		);
+		<aui:a cssClass="btn btn-default" href="javascript:;" onClick="<%= javaScriptToolbarItem.getOnClick() %>">
+			<c:if test="<%= Validator.isNotNull(javaScriptToolbarItem.getIcon()) %>">
+				<aui:icon image="<%= javaScriptToolbarItem.getIcon() %>" markupView="lexicon" />
+			</c:if>
+
+			<%= javaScriptToolbarItem.getLabel() %>
+		</aui:a>
+
+		<c:if test="<%= Validator.isNotNull(javaScriptToolbarItem.getJavaScript()) %>">
+			<script>
+				<%= javaScriptToolbarItem.getJavaScript() %>
+			</script>
+		</c:if>
 	</c:when>
 	<c:when test="<%= toolbarItem instanceof URLToolbarItem %>">
 
@@ -46,16 +47,12 @@ String var = (String)request.getAttribute("liferay-ui:toolbar-item:var");
 		URLToolbarItem urlToolbarItem = (URLToolbarItem)toolbarItem;
 		%>
 
-		<%= var %>.push(
-			{
-				icon: '<%= urlToolbarItem.getIcon() %>',
-				label: '<%= urlToolbarItem.getLabel() %>',
-				on: {
-					click: function(event) {
-						window.open('<%= urlToolbarItem.getURL() %>', '<%= urlToolbarItem.getTarget() %>');
-					}
-				}
-			}
-		);
+		<aui:a cssClass="btn btn-default" href="<%= urlToolbarItem.getURL() %>" target="<%= urlToolbarItem.getTarget() %>">
+			<c:if test="<%= Validator.isNotNull(urlToolbarItem.getIcon()) %>">
+				<aui:icon image="<%= urlToolbarItem.getIcon() %>" markupView="lexicon" />
+			</c:if>
+
+			<%= urlToolbarItem.getLabel() %>
+		</aui:a>
 	</c:when>
 </c:choose>

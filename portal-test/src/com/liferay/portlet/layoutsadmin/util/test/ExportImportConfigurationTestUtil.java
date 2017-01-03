@@ -14,19 +14,18 @@
 
 package com.liferay.portlet.layoutsadmin.util.test;
 
-import com.liferay.portal.kernel.lar.exportimportconfiguration.ExportImportConfigurationSettingsMapFactory;
-import com.liferay.portal.model.ExportImportConfiguration;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ExportImportConfigurationLocalServiceUtil;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.test.RandomTestUtil;
-import com.liferay.portal.util.test.ServiceContextTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactory;
+import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
+import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 
 import java.io.Serializable;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -64,13 +63,9 @@ public class ExportImportConfigurationTestUtil {
 
 		User user = UserLocalServiceUtil.getUser(userId);
 
-		Date startDate = new Date();
-
-		Date endDate = startDate;
-
-		return ExportImportConfigurationSettingsMapFactory.buildSettingsMap(
-			userId, groupId, groupId, false, null, null, startDate, endDate,
-			user.getLocale(), user.getTimeZone());
+		return ExportImportConfigurationSettingsMapFactory.
+			buildPublishLayoutLocalSettingsMap(
+				user, groupId, groupId, false, null, null);
 	}
 
 }

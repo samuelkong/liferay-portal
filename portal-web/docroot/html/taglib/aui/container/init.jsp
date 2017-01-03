@@ -23,7 +23,6 @@ java.lang.String cssClass = GetterUtil.getString((java.lang.String)request.getAt
 boolean fluid = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:container:fluid")), true);
 java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribute("aui:container:id"));
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:container:dynamicAttributes");
-Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("aui:container:scopedAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/container/init-ext.jspf" %>

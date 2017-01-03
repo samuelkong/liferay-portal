@@ -21,12 +21,11 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portlet.ratings.model.RatingsStats;
 import com.liferay.portlet.ratings.model.impl.RatingsStatsImpl;
 import com.liferay.portlet.ratings.model.impl.RatingsStatsModelImpl;
-import com.liferay.portlet.ratings.service.persistence.RatingsStatsFinder;
-import com.liferay.portlet.ratings.service.persistence.RatingsStatsUtil;
+import com.liferay.ratings.kernel.model.RatingsStats;
+import com.liferay.ratings.kernel.service.persistence.RatingsStatsFinder;
+import com.liferay.ratings.kernel.service.persistence.RatingsStatsUtil;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.io.Serializable;
@@ -40,7 +39,7 @@ import java.util.Set;
  * @author Brian Wing Shun Chan
  */
 public class RatingsStatsFinderImpl
-	extends BasePersistenceImpl<RatingsStats> implements RatingsStatsFinder {
+	extends RatingsStatsFinderBaseImpl implements RatingsStatsFinder {
 
 	public static final String FIND_BY_C_C =
 		RatingsStatsFinder.class.getName() + ".findByC_C";
@@ -48,9 +47,8 @@ public class RatingsStatsFinderImpl
 	public static final FinderPath FINDER_PATH_FIND_BY_C_C = new FinderPath(
 		RatingsStatsModelImpl.ENTITY_CACHE_ENABLED,
 		RatingsStatsModelImpl.FINDER_CACHE_ENABLED, RatingsStatsImpl.class,
-		RatingsStatsPersistenceImpl.FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-		"findByC_C",
-		new String[] {Long.class.getName(), List.class.getName()});
+		RatingsStatsPersistenceImpl.FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+		"findByC_C", new String[] {Long.class.getName(), List.class.getName()});
 
 	@Override
 	public Map<Serializable, RatingsStats> fetchByPrimaryKeys(

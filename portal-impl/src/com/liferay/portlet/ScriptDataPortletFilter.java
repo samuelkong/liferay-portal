@@ -16,13 +16,14 @@ package com.liferay.portlet;
 
 import com.liferay.portal.kernel.io.OutputStreamWriter;
 import com.liferay.portal.kernel.servlet.taglib.aui.ScriptData;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -30,6 +31,7 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.filter.FilterChain;
 import javax.portlet.filter.FilterConfig;
+import javax.portlet.filter.PortletResponseWrapper;
 import javax.portlet.filter.RenderFilter;
 import javax.portlet.filter.ResourceFilter;
 
@@ -68,8 +70,7 @@ public class ScriptDataPortletFilter implements RenderFilter, ResourceFilter {
 			WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay.isIsolated() || themeDisplay.isStateExclusive()) {
-			_flushScriptData(
-				request, scriptData, (MimeResponseImpl)renderResponse);
+			_flushScriptData(scriptData, _getMimeResponseImpl(renderResponse));
 		}
 	}
 
@@ -91,8 +92,7 @@ public class ScriptDataPortletFilter implements RenderFilter, ResourceFilter {
 			return;
 		}
 
-		_flushScriptData(
-			request, scriptData, (MimeResponseImpl)resourceResponse);
+		_flushScriptData(scriptData, _getMimeResponseImpl(resourceResponse));
 	}
 
 	@Override
@@ -100,8 +100,7 @@ public class ScriptDataPortletFilter implements RenderFilter, ResourceFilter {
 	}
 
 	private void _flushScriptData(
-			HttpServletRequest request, ScriptData scriptData,
-			MimeResponseImpl mimeResponseImpl)
+			ScriptData scriptData, MimeResponseImpl mimeResponseImpl)
 		throws IOException {
 
 		if (mimeResponseImpl.isCalledGetPortletOutputStream()) {
@@ -111,13 +110,26 @@ public class ScriptDataPortletFilter implements RenderFilter, ResourceFilter {
 			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
 				outputStream);
 
-			scriptData.writeTo(request, outputStreamWriter);
+			scriptData.writeTo(outputStreamWriter);
 
 			outputStreamWriter.flush();
 		}
 		else {
-			scriptData.writeTo(request, mimeResponseImpl.getWriter());
+			scriptData.writeTo(mimeResponseImpl.getWriter());
 		}
+	}
+
+	private MimeResponseImpl _getMimeResponseImpl(MimeResponse mimeResponse) {
+		while (!(mimeResponse instanceof MimeResponseImpl) &&
+			(mimeResponse instanceof PortletResponseWrapper)) {
+
+			PortletResponseWrapper portletResponseWrapper =
+				(PortletResponseWrapper)mimeResponse;
+
+			mimeResponse = (MimeResponse)portletResponseWrapper.getResponse();
+		}
+
+		return (MimeResponseImpl)mimeResponse;
 	}
 
 }

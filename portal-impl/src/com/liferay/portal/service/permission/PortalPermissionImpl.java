@@ -14,9 +14,10 @@
 
 package com.liferay.portal.service.permission;
 
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.util.PortletKeys;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.PortalPermission;
+import com.liferay.portal.kernel.util.PortletKeys;
 
 /**
  * @author Charles May
@@ -28,7 +29,9 @@ public class PortalPermissionImpl implements PortalPermission {
 		throws PrincipalException {
 
 		if (!contains(permissionChecker, actionId)) {
-			throw new PrincipalException();
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, PortletKeys.PORTAL, PortletKeys.PORTAL,
+				actionId);
 		}
 	}
 

@@ -1,0 +1,51 @@
+<definition>
+	<command name="assertCannotEditSpreadsheet">
+		<execute function="AssertElementNotPresent" locator1="DDLSpreadsheet#SPREADSHEET_EDIT_CONTROLS_ADD_ROWS_BUTTON" />
+		<execute function="AssertElementNotPresent" locator1="DDLSpreadsheet#SPREADSHEET_EDIT_CONTROLS_ADD_ROWS_SELECT_MENULIST" />
+	</command>
+
+	<command name="configureListViewPG">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute macro="DDLNavigator#gotoOptionalConfiguration" />
+
+		<if>
+			<equals arg1="${configureChecked}" arg2="false" />
+			<then>
+				<execute function="Uncheck" locator1="DDLConfiguration#${configureCheckBoxName}" />
+			</then>
+			<else>
+				<execute function="Check" locator1="DDLConfiguration#${configureCheckBoxName}" />
+			</else>
+		</if>
+
+		<execute macro="Button#clickSave" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="viewAddToolbar">
+		<var name="key_ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+
+		<execute function="AssertTextEquals" locator1="DDL#TOOLBAR_ADD" value1="Add ${ddlDataDefinitionName}" />
+	</command>
+
+	<command name="viewDDLTemplateRecordFieldData">
+		<var name="key_ddlRecordFieldData" value="${ddlRecordFieldData}" />
+
+		<execute function="AssertTextEquals" locator1="DDL#RECORD_TABLE_DISPLAY_FIELD" value1="${key_ddlRecordFieldData}" />
+	</command>
+
+	<command name="viewFieldSelectViaSpreadsheetView">
+		<var name="key_ddlRecordRow" value="${ddlRecordRow}" />
+		<var name="key_fieldName" value="${fieldName}" />
+
+		<execute function="AssertTextEquals" locator1="DDLSpreadsheet#RECORD_TABLE_FIELD_ENTRY" value1="${ddlRecordFieldData}" />
+	</command>
+
+	<command name="viewSpreadsheetContainer">
+		<execute function="AssertElementPresent" locator1="DDLSpreadsheet#SPREADSHEET_CONTAINER" />
+	</command>
+</definition>

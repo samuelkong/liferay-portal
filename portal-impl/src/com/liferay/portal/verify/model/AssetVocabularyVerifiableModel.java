@@ -14,7 +14,8 @@
 
 package com.liferay.portal.verify.model;
 
-import com.liferay.portlet.asset.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.portal.kernel.verify.model.VerifiableResourcedModel;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,6 +36,11 @@ public class AssetVocabularyVerifiableModel
 	@Override
 	public String getTableName() {
 		return "AssetVocabulary";
+	}
+
+	@Override
+	public String getUserIdColumnName() {
+		return "userId";
 	}
 
 }

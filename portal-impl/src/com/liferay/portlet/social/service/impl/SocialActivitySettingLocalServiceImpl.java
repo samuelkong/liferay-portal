@@ -22,16 +22,16 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Group;
-import com.liferay.portlet.social.model.SocialActivityCounterDefinition;
-import com.liferay.portlet.social.model.SocialActivityDefinition;
-import com.liferay.portlet.social.model.SocialActivitySetting;
-import com.liferay.portlet.social.model.SocialActivitySettingConstants;
 import com.liferay.portlet.social.service.base.SocialActivitySettingLocalServiceBaseImpl;
-import com.liferay.portlet.social.util.SocialConfigurationUtil;
+import com.liferay.social.kernel.model.SocialActivityCounterDefinition;
+import com.liferay.social.kernel.model.SocialActivityDefinition;
+import com.liferay.social.kernel.model.SocialActivitySetting;
+import com.liferay.social.kernel.model.SocialActivitySettingConstants;
+import com.liferay.social.kernel.util.SocialConfigurationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +96,7 @@ public class SocialActivitySettingLocalServiceImpl
 	public List<SocialActivityDefinition> getActivityDefinitions(
 		long groupId, String className) {
 
-		List<SocialActivityDefinition> activityDefinitions =
-			new ArrayList<SocialActivityDefinition>();
+		List<SocialActivityDefinition> activityDefinitions = new ArrayList<>();
 
 		List<SocialActivityDefinition> defaultActivityDefinitions =
 			SocialConfigurationUtil.getActivityDefinitions(className);
@@ -155,7 +154,8 @@ public class SocialActivitySettingLocalServiceImpl
 		catch (JSONException jsone) {
 			_log.error(
 				"Unable to create JSON object from " +
-					activitySetting.getValue());
+					activitySetting.getValue(),
+				jsone);
 
 			return false;
 		}
@@ -417,7 +417,7 @@ public class SocialActivitySettingLocalServiceImpl
 		SocialActivitySettingLocalServiceImpl.class);
 
 	private static final PortalCache<String, SocialActivityDefinition>
-		_activityDefinitions = MultiVMPoolUtil.getCache(
+		_activityDefinitions = MultiVMPoolUtil.getPortalCache(
 			SocialActivitySettingLocalServiceImpl.class.getName());
 
 }

@@ -14,17 +14,17 @@
 
 package com.liferay.portal.resiliency.spi.action;
 
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.ActionResult;
 import com.liferay.portal.kernel.portlet.PortletContainer;
 import com.liferay.portal.kernel.portlet.PortletContainerUtil;
 import com.liferay.portal.kernel.resiliency.spi.agent.SPIAgent;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.Portlet;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.resiliency.spi.agent.SPIAgentRequest;
 import com.liferay.portal.resiliency.spi.agent.SPIAgentResponse;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.util.WebKeys;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class PortalResiliencyAction extends Action {
 			(String)session.getAttribute(WebKeys.USER_PASSWORD));
 
 		try {
-			_doExecute(request, response);
+			_execute(request, response);
 		}
 		finally {
 			SPIAgentResponse spiAgentResponse =
@@ -77,7 +77,7 @@ public class PortalResiliencyAction extends Action {
 		return null;
 	}
 
-	private void _doExecute(
+	private void _execute(
 			HttpServletRequest request, HttpServletResponse response)
 		throws Exception {
 

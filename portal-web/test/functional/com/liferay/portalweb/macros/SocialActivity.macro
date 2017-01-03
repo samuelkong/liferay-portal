@@ -1,0 +1,140 @@
+<definition>
+	<!--There is no need for a SocialActivity#tearDownCP, as the User Statistics will not be reset and Jenkins does not run teardowns. -->
+
+	<command name="addActionCP">
+		<var name="key_userAction" value="${userAction}" />
+
+		<execute function="AssertClick" locator1="SocialActivity#POSSIBLE_USER_ACTIONS_BUTTON" value1="${userAction}" />
+
+		<execute macro="Button#clickSave" />
+	</command>
+
+	<command name="configureActionCP">
+		<var name="key_userAction" value="${userAction}" />
+
+		<if>
+			<isset var="participationIncrement" />
+			<then>
+				<execute function="Select" locator1="SocialActivity#PARTICIPATION_INCREMENT_SELECT" value1="${participationIncrement}" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="contributionIncrement" />
+			<then>
+				<execute function="Select" locator1="SocialActivity#CONTRIBUTION_INCREMENT_SELECT" value1="${contributionIncrement}" />
+			</then>
+		</if>
+
+		<if>
+			<or>
+				<isset var="contributionLimitValue" />
+				<isset var="contributionLimitPeriod" />
+				<isset var="participationLimitValue" />
+				<isset var="participationLimitPeriod" />
+			</or>
+			<then>
+				<execute function="AssertClick" locator1="SocialActivity#LIMIT_LINK" value1="Limit" />
+
+				<if>
+					<isset var="contributionLimitValue" />
+					<then>
+						<execute function="Select" locator1="SocialActivity#CONTRIBUTION_LIMIT_VALUE_SELECT" value1="${contributionLimitValue}" />
+					</then>
+				</if>
+
+				<if>
+					<isset var="contributionLimitPeriod" />
+					<then>
+						<execute function="Select" locator1="SocialActivity#CONTRIBUTION_LIMIT_PERIOD_SELECT" value1="${contributionLimitPeriod}" />
+					</then>
+				</if>
+
+				<if>
+					<isset var="participationLimitValue" />
+					<then>
+						<execute function="Select" locator1="SocialActivity#PARTICIPATION_LIMIT_VALUE_SELECT" value1="${participationLimitValue}" />
+					</then>
+				</if>
+
+				<if>
+					<isset var="participationLimitPeriod" />
+					<then>
+						<execute function="Select" locator1="SocialActivity#PARTICIPATION_LIMIT_PERIOD_SELECT" value1="${participationLimitPeriod}" />
+					</then>
+				</if>
+			</then>
+		</if>
+
+		<execute macro="Button#clickSave" />
+	</command>
+
+	<command name="enableBlogsCP">
+		<execute function="Check" locator1="Checkbox#BLOGS_ENTRY" />
+
+		<execute macro="Button#clickSave" />
+	</command>
+
+	<command name="removeActionCP">
+		<var name="key_userAction" value="${userAction}" />
+
+		<execute function="Click" locator1="SocialActivity#CLOSE_ICON" />
+
+		<execute function="AssertTextEquals" locator1="SocialActivity#POSSIBLE_USER_ACTIONS_BUTTON" value1="${userAction}" />
+
+		<execute macro="Button#clickSave" />
+	</command>
+
+	<command name="updateGroupStatisticsConfiguration">
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Group Statistics" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="GroupStatisticsConfiguration#CONFIGURATION_IFRAME" />
+
+		<var name="key_chartType" value="${chartType}" />
+		<var name="key_chartWidth" value="${chartWidth}" />
+		<var name="key_dataRange" value="${dataRange}" />
+		<var name="key_displayActivityCounterName" value="${displayActivityCounterName}" />
+
+		<execute function="Select" locator1="GroupStatisticsConfiguration#SETUP_COUNTERS_DISPLAY_ACTIVITY_COUNTER_NAME_DROPDOWN" value1="${displayActivityCounterName}" />
+		<execute function="Select" locator1="GroupStatisticsConfiguration#SETUP_COUNTERS_CHART_TYPE_DROPDOWN" value1="${chartType}" />
+		<execute function="Select" locator1="GroupStatisticsConfiguration#SETUP_COUNTERS_CHART_WIDTH_DROPDOWN" value1="${chartWidth}" />
+		<execute function="Select" locator1="GroupStatisticsConfiguration#SETUP_COUNTERS_DATA_RANGE_DROPDOWN" value1="${dataRange}" />
+
+		<execute macro="PortletEntry#save" />
+
+		<execute function="SelectFrameTop" value1="relative=top" />
+	</command>
+
+	<command name="viewPGViaGroupStatistics">
+		<var name="key_siteStatistics" value="${siteStatistics}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="GroupStatistics#SITE_STATISTICS_PANEL" value1="${siteStatistics}" />
+
+		<var name="key_currentValue" value="${currentValue}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="GroupStatistics#GROUP_STATISTICS_BODY_INFO" value1="${currentValue}" />
+
+		<execute function="AssertElementPresent" locator1="GroupStatistics#GROUP_STATISTICS_BODY_CHART" />
+	</command>
+
+	<command name="viewPGViaUserStatistics">
+		<var name="key_userName" value="${userName}" />
+
+		<execute function="AssertTextEquals" locator1="UserStatistics#RANKING_TABLE_USER_NAME" value1="${userName}" />
+
+		<var name="key_userRank" value="${userRank}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="UserStatistics#RANKING_TABLE_RANK" value1="${userRank}" />
+
+		<var name="key_userContributionScore" value="${contributionScore}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="UserStatistics#RANKING_TABLE_CONTRIBUTION_SCORE" value1="${contributionScore}" />
+
+		<var name="key_userParticipationScore" value="${participationScore}" />
+
+		<execute function="AssertTextEquals#assertPartialText" locator1="UserStatistics#RANKING_TABLE_PARTICIPATION_SCORE" value1="${participationScore}" />
+	</command>
+</definition>

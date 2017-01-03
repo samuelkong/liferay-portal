@@ -14,13 +14,12 @@
 
 package com.liferay.portal.upgrade.v6_1_0;
 
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -31,27 +30,15 @@ public class UpgradeCommunityProperties extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		for (int i = 0; i < _OLD_PORTLET_PREFERENCES.length; i++) {
-			updatePreferences(
-				"PortletPreferences", "portletPreferencesId",
-				_OLD_PORTLET_PREFERENCES[i], _NEW_PORTLET_PREFERENCES[i]);
-		}
+		upgradePortletPreferences();
 
-		for (int i = 0; i < _OLD_PORTAL_PREFERENCES.length; i++) {
-			updatePreferences(
-				"PortalPreferences", "portalPreferencesId",
-				_OLD_PORTAL_PREFERENCES[i], _NEW_PORTAL_PREFERENCES[i]);
-		}
+		upgradePortalPreferences();
 	}
 
 	protected void updatePreferences(
 			String tableName, String primaryKeyColumnName, String oldValue,
 			String newValue)
 		throws Exception {
-
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		StringBundler sb = new StringBundler(9);
 
@@ -69,8 +56,6 @@ public class UpgradeCommunityProperties extends UpgradeProcess {
 			runSQL(sb.toString());
 		}
 		catch (Exception e) {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
 			sb = new StringBundler(7);
 
 			sb.append("select ");
@@ -81,21 +66,19 @@ public class UpgradeCommunityProperties extends UpgradeProcess {
 			sb.append(oldValue);
 			sb.append("%'");
 
-			ps = con.prepareStatement(sb.toString());
+			try (PreparedStatement ps = connection.prepareStatement(
+					sb.toString());
+				ResultSet rs = ps.executeQuery()) {
 
-			rs = ps.executeQuery();
+				while (rs.next()) {
+					long primaryKey = rs.getLong(primaryKeyColumnName);
+					String preferences = rs.getString("preferences");
 
-			while (rs.next()) {
-				long primaryKey = rs.getLong(primaryKeyColumnName);
-				String preferences = rs.getString("preferences");
-
-				updatePreferences(
-					tableName, primaryKeyColumnName, oldValue, newValue,
-					primaryKey, preferences);
+					updatePreferences(
+						tableName, primaryKeyColumnName, oldValue, newValue,
+						primaryKey, preferences);
+				}
 			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
 
@@ -106,10 +89,6 @@ public class UpgradeCommunityProperties extends UpgradeProcess {
 
 		preferences = StringUtil.replace(preferences, oldValue, newValue);
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
 		StringBundler sb = new StringBundler(5);
 
 		sb.append("update ");
@@ -118,18 +97,33 @@ public class UpgradeCommunityProperties extends UpgradeProcess {
 		sb.append(primaryKeyColumnName);
 		sb.append(" = ?");
 
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(sb.toString());
+		try (PreparedStatement ps = connection.prepareStatement(
+				sb.toString())) {
 
 			ps.setString(1, preferences);
 			ps.setLong(2, primaryKey);
 
 			ps.executeUpdate();
 		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
+	}
+
+	protected void upgradePortalPreferences() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			for (int i = 0; i < _OLD_PORTAL_PREFERENCES.length; i++) {
+				updatePreferences(
+					"PortalPreferences", "portalPreferencesId",
+					_OLD_PORTAL_PREFERENCES[i], _NEW_PORTAL_PREFERENCES[i]);
+			}
+		}
+	}
+
+	protected void upgradePortletPreferences() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			for (int i = 0; i < _OLD_PORTLET_PREFERENCES.length; i++) {
+				updatePreferences(
+					"PortletPreferences", "portletPreferencesId",
+					_OLD_PORTLET_PREFERENCES[i], _NEW_PORTLET_PREFERENCES[i]);
+			}
 		}
 	}
 
@@ -152,7 +146,7 @@ public class UpgradeCommunityProperties extends UpgradeProcess {
 		"communities.email.membership.reply.body",
 		"communities.email.membership.reply.subject",
 		"communities.email.membership.request.body",
-		"communities.email.membership.request.subject",
+		"communities.email.membership.request.subject"
 	};
 
 	private static final String[] _OLD_PORTLET_PREFERENCES = {

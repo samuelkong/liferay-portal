@@ -14,37 +14,36 @@
 
 package com.liferay.portal.security.pacl.test;
 
+import com.liferay.portal.kernel.concurrent.ThreadPoolExecutor;
 import com.liferay.portal.kernel.executor.PortalExecutorManagerUtil;
+import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
 import com.liferay.portal.kernel.util.Time;
-import com.liferay.portal.test.listeners.PACLExecutionTestListener;
-import com.liferay.portal.test.runners.PACLIntegrationJUnitTestRunner;
+import com.liferay.portal.test.rule.PACLTestRule;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Raymond Augé
  */
-@ExecutionTestListeners(listeners = {PACLExecutionTestListener.class})
-@RunWith(PACLIntegrationJUnitTestRunner.class)
 public class ThreadTest {
+
+	@ClassRule
+	@Rule
+	public static final PACLTestRule paclTestRule = new PACLTestRule();
 
 	@Test
 	public void testCurrent1() throws Exception {
-		try {
-			Thread.currentThread().checkAccess();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		Thread.currentThread().checkAccess();
 	}
 
 	@Test
@@ -61,7 +60,9 @@ public class ThreadTest {
 	@Test
 	public void testCurrent3() throws Exception {
 		try {
-			ClassLoader classLoader = getClass().getClassLoader();
+			Class<?> clazz = getClass();
+
+			ClassLoader classLoader = clazz.getClassLoader();
 
 			Thread.currentThread().setContextClassLoader(classLoader);
 
@@ -117,20 +118,15 @@ public class ThreadTest {
 
 	@Test
 	public void testNew1() throws Exception {
-		try {
-			Thread thread = new Thread() {
+		Thread thread = new Thread() {
 
-				@Override
-				public void run() {
-				}
+			@Override
+			public void run() {
+			}
 
-			};
+		};
 
-			thread.start();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		thread.start();
 	}
 
 	@Test
@@ -163,12 +159,12 @@ public class ThreadTest {
 			Thread thread = new Thread() {
 
 				@Override
-				public void setContextClassLoader(ClassLoader cl) {
-					super.setContextClassLoader(cl);
+				public void run() {
 				}
 
 				@Override
-				public void run() {
+				public void setContextClassLoader(ClassLoader cl) {
+					super.setContextClassLoader(cl);
 				}
 
 			};
@@ -183,14 +179,9 @@ public class ThreadTest {
 
 	@Test
 	public void testNew4() throws Exception {
-		try {
-			Thread thread = new Thread();
+		Thread thread = new Thread();
 
-			thread.start();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		thread.start();
 	}
 
 	@Test
@@ -223,8 +214,7 @@ public class ThreadTest {
 					return null;
 				}
 
-			}
-		);
+			});
 
 		Thread thread = new Thread(futureTask);
 
@@ -252,8 +242,7 @@ public class ThreadTest {
 					return null;
 				}
 
-			}
-		);
+			});
 
 		Thread thread = new Thread(futureTask);
 
@@ -282,8 +271,7 @@ public class ThreadTest {
 					return null;
 				}
 
-			}
-		);
+			});
 
 		Thread thread = new Thread(futureTask);
 
@@ -312,8 +300,7 @@ public class ThreadTest {
 					return null;
 				}
 
-			}
-		);
+			});
 
 		Thread thread = new Thread(futureTask);
 
@@ -326,7 +313,9 @@ public class ThreadTest {
 
 	@Test
 	public void testNew10() throws Exception {
-		final ClassLoader classLoader = getClass().getClassLoader();
+		Class<?> clazz = getClass();
+
+		final ClassLoader classLoader = clazz.getClassLoader();
 
 		FutureTask<Exception> futureTask = new FutureTask<Exception>(
 			new Callable<Exception>() {
@@ -344,8 +333,7 @@ public class ThreadTest {
 					return null;
 				}
 
-			}
-		);
+			});
 
 		Thread thread = new Thread(futureTask);
 
@@ -374,8 +362,7 @@ public class ThreadTest {
 					return null;
 				}
 
-			}
-		);
+			});
 
 		Thread thread = new Thread(futureTask);
 
@@ -389,29 +376,26 @@ public class ThreadTest {
 
 	@Test
 	public void testNew12() throws Exception {
-		try {
-			Thread thread = new Thread(
-				new Runnable() {
+		Thread thread = new Thread(
+			new Runnable() {
 
-					@Override
-					public void run() {
-					}
-
+				@Override
+				public void run() {
 				}
-			);
 
-			thread.start();
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+			});
+
+		thread.start();
 	}
 
 	@Test
 	public void testPortalExecutor1() throws Exception {
 		try {
-			PortalExecutorManagerUtil.execute(
-				"liferay/hot_deploy",
+			ThreadPoolExecutor threadPoolExecutor =
+				PortalExecutorManagerUtil.getPortalExecutor(
+					"liferay/hot_deploy");
+
+			threadPoolExecutor.submit(
 				new Callable<Void>() {
 
 					@Override
@@ -419,8 +403,7 @@ public class ThreadTest {
 						return null;
 					}
 
-				}
-			);
+				});
 
 			Assert.fail();
 		}
@@ -430,22 +413,18 @@ public class ThreadTest {
 
 	@Test
 	public void testPortalExecutor2() throws Exception {
-		try {
-			PortalExecutorManagerUtil.execute(
-				"liferay/test_pacl",
-				new Callable<Void>() {
+		ThreadPoolExecutor threadPoolExecutor =
+			PortalExecutorManagerUtil.getPortalExecutor("liferay/test_pacl");
 
-					@Override
-					public Void call() throws Exception {
-						return null;
-					}
+		threadPoolExecutor.submit(
+			new Callable<Void>() {
 
+				@Override
+				public Void call() throws Exception {
+					return null;
 				}
-			);
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+
+			});
 	}
 
 	@Test
@@ -461,18 +440,17 @@ public class ThreadTest {
 
 	@Test
 	public void testPortalExecutor4() throws Exception {
-		try {
-			PortalExecutorManagerUtil.getPortalExecutor("liferay/test_pacl");
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		PortalExecutorManagerUtil.getPortalExecutor("liferay/test_pacl");
 	}
 
 	@Test
 	public void testPortalExecutor5() throws Exception {
 		try {
-			PortalExecutorManagerUtil.shutdown("liferay/hot_deploy");
+			ThreadPoolExecutor threadPoolExecutor =
+				PortalExecutorManagerUtil.getPortalExecutor(
+					"liferay/hot_deploy");
+
+			threadPoolExecutor.shutdown();
 
 			Assert.fail();
 		}
@@ -482,15 +460,19 @@ public class ThreadTest {
 
 	@Test
 	public void testPortalExecutor6() throws Exception {
-		try {
-			PortalExecutorManagerUtil.shutdown("liferay/test_pacl");
+		ThreadPoolExecutor threadPoolExecutor =
+			PortalExecutorManagerUtil.getPortalExecutor("liferay/test_pacl");
 
-			PortalExecutorManagerUtil.getPortalExecutor(
-				"liferay/test_pacl", true);
-		}
-		catch (SecurityException se) {
-			Assert.fail();
-		}
+		threadPoolExecutor.shutdown();
+
+		threadPoolExecutor.awaitTermination(1, TimeUnit.MINUTES);
+
+		PortalExecutorManagerUtil.getPortalExecutor("liferay/test_pacl", true);
+
+		Destination destination = MessageBusUtil.getDestination(
+			"liferay/test_pacl");
+
+		destination.open();
 	}
 
 }

@@ -14,33 +14,34 @@
 
 package com.liferay.portlet.messageboards.util;
 
+import com.liferay.message.boards.kernel.model.MBMessage;
 import com.liferay.portal.kernel.search.HitsOpenSearchImpl;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portlet.messageboards.model.MBMessage;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.StringPool;
 
 /**
  * @author Brian Wing Shun Chan
  */
+@OSGiBeanProperties
 public class MBOpenSearchImpl extends HitsOpenSearchImpl {
-
-	public static final String SEARCH_PATH = "/c/message_boards/open_search";
 
 	public static final String TITLE = "Liferay Message Boards Search: ";
 
 	@Override
-	public Indexer getIndexer() {
+	public String getClassName() {
+		return MBMessage.class.getName();
+	}
+
+	@Override
+	public Indexer<MBMessage> getIndexer() {
 		return IndexerRegistryUtil.getIndexer(MBMessage.class);
 	}
 
 	@Override
-	public String getPortletId() {
-		return MBMessageIndexer.PORTLET_ID;
-	}
-
-	@Override
 	public String getSearchPath() {
-		return SEARCH_PATH;
+		return StringPool.BLANK;
 	}
 
 	@Override

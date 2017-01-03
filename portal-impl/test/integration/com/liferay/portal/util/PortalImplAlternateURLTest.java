@@ -14,34 +14,60 @@
 
 package com.liferay.portal.util;
 
-import com.liferay.portal.kernel.test.ExecutionTestListeners;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.Company;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.test.DeleteAfterTestRun;
-import com.liferay.portal.test.listeners.MainServletExecutionTestListener;
-import com.liferay.portal.test.runners.LiferayIntegrationJUnitTestRunner;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.test.GroupTestUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.test.LayoutTestUtil;
-import com.liferay.portal.util.test.TestPropsValues;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author Sergio González
  */
-@ExecutionTestListeners(listeners = {MainServletExecutionTestListener.class})
-@RunWith(LiferayIntegrationJUnitTestRunner.class)
 public class PortalImplAlternateURLTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_defaultLocale = LocaleUtil.getDefault();
+
+		LocaleUtil.setDefault(
+			LocaleUtil.US.getLanguage(), LocaleUtil.US.getCountry(),
+			LocaleUtil.US.getVariant());
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		LocaleUtil.setDefault(
+			_defaultLocale.getLanguage(), _defaultLocale.getCountry(),
+			_defaultLocale.getVariant());
+	}
 
 	@Test
 	public void testCustomPortalLocaleAlternateURL() throws Exception {
@@ -60,7 +86,7 @@ public class PortalImplAlternateURLTest {
 
 		testAlternateURL(
 			"localhost",
-			new Locale[] {LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.GERMANY},
+			Arrays.asList(LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.GERMANY),
 			LocaleUtil.SPAIN, LocaleUtil.US, "/en");
 	}
 
@@ -70,7 +96,7 @@ public class PortalImplAlternateURLTest {
 
 		testAlternateURL(
 			"localhost",
-			new Locale[] {LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.GERMANY},
+			Arrays.asList(LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.GERMANY),
 			LocaleUtil.SPAIN, LocaleUtil.SPAIN, StringPool.BLANK);
 	}
 
@@ -94,8 +120,9 @@ public class PortalImplAlternateURLTest {
 		throws Exception {
 
 		testAlternateURL(
-			"liferay.com", new Locale[] {LocaleUtil.US, LocaleUtil.SPAIN,
-			LocaleUtil.GERMANY}, LocaleUtil.SPAIN, LocaleUtil.US, "/en");
+			"liferay.com",
+			Arrays.asList(LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.GERMANY),
+			LocaleUtil.SPAIN, LocaleUtil.US, "/en");
 	}
 
 	@Test
@@ -103,9 +130,29 @@ public class PortalImplAlternateURLTest {
 		throws Exception {
 
 		testAlternateURL(
-			"liferay.com", new Locale[] {LocaleUtil.US, LocaleUtil.SPAIN,
-			LocaleUtil.GERMANY}, LocaleUtil.SPAIN, LocaleUtil.SPAIN,
-			StringPool.BLANK);
+			"liferay.com",
+			Arrays.asList(LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.GERMANY),
+			LocaleUtil.SPAIN, LocaleUtil.SPAIN, StringPool.BLANK);
+	}
+
+	protected String generateAssetPublisherContentURL(
+		String portalDomain, String languageId, String groupFriendlyURL) {
+
+		StringBundler sb = new StringBundler(11);
+
+		sb.append("http://");
+		sb.append(portalDomain);
+		sb.append(languageId);
+		sb.append(PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING);
+		sb.append(Portal.FRIENDLY_URL_SEPARATOR);
+		sb.append("asset_publisher");
+		sb.append(groupFriendlyURL);
+		sb.append(StringPool.FORWARD_SLASH);
+		sb.append(StringPool.CONTENT);
+		sb.append(StringPool.FORWARD_SLASH);
+		sb.append("content-title");
+
+		return sb.toString();
 	}
 
 	protected String generateURL(
@@ -135,13 +182,14 @@ public class PortalImplAlternateURLTest {
 		themeDisplay.setCompany(company);
 
 		themeDisplay.setLayoutSet(group.getPublicLayoutSet());
+		themeDisplay.setPortalDomain(HttpUtil.getDomain(portalURL));
 		themeDisplay.setPortalURL(portalURL);
 
 		return themeDisplay;
 	}
 
 	protected void testAlternateURL(
-			String portalDomain, Locale[] groupAvailableLocales,
+			String portalDomain, Collection<Locale> groupAvailableLocales,
 			Locale groupDefaultLocale, Locale alternateLocale,
 			String expectedI18nPath)
 		throws Exception {
@@ -167,7 +215,27 @@ public class PortalImplAlternateURLTest {
 			layout.getFriendlyURL());
 
 		Assert.assertEquals(expectedAlternateURL, actualAlternateURL);
+
+		String canonicalAssetPublisherContentURL =
+			generateAssetPublisherContentURL(
+				portalDomain, StringPool.BLANK, _group.getFriendlyURL());
+
+		String actualAssetPublisherContentAlternateURL =
+			PortalUtil.getAlternateURL(
+				canonicalAssetPublisherContentURL,
+				getThemeDisplay(_group, canonicalAssetPublisherContentURL),
+				alternateLocale, layout);
+
+		String expectedAssetPublisherContentAlternateURL =
+			generateAssetPublisherContentURL(
+				portalDomain, expectedI18nPath, _group.getFriendlyURL());
+
+		Assert.assertEquals(
+			expectedAssetPublisherContentAlternateURL,
+			actualAssetPublisherContentAlternateURL);
 	}
+
+	private static Locale _defaultLocale;
 
 	@DeleteAfterTestRun
 	private Group _group;

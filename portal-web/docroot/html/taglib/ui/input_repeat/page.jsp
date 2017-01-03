@@ -19,202 +19,39 @@
 <%
 String cssClass = GetterUtil.getString((String)request.getAttribute("liferay-ui:input-repeat:cssClass"));
 
-CalEvent event = (CalEvent)request.getAttribute("liferay-ui:input-repeat:event");
-
 Recurrence recurrence = null;
 
 int recurrenceType = ParamUtil.getInteger(request, "recurrenceType", Recurrence.NO_RECURRENCE);
-String recurrenceTypeParam = ParamUtil.getString(request, "recurrenceType");
-if (Validator.isNull(recurrenceTypeParam) && (event != null)) {
-	if (event.getRepeating()) {
-		recurrence = event.getRecurrenceObj();
-		recurrenceType = recurrence.getFrequency();
-	}
-}
-
 int dailyType = ParamUtil.getInteger(request, "dailyType");
-String dailyTypeParam = ParamUtil.getString(request, "dailyType");
-if (Validator.isNull(dailyTypeParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByDay() != null) {
-			dailyType = 1;
-		}
-	}
-}
-
 int dailyInterval = ParamUtil.getInteger(request, "dailyInterval", 1);
-String dailyIntervalParam = ParamUtil.getString(request, "dailyInterval");
-if (Validator.isNull(dailyIntervalParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		dailyInterval = recurrence.getInterval();
-	}
-}
-
 int weeklyInterval = ParamUtil.getInteger(request, "weeklyInterval", 1);
-String weeklyIntervalParam = ParamUtil.getString(request, "weeklyInterval");
-if (Validator.isNull(weeklyIntervalParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		weeklyInterval = recurrence.getInterval();
-	}
-}
-
 int monthlyType = ParamUtil.getInteger(request, "monthlyType");
-String monthlyTypeParam = ParamUtil.getString(request, "monthlyType");
-if (Validator.isNull(monthlyTypeParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonthDay() == null) {
-			monthlyType = 1;
-		}
-	}
-}
-
 int monthlyDay0 = ParamUtil.getInteger(request, "monthlyDay0", 15);
-String monthlyDay0Param = ParamUtil.getString(request, "monthlyDay0");
-if (Validator.isNull(monthlyDay0Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonthDay() != null) {
-			monthlyDay0 = recurrence.getByMonthDay()[0];
-		}
-	}
-}
-
 int monthlyInterval0 = ParamUtil.getInteger(request, "monthlyInterval0", 1);
-String monthlyInterval0Param = ParamUtil.getString(request, "monthlyInterval0");
-if (Validator.isNull(monthlyInterval0Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		monthlyInterval0 = recurrence.getInterval();
-	}
-}
-
 int monthlyPos = ParamUtil.getInteger(request, "monthlyPos", 1);
-String monthlyPosParam = ParamUtil.getString(request, "monthlyPos");
-if (Validator.isNull(monthlyPosParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonth() != null) {
-			monthlyPos = recurrence.getByMonth()[0];
-		}
-		else if (recurrence.getByDay() != null) {
-			monthlyPos = recurrence.getByDay()[0].getDayPosition();
-		}
-	}
-}
-
 int monthlyDay1 = ParamUtil.getInteger(request, "monthlyDay1", Calendar.SUNDAY);
-String monthlyDay1Param = ParamUtil.getString(request, "monthlyDay1");
-if (Validator.isNull(monthlyDay1Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonth() != null) {
-			monthlyDay1 = -1;
-		}
-		else if (recurrence.getByDay() != null) {
-			monthlyDay1 = recurrence.getByDay()[0].getDayOfWeek();
-		}
-	}
-}
-
 int monthlyInterval1 = ParamUtil.getInteger(request, "monthlyInterval1", 1);
-String monthlyInterval1Param = ParamUtil.getString(request, "monthlyInterval1");
-if (Validator.isNull(monthlyInterval1Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		monthlyInterval1 = recurrence.getInterval();
-	}
-}
-
 int yearlyType = ParamUtil.getInteger(request, "yearlyType");
-String yearlyTypeParam = ParamUtil.getString(request, "yearlyType");
-if (Validator.isNull(yearlyTypeParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonthDay() == null) {
-			yearlyType = 1;
-		}
-	}
-}
-
 int yearlyMonth0 = ParamUtil.getInteger(request, "yearlyMonth0", Calendar.JANUARY);
-String yearlyMonth0Param = ParamUtil.getString(request, "yearlyMonth0");
-if (Validator.isNull(yearlyMonth0Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonth() == null) {
-			yearlyMonth0 = recurrence.getDtStart().get(Calendar.MONTH);
-		}
-		else {
-			yearlyMonth0 = recurrence.getByMonth()[0];
-		}
-	}
-}
-
 int yearlyDay0 = ParamUtil.getInteger(request, "yearlyDay0", 15);
-String yearlyDay0Param = ParamUtil.getString(request, "yearlyDay0");
-if (Validator.isNull(yearlyDay0Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonthDay() == null) {
-			yearlyDay0 = recurrence.getDtStart().get(Calendar.DATE);
-		}
-		else {
-			yearlyDay0 = recurrence.getByMonthDay()[0];
-		}
-	}
-}
-
 int yearlyInterval0 = ParamUtil.getInteger(request, "yearlyInterval0", 1);
-String yearlyInterval0Param = ParamUtil.getString(request, "yearlyInterval0");
-if (Validator.isNull(yearlyInterval0Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		yearlyInterval0 = recurrence.getInterval();
-	}
-}
-
 int yearlyPos = ParamUtil.getInteger(request, "yearlyPos", 1);
-String yearlyPosParam = ParamUtil.getString(request, "yearlyPos");
-if (Validator.isNull(yearlyPosParam) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByDay() != null) {
-			yearlyPos = recurrence.getByDay()[0].getDayPosition();
-		}
-	}
-}
-
 int yearlyDay1 = ParamUtil.getInteger(request, "yearlyDay1", Calendar.SUNDAY);
-String yearlyDay1Param = ParamUtil.getString(request, "yearlyDay1");
-if (Validator.isNull(yearlyDay1Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByDay() != null) {
-			yearlyDay1 = recurrence.getByDay()[0].getDayOfWeek();
-		}
-	}
-}
-
 int yearlyMonth1 = ParamUtil.getInteger(request, "yearlyMonth1", Calendar.JANUARY);
-String yearlyMonth1Param = ParamUtil.getString(request, "yearlyMonth1");
-if (Validator.isNull(yearlyMonth1Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		if (recurrence.getByMonth() != null) {
-			yearlyMonth1 = recurrence.getByMonth()[0];
-		}
-	}
-}
-
 int yearlyInterval1 = ParamUtil.getInteger(request, "yearlyInterval1", 1);
-String yearlyInterval1Param = ParamUtil.getString(request, "yearlyInterval1");
-if (Validator.isNull(yearlyInterval1Param) && (event != null)) {
-	if (event.getRepeating() && (recurrence != null)) {
-		yearlyInterval1 = recurrence.getInterval();
-	}
-}
 
-boolean weeklyPosSu = _getWeeklyDayPos(request, Calendar.SUNDAY, event, recurrence);
-boolean weeklyPosMo = _getWeeklyDayPos(request, Calendar.MONDAY, event, recurrence);
-boolean weeklyPosTu = _getWeeklyDayPos(request, Calendar.TUESDAY, event, recurrence);
-boolean weeklyPosWe = _getWeeklyDayPos(request, Calendar.WEDNESDAY, event, recurrence);
-boolean weeklyPosTh = _getWeeklyDayPos(request, Calendar.THURSDAY, event, recurrence);
-boolean weeklyPosFr = _getWeeklyDayPos(request, Calendar.FRIDAY, event, recurrence);
-boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurrence);
+boolean weeklyPosSu = _getWeeklyDayPos(request, Calendar.SUNDAY, recurrence);
+boolean weeklyPosMo = _getWeeklyDayPos(request, Calendar.MONDAY, recurrence);
+boolean weeklyPosTu = _getWeeklyDayPos(request, Calendar.TUESDAY, recurrence);
+boolean weeklyPosWe = _getWeeklyDayPos(request, Calendar.WEDNESDAY, recurrence);
+boolean weeklyPosTh = _getWeeklyDayPos(request, Calendar.THURSDAY, recurrence);
+boolean weeklyPosFr = _getWeeklyDayPos(request, Calendar.FRIDAY, recurrence);
+boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, recurrence);
 %>
 
 <aui:fieldset cssClass='<%= "taglib-input-repeat " + cssClass %>'>
 	<aui:col id="eventsContainer" width="<%= 25 %>">
 		<aui:field-wrapper label="repeat" name="recurrenceType">
-
 			<aui:input checked="<%= recurrenceType == Recurrence.NO_RECURRENCE %>" id="recurrenceTypeNever" label="never" name="recurrenceType" type="radio" value="<%= Recurrence.NO_RECURRENCE %>" />
 
 			<aui:input checked="<%= recurrenceType == Recurrence.DAILY %>" id="recurrenceTypeDaily" label="daily" name="recurrenceType" type="radio" value="<%= Recurrence.DAILY %>" />
@@ -228,11 +65,11 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 	</aui:col>
 
 	<aui:col last="<%= true %>" width="<%= 75 %>">
-		<div class='<%= recurrenceType != Recurrence.NO_RECURRENCE ? "hide" : StringPool.BLANK %>' id="<portlet:namespace />recurrenceTypeNeverTable">
+		<div class="<%= recurrenceType != Recurrence.NO_RECURRENCE ? "hide" : StringPool.BLANK %>" id="<portlet:namespace />recurrenceTypeNeverTable">
 			<liferay-ui:message key="do-not-repeat-this-event" />
 		</div>
 
-		<div class='<%= recurrenceType != Recurrence.DAILY ? "hide" : StringPool.BLANK %>' id="<portlet:namespace />recurrenceTypeDailyTable">
+		<div class="<%= recurrenceType != Recurrence.DAILY ? "hide" : StringPool.BLANK %>" id="<portlet:namespace />recurrenceTypeDailyTable">
 			<aui:input checked="<%= dailyType == 0 %>" cssClass="input-container" inlineField="<%= true %>" label="recur-every" name="dailyType" type="radio" value="0" />
 
 			<aui:input inlineField="<%= true %>" inlineLabel="right" label="day-s" maxlength="3" name="dailyInterval" size="3" type="text" value="<%= dailyInterval %>" />
@@ -240,7 +77,7 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 			<aui:input checked="<%= (dailyType == 1) %>" label="every-weekday" name="dailyType" type="radio" value="1" />
 		</div>
 
-		<div class='<%= recurrenceType != Recurrence.WEEKLY ? "hide" : StringPool.BLANK %>' id="<portlet:namespace />recurrenceTypeWeeklyTable">
+		<div class="<%= recurrenceType != Recurrence.WEEKLY ? "hide" : StringPool.BLANK %>" id="<portlet:namespace />recurrenceTypeWeeklyTable">
 			<aui:input inlineField="<%= true %>" inlineLabel="left" label="recur-every" maxlength="2" name="weeklyInterval" size="2" suffix="weeks-on" type="text" value="<%= weeklyInterval %>" />
 
 			<%
@@ -272,7 +109,7 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 			</aui:row>
 		</div>
 
-		<div class='<%= recurrenceType != Recurrence.MONTHLY ? "hide" : StringPool.BLANK %>' id="<portlet:namespace />recurrenceTypeMonthlyTable">
+		<div class="<%= recurrenceType != Recurrence.MONTHLY ? "hide" : StringPool.BLANK %>" id="<portlet:namespace />recurrenceTypeMonthlyTable">
 			<span class="field-row">
 				<aui:input checked="<%= monthlyType == 0 %>" cssClass="input-container" inlineField="<%= true %>" label="day" name="monthlyType" type="radio" value="0" />
 
@@ -280,7 +117,6 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 
 				<aui:input inlineField="<%= true %>" inlineLabel="right" label="month-s" maxlength="2" name="monthlyInterval0" size="2" type="text" value="<%= monthlyInterval0 %>" />
 			</span>
-
 			<span class="field-row">
 				<aui:input checked="<%= (monthlyType == 1) %>" cssClass="input-container" inlineField="<%= true %>" label="the" name="monthlyType" type="radio" value="1" />
 
@@ -295,7 +131,7 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 				<aui:select cssClass="input-container" inlineField="<%= true %>" label="" name="monthlyDay1" title="first-day-of-week" value="<%= monthlyDay1 %>">
 					<aui:option label="<%= days[0] %>" value="<%= Calendar.SUNDAY %>" />
 					<aui:option label="<%= days[1] %>" value="<%= Calendar.MONDAY %>" />
-					<aui:option label="<%= days[2] %>"  value="<%= Calendar.TUESDAY %>" />
+					<aui:option label="<%= days[2] %>" value="<%= Calendar.TUESDAY %>" />
 					<aui:option label="<%= days[3] %>" value="<%= Calendar.WEDNESDAY %>" />
 					<aui:option label="<%= days[4] %>" value="<%= Calendar.THURSDAY %>" />
 					<aui:option label="<%= days[5] %>" value="<%= Calendar.FRIDAY %>" />
@@ -311,21 +147,21 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 		String[] months = CalendarUtil.getMonths(locale);
 		%>
 
-		<div class='<%= recurrenceType != Recurrence.YEARLY ? "hide" : StringPool.BLANK %>' id="<portlet:namespace />recurrenceTypeYearlyTable">
+		<div class="<%= recurrenceType != Recurrence.YEARLY ? "hide" : StringPool.BLANK %>" id="<portlet:namespace />recurrenceTypeYearlyTable">
 			<span class="field-row">
 				<aui:input checked="<%= yearlyType == 0 %>" cssClass="input-container" inlineField="<%= true %>" label="every" name="yearlyType" type="radio" value="0" />
 
 				<aui:select cssClass="input-container" inlineField="<%= true %>" inlineLabel="left" label="" name="yearlyMonth0" title="first-month-of-year">
 
-				<%
-				for (int i = 0; i < 12; i++) {
-				%>
+					<%
+					for (int i = 0; i < 12; i++) {
+					%>
 
-					<aui:option label="<%= months[i] %>" selected="<%= monthIds[i] == yearlyMonth0 %>" value="<%= monthIds[i] %>" />
+						<aui:option label="<%= months[i] %>" selected="<%= monthIds[i] == yearlyMonth0 %>" value="<%= monthIds[i] %>" />
 
-				<%
-				}
-				%>
+					<%
+					}
+					%>
 
 				</aui:select>
 
@@ -333,7 +169,6 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 
 				<aui:input inlineField="<%= true %>" inlineLabel="right" label="year-s" maxlength="2" name="yearlyInterval0" size="2" type="text" value="<%= yearlyInterval0 %>" />
 			</span>
-
 			<span class="field-row">
 				<aui:input checked="<%= yearlyType == 1 %>" cssClass="input-container" inlineField="<%= true %>" label="the" name="yearlyType" type="radio" value="1" />
 
@@ -375,46 +210,28 @@ boolean weeklyPosSa = _getWeeklyDayPos(request, Calendar.SATURDAY, event, recurr
 	</aui:col>
 </aui:fieldset>
 
-<aui:script use="aui-base">
-	var tables = A.all('#<portlet:namespace />recurrenceTypeNeverTable, #<portlet:namespace />recurrenceTypeDailyTable, #<portlet:namespace />recurrenceTypeWeeklyTable, #<portlet:namespace />recurrenceTypeMonthlyTable, #<portlet:namespace />recurrenceTypeYearlyTable');
+<aui:script sandbox="<%= true %>">
+	var tables = $('#<portlet:namespace />recurrenceTypeDailyTable, #<portlet:namespace />recurrenceTypeMonthlyTable, #<portlet:namespace />recurrenceTypeNeverTable, #<portlet:namespace />recurrenceTypeWeeklyTable, #<portlet:namespace />recurrenceTypeYearlyTable');
 
-	A.one('#<portlet:namespace />eventsContainer').delegate(
+	$('#<portlet:namespace />eventsContainer').on(
 		'change',
+		'.field',
 		function(event) {
-			var currentTarget = event.currentTarget;
-
-			var tableId = currentTarget.attr('id') + 'Table';
+			var tableId = $(event.currentTarget).attr('id') + 'Table';
 
 			tables.each(
-				function(item, index, collection) {
-					item.toggle(item.attr('id') == tableId);
+				function(index, item) {
+					item = $(item);
+
+					item.toggleClass('hide', item.attr('id') != tableId);
 				}
 			);
-		},
-		'.field'
+		}
 	);
 </aui:script>
 
 <%!
-private boolean _getWeeklyDayPos(HttpServletRequest req, int day, CalEvent event, Recurrence recurrence) {
-	boolean weeklyPos = ParamUtil.getBoolean(req, "weeklyDayPos" + day);
-
-	String weeklyPosParam = ParamUtil.getString(req, "weeklyDayPos" + day);
-
-	if (Validator.isNull(weeklyPosParam) && (event != null)) {
-		if (event.getRepeating() && (recurrence != null)) {
-			DayAndPosition[] dayPositions = recurrence.getByDay();
-
-			if (dayPositions != null) {
-				for (int i = 0; i < dayPositions.length; i++) {
-					if (dayPositions[i].getDayOfWeek() == day) {
-						return true;
-					}
-				}
-			}
-		}
-	}
-
-	return weeklyPos;
+private boolean _getWeeklyDayPos(HttpServletRequest req, int day, Recurrence recurrence) {
+	return ParamUtil.getBoolean(req, "weeklyDayPos" + day);
 }
 %>

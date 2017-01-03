@@ -1,0 +1,39 @@
+import com.liferay.gradle.util.GradleUtil
+import com.liferay.gradle.util.copy.RenameDependencyClosure
+
+buildCSS {
+	ext {
+		autoClean = false
+	}
+}
+
+dependencies {
+	compile group: "com.deque", name: "axe-selenium", version: "1.1"
+	compile group: "com.github.scribejava", name: "scribejava-core", version: "3.2.0"
+	compile group: "com.google.guava", name: "guava", version: "16.0.1"
+	compile group: "com.jayway.jsonpath", name: "json-path", version: "2.1.0"
+	compile group: "com.liferay", name: "net.jsourcerer.webdriver.JSErrorCollector", version: "0.6"
+	compile group: "commons-io", name: "commons-io", version: "2.4"
+	compile group: "commons-lang", name: "commons-lang", version: "2.6"
+	compile group: "dom4j", name: "dom4j", version: "1.6.1"
+	compile group: "io.appium", name: "java-client", version: "3.2.0"
+	compile group: "javax.mail", name: "mail", version: "1.4"
+	compile group: "junit", name: "junit", version: "4.12"
+	compile group: "org.apache.ant", name: "ant", version: "1.9.4"
+	compile group: "org.apache.ivy", name: "ivy", version: "2.4.0"
+	compile group: "org.bytedeco.javacpp-presets", name: "opencv", version: "2.4.10-0.10"
+	compile group: "org.codehaus.groovy", name: "groovy", version: "2.4.5"
+	compile group: "org.jsoup", name: "jsoup", version: "1.8.3"
+	compile group: "org.seleniumhq.selenium", name: "selenium-java", version: "2.53.0"
+	compile group: "org.sikuli", name: "sikuli-api", version: "1.2.0"
+	compile group: "xml-apis", name: "xml-apis", version: "1.4.01"
+}
+
+deploy {
+	from configurations.runtime
+	rename new RenameDependencyClosure(project, configurations.runtime.name)
+}
+
+liferay {
+	deployDir = "../../../tools/sdk/dependencies/com.liferay.poshi.runner/lib"
+}

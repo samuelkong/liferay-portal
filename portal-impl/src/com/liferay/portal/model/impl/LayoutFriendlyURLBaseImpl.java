@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.LayoutFriendlyURL;
-import com.liferay.portal.service.LayoutFriendlyURLLocalServiceUtil;
+import com.liferay.portal.kernel.model.LayoutFriendlyURL;
+import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
 
 /**
  * The extended model base implementation for the LayoutFriendlyURL service. Represents a row in the &quot;LayoutFriendlyURL&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.LayoutFriendlyURLLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutFriendlyURLImpl
- * @see com.liferay.portal.model.LayoutFriendlyURL
+ * @see LayoutFriendlyURL
  * @generated
  */
 @ProviderType
@@ -37,7 +37,7 @@ public abstract class LayoutFriendlyURLBaseImpl
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a layout friendly u r l model instance should use the {@link LayoutFriendlyURL} interface instead.
+	 * Never modify or reference this class directly. All methods that expect a layout friendly url model instance should use the {@link LayoutFriendlyURL} interface instead.
 	 */
 	@Override
 	public void persist() {

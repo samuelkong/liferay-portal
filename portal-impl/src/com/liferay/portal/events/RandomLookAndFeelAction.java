@@ -18,16 +18,15 @@ import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ColorScheme;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.security.RandomUtil;
-import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
+import com.liferay.portal.kernel.service.LayoutServiceUtil;
+import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.model.ColorScheme;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.Theme;
-import com.liferay.portal.service.LayoutServiceUtil;
-import com.liferay.portal.service.ThemeLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.WebKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
 
@@ -72,11 +71,9 @@ public class RandomLookAndFeelAction extends Action {
 				return;
 			}
 
-			boolean wapTheme = BrowserSnifferUtil.isWap(request);
-
 			List<Theme> themes = ThemeLocalServiceUtil.getPageThemes(
 				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-				themeDisplay.getUserId(), wapTheme);
+				themeDisplay.getUserId());
 
 			if (!themes.isEmpty()) {
 				Theme theme = themes.get(RandomUtil.nextInt(themes.size()));
@@ -89,12 +86,13 @@ public class RandomLookAndFeelAction extends Action {
 				LayoutServiceUtil.updateLookAndFeel(
 					layout.getGroupId(), layout.isPrivateLayout(),
 					layout.getPlid(), theme.getThemeId(),
-					colorScheme.getColorSchemeId(), layout.getCss(), wapTheme);
+					colorScheme.getColorSchemeId(), layout.getCss());
 
 				themeDisplay.setLookAndFeel(theme, colorScheme);
 
-				request.setAttribute(WebKeys.THEME, theme);
 				request.setAttribute(WebKeys.COLOR_SCHEME, colorScheme);
+
+				request.setAttribute(WebKeys.THEME, theme);
 			}
 		}
 		catch (Exception e) {

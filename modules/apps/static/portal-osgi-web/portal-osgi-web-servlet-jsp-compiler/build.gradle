@@ -1,0 +1,41 @@
+import com.liferay.gradle.util.FileUtil
+
+task downloadSchemas
+
+String schemasUrl = "https://svn.apache.org/repos/asf/tomcat/tc7.0.x/trunk/java/javax/servlet/jsp/resources"
+
+classes {
+	dependsOn downloadSchemas
+}
+
+dependencies {
+	provided group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	provided group: "com.liferay", name: "javax.servlet.jsp", version: "2.3.3-b02.LIFERAY-PATCHED-4"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
+	provided group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"
+	provided group: "javax.servlet.jsp", name: "javax.servlet.jsp-api", version: "2.3.2-b01"
+	provided group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: "1.2.1"
+	provided group: "org.glassfish", name: "javax.el", version: "3.0.1-b05"
+	provided group: "org.glassfish", name: "javax.servlet", version: "3.2-b06"
+	provided group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: "1.2.3"
+	provided group: "org.osgi", name: "org.osgi.core", version: "5.0.0"
+	provided project(":core:osgi-felix-util")
+}
+
+downloadSchemas {
+	File schemasDir = file("src/main/resources/javax/servlet/jsp/resources")
+
+	doLast {
+		for (fileName in ["jsp_2_0.xsd", "jsp_2_1.xsd", "jsp_2_2.xsd", "jspxml.dtd", "web-jsptaglibrary_1_1.dtd", "web-jsptaglibrary_1_2.dtd", "web-jsptaglibrary_2_0.xsd", "web-jsptaglibrary_2_1.xsd"]) {
+			FileUtil.get(project, "${schemasUrl}/${fileName}", new File(schemasDir, fileName))
+		}
+
+		FileUtil.get(project, schemasUrl + "/jspxml.xsd", new File(schemasDir, "jspmlx.xsd"))
+		FileUtil.get(project, "https://www.oracle.com/webfolder/technetwork/jsc/xml/ns/javaee/jsp_2_3.xsd", new File(schemasDir, "jsp_2_3.xsd"))
+	}
+
+	onlyIf {
+		!schemasDir.exists()
+	}
+}

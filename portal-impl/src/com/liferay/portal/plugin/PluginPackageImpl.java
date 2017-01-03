@@ -121,11 +121,18 @@ public class PluginPackageImpl
 
 	@Override
 	public String getDownloadURL() {
-		String useDownloadURL = getRepository().getSettings().getProperty(
-			RemotePluginPackageRepository.SETTING_USE_DOWNLOAD_URL);
+		RemotePluginPackageRepository remotePluginPackageRepository =
+			getRepository();
 
-		if (!GetterUtil.getBoolean(useDownloadURL, true)) {
-			return getArtifactURL();
+		if (remotePluginPackageRepository != null) {
+			Properties settings = remotePluginPackageRepository.getSettings();
+
+			String useDownloadURL = settings.getProperty(
+				RemotePluginPackageRepository.SETTING_USE_DOWNLOAD_URL);
+
+			if (!GetterUtil.getBoolean(useDownloadURL, true)) {
+				return getArtifactURL();
+			}
 		}
 
 		if (Validator.isNotNull(_downloadURL)) {
@@ -372,8 +379,8 @@ public class PluginPackageImpl
 	private String _context;
 	private Properties _deploymentSettings;
 	private String _downloadURL;
-	private List<License> _licenses = new ArrayList<License>();
-	private List<String> _liferayVersions = new ArrayList<String>();
+	private List<License> _licenses = new ArrayList<>();
+	private List<String> _liferayVersions = new ArrayList<>();
 	private String _longDescription = StringPool.BLANK;
 	private Date _modifiedDate;
 	private final ModuleId _moduleId;
@@ -382,9 +389,9 @@ public class PluginPackageImpl
 	private String _recommendedDeploymentContext;
 	private RemotePluginPackageRepository _repository;
 	private List<String> _requiredDeploymentContexts = Collections.emptyList();
-	private List<Screenshot> _screenshots = new ArrayList<Screenshot>();
+	private List<Screenshot> _screenshots = new ArrayList<>();
 	private String _shortDescription = StringPool.BLANK;
-	private List<String> _tags = new ArrayList<String>();
-	private List<String> _types = new ArrayList<String>();
+	private List<String> _tags = new ArrayList<>();
+	private List<String> _types = new ArrayList<>();
 
 }

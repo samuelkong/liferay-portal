@@ -1,0 +1,266 @@
+<definition>
+	<var name="columnSize" value="12" />
+	<var name="formDescription" value="Created Form Description" />
+	<var name="formName" value="Created Form Name" />
+	<var name="rowNumber" value="1" />
+
+	<command name="addColumn">
+		<var name="key_columnLineNumber" value="${columnLineNumber}" />
+		<var name="key_rowNumber" value="${rowNumber}" />
+
+		<execute function="MouseOver#mouseOverNotVisible" locator1="Form#ADD_COLUMN_RIGHT" />
+
+		<execute function="DragAndDrop#dragAndDropToObjectNotVisible" locator1="Form#ADD_COLUMN_RIGHT" locator2="Form#ADD_COLUMN_LINE" value1="" />
+	</command>
+
+	<command name="addPage">
+		<execute function="Click" locator1="Form#PAGE_CONTROLS_ELLIPSIS_ICON" />
+
+		<execute function="AssertClick" locator1="Form#PAGE_CONTROLS_ADD_NEW_PAGE" value1="Add New Page" />
+	</command>
+
+	<command name="clickPublishSwitcher">
+		<execute function="Click" locator1="Form#PUBLISH_FORM_SWITCHER" />
+	</command>
+
+	<command name="clickSaveButton">
+		<execute function="AssertClick" locator1="Form#SAVE_FORM_BUTTON" value1="Save Form" />
+	</command>
+
+	<command name="closeSidebar">
+		<execute function="Pause" locator1="1000" />
+
+		<execute function="Click" locator1="Form#SIDEBAR_CLOSE" />
+
+		<execute function="Pause" locator1="1000" />
+	</command>
+
+	<command name="configureEmailNotifications">
+		<execute function="AssertClick" locator1="Form#SETTINGS_TAB_EMAIL_NOTIFICATIONS" value1="Email Notifications" />
+
+		<execute macro="FormFields#enableSwitcher">
+			<var name="fieldName" value="sendEmailNotification" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="emailFromName" />
+			<var name="fieldValue" value="${fromName}" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="emailFromAddress" />
+			<var name="fieldValue" value="${fromAddress}" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="emailToAddress" />
+			<var name="fieldValue" value="${toAddress}" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="emailSubject" />
+			<var name="fieldValue" value="${subject}" />
+		</execute>
+
+		<execute macro="Button#clickDone" />
+	</command>
+
+	<command name="configureRequireCaptcha">
+		<execute macro="FormFields#enableSwitcher">
+			<var name="fieldName" value="requireCaptcha" />
+		</execute>
+
+		<execute macro="Button#clickDone" />
+	</command>
+
+	<command name="configureWorkflow">
+		<execute function="Click" locator1="Form#SETTINGS_TAB_WORKFLOW_CONFIGURATION_FIELD" />
+
+		<var name="key_workflowDefinition" value="${workflowDefinition}" />
+
+		<execute function="AssertClick" locator1="Form#SETTINGS_TAB_WORKFLOW_CONFIGURATION" value1="${workflowDefinition}" />
+
+		<execute macro="Button#clickDone" />
+	</command>
+
+	<command name="editDescription">
+		<execute function="Type#typeAceEditor" locator1="Form#DESCRIPTION_FIELD" value1="${formDescription}" />
+	</command>
+
+	<command name="editFieldDataProvider">
+		<execute macro="FormFields#selectRadioOption">
+			<var name="fieldName" value="dataSourceType" />
+			<var name="radioOption" value="From Data Provider" />
+		</execute>
+
+		<execute macro="FormFields#selectSelectOption">
+			<var name="fieldName" value="ddmDataProviderInstanceId" />
+			<var name="selectOption" value="${dataProvider}" />
+		</execute>
+	</command>
+
+	<command name="editFieldLabel">
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="label" />
+			<var name="fieldValue" value="${fieldValue}" />
+		</execute>
+
+		<if>
+			<not>
+				<isset var="fieldName" />
+			</not>
+			<then>
+				<var method="StringUtil#replace('${fieldValue}', ' ', '')" name="fieldName" />
+			</then>
+		</if>
+
+		<execute macro="FormFields#viewFieldName">
+			<var name="fieldName" value="${fieldName}" />
+		</execute>
+
+		<var name="key_fieldName" value="${fieldName}" />
+
+		<execute function="AssertTextEquals" locator1="Form#FIELD_LABEL" value1="${fieldValue}" />
+	</command>
+
+	<command name="editName">
+		<var name="key_columnSize" value="${columnSize}" />
+
+		<execute function="AssertVisible" locator1="Form#ADD_FIELD" />
+		<execute function="AssertVisible" locator1="Form#NAME_FIELD" />
+		<execute function="AssertVisible" locator1="Form#DESCRIPTION_FIELD" />
+
+		<execute function="Pause" locator1="5000" />
+
+		<execute function="Click" locator1="Form#NAME_FIELD" />
+
+		<execute function="Type#typeEditor" locator1="AlloyEditor#NAME_FIELD" value1="${formName}" />
+	</command>
+
+	<command name="editPageDescription">
+		<execute function="Type" locator1="Form#PAGE_DESCRIPTION_FIELD" value1="${formPageDescription}" />
+	</command>
+
+	<command name="editPageTitle">
+		<execute function="Type" locator1="Form#PAGE_TITLE_FIELD" value1="${formPageName}" />
+	</command>
+
+	<command name="getPublishedFormPublicURL" returns="publicURL">
+		<var locator="Form#PUBLISH_FORM_PUBLIC_URL" name="publicURL" />
+
+		<return name="publicURL" value="${publicURL}" />
+	</command>
+
+	<command name="gotoAddField">
+		<var name="key_columnSize" value="${columnSize}" />
+
+		<execute function="Click#makeVisibleClickAt" locator1="Form#ADD_FIELD" />
+
+		<var name="key_fieldType" value="${fieldType}" />
+
+		<execute function="AssertClick" locator1="Form#ADD_FIELD_TYPE" value1="${fieldType}" />
+
+		<execute function="AssertElementPresent" locator1="Form#SIDEBAR_BASIC_TAB" />
+	</command>
+
+	<command name="gotoAdvancedTab">
+		<execute function="AssertClick" locator1="Form#SIDEBAR_PROPERTIES_TAB" value1="Properties" />
+	</command>
+
+	<command name="gotoAutocompleteConfiguration">
+		<execute function="Click" locator1="FormFields#AUTOCOMPLETE_PANEL" />
+	</command>
+
+	<command name="gotoBasicTab">
+		<execute function="AssertClick" locator1="Form#SIDEBAR_BASIC_TAB" value1="Basic" />
+	</command>
+
+	<command name="previewForm">
+		<execute macro="Navigator#selectSpecificWindow">
+			<var name="windowTitle" value="Form - Forms" />
+		</execute>
+
+		<var name="key_formName" value="${formName}" />
+
+		<execute function="AssertTextEquals" locator1="Form#PUBLISH_FORM_NAME_FIELD" value1="${formName}" />
+
+		<execute macro="FormFields#viewTextLabel">
+			<var name="fieldLabel" value="${fieldLabel}" />
+			<var name="fieldName" value="${fieldName}" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldValue" value="${fieldValue}" />
+		</execute>
+
+		<execute macro="FormFields#viewTextValue">
+			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldValue" value="${fieldValue}" />
+		</execute>
+
+		<execute function="AssertElementNotPresent" locator1="Button#SUBMIT" value1="Submit" />
+	</command>
+
+	<command name="save">
+		<execute function="AssertClick" locator1="Form#SAVE_FORM_BUTTON" value1="Save Form" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="saveAndPublish">
+		<execute function="Click" locator1="Form#SAVE_BUTTON_DROPDOWN" />
+
+		<execute function="AssertClick" locator1="Form#SAVE_BUTTON_DROPDOWN_SAVE_AND_PUBLISH_LIVE_PAGE" value1="Save and Publish Live Page" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="submitFormPublish">
+		<execute macro="Form#viewFormPublish">
+			<var name="fieldLabel" value="${fieldLabel}" />
+			<var name="fieldName" value="${fieldName}" />
+		</execute>
+
+		<execute macro="FormFields#editText">
+			<var name="fieldLabel" value="${fieldLabel}" />
+			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldValue" value="${fieldValue}" />
+		</execute>
+
+		<execute function="AssertClick" locator1="Button#SUBMIT" value1="Submit" />
+
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="viewFormName">
+		<execute function="AssertTextEquals" locator1="Form#NAME_FIELD" value1="${formName}" />
+	</command>
+
+	<command name="viewFormNotPublished">
+		<execute macro="FormsAdminNavigator#openPublishURL" />
+
+		<execute function="AssertTextEquals" locator1="Message#ERROR_3_ALT" value1="This form is not available or it was not published." />
+	</command>
+
+	<command name="viewFormPublish">
+		<execute macro="FormsAdminNavigator#openPublishURL" />
+
+		<var name="key_formName" value="${formName}" />
+
+		<execute function="AssertTextEquals" locator1="Form#PUBLISH_FORM_NAME_FIELD" value1="${formName}" />
+
+		<execute macro="FormFields#viewTextLabel">
+			<var name="fieldLabel" value="${fieldLabel}" />
+			<var name="fieldName" value="${fieldName}" />
+		</execute>
+	</command>
+
+	<command name="viewSaveNotification">
+		<execute function="AssertTextEquals#assertPartialText" locator1="Form#SAVE_NOTIFICATION" value1="Draft saved at" />
+	</command>
+
+	<command name="viewSidebarTitle">
+		<execute function="AssertTextEquals" locator1="Form#SIDEBAR_HEADER" value1="${fieldLabel}" />
+	</command>
+</definition>

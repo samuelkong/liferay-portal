@@ -16,11 +16,12 @@ package com.liferay.portlet.asset.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.asset.kernel.model.AssetCategoryProperty;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.asset.model.AssetCategoryProperty;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,6 +40,30 @@ import java.util.Date;
 @ProviderType
 public class AssetCategoryPropertyCacheModel implements CacheModel<AssetCategoryProperty>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AssetCategoryPropertyCacheModel)) {
+			return false;
+		}
+
+		AssetCategoryPropertyCacheModel assetCategoryPropertyCacheModel = (AssetCategoryPropertyCacheModel)obj;
+
+		if (categoryPropertyId == assetCategoryPropertyCacheModel.categoryPropertyId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, categoryPropertyId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(19);
@@ -119,11 +144,14 @@ public class AssetCategoryPropertyCacheModel implements CacheModel<AssetCategory
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		categoryPropertyId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		categoryId = objectInput.readLong();
 		key = objectInput.readUTF();
 		value = objectInput.readUTF();
@@ -133,7 +161,9 @@ public class AssetCategoryPropertyCacheModel implements CacheModel<AssetCategory
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(categoryPropertyId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -145,6 +175,7 @@ public class AssetCategoryPropertyCacheModel implements CacheModel<AssetCategory
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(categoryId);
 
 		if (key == null) {

@@ -16,8 +16,8 @@ package com.liferay.portal.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.service.ResourceActionLocalServiceUtil;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 
 /**
  * The extended model base implementation for the ResourceAction service. Represents a row in the &quot;ResourceAction&quot; database table, with each column mapped to a property of this class.
@@ -28,7 +28,7 @@ import com.liferay.portal.service.ResourceActionLocalServiceUtil;
  *
  * @author Brian Wing Shun Chan
  * @see ResourceActionImpl
- * @see com.liferay.portal.model.ResourceAction
+ * @see ResourceAction
  * @generated
  */
 @ProviderType

@@ -14,9 +14,11 @@
 
 package com.liferay.portal.dao.jdbc.aop;
 
+import com.liferay.portal.kernel.dao.jdbc.aop.DynamicDataSourceTargetSource;
 import com.liferay.portal.kernel.dao.jdbc.aop.MasterDataSource;
-import com.liferay.portal.kernel.test.CodeCoverageAssertor;
+import com.liferay.portal.kernel.dao.jdbc.aop.Operation;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -49,14 +51,15 @@ import org.junit.Test;
 public class DynamicDataSourceAdviceTest {
 
 	@ClassRule
-	public static CodeCoverageAssertor codeCoverageAssertor =
-		new CodeCoverageAssertor();
+	public static final CodeCoverageAssertor codeCoverageAssertor =
+		CodeCoverageAssertor.INSTANCE;
 
 	@Before
 	public void setUp() {
 		_dynamicDataSourceAdvice = new DynamicDataSourceAdvice();
 
-		_dynamicDataSourceTargetSource = new DynamicDataSourceTargetSource();
+		_dynamicDataSourceTargetSource =
+			new DefaultDynamicDataSourceTargetSource();
 
 		ClassLoader classLoader =
 			DynamicDataSourceAdviceTest.class.getClassLoader();

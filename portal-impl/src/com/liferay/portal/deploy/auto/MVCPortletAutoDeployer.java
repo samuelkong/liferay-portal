@@ -33,7 +33,7 @@ public class MVCPortletAutoDeployer extends PortletAutoDeployer {
 
 		super.copyXmls(srcFile, displayName, pluginPackage);
 
-		Map<String, String> filterMap = new HashMap<String, String>();
+		Map<String, String> filterMap = new HashMap<>();
 
 		String pluginName = displayName;
 
@@ -41,17 +41,17 @@ public class MVCPortletAutoDeployer extends PortletAutoDeployer {
 			pluginName = pluginPackage.getName();
 		}
 
+		filterMap.put("friendly_url_mapper_class", "");
+		filterMap.put("friendly_url_mapping", "");
+		filterMap.put("friendly_url_routes", "");
+		filterMap.put("init_param_name_0", "view-jsp");
+		filterMap.put("init_param_value_0", "/index_mvc.jsp");
 		filterMap.put(
 			"portlet_class",
 			"com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet");
 		filterMap.put("portlet_name", pluginName);
 		filterMap.put("portlet_title", pluginName);
 		filterMap.put("restore_current_view", "false");
-		filterMap.put("friendly_url_mapper_class", "");
-		filterMap.put("friendly_url_mapping", "");
-		filterMap.put("friendly_url_routes", "");
-		filterMap.put("init_param_name_0", "view-jsp");
-		filterMap.put("init_param_value_0", "/index_mvc.jsp");
 
 		copyDependencyXml(
 			"liferay-display.xml", srcFile + "/WEB-INF", filterMap);

@@ -22,14 +22,14 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.service.persistence.ResourcePermissionFinder;
+import com.liferay.portal.kernel.service.persistence.ResourcePermissionUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.ResourcePermission;
 import com.liferay.portal.model.impl.ResourcePermissionImpl;
 import com.liferay.portal.model.impl.ResourcePermissionModelImpl;
-import com.liferay.portal.service.persistence.ResourcePermissionFinder;
-import com.liferay.portal.service.persistence.ResourcePermissionUtil;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.io.Serializable;
@@ -43,7 +43,7 @@ import java.util.Set;
  * @author Brian Wing Shun Chan
  */
 public class ResourcePermissionFinderImpl
-	extends BasePersistenceImpl<ResourcePermission>
+	extends ResourcePermissionFinderBaseImpl
 	implements ResourcePermissionFinder {
 
 	public static final String COUNT_BY_R_S =
@@ -63,7 +63,7 @@ public class ResourcePermissionFinderImpl
 			ResourcePermissionModelImpl.ENTITY_CACHE_ENABLED,
 			ResourcePermissionModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			ResourcePermissionPersistenceImpl.
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 			"countByC_N_S_P_R_A",
 			new String[] {
 				Long.class.getName(), String.class.getName(),
@@ -117,7 +117,7 @@ public class ResourcePermissionFinderImpl
 		long actionId) {
 
 		Object[] finderArgs = new Object[] {
-			companyId, name, scope, primKey, roleIds, actionId
+			companyId, name, scope, primKey, StringUtil.merge(roleIds), actionId
 		};
 
 		Long count = (Long)FinderCacheUtil.getResult(
@@ -183,6 +183,13 @@ public class ResourcePermissionFinderImpl
 	}
 
 	@Override
+	public Map<Serializable, ResourcePermission> fetchByPrimaryKeys(
+		Set<Serializable> primaryKeys) {
+
+		return ResourcePermissionUtil.fetchByPrimaryKeys(primaryKeys);
+	}
+
+	@Override
 	public List<ResourcePermission> findByResource(
 		long companyId, long groupId, String name, String primKey) {
 
@@ -213,13 +220,6 @@ public class ResourcePermissionFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public Map<Serializable, ResourcePermission> fetchByPrimaryKeys(
-		Set<Serializable> primaryKeys) {
-
-		return ResourcePermissionUtil.fetchByPrimaryKeys(primaryKeys);
 	}
 
 	@Override

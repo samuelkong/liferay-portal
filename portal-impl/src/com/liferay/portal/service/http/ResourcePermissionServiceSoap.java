@@ -18,13 +18,13 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.service.ResourcePermissionServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionServiceUtil;
 
 import java.rmi.RemoteException;
 
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.service.ResourcePermissionServiceUtil} service utility. The
+ * {@link ResourcePermissionServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -32,10 +32,10 @@ import java.rmi.RemoteException;
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.portal.model.ResourcePermissionSoap}.
+ * is translated to an array of {@link com.liferay.portal.kernel.model.ResourcePermissionSoap}.
  * If the method in the service utility returns a
- * {@link com.liferay.portal.model.ResourcePermission}, that is translated to a
- * {@link com.liferay.portal.model.ResourcePermissionSoap}. Methods that SOAP cannot
+ * {@link com.liferay.portal.kernel.model.ResourcePermission}, that is translated to a
+ * {@link com.liferay.portal.kernel.model.ResourcePermissionSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -58,8 +58,8 @@ import java.rmi.RemoteException;
  *
  * @author Brian Wing Shun Chan
  * @see ResourcePermissionServiceHttp
- * @see com.liferay.portal.model.ResourcePermissionSoap
- * @see com.liferay.portal.service.ResourcePermissionServiceUtil
+ * @see com.liferay.portal.kernel.model.ResourcePermissionSoap
+ * @see ResourcePermissionServiceUtil
  * @generated
  */
 @ProviderType
@@ -99,10 +99,6 @@ public class ResourcePermissionServiceSoap {
 	* @param primKey the primary key
 	* @param roleId the primary key of the role
 	* @param actionId the action ID
-	* @throws PortalException if the user did not have permission to add
-	resource permissions, or if scope was set to individual scope or
-	if a role with the primary key or a resource action with the name
-	and action ID could not be found
 	*/
 	public static void addResourcePermission(long groupId, long companyId,
 		java.lang.String name, int scope, java.lang.String primKey,
@@ -137,9 +133,6 @@ public class ResourcePermissionServiceSoap {
 	* @param primKey the primary key
 	* @param roleId the primary key of the role
 	* @param actionId the action ID
-	* @throws PortalException if the user did not have permission to remove
-	resource permissions, or if a role with the primary key or a
-	resource action with the name and action ID could not be found
 	*/
 	public static void removeResourcePermission(long groupId, long companyId,
 		java.lang.String name, int scope, java.lang.String primKey,
@@ -168,9 +161,6 @@ public class ResourcePermissionServiceSoap {
 	* @param scope the scope
 	* @param roleId the primary key of the role
 	* @param actionId the action ID
-	* @throws PortalException if the user did not have permission to remove
-	resource permissions, or if a role with the primary key or a
-	resource action with the name and action ID could not be found
 	*/
 	public static void removeResourcePermissions(long groupId, long companyId,
 		java.lang.String name, int scope, long roleId, java.lang.String actionId)
@@ -209,9 +199,6 @@ public class ResourcePermissionServiceSoap {
 	* @param primKey the primary key
 	* @param roleId the primary key of the role
 	* @param actionIds the action IDs of the actions
-	* @throws PortalException if the user did not have permission to set
-	resource permissions, or if a role with the primary key or a
-	resource action with the name and action ID could not be found
 	*/
 	public static void setIndividualResourcePermissions(long groupId,
 		long companyId, java.lang.String name, java.lang.String primKey,

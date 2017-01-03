@@ -16,7 +16,6 @@ package com.liferay.portal.spring.hibernate;
 
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.SessionHolder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * @author Shuyang Zhou
@@ -27,14 +26,22 @@ public class LastSessionRecorderHibernateTransactionManager
 	@Override
 	protected Object doGetTransaction() {
 		SessionHolder sessionHolder =
-			(SessionHolder)TransactionSynchronizationManager.getResource(
-				getSessionFactory());
+			SpringHibernateThreadLocalUtil.getResource(getSessionFactory());
 
 		if (sessionHolder != null) {
 			LastSessionRecorderUtil.setLastSession(sessionHolder.getSession());
 		}
 
 		return super.doGetTransaction();
+	}
+
+	static {
+		try {
+			Class.forName(SpringHibernateThreadLocalUtil.class.getName());
+		}
+		catch (ClassNotFoundException cnfe) {
+			throw new ExceptionInInitializerError(cnfe);
+		}
 	}
 
 }

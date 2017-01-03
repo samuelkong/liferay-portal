@@ -15,69 +15,64 @@
 package com.liferay.portlet.usersadmin.util;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.QueryFilter;
+import com.liferay.portal.kernel.search.filter.TermsFilter;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.OrganizationConstants;
-import com.liferay.portal.service.OrganizationLocalServiceUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.portal.util.PropsValues;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
 
 /**
  * @author Raymond Augé
  * @author Zsigmond Rab
  * @author Hugo Huijser
  */
-public class OrganizationIndexer extends BaseIndexer {
+@OSGiBeanProperties
+public class OrganizationIndexer extends BaseIndexer<Organization> {
 
-	public static final String[] CLASS_NAMES = {Organization.class.getName()};
-
-	public static final String PORTLET_ID = PortletKeys.USERS_ADMIN;
+	public static final String CLASS_NAME = Organization.class.getName();
 
 	public OrganizationIndexer() {
-		setCommitImmediately(true);
 		setDefaultSelectedFieldNames(
 			Field.COMPANY_ID, Field.ORGANIZATION_ID, Field.UID);
-		setIndexerEnabled(PropsValues.ORGANIZATIONS_INDEXER_ENABLED);
 		setPermissionAware(true);
 		setStagingAware(false);
 	}
 
 	@Override
-	public String[] getClassNames() {
-		return CLASS_NAMES;
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
-	public String getPortletId() {
-		return PORTLET_ID;
-	}
-
-	@Override
-	public void postProcessContextQuery(
-			BooleanQuery contextQuery, SearchContext searchContext)
+	public void postProcessContextBooleanFilter(
+			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
 
 		LinkedHashMap<String, Object> params =
@@ -90,34 +85,33 @@ public class OrganizationIndexer extends BaseIndexer {
 		List<Long> excludedOrganizationIds = (List<Long>)params.get(
 			"excludedOrganizationIds");
 
-		if ((excludedOrganizationIds != null) &&
-			!excludedOrganizationIds.isEmpty()) {
+		if (ListUtil.isNotEmpty(excludedOrganizationIds)) {
+			TermsFilter termsFilter = new TermsFilter("organizationId");
 
-			BooleanQuery booleanQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
+			termsFilter.addValues(
+				ArrayUtil.toStringArray(
+					excludedOrganizationIds.toArray(
+						new Long[excludedOrganizationIds.size()])));
 
-			for (long excludedOrganizationId : excludedOrganizationIds) {
-				booleanQuery.addTerm(
-					"organizationId", String.valueOf(excludedOrganizationId));
-			}
-
-			contextQuery.add(booleanQuery, BooleanClauseOccur.MUST_NOT);
+			contextBooleanFilter.add(termsFilter, BooleanClauseOccur.MUST_NOT);
 		}
 
 		List<Organization> organizationsTree = (List<Organization>)params.get(
 			"organizationsTree");
 
-		if ((organizationsTree != null) && !organizationsTree.isEmpty()) {
-			BooleanQuery booleanQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
+		if (ListUtil.isNotEmpty(organizationsTree)) {
+			BooleanFilter booleanFilter = new BooleanFilter();
 
 			for (Organization organization : organizationsTree) {
 				String treePath = organization.buildTreePath();
 
-				booleanQuery.addTerm(Field.TREE_PATH, treePath, true);
+				WildcardQuery wildcardQuery = new WildcardQueryImpl(
+					Field.TREE_PATH, treePath);
+
+				booleanFilter.add(new QueryFilter(wildcardQuery));
 			}
 
-			contextQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+			contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
 		}
 		else {
 			long parentOrganizationId = GetterUtil.getLong(
@@ -126,7 +120,7 @@ public class OrganizationIndexer extends BaseIndexer {
 			if (parentOrganizationId !=
 					OrganizationConstants.ANY_PARENT_ORGANIZATION_ID) {
 
-				contextQuery.addRequiredTerm(
+				contextBooleanFilter.addRequiredTerm(
 					"parentOrganizationId", parentOrganizationId);
 			}
 		}
@@ -134,7 +128,8 @@ public class OrganizationIndexer extends BaseIndexer {
 
 	@Override
 	public void postProcessSearchQuery(
-			BooleanQuery searchQuery, SearchContext searchContext)
+			BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+			SearchContext searchContext)
 		throws Exception {
 
 		addSearchTerm(searchQuery, searchContext, "city", false);
@@ -158,18 +153,16 @@ public class OrganizationIndexer extends BaseIndexer {
 	}
 
 	@Override
-	protected void doDelete(Object obj) throws Exception {
-		Organization organization = (Organization)obj;
-
+	protected void doDelete(Organization organization) throws Exception {
 		deleteDocument(
 			organization.getCompanyId(), organization.getOrganizationId());
 	}
 
 	@Override
-	protected Document doGetDocument(Object obj) throws Exception {
-		Organization organization = (Organization)obj;
+	protected Document doGetDocument(Organization organization)
+		throws Exception {
 
-		Document document = getBaseModelDocument(PORTLET_ID, organization);
+		Document document = getBaseModelDocument(CLASS_NAME, organization);
 
 		document.addKeyword(Field.COMPANY_ID, organization.getCompanyId());
 		document.addText(Field.NAME, organization.getName());
@@ -203,82 +196,23 @@ public class OrganizationIndexer extends BaseIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet, PortletURL portletURL,
+		Document document, Locale locale, String snippet,
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		String title = document.get("name");
 
 		String content = null;
 
-		String organizationId = document.get(Field.ORGANIZATION_ID);
-
-		portletURL.setParameter(
-			"struts_action", "/users_admin/edit_organization");
-		portletURL.setParameter("organizationId", organizationId);
-
-		return new Summary(title, content, portletURL);
+		return new Summary(title, content);
 	}
 
 	@Override
-	protected void doReindex(Object obj) throws Exception {
-		if (obj instanceof Long) {
-			long organizationId = (Long)obj;
+	protected void doReindex(Organization organization) throws Exception {
+		Document document = getDocument(organization);
 
-			Organization organization =
-				OrganizationLocalServiceUtil.getOrganization(organizationId);
-
-			doReindex(organization);
-		}
-		else if (obj instanceof long[]) {
-			long[] organizationIds = (long[])obj;
-
-			Map<Long, Collection<Document>> documentsMap =
-				new HashMap<Long, Collection<Document>>();
-
-			for (long organizationId : organizationIds) {
-				Organization organization =
-					OrganizationLocalServiceUtil.fetchOrganization(
-						organizationId);
-
-				if (organization == null) {
-					continue;
-				}
-
-				Document document = getDocument(organization);
-
-				long companyId = organization.getCompanyId();
-
-				Collection<Document> documents = documentsMap.get(companyId);
-
-				if (documents == null) {
-					documents = new ArrayList<Document>();
-
-					documentsMap.put(companyId, documents);
-				}
-
-				documents.add(document);
-			}
-
-			for (Map.Entry<Long, Collection<Document>> entry :
-					documentsMap.entrySet()) {
-
-				long companyId = entry.getKey();
-				Collection<Document> documents = entry.getValue();
-
-				SearchEngineUtil.updateDocuments(
-					getSearchEngineId(), companyId, documents,
-					isCommitImmediately());
-			}
-		}
-		else if (obj instanceof Organization) {
-			Organization organization = (Organization)obj;
-
-			Document document = getDocument(organization);
-
-			SearchEngineUtil.updateDocument(
-				getSearchEngineId(), organization.getCompanyId(), document,
-				isCommitImmediately());
-		}
+		IndexWriterHelperUtil.updateDocument(
+			getSearchEngineId(), organization.getCompanyId(), document,
+			isCommitImmediately());
 	}
 
 	@Override
@@ -296,34 +230,38 @@ public class OrganizationIndexer extends BaseIndexer {
 		reindexOrganizations(companyId);
 	}
 
-	@Override
-	protected String getPortletId(SearchContext searchContext) {
-		return PORTLET_ID;
-	}
-
 	protected void reindexOrganizations(long companyId) throws Exception {
-		final ActionableDynamicQuery actionableDynamicQuery =
-			OrganizationLocalServiceUtil.getActionableDynamicQuery();
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			OrganizationLocalServiceUtil.getIndexableActionableDynamicQuery();
 
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<Organization>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
+				public void performAction(Organization organization) {
+					try {
+						Document document = getDocument(organization);
 
-					Organization organization = (Organization)object;
-
-					Document document = getDocument(organization);
-
-					actionableDynamicQuery.addDocument(document);
+						indexableActionableDynamicQuery.addDocuments(document);
+					}
+					catch (PortalException pe) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"Unable to index organization " +
+									organization.getOrganizationId(),
+								pe);
+						}
+					}
 				}
 
 			});
-		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
+		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
-		actionableDynamicQuery.performActions();
+		indexableActionableDynamicQuery.performActions();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		OrganizationIndexer.class);
 
 }

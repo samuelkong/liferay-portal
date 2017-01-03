@@ -16,8 +16,8 @@ package com.liferay.portal.spring.transaction;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ClassLoaderUtil;
 import com.liferay.portal.kernel.util.SortedProperties;
-import com.liferay.portal.util.ClassLoaderUtil;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
@@ -76,9 +76,9 @@ public class TransactionManagerFactory {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"Created transaction manager " +
-					abstractPlatformTransactionManager.getClass().getName());
+			clazz = abstractPlatformTransactionManager.getClass();
+
+			_log.debug("Created transaction manager " + clazz.getName());
 
 			SortedProperties sortedProperties = new SortedProperties(
 				properties);

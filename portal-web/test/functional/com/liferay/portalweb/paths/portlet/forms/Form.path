@@ -1,0 +1,302 @@
+<html>
+<head>
+<title>Form</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Form</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>SAVE_NOTIFICATION</td>
+	<td>//div[contains(@class,'autosave-bar')]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_FORM_BUTTON</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//button[contains(.,'Save Form') and not (contains(@class,'disabled'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON_DISABLED</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//button[contains(.,'Save') and contains(@class,'disabled')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON_DROPDOWN</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//button[contains(@id,'submitToggle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON_DROPDOWN_SAVE_AND_PUBLISH_LIVE_PAGE</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//ul[@class='dropdown-menu']//a[@class='ddl-button publish save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NAME_FIELD</td>
+	<td>//div[contains(@id,'nameEditorContainer')]/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DESCRIPTION_FIELD</td>
+	<td>//div[contains(@id,'descriptionEditorContainer')]/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGE_TITLE_FIELD</td>
+	<td>//textarea[contains(@class,'form-builder-page-header-title')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGE_DESCRIPTION_FIELD</td>
+	<td>//textarea[contains(@class,'form-builder-page-header-description')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PAGE_CONTROLS-->
+<tr>
+	<td>PAGE_CONTROLS_ELLIPSIS_ICON</td>
+	<td>//a[@class='form-builder-controls-trigger']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGE_CONTROLS_ADD_NEW_PAGE</td>
+	<td>//li[@class='form-builder-page-manager-add-last-position' and contains(text(),'Add New Page')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--ADD_COLUMN-->
+<tr>
+	<td>ADD_COLUMN_LEFT</td>
+	<td>//div[@class='layout-row-container-row'][${key_rowNumber}]//div[contains(@class,'last-col')]/following-sibling::div[1]//div[contains(@class,'resize-col-draggable-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_COLUMN_RIGHT</td>
+	<td>//div[@class='layout-row-container-row'][${key_rowNumber}]//div[contains(@class,'last-col')]/following-sibling::div[2]//div[contains(@class,'resize-col-draggable-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_COLUMN_LINE</td>
+	<td>xpath=(//div[@class='layout-row-container-row'][${key_rowNumber}]//div[contains(@class,'layout-builder-resize-col') and contains(@class,'dd-drop')])[${key_columnLineNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--ADD_FIELD-->
+<tr>
+	<td>ADD_FIELD</td>
+	<td>//div[contains(@class,'col col-md-${key_columnSize}')]//button[contains(@class,'add-button-large')]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_FIELD_TYPE</td>
+	<td>//div[@class='field-type']/div[contains(.,'${key_fieldType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PUBLISH-->
+<tr>
+	<td>PUBLISH_FORM_NAME_FIELD</td>
+	<td>//h1[contains(@class,'form-name') and contains(.,'${key_formName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLISH_FORM_SWITCHER</td>
+	<td>//label[contains(@class,'publish-checkbox')]//span[@class='toggle-switch-bar']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLISH_FORM_PUBLIC_URL</td>
+	<td>//input[@class='form-control' and @type='text']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLISH_URL_FORM_PAGE</td>
+	<td>//div[contains(@class,'form-builder-app')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--SETTINGS_TAB-->
+<tr>
+	<td>SETTINGS_TAB_EMAIL_NOTIFICATIONS</td>
+	<td>//a[contains(@class,'tab-content') and contains(.,'Email Notifications')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETTINGS_TAB_WORKFLOW_CONFIGURATION_FIELD</td>
+	<td>//div[contains(@data-fieldname,'workflowDefinition')]//a[contains(@id,'workflowDefinition')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SETTINGS_TAB_WORKFLOW_CONFIGURATION</td>
+	<td>//div[contains(@data-fieldname,'workflowDefinition')]//a[contains(@id,'workflowDefinition')]/following-sibling::div[@class='drop-chosen']//li[contains(.,'${key_workflowDefinition}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--FIELD-->
+<tr>
+	<td>FIELD_BODY</td>
+	<td>//div[contains(@data-fieldname,'${key_fieldName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FIELD_LABEL</td>
+	<td>//div[contains(@data-fieldname,'${key_fieldName}')]//label</td>
+	<td></td>
+</tr>
+<!--SIDEBAR -->
+<tr>
+	<td>SIDEBAR_HEADER</td>
+	<td>//h4[contains(@class,'form-builder-sidebar-title')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SIDEBAR_PROPERTIES_TAB</td>
+	<td>//a[contains(@class,'tab') and .='properties']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SIDEBAR_BASIC_TAB</td>
+	<td>//a[contains(@class,'tab') and .='basic']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SIDEBAR_ELLIPSIS</td>
+	<td>//div[contains(@class,'sidebar-header')]//*[contains(@class,'lexicon-icon-ellipsis-v')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SIDEBAR_MENUITEM_REMOVE_FIELD</td>
+	<td>//a[@title='Remove Field']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SIDEBAR_CLOSE</td>
+	<td>//div[contains(@class,'sidebar-header')]//a[contains(@class,'close')]</td>
+	<td></td>
+</tr>
+<!--RULE_BUILDER-->
+<tr>
+	<td>RULE_BUILDER_ADD_RULE_BUTTON</td>
+	<td>//button[contains(@class,'add-rule-button-icon')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_ADD_CONDITION</td>
+	<td>//a[contains(@class,'form-builder-rule-add-condition')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_RULE_CONDITION_DROPDOWN</td>
+	<td>//button[contains(@class,'dropdown-toggle-operator')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_RULE_CONDITION</td>
+	<td>//ul[@class='dropdown-menu']//li[contains(.,'${key_condition}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_CONDITION_FIELD</td>
+	<td>//li[contains(@class,'rule-condition-container')][${key_conditionRowNumber}]//a[contains(@id,'condition-first') and contains(@class,'select-field-trigger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_CONDITION_FIELD</td>
+	<td>//li[contains(@class,'form-builder-rule-condition')][${key_conditionRowNumber}]//a[contains(@id,'condition-first')]/following-sibling::div[@class='drop-chosen']//li[contains(.,'${key_conditionField}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_CONDITION_OPERATOR_FIELD</td>
+	<td>//li[contains(@class,'rule-condition-container')][${key_conditionRowNumber}]//a[contains(@id,'condition-operator') and contains(@class,'select-field-trigger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_CONDITION_OPERATOR</td>
+	<td>//li[contains(@class,'form-builder-rule-condition')][${key_conditionRowNumber}]//a[contains(@id,'condition-operator')]/following-sibling::div[@class='drop-chosen']//li[contains(.,'${key_conditionOperator}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_CONDITION_VALUE_TYPE_FIELD</td>
+	<td>//li[contains(@class,'rule-condition-container')][${key_conditionRowNumber}]//a[contains(@id,'condition-second-oper') and contains(@class,'select-field-trigger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_CONDITION_VALUE_TYPE</td>
+	<td>//li[contains(@class,'form-builder-rule-condition')][${key_conditionRowNumber}]//a[contains(@id,'condition-second-operand-type')]/following-sibling::div[@class='drop-chosen']//li[contains(.,'${key_conditionValueType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_CONDITION_VALUE_FIELD</td>
+	<td>//li[contains(@class,'rule-condition-container')][${key_conditionRowNumber}]//div[contains(@data-fieldname,'condition-second-operand-options')]//a[contains(@id,'condition-second-oper') and contains(@class,'select-field-trigger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_CONDITION_VALUE_FIELD</td>
+	<td>//li[contains(@class,'form-builder-rule-condition')][${key_conditionRowNumber}]//a[contains(@id,'condition-second-operand-options')]/following-sibling::div[@class='drop-chosen']//ul[contains(.,'${key_conditionValueField}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_CONDITION_VALUE_TEXT_FIELD</td>
+	<td>//li[contains(@class,'form-builder-rule-condition')][${key_conditionRowNumber}]//div[contains(@class,'condition-type-value')]//input[@type='text']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_TIMELINE_RULE_CONDITION</td>
+	<td>//li[contains(@class,'condition-container') and contains(@class,'timeline-item')][${key_conditonRowNumber}]//div[contains(.,'${key_condition}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_ACTION_FIELD</td>
+	<td>//a[contains(@id,'target') and contains(@class,'select-field-trigger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_ACTION</td>
+	<td>//li[contains(@class,'form-builder-rule-action')][${key_actionRowNumber}]//a[contains(@id,'target')]/following-sibling::div[@class='drop-chosen']//li[contains(.,'${key_action}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_ACTION_TARGET_FIELD</td>
+	<td>//li[contains(@class,'form-builder-rule-action')][${key_actionRowNumber}]//a[contains(@id,'action') and contains(@class,'select-field-trigger')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SELECT_ACTION_TARGET</td>
+	<td>//li[contains(@class,'form-builder-rule-action')][${key_actionRowNumber}]//a[contains(@id,'action')]/following-sibling::div[@class='drop-chosen']//li[contains(.,'${key_actionTarget}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RULE_BUILDER_SAVE_BUTTON</td>
+	<td>//button[contains(@class,'form-builder-rule-settings-save')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

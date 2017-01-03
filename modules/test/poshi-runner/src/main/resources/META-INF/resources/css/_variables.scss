@@ -1,0 +1,128 @@
+/* ---------- Common color & fonts ---------- */
+// Font stacks
+
+$monospaced-font: 'Source Code Pro', 'Menlo', 'Lucia Console', Monaco, monospace;
+
+$general-font: 'Open Sans', 'Verdana', 'Geneva', sans-serif;
+
+// General colors
+
+$black: #222;
+
+$grey: #617484;
+$grey-cool: #9AA8B1;
+$grey-dark: #4C5255;
+$grey-light: #989DA9;
+$grey-lighter: #AEBBC2;
+$grey-subtle: #E1E8EB;
+
+$neutral: #9FA2A6;
+$neutral-light: #E0E0E0;
+$neutral-med: #CDCDCD;
+
+$off-white: #F7F7F7;
+$off-white-subtle: #FBFBFB;
+
+$failed-color: #FF8787;
+$passed-color: #00FEA3;
+$pending-color: #DDE1E3;
+$warning-color: #FFB879;
+
+/* ---------- Syntax highlight variables ---------- */
+
+$current-scope-name-color: #000;
+
+// Xml-log
+
+$xml-misc-color: #C1CFD7;
+$xml-name-color: #728EA0;
+$xml-tag-type-color: #A2B4BE;
+
+// Sidebar
+
+$command-name-color: #4E6A7D;
+$param-type-color: #A0A0A0;
+$param-value-color: #8B95A0;
+
+/* ---------- Styling ---------- */
+
+// Xml-log
+
+$body-bg-color: $off-white;
+$body-font-size: 11px;
+$body-letter-spacing: 0.06em;
+$body-line-height: 2.2;
+
+$xml-log-default-text-color: $grey;
+
+$child-container-left-border-color: $neutral-light;
+
+$line-number-text-color: $black;
+
+$parameter-container-border-color: $neutral-light;
+
+$macro-child-container-bg-color: transparentize(darken($off-white, 3), 0.97);
+$macro-child-container-box-shadow: inset 1px 1px 2px 1px rgba(0, 0, 0, 0.04), inset 1px 1px 1px -1px rgba(0, 0, 0, 0.1);
+
+// Command-logger mode
+
+$line-container-bg-color: $off-white;
+
+$line-container-box-shadow: -2px 0 0 0 rgba(0, 0, 0, 0.03), -1px 0 1px 0 rgba(0, 0, 0, 0.08);
+$line-container-box-shadow-hover: 0 1px 4px 1px rgba(0, 0, 0, 0.04), -1px 1px 3px 1px rgba(0, 0, 0, 0.1);
+
+$line-container-current-scope-bg-color: darken($off-white, 1);
+$line-container-current-scope-border-box-shadow: inset -1px 0 1px 0 $neutral;
+
+$line-group-hover-bg-color: transparentize($neutral-med, 0.88);
+
+// Error console & screenshot
+
+$console-bg-color: $off-white-subtle;
+$console-border-color: $neutral-light;
+$console-font-color: $neutral;
+
+$console-header-font-color: $neutral;
+
+$console-status-font-color: lighten($neutral, 2);
+
+$console-step-description-font-color: $grey-light;
+$console-step-font-color: $grey-cool;
+
+$console-cause-font-color: $grey-light;
+
+$console-screenshot-divider: $neutral-med;
+
+$fullscreen-image-scrim: $black;
+
+// Sidebar
+
+$sidebar-bg-color: $off-white-subtle;
+$sidebar-border-color: $child-container-left-border-color;
+$sidebar-default-text-color: $grey-lighter;
+
+$scope-name-hover-box-shadow: -1px 2px 1px 0 rgba(0, 0, 0, 0.1), -3px 4px 2px 0 rgba(0, 0, 0, 0.05);
+
+// Command-log
+
+$command-log-current-scope-bg: $off-white;
+$command-log-current-scope-border: $grey-subtle;
+
+$command-log-hover-bg: lighten($off-white, 1);
+
+$command-log-divider-bg-color: darken($off-white, 0);
+$command-log-divider-border-color: lighten($neutral-light, 1);
+$command-log-divider-text-color: $grey-light;
+
+$command-child-container-border-color: $neutral-light;
+$command-child-container-text-color: $sidebar-default-text-color;
+
+$command-log-expand-toggle-color: $neutral;
+
+// Buttons
+
+$button-border-color: $neutral-med;
+$button-toggle-bg-color: $neutral-light;
+
+$button-error-toggle-bg-color: lighten($failed-color, 16);
+$button-warning-toggle-bg-color: lighten($warning-color, 16);

@@ -1,0 +1,60 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<aui:select label="scope" name="preferences--searchScope--" value="<%= searchDisplayContext.getSearchScopePreferenceString() %>">
+	<aui:option label="this-site" value="" />
+	<aui:option label="everything" />
+	<aui:option label="let-the-user-choose" />
+</aui:select>
+
+<aui:fieldset cssClass="facet-configuration-container" label="facets">
+
+	<%
+	List<SearchFacet> searchFacets = ListUtil.copy(SearchFacetTracker.getSearchFacets());
+
+	for (SearchFacet searchFacet : searchFacets) {
+		searchFacet.init(company.getCompanyId(), searchDisplayContext.getSearchConfiguration());
+	}
+
+	searchFacets = ListUtil.sort(searchFacets, SearchFacetComparator.INSTANCE);
+
+	for (SearchFacet searchFacet : searchFacets) {
+	%>
+
+		<aui:input label="<%= searchFacet.getTitle() %>" name='<%= "preferences--" + searchFacet.getClassName() + "--" %>' type="checkbox" value="<%= searchDisplayContext.isDisplayFacet(searchFacet.getClassName()) %>" />
+
+		<div class="facet-configuration" id="<portlet:namespace /><%= AUIUtil.normalizeId(searchFacet.getClassName()) %>FacetConfiguration">
+			<liferay-ui:toggle-area align="none" defaultShowContent="hide" hideMessage='<%= LanguageUtil.get(request, "configure") %>' id="<%= StringUtil.replace(searchFacet.getClassName(), CharPool.PERIOD, CharPool.UNDERLINE) %>" showMessage='<%= LanguageUtil.get(request, "configure") %>'>
+
+				<%
+				request.setAttribute("facet_configuration.jsp-searchFacet", searchFacet);
+				%>
+
+				<div class="advance-configuration">
+					<liferay-util:include page="/facets/facet_configuration.jsp" servletContext="<%= application %>" />
+				</div>
+			</liferay-ui:toggle-area>
+		</div>
+
+		<aui:script>
+			Liferay.Util.toggleBoxes('<portlet:namespace /><%= AUIUtil.normalizeId(searchFacet.getClassName()) %>', '<portlet:namespace /><%= AUIUtil.normalizeId(searchFacet.getClassName()) %>FacetConfiguration');
+		</aui:script>
+
+	<%
+	}
+	%>
+
+</aui:fieldset>

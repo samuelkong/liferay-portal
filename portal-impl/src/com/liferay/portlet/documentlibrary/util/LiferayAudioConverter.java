@@ -54,11 +54,11 @@ public class LiferayAudioConverter extends LiferayConverter {
 			doConvert();
 		}
 		finally {
-			if (_inputIContainer.isOpened()) {
+			if ((_inputIContainer != null) && _inputIContainer.isOpened()) {
 				_inputIContainer.close();
 			}
 
-			if (_outputIContainer.isOpened()) {
+			if ((_outputIContainer != null) && _outputIContainer.isOpened()) {
 				_outputIContainer.close();
 			}
 		}
@@ -170,7 +170,9 @@ public class LiferayAudioConverter extends LiferayConverter {
 
 	@Override
 	protected int getAudioBitRate(ICodec outputICodec, int originalBitRate) {
-		return getProperty(originalBitRate, _audioBitRate, AUDIO_BIT_RATE_MAX);
+		return getCodecBitRate(
+			outputICodec,
+			getProperty(originalBitRate, _audioBitRate, AUDIO_BIT_RATE_MAX));
 	}
 
 	@Override
@@ -197,15 +199,15 @@ public class LiferayAudioConverter extends LiferayConverter {
 			AUDIO_SAMPLE_RATE_MAX);
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		LiferayAudioConverter.class);
 
 	private int _audioBitRate;
-	private String _audioContainer;
+	private final String _audioContainer;
 	private int _audioSampleRate;
 	private IContainer _inputIContainer;
-	private String _inputURL;
+	private final String _inputURL;
 	private IContainer _outputIContainer;
-	private String _outputURL;
+	private final String _outputURL;
 
 }

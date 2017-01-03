@@ -15,17 +15,18 @@
 package com.liferay.portal.layoutconfiguration.util;
 
 import com.liferay.portal.kernel.executor.CopyThreadLocalCallable;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletContainerException;
 import com.liferay.portal.kernel.portlet.PortletContainerUtil;
 import com.liferay.portal.kernel.portlet.RestrictPortletServletRequest;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
+import com.liferay.portal.kernel.util.Mergeable;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.model.Portlet;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.WebKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 
+import java.util.Enumeration;
 import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +42,8 @@ public class PortletRenderer {
 		Integer columnPos) {
 
 		_portlet = portlet;
-		_columnCount = columnCount;
 		_columnId = columnId;
+		_columnCount = columnCount;
 		_columnPos = columnPos;
 	}
 
@@ -88,11 +89,11 @@ public class PortletRenderer {
 			HttpServletRequest request, HttpServletResponse response)
 		throws PortletContainerException {
 
-		request.setAttribute(
-			WebKeys.PARALLEL_RENDERING_TIMEOUT_ERROR, Boolean.TRUE);
-
 		request = PortletContainerUtil.setupOptionalRenderParameters(
 			request, null, _columnId, _columnPos, _columnCount);
+
+		request.setAttribute(
+			WebKeys.PARALLEL_RENDERING_TIMEOUT_ERROR, Boolean.TRUE);
 
 		_restrictPortletServletRequest = (RestrictPortletServletRequest)request;
 
@@ -162,9 +163,6 @@ public class PortletRenderer {
 
 		@Override
 		public StringBundler doCall() throws Exception {
-			ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 			HttpServletRequest request =
 				PortletContainerUtil.setupOptionalRenderParameters(
 					_request, null, _columnId, _columnPos, _columnCount);
@@ -173,9 +171,7 @@ public class PortletRenderer {
 				(RestrictPortletServletRequest)request;
 
 			try {
-				themeDisplay = (ThemeDisplay)themeDisplay.clone();
-
-				request.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
+				_split(_request, _restrictPortletServletRequest);
 
 				return _render(request, _response);
 			}
@@ -195,8 +191,34 @@ public class PortletRenderer {
 			}
 		}
 
+		private void _split(
+			HttpServletRequest request,
+			RestrictPortletServletRequest restrictPortletServletRequest) {
+
+			Enumeration<String> attributeNames = request.getAttributeNames();
+
+			while (attributeNames.hasMoreElements()) {
+				String attributeName = attributeNames.nextElement();
+
+				Object attribute = request.getAttribute(attributeName);
+
+				if (!(attribute instanceof Mergeable<?>) ||
+						!RestrictPortletServletRequest.isSharedRequestAttribute(
+							attributeName)) {
+
+					continue;
+				}
+
+				Mergeable<?> mergeable = (Mergeable<?>)attribute;
+
+				restrictPortletServletRequest.setAttribute(
+					attributeName, mergeable.split());
+			}
+		}
+
 		private final HttpServletRequest _request;
 		private final HttpServletResponse _response;
+
 	}
 
 }

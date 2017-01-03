@@ -20,11 +20,10 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portlet.social.model.SocialActivity;
 import com.liferay.portlet.social.model.impl.SocialActivityImpl;
-import com.liferay.portlet.social.service.persistence.SocialActivityFinder;
-import com.liferay.portlet.social.service.persistence.SocialActivityUtil;
+import com.liferay.social.kernel.model.SocialActivity;
+import com.liferay.social.kernel.service.persistence.SocialActivityFinder;
+import com.liferay.social.kernel.service.persistence.SocialActivityUtil;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
@@ -35,8 +34,7 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  */
 public class SocialActivityFinderImpl
-	extends BasePersistenceImpl<SocialActivity>
-	implements SocialActivityFinder {
+	extends SocialActivityFinderBaseImpl implements SocialActivityFinder {
 
 	public static final String COUNT_BY_GROUP_ID =
 		SocialActivityFinder.class.getName() + ".countByGroupId";
@@ -668,8 +666,7 @@ public class SocialActivityFinderImpl
 			qPos.add(userId);
 			qPos.add(userId);
 
-			List<SocialActivity> socialActivities =
-				new ArrayList<SocialActivity>();
+			List<SocialActivity> socialActivities = new ArrayList<>();
 
 			Iterator<Long> itr = (Iterator<Long>)QueryUtil.iterate(
 				q, getDialect(), start, end);

@@ -14,6 +14,14 @@
 
 package com.liferay.portlet.documentlibrary.util;
 
+import com.liferay.document.library.kernel.exception.FileExtensionException;
+import com.liferay.document.library.kernel.exception.FileNameException;
+import com.liferay.document.library.kernel.exception.FileSizeException;
+import com.liferay.document.library.kernel.exception.FolderNameException;
+import com.liferay.document.library.kernel.exception.InvalidFileVersionException;
+import com.liferay.document.library.kernel.exception.SourceFileNameException;
+import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.document.library.kernel.util.DLValidator;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
@@ -22,12 +30,7 @@ import com.liferay.portal.kernel.util.UnicodeFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.documentlibrary.FileExtensionException;
-import com.liferay.portlet.documentlibrary.FileNameException;
-import com.liferay.portlet.documentlibrary.FileSizeException;
-import com.liferay.portlet.documentlibrary.FolderNameException;
-import com.liferay.portlet.documentlibrary.InvalidFileVersionException;
-import com.liferay.portlet.documentlibrary.SourceFileNameException;
+import com.liferay.portlet.documentlibrary.webdav.DLWebDAVUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +40,22 @@ import java.io.InputStream;
  * @author Adolfo Pérez
  */
 public final class DLValidatorImpl implements DLValidator {
+
+	@Override
+	public String fixName(String name) {
+		if (Validator.isNull(name)) {
+			return StringPool.UNDERLINE;
+		}
+
+		for (String blacklistChar : PropsValues.DL_CHAR_BLACKLIST) {
+			name = StringUtil.replace(
+				name, blacklistChar, StringPool.UNDERLINE);
+		}
+
+		name = replaceDLCharLastBlacklist(name);
+
+		return replaceDLNameBlacklist(name);
+	}
 
 	@Override
 	public boolean isValidName(String name) {
@@ -51,7 +70,7 @@ public final class DLValidatorImpl implements DLValidator {
 		}
 
 		for (String blacklistLastChar : PropsValues.DL_CHAR_LAST_BLACKLIST) {
-			if (blacklistLastChar.startsWith(_UNICODE_PREFIX)) {
+			if (blacklistLastChar.startsWith(UnicodeFormatter.UNICODE_PREFIX)) {
 				blacklistLastChar = UnicodeFormatter.parseString(
 					blacklistLastChar);
 			}
@@ -61,13 +80,7 @@ public final class DLValidatorImpl implements DLValidator {
 			}
 		}
 
-		String nameWithoutExtension = name;
-
-		if (name.contains(StringPool.PERIOD)) {
-			int index = name.lastIndexOf(StringPool.PERIOD);
-
-			nameWithoutExtension = name.substring(0, index);
-		}
+		String nameWithoutExtension = FileUtil.stripExtension(name);
 
 		for (String blacklistName : PropsValues.DL_NAME_BLACKLIST) {
 			if (StringUtil.equalsIgnoreCase(
@@ -118,32 +131,33 @@ public final class DLValidatorImpl implements DLValidator {
 		if (!isValidName(fileName)) {
 			throw new FileNameException(fileName);
 		}
+
+		if (!DLWebDAVUtil.isRepresentableTitle(fileName)) {
+			throw new FileNameException(
+				"Unrepresentable WebDAV title for file name " + fileName);
+		}
 	}
 
 	@Override
 	public void validateFileSize(String fileName, byte[] bytes)
 		throws FileSizeException {
 
-		if ((bytes == null) ||
-			((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
-			 (bytes.length >
-					PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE)))) {
-
+		if (bytes == null) {
 			throw new FileSizeException(fileName);
 		}
+
+		validateFileSize(fileName, bytes.length);
 	}
 
 	@Override
 	public void validateFileSize(String fileName, File file)
 		throws FileSizeException {
 
-		if ((file == null) ||
-			((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
-			 (file.length() >
-					PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE)))) {
-
+		if (file == null) {
 			throw new FileSizeException(fileName);
 		}
+
+		validateFileSize(fileName, file.length());
 	}
 
 	@Override
@@ -151,16 +165,25 @@ public final class DLValidatorImpl implements DLValidator {
 		throws FileSizeException {
 
 		try {
-			if ((is == null) ||
-				((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
-				 (is.available() >
-						PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE)))) {
-
+			if (is == null) {
 				throw new FileSizeException(fileName);
 			}
+
+			validateFileSize(fileName, is.available());
 		}
 		catch (IOException ioe) {
-			throw new FileSizeException(ioe.getMessage());
+			throw new FileSizeException(ioe);
+		}
+	}
+
+	@Override
+	public void validateFileSize(String fileName, long size)
+		throws FileSizeException {
+
+		long maxSize = PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE);
+
+		if ((maxSize > 0) && (size > maxSize)) {
+			throw new FileSizeException(fileName);
 		}
 	}
 
@@ -188,10 +211,55 @@ public final class DLValidatorImpl implements DLValidator {
 		}
 
 		if (!DLUtil.isValidVersion(versionLabel)) {
-			throw new InvalidFileVersionException();
+			throw new InvalidFileVersionException(
+				"Invalid version label " + versionLabel);
 		}
 	}
 
-	private static final String _UNICODE_PREFIX = "\\u";
+	protected String replaceDLCharLastBlacklist(String title) {
+		String previousTitle = null;
+
+		while (!title.equals(previousTitle)) {
+			previousTitle = title;
+
+			for (String blacklistLastChar :
+					PropsValues.DL_CHAR_LAST_BLACKLIST) {
+
+				if (blacklistLastChar.startsWith(
+						UnicodeFormatter.UNICODE_PREFIX)) {
+
+					blacklistLastChar = UnicodeFormatter.parseString(
+						blacklistLastChar);
+				}
+
+				if (title.endsWith(blacklistLastChar)) {
+					title = StringUtil.replaceLast(
+						title, blacklistLastChar, StringPool.BLANK);
+				}
+			}
+		}
+
+		return title;
+	}
+
+	protected String replaceDLNameBlacklist(String title) {
+		String extension = FileUtil.getExtension(title);
+		String nameWithoutExtension = FileUtil.stripExtension(title);
+
+		for (String blacklistName : PropsValues.DL_NAME_BLACKLIST) {
+			if (StringUtil.equalsIgnoreCase(
+					nameWithoutExtension, blacklistName)) {
+
+				if (Validator.isNull(extension)) {
+					return nameWithoutExtension + StringPool.UNDERLINE;
+				}
+
+				return nameWithoutExtension + StringPool.UNDERLINE +
+					StringPool.PERIOD + extension;
+			}
+		}
+
+		return title;
+	}
 
 }

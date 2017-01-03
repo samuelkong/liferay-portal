@@ -32,24 +32,44 @@ public class LiferayServletRequest extends HttpServletRequestWrapper {
 		_request = request;
 	}
 
+	public void cleanUp() {
+		if (_lis != null) {
+			_lis.cleanUp();
+		}
+	}
+
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
 		if (_lis == null) {
 			_lis = new LiferayInputStream(_request);
-
-			return _lis;
 		}
-		else {
+
+		if (_finishedReadingOriginalStream) {
 
 			// Return the cached input stream the second time the user requests
 			// the input stream, otherwise, it will return an empty input stream
 			// because it has already been parsed
 
-			return _lis.getCachedInputStream();
+			if (_cachedInputStream == null) {
+				_cachedInputStream = _lis.getCachedInputStream();
+			}
+
+			return _cachedInputStream;
+		}
+		else {
+			return _lis;
 		}
 	}
 
-	private LiferayInputStream _lis = null;
+	public void setFinishedReadingOriginalStream(
+		boolean finishedReadingOriginalStream) {
+
+		_finishedReadingOriginalStream = finishedReadingOriginalStream;
+	}
+
+	private ServletInputStream _cachedInputStream;
+	private boolean _finishedReadingOriginalStream;
+	private LiferayInputStream _lis;
 	private final HttpServletRequest _request;
 
 }

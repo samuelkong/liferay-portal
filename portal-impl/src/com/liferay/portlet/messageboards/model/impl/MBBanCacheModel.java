@@ -16,11 +16,12 @@ package com.liferay.portlet.messageboards.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.message.boards.kernel.model.MBBan;
+
+import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.model.CacheModel;
-
-import com.liferay.portlet.messageboards.model.MBBan;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,8 +40,32 @@ import java.util.Date;
 @ProviderType
 public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MBBanCacheModel)) {
+			return false;
+		}
+
+		MBBanCacheModel mbBanCacheModel = (MBBanCacheModel)obj;
+
+		if (banId == mbBanCacheModel.banId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, banId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -60,6 +85,8 @@ public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 		sb.append(modifiedDate);
 		sb.append(", banUserId=");
 		sb.append(banUserId);
+		sb.append(", lastPublishDate=");
+		sb.append(lastPublishDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -104,6 +131,13 @@ public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 
 		mbBanImpl.setBanUserId(banUserId);
 
+		if (lastPublishDate == Long.MIN_VALUE) {
+			mbBanImpl.setLastPublishDate(null);
+		}
+		else {
+			mbBanImpl.setLastPublishDate(new Date(lastPublishDate));
+		}
+
 		mbBanImpl.resetOriginalValues();
 
 		return mbBanImpl;
@@ -112,14 +146,20 @@ public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+
 		banId = objectInput.readLong();
+
 		groupId = objectInput.readLong();
+
 		companyId = objectInput.readLong();
+
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
 		banUserId = objectInput.readLong();
+		lastPublishDate = objectInput.readLong();
 	}
 
 	@Override
@@ -133,8 +173,11 @@ public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 		}
 
 		objectOutput.writeLong(banId);
+
 		objectOutput.writeLong(groupId);
+
 		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
@@ -146,7 +189,9 @@ public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
 		objectOutput.writeLong(banUserId);
+		objectOutput.writeLong(lastPublishDate);
 	}
 
 	public String uuid;
@@ -158,4 +203,5 @@ public class MBBanCacheModel implements CacheModel<MBBan>, Externalizable {
 	public long createDate;
 	public long modifiedDate;
 	public long banUserId;
+	public long lastPublishDate;
 }
