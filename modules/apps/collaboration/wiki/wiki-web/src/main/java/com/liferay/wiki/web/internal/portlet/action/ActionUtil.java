@@ -416,8 +416,12 @@ public class ActionUtil {
 		}
 
 		long categoryId = ParamUtil.getLong(renderRequest, "categoryId");
+		String tagName = ParamUtil.getString(renderRequest, "tag");
 
-		if (categoryId > 0) {
+		//view_categorized_pages.jsp will also handle tags(and combination of
+		//category and tag)
+
+		if ((categoryId > 0) || Validator.isNotNull(tagName)) {
 			return "/wiki/view_categorized_pages.jsp";
 		}
 		else {
