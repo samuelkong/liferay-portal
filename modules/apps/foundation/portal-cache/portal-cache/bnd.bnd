@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Cache
 Bundle-SymbolicName: com.liferay.portal.cache
-Bundle-Version: 2.2.6
+Bundle-Version: 2.2.7
 DynamicImport-Package: *
 Export-Package:\
 	com.liferay.portal.cache,\

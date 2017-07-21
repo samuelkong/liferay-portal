@@ -80,7 +80,7 @@ public class MDRRuleGroupInstanceLocalServiceImpl
 
 		List<MDRRuleGroupInstance> ruleGroupInstances = getRuleGroupInstances(
 			className, classPK, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			new RuleGroupInstancePriorityComparator());
+			RuleGroupInstancePriorityComparator.INSTANCE_ASCENDING);
 
 		int priority = 0;
 
@@ -139,7 +139,8 @@ public class MDRRuleGroupInstanceLocalServiceImpl
 			getRuleGroupInstances(
 				ruleGroupInstance.getClassName(),
 				ruleGroupInstance.getClassPK(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, new RuleGroupInstancePriorityComparator());
+				QueryUtil.ALL_POS,
+				RuleGroupInstancePriorityComparator.INSTANCE_ASCENDING);
 
 		for (int i = 0; i < mdrRuleGroupInstances.size(); i++) {
 			MDRRuleGroupInstance mdrRuleGroupInstance =
