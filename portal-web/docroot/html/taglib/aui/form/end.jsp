@@ -27,6 +27,7 @@
 
 <%
 String fullName = namespace + HtmlUtil.escapeJS(name);
+String autoFocusTagId = GetterUtil.getString(request.getAttribute("autoFocusTagId"));
 %>
 
 <aui:script use="liferay-form">
@@ -84,6 +85,9 @@ String fullName = namespace + HtmlUtil.escapeJS(name);
 
 	<c:if test="<%= Validator.isNotNull(onSubmit) %>">
 		A.all('#<%= fullName %> .input-container').removeAttribute('disabled');
+		<c:if test="<%= Validator.isNotNull(autoFocusTagId) %>">
+			Liferay.Util.focusFormField('#<%= autoFocusTagId %>');
+		</c:if>
 	</c:if>
 
 	Liferay.fire(

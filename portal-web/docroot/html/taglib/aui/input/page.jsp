@@ -372,9 +372,7 @@ boolean choiceField = checkboxField || radioField;
 		</c:choose>
 
 		<c:if test="<%= autoFocus %>">
-			<aui:script>
-				Liferay.Util.focusFormField('#<%= namespace + id %>');
-			</aui:script>
+			<%request.setAttribute("autoFocusTagId",namespace + id); %>
 		</c:if>
 	</c:otherwise>
 </c:choose>
