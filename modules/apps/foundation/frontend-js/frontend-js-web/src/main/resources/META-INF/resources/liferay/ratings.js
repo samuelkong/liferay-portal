@@ -489,7 +489,47 @@ AUI.add(
 
 						var thumbScore = instance._getThumbScores(json.totalEntries, json.totalScore);
 
+						instance._updateTitles(thumbScore);
 						instance._updateScores(thumbScore);
+					},
+
+					_updateTitles: function(thumbScore) {
+						var instance = this;
+
+						var nodes = instance.ratings.get('elements');
+
+						nodes.each(
+							function(node, i) {
+								var newTitle = '';
+
+								if ((0 === i && thumbScore.positiveVotes != node.html()) ||
+									(1 === i && thumbScore.negativeVotes != node.html())) {
+
+									switch (node.attr('title')) {
+										case Liferay.Language.get('rate-this-as-bad'):
+											newTitle = Liferay.Language.get('you-have-rated-this-as-bad');
+											break;
+										case Liferay.Language.get('rate-this-as-good'):
+											newTitle = Liferay.Language.get('you-have-rated-this-as-good');
+											break;
+										case Liferay.Language.get('you-have-rated-this-as-bad'):
+											newTitle = Liferay.Language.get('rate-this-as-bad');
+											break;
+										case Liferay.Language.get('you-have-rated-this-as-good'):
+											newTitle = Liferay.Language.get('rate-this-as-good');
+											break;
+										case Liferay.Language.get('unlike-this'):
+											newTitle = Liferay.Language.get('like-this');
+											break;
+										case Liferay.Language.get('like-this'):
+											newTitle = Liferay.Language.get('unlike-this');
+											break;
+									}
+
+									node.attr('title', newTitle);
+								}
+							}
+						);
 					},
 
 					_updateScores: function(thumbScore) {
