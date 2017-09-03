@@ -254,16 +254,7 @@ public class StagedLayoutSetStagedModelDataHandler
 		importedStagedLayoutSet.setGroupId(
 			portletDataContext.getScopeGroupId());
 
-		String layoutsImportMode = MapUtil.getString(
-			portletDataContext.getParameterMap(),
-			PortletDataHandlerKeys.LAYOUTS_IMPORT_MODE,
-			PortletDataHandlerKeys.LAYOUTS_IMPORT_MODE_MERGE_BY_LAYOUT_UUID);
-
-		if (existingLayoutSetOptional.isPresent() &&
-			!layoutsImportMode.equals(
-				PortletDataHandlerKeys.
-					LAYOUTS_IMPORT_MODE_CREATED_FROM_PROTOTYPE)) {
-
+		if (existingLayoutSetOptional.isPresent()) {
 			StagedLayoutSet existingLayoutSet = existingLayoutSetOptional.get();
 
 			importedStagedLayoutSet.setLayoutSetId(

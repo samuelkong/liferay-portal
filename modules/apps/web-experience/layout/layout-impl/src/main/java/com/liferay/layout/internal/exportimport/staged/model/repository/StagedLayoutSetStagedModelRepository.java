@@ -241,7 +241,7 @@ public class StagedLayoutSetStagedModelRepository
 		if (layoutSetSettings) {
 			existingLayoutSet = _layoutSetLocalService.updateSettings(
 				existingLayoutSet.getGroupId(),
-				existingLayoutSet.isPrivateLayout(),
+				portletDataContext.isPrivateLayout(),
 				stagedLayoutSet.getSettings());
 		}
 

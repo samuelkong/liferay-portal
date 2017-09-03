@@ -2031,6 +2031,11 @@ public class SitesImpl implements Sites {
 					Map<String, String[]> parameterMap =
 						getLayoutSetPrototypesParameters(true);
 
+					parameterMap.put(
+						PortletDataHandlerKeys.
+							LAYOUT_SET_PROTOTYPE_LINK_ENABLED,
+						new String[] {Boolean.FALSE.toString()});
+
 					importLayoutSetPrototype(
 						layoutSetPrototype, groupId, privateLayout,
 						parameterMap, true);
