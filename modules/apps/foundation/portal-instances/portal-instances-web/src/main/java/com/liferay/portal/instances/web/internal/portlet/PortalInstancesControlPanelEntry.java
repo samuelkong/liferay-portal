@@ -12,18 +12,24 @@
  * details.
  */
 
-package com.liferay.portal.upgrade.v7_0_3;
+package com.liferay.portal.instances.web.internal.portlet;
 
-import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.instances.web.internal.constants.PortalInstancesPortletKeys;
+import com.liferay.portal.kernel.portlet.ControlPanelEntry;
+import com.liferay.portal.kernel.portlet.OmniadminControlPanelEntry;
+
+import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Adolfo Pérez
+ * @author Alan Huang
  */
-public class UpgradeSchema extends UpgradeProcess {
-
-	@Override
-	protected void doUpgrade() throws Exception {
-		upgrade(UpgradeMVCCVersion.class);
-	}
-
+@Component(
+	immediate = true,
+	property = {
+		"javax.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES
+	},
+	service = ControlPanelEntry.class
+)
+public class PortalInstancesControlPanelEntry
+	extends OmniadminControlPanelEntry {
 }

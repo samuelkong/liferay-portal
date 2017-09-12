@@ -12,21 +12,21 @@
  * details.
  */
 
-package com.liferay.portal.upgrade.v7_0_3;
+package com.liferay.portal.upgrade.v7_0_4;
 
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.upgrade.v7_0_3.util.UserTable;
+import com.liferay.portal.upgrade.v7_0_4.util.EmailAddressTable;
 
 /**
  * @author Ugurcan Cetin
  */
-public class UpgradeUser extends UpgradeProcess {
+public class UpgradeEmailAddress extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		alter(
-			UserTable.class,
-			new AlterColumnType("emailAddress", "VARCHAR(254) null"));
+			EmailAddressTable.class,
+			new AlterColumnType("address", "VARCHAR(254) null"));
 	}
 
 }
