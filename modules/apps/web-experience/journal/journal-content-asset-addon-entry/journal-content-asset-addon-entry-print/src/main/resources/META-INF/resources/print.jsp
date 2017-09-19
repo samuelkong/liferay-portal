@@ -56,7 +56,7 @@ String viewMode = ParamUtil.getString(request, "viewMode");
 				icon="print"
 				label="<%= true %>"
 				markupView="lexicon"
-				message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", HtmlUtil.escape(articleDisplay.getTitle())}, false) %>'
+				message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", articleDisplay.getTitle()}, false) %>'
 				url='<%= "javascript:" + renderResponse.getNamespace() + "printPage();" %>'
 			/>
 		</div>
