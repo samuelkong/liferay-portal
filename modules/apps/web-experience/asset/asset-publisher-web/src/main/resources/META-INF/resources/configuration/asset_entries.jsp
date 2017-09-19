@@ -156,7 +156,7 @@ for (long groupId : groupIds) {
 							cssClass="asset-selector"
 							data="<%= data %>"
 							id="<%= groupId + FriendlyURLNormalizerUtil.normalize(type) %>"
-							message="<%= HtmlUtil.escape(type) %>"
+							message="<%= type %>"
 							url="javascript:;"
 						/>
 
@@ -185,7 +185,7 @@ for (long groupId : groupIds) {
 								cssClass="asset-selector"
 								data="<%= data %>"
 								id="<%= groupId + FriendlyURLNormalizerUtil.normalize(type) %>"
-								message="<%= HtmlUtil.escape(type) %>"
+								message="<%= type %>"
 								url="javascript:;"
 							/>
 

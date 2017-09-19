@@ -24,7 +24,7 @@
 		label="<%= true %>"
 		linkCssClass="entry-link"
 		localizeMessage="<%= false %>"
-		message="<%= HtmlUtil.escape(title) %>"
+		message="<%= title %>"
 		method="get"
 		src="<%= HtmlUtil.escapeAttribute(thumbnailSrc) %>"
 		url="<%= url %>"

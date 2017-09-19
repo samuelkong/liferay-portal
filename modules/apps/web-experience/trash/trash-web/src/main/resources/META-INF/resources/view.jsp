@@ -287,7 +287,7 @@ request.setAttribute("view.jsp-recycleBinEntrySearch", entrySearch);
 									<liferay-util:buffer var="rootEntryIcon">
 										<liferay-ui:icon
 											label="<%= true %>"
-											message="<%= HtmlUtil.escape(rootTrashRenderer.getTitle(locale)) %>"
+											message="<%= rootTrashRenderer.getTitle(locale) %>"
 											method="get"
 											url="<%= viewRootContentURLString %>"
 										/>

@@ -118,7 +118,7 @@ renderResponse.setTitle(title);
 												<liferay-ui:icon
 													iconCssClass="<%= RolesAdminUtil.getIconCssClass(role) %>"
 													label="<%= true %>"
-													message="<%= HtmlUtil.escape(role.getTitle(locale)) %>"
+													message="<%= role.getTitle(locale) %>"
 												/>
 											</liferay-ui:search-container-column-text>
 
@@ -165,7 +165,7 @@ renderResponse.setTitle(title);
 												<liferay-ui:icon
 													iconCssClass="<%= RolesAdminUtil.getIconCssClass(role) %>"
 													label="<%= true %>"
-													message="<%= HtmlUtil.escape(role.getTitle(locale)) %>"
+													message="<%= role.getTitle(locale) %>"
 												/>
 											</liferay-ui:search-container-column-text>
 

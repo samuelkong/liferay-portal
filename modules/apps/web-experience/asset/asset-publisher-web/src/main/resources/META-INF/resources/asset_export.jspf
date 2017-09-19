@@ -37,7 +37,7 @@ exportAssetURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 			data="<%= data %>"
 			iconCssClass="<%= DLUtil.getFileIconCssClass(extension) %>"
 			label="<%= true %>"
-			message='<%= LanguageUtil.format(request, "x-convert-x-to-x", new Object[] {"hide-accessible", assetRenderer.getTitle(locale), StringUtil.toUpperCase(HtmlUtil.escape(extension))}, false) %>'
+			message='<%= LanguageUtil.format(request, "x-convert-x-to-x", new Object[] {"hide-accessible", assetRenderer.getTitle(locale), StringUtil.toUpperCase(extension)}, false) %>'
 			method="get"
 			url="<%= exportAssetURL.toString() %>"
 		/>

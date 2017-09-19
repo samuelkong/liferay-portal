@@ -32,7 +32,7 @@ String headerTitle = (localizeTitle) ? LanguageUtil.get(resourceBundle, title) :
 			id="TabsBack"
 			label="<%= false %>"
 			markupView="lexicon"
-			message="<%= escapeXml ? HtmlUtil.escape(backLabel) : backLabel %>"
+			message="<%= escapeXml ? backLabel : backLabel %>"
 			method="get"
 			url="<%= backURL %>"
 		/>

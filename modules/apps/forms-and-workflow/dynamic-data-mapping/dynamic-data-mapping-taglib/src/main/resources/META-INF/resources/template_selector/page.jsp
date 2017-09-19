@@ -73,7 +73,7 @@ Group ddmTemplateGroup = GroupLocalServiceUtil.getGroup(ddmTemplateGroupId);
 		iconCssClass="<%= icon %>"
 		id="selectDDMTemplate"
 		label="<%= true %>"
-		message='<%= LanguageUtil.format(resourceBundle, "manage-display-templates-for-x", HtmlUtil.escape(ddmTemplateGroup.getDescriptiveName(locale)), false) %>'
+		message='<%= LanguageUtil.format(resourceBundle, "manage-display-templates-for-x", ddmTemplateGroup.getDescriptiveName(locale), false) %>'
 		url="javascript:;"
 	/>
 </c:if>
