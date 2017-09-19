@@ -120,7 +120,7 @@ DLVisualizationHelper dlVisualizationHelper = new DLVisualizationHelper(dlReques
 						label="<%= true %>"
 						localizeMessage="<%= false %>"
 						markupView="lexicon"
-						message="<%= HtmlUtil.escape(curFolder.getName()) %>"
+						message="<%= curFolder.getName() %>"
 						url="<%= (rowURL != null) ? rowURL.toString() : StringPool.BLANK %>"
 					/>
 				</liferay-ui:search-container-column-text>

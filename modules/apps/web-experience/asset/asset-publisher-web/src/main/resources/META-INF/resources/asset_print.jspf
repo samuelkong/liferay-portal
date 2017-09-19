@@ -40,7 +40,7 @@ printAssetURL.setWindowState(LiferayWindowState.POP_UP);
 			icon="print"
 			label="<%= true %>"
 			markupView="lexicon"
-			message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", HtmlUtil.escape(assetRenderer.getTitle(locale))}, false) %>'
+			message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", assetRenderer.getTitle(locale)}, false) %>'
 			url="javascript:print();"
 		/>
 
@@ -53,7 +53,7 @@ printAssetURL.setWindowState(LiferayWindowState.POP_UP);
 			icon="print"
 			label="<%= true %>"
 			markupView="lexicon"
-			message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", HtmlUtil.escape(assetRenderer.getTitle(locale))}, false) %>'
+			message='<%= LanguageUtil.format(request, "print-x-x", new Object[] {"hide-accessible", assetRenderer.getTitle(locale)}, false) %>'
 			url='<%= "javascript:" + renderResponse.getNamespace() + "printPage_" + assetEntryIndex + "();" %>'
 		/>
 

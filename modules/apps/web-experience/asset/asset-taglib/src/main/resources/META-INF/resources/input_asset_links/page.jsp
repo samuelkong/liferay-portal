@@ -85,7 +85,7 @@
 			cssClass="asset-selector"
 			data='<%= (Map<String, Object>)selectorEntry.get("data") %>'
 			id='<%= (String)selectorEntry.get("id") %>'
-			message='<%= HtmlUtil.escape((String)selectorEntry.get("message")) %>'
+			message='<%= (String)selectorEntry.get("message") %>'
 			url="javascript:;"
 		/>
 

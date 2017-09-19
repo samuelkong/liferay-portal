@@ -66,7 +66,7 @@ List<AssetEntryAction> assetEntryActions = assetPublisherDisplayContext.getAsset
 
 				<liferay-ui:icon
 					data="<%= data %>"
-					message='<%= showIconLabel ? LanguageUtil.format(request, "edit-x-x", new Object[] {"hide-accessible", HtmlUtil.escape(assetRenderer.getTitle(locale))}, false) : LanguageUtil.format(request, "edit-x", HtmlUtil.escape(assetRenderer.getTitle(locale)), false) %>'
+					message='<%= showIconLabel ? LanguageUtil.format(request, "edit-x-x", new Object[] {"hide-accessible", assetRenderer.getTitle(locale)}, false) : LanguageUtil.format(request, "edit-x", assetRenderer.getTitle(locale), false) %>'
 					method="get"
 					url="<%= editPortletURL.toString() %>"
 					useDialog="<%= true %>"

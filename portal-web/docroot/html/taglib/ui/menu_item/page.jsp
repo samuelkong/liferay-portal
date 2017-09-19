@@ -42,7 +42,7 @@ MenuItem menuItem = (MenuItem)request.getAttribute("liferay-ui:menu_item:menuIte
 		<liferay-ui:icon
 			data="<%= javaScriptMenuItem.getData() %>"
 			iconCssClass="<%= javaScriptMenuItem.getIcon() %>"
-			message="<%= HtmlUtil.escape(javaScriptMenuItem.getLabel()) %>"
+			message="<%= javaScriptMenuItem.getLabel() %>"
 			onClick="<%= javaScriptMenuItem.getOnClick() %>"
 			url="javascript:;"
 		/>
@@ -62,7 +62,7 @@ MenuItem menuItem = (MenuItem)request.getAttribute("liferay-ui:menu_item:menuIte
 		<liferay-ui:icon
 			data="<%= urlMenuItem.getData() %>"
 			iconCssClass="<%= urlMenuItem.getIcon() %>"
-			message="<%= HtmlUtil.escape(urlMenuItem.getLabel()) %>"
+			message="<%= urlMenuItem.getLabel() %>"
 			method="<%= urlMenuItem.getMethod() %>"
 			target="<%= urlMenuItem.getTarget() %>"
 			url="<%= urlMenuItem.getURL() %>"
