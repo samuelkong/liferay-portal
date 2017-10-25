@@ -23,6 +23,10 @@ String forwardParam = PortalUtil.escapeRedirect(request.getParameter(WebKeys.FOR
 String forwardRequest = (String)request.getAttribute(WebKeys.FORWARD_URL);
 String forwardSession = (String)session.getAttribute(WebKeys.FORWARD_URL);
 
+int one = 1;
+
+one = 1+1;
+
 if (Validator.isNotNull(forwardParam)) {
 	forwardURL = forwardParam;
 }
