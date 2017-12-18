@@ -508,6 +508,10 @@ public class DDLFormAdminDisplayContext {
 		return getFormLayoutURL(false);
 	}
 
+	public String getShowCSVWarning() {
+		return _ddlFormWebConfiguration.showCSVWarning();
+	}
+
 	public boolean isAuthenticationRequired() throws PortalException {
 		DDLRecordSet recordSet = getRecordSet();
 
