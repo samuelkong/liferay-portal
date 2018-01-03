@@ -13,16 +13,31 @@
  * details.
  */
 --%>
+<%
+String warning = "show-warning";
+
+if(Validator.isNotNull(ddlFormAdminDisplayContext.getShowCSVWarning())) {
+	warning = ddlFormAdminDisplayContext.getShowCSVWarning();
+}
+
+boolean showWarning = StringUtil.equals("show-warning", warning);
+
+boolean forbidDownloading = StringUtil.equals("forbid-downloading-csv-file", warning);
+%>
 
 <div class="hide" id="<portlet:namespace />exportRecordSet">
 	<aui:select label="file-extension" name="fileExtension">
-		<aui:option value="csv">CSV</aui:option>
+		<c:if test="<%=!forbidDownloading %>">
+			<aui:option value="csv">CSV</aui:option>
+		</c:if>
 		<aui:option value="xls">XLS</aui:option>
 		<aui:option value="xml">XML</aui:option>
 	</aui:select>
+
+	<div id="<portlet:namespace />csvWarning"></div>
 </div>
 
-<aui:script>
+<aui:script use="aui-base,aui-alert">
 	Liferay.provide(
 		window,
 		'<portlet:namespace />exportRecordSet',
@@ -35,9 +50,37 @@
 
 			var content = A.one('#<portlet:namespace />exportRecordSet');
 
-			if (content) {
-				form.append(content);
+			var fileExtensionSelect = A.one('#<portlet:namespace />fileExtension');
 
+			var csvWarning = A.one('#<portlet:namespace />csvWarning');
+
+			var showCSVWarning = function(){
+				if((fileExtensionSelect.val()==='csv') && (<%=showWarning %>)) {
+					csvWarning.show();
+
+					new A.Alert(
+						{
+							bodyContent: '<liferay-ui:message key="the-csv-warning-info" />',
+							boundingBox: '#<portlet:namespace />csvWarning',
+							closeable: false,
+							cssClass: 'alert-warning',
+							destroyOnHide: false,
+							render: true
+						}
+					);
+				}
+				else {
+					csvWarning.hide();
+				}
+			}
+			
+			if (content) {
+				if(fileExtensionSelect) {
+					showCSVWarning();
+					fileExtensionSelect.on('change',showCSVWarning);
+				}
+
+				form.append(content);
 				content.show();
 			}
 

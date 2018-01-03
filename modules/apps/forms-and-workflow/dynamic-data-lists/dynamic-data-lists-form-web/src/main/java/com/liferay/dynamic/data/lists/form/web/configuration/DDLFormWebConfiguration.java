@@ -44,4 +44,16 @@ public interface DDLFormWebConfiguration {
 	)
 	public String defaultDisplayView();
 
+	@Meta.AD(
+		deflt = "show-warning", name = "show-csv-warning",
+		optionLabels = {
+			"show-warning", "hide-warning", "forbid-downloading-csv-file"
+		},
+		optionValues = {
+			"show-warning", "hide-warning", "forbid-downloading-csv-file"
+		},
+		required = false
+	)
+	public String showCSVWarning();
+
 }
