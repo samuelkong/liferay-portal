@@ -420,6 +420,7 @@ String signature = ParamUtil.getString(request, "signature");
 
 			var formatDataType = function(key, value, includeNull) {
 				value = decodeURIComponent(value.replace(/\+/g, ' '));
+				value = escape(value);
 
 				if (fileType[key]) {
 					value = 'null';
