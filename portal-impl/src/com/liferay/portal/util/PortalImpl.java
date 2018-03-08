@@ -922,7 +922,7 @@ public class PortalImpl implements Portal {
 
 		int pos = domain.indexOf(CharPool.COLON);
 
-		if (pos != -1) {
+		if (pos > 0) {
 			domain = domain.substring(0, pos);
 		}
 
