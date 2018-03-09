@@ -505,9 +505,15 @@ public class HttpImpl implements Http {
 			return url;
 		}
 
+		int pos = 0;
+
+		while (!_isLetterOrNumber(url.charAt(pos++)));
+
+		url = url.substring(pos - 1);
+
 		url = removeProtocol(url);
 
-		int pos = url.indexOf(CharPool.SLASH);
+		pos = url.indexOf(CharPool.SLASH);
 
 		if (pos != -1) {
 			return url.substring(0, pos);
