@@ -506,7 +506,14 @@ public class HttpImpl implements Http {
 		}
 
 		try {
-			URI uri = new URI(url);
+			URI uri = null;
+
+			if (hasProtocol(url)) {
+				uri = new URI(url);
+			}
+			else {
+				uri = new URI(Http.HTTPS_WITH_SLASH + url);
+			}
 
 			return uri.getHost();
 		}
