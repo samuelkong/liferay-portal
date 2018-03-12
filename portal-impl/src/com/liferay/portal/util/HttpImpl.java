@@ -515,7 +515,13 @@ public class HttpImpl implements Http {
 				uri = new URI(Http.HTTPS_WITH_SLASH + url);
 			}
 
-			return uri.getHost();
+			String host = uri.getHost();
+
+			if (host == null) {
+				return StringPool.BLANK;
+			}
+
+			return host;
 		}
 		catch (URISyntaxException urise) {
 			return StringPool.BLANK;
