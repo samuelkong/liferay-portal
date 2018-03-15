@@ -521,6 +521,13 @@ public class HttpImpl implements Http {
 				return StringPool.BLANK;
 			}
 
+			int port = uri.getPort();
+
+			if (port > -1) {
+				host += ':';
+				host += port;
+			}
+
 			return host;
 		}
 		catch (URISyntaxException urise) {
