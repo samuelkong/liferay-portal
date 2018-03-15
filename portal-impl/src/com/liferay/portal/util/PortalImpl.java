@@ -924,6 +924,12 @@ public class PortalImpl implements Portal {
 			return null;
 		}
 
+		int pos = domain.indexOf(CharPool.COLON);
+
+		if (pos != -1) {
+			domain = domain.substring(0, pos);
+		}
+
 		if (!_validPortalDomainCheckDisabled && isValidPortalDomain(domain)) {
 			return url;
 		}
