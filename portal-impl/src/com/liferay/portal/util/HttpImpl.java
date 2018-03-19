@@ -505,15 +505,12 @@ public class HttpImpl implements Http {
 			return url;
 		}
 
-		try {
-			URI uri = null;
+		if (!hasProtocol(url)) {
+			url = Http.HTTPS_WITH_SLASH + url;
+		}
 
-			if (hasProtocol(url)) {
-				uri = new URI(url);
-			}
-			else {
-				uri = new URI(Http.HTTPS_WITH_SLASH + url);
-			}
+		try {
+			URI uri = new URI(url);
 
 			String host = uri.getHost();
 
@@ -523,12 +520,11 @@ public class HttpImpl implements Http {
 
 			int port = uri.getPort();
 
-			if (port > -1) {
-				host += ':';
-				host += port;
+			if (port == -1) {
+				return host;
 			}
 
-			return host;
+			return host.concat(StringPool.COLON).concat(String.valueOf(port));
 		}
 		catch (URISyntaxException urise) {
 			return StringPool.BLANK;

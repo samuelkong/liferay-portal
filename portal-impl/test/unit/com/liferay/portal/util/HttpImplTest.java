@@ -170,38 +170,38 @@ public class HttpImplTest extends PowerMockito {
 
 	@Test
 	public void testGetDomainWithInvalidURLs() {
+		Assert.assertEquals("", _httpImpl.getDomain("foo.foo.1"));
 		Assert.assertEquals("", _httpImpl.getDomain("https://:foo.com"));
 		Assert.assertEquals("", _httpImpl.getDomain("https://test:foo.com"));
-		Assert.assertEquals("", _httpImpl.getDomain("foo.foo.1"));
 	}
 
 	@Test
 	public void testGetDomainWithRelativeURLs() {
-		Assert.assertEquals("", _httpImpl.getDomain("/a/b?k1=v1&k2=v2#2"));
+		Assert.assertEquals("", _httpImpl.getDomain("/a/b?key1=value1#anchor"));
 	}
 
 	@Test
 	public void testGetDomainWithValidURLs() {
+		Assert.assertEquals("foo.com", _httpImpl.getDomain("foo.com"));
+		Assert.assertEquals("foo.com", _httpImpl.getDomain("https://foo.com"));
 		Assert.assertEquals(
-			"www.foo.com",
-			_httpImpl.getDomain("https://www.foo.com/a/b?k1=v1&k2=v2#2"));
+			"www.foo.com", _httpImpl.getDomain("https://www.foo.com"));
+		Assert.assertEquals(
+			"www.foo.com", _httpImpl.getDomain("https://@www.foo.com"));
+		Assert.assertEquals(
+			"www.foo.com", _httpImpl.getDomain("https://test@www.foo.com"));
+		Assert.assertEquals(
+			"www.foo.com", _httpImpl.getDomain("https://:@www.foo.com"));
+		Assert.assertEquals(
+			"www.foo.com", _httpImpl.getDomain("https://:test@www.foo.com"));
+		Assert.assertEquals(
+			"www.foo.com", _httpImpl.getDomain("https://test:@www.foo.com"));
 		Assert.assertEquals(
 			"www.foo.com",
 			_httpImpl.getDomain("https://test:test@www.foo.com"));
 		Assert.assertEquals(
-			"www.foo.com", _httpImpl.getDomain("https://test:@www.foo.com"));
-		Assert.assertEquals(
-			"www.foo.com", _httpImpl.getDomain("https://:test@www.foo.com"));
-		Assert.assertEquals(
-			"www.foo.com", _httpImpl.getDomain("https://:@www.foo.com"));
-		Assert.assertEquals(
-			"www.foo.com", _httpImpl.getDomain("https://test@www.foo.com"));
-		Assert.assertEquals(
-			"www.foo.com", _httpImpl.getDomain("https://@www.foo.com"));
-		Assert.assertEquals(
-			"www.foo.com", _httpImpl.getDomain("http://www.foo.com"));
-		Assert.assertEquals("foo.com", _httpImpl.getDomain("https://foo.com"));
-		Assert.assertEquals("foo.com", _httpImpl.getDomain("foo.com"));
+			"www.foo.com",
+			_httpImpl.getDomain("https://www.foo.com/a/b?key1=value1#anchor"));
 	}
 
 	@Test

@@ -914,7 +914,7 @@ public class PortalImpl implements Portal {
 			return url;
 		}
 
-		if (url.charAt(0) == CharPool.SLASH) {
+		if (StringUtil.startsWith(url, CharPool.SLASH)) {
 			return url;
 		}
 
