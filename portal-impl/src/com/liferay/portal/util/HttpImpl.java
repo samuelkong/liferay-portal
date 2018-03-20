@@ -505,15 +505,30 @@ public class HttpImpl implements Http {
 			return url;
 		}
 
-		url = removeProtocol(url);
-
-		int pos = url.indexOf(CharPool.SLASH);
-
-		if (pos != -1) {
-			return url.substring(0, pos);
+		if (!hasProtocol(url)) {
+			url = Http.HTTPS_WITH_SLASH + url;
 		}
 
-		return url;
+		try {
+			URI uri = new URI(url);
+
+			String host = uri.getHost();
+
+			if (host == null) {
+				return StringPool.BLANK;
+			}
+
+			int port = uri.getPort();
+
+			if (port == -1) {
+				return host;
+			}
+
+			return host.concat(StringPool.COLON).concat(String.valueOf(port));
+		}
+		catch (URISyntaxException urise) {
+			return StringPool.BLANK;
+		}
 	}
 
 	/**
