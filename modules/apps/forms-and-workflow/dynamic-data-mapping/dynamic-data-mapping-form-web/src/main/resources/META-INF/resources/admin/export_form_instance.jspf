@@ -14,15 +14,31 @@
  */
 --%>
 
+<%
+String csvExport = "enabled-with-warning";
+
+if (Validator.isNotNull(ddmFormAdminDisplayContext.getCSVExport())) {
+	csvExport = ddmFormAdminDisplayContext.getCSVExport();
+}
+
+boolean showCSVWarning = StringUtil.equals("enabled-with-warning", csvExport);
+boolean csvExportDisabled = StringUtil.equals("disabled", csvExport);
+%>
+
 <div class="hide" id="<portlet:namespace />exportFormInstance">
 	<aui:select label="file-extension" name="fileExtension">
-		<aui:option value="csv">CSV</aui:option>
+		<c:if test="<%= !csvExportDisabled %>">
+			<aui:option value="csv">CSV</aui:option>
+		</c:if>
+
 		<aui:option value="xls">XLS</aui:option>
 		<aui:option value="xml">XML</aui:option>
 	</aui:select>
+
+	<div id="<portlet:namespace />csvWarning"></div>
 </div>
 
-<aui:script>
+<aui:script use="aui-base,aui-alert">
 	Liferay.provide(
 		window,
 		'<portlet:namespace />exportFormInstance',
@@ -35,7 +51,37 @@
 
 			var content = A.one('#<portlet:namespace />exportFormInstance');
 
+			var fileExtensionSelect = A.one('#<portlet:namespace />fileExtension');
+
+			var csvWarning = A.one('#<portlet:namespace />csvWarning');
+
+			var showCSVWarning = function() {
+				if ((fileExtensionSelect.val()==='csv') && (<%= showCSVWarning %>)) {
+					csvWarning.show();
+
+					new A.Alert(
+						{
+							bodyContent: '<liferay-ui:message key="csv-warning-message" />',
+							boundingBox: '#<portlet:namespace />csvWarning',
+							closeable: false,
+							cssClass: 'alert-warning',
+							destroyOnHide: false,
+							render: true
+						}
+					);
+				}
+				else {
+					csvWarning.hide();
+				}
+			}
+
 			if (content) {
+				if (fileExtensionSelect) {
+					showCSVWarning();
+
+					fileExtensionSelect.on('change',showCSVWarning);
+				}
+
 				form.append(content);
 
 				content.show();

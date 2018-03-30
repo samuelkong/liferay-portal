@@ -156,6 +156,10 @@ public class DDMFormAdminDisplayContext {
 		return formAdminRequestHelper.getCompanyId();
 	}
 
+	public String getCSVExport() {
+		return _ddmFormWebConfiguration.csvExport();
+	}
+
 	public JSONArray getDDMFormFieldTypesJSONArray() throws PortalException {
 		List<DDMFormFieldType> formFieldTypes =
 			_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypes();
