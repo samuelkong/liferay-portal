@@ -72,6 +72,7 @@ Locale displayLocale = LocaleUtil.fromLanguageId(languageId);
 
 						<aui:input name="groupId" type="hidden" value="<%= formInstance.getGroupId() %>" />
 						<aui:input name="formInstanceId" type="hidden" value="<%= formInstance.getFormInstanceId() %>" />
+						<aui:input name="languageId" type="hidden" value="<%= languageId %>" />
 						<aui:input name="workflowAction" type="hidden" value="<%= WorkflowConstants.ACTION_PUBLISH %>" />
 
 						<liferay-ui:error exception="<%= CaptchaTextException.class %>" message="text-verification-failed" />
