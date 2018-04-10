@@ -384,18 +384,20 @@ public class HttpImplTest extends PowerMockito {
 		Assert.assertEquals(
 			"#^&://abc.com", _httpImpl.removeProtocol("#^&://abc.com"));
 		Assert.assertEquals(
-			"^&://abc.com", _httpImpl.removeProtocol("/^&://abc.com"));
+			"/^&://abc.com", _httpImpl.removeProtocol("/^&://abc.com"));
 		Assert.assertEquals(
 			"ftp.foo.com", _httpImpl.removeProtocol("ftp://ftp.foo.com"));
 		Assert.assertEquals(
-			"foo.com", _httpImpl.removeProtocol("http://///foo.com"));
-		Assert.assertEquals("foo.com", _httpImpl.removeProtocol("////foo.com"));
+			"///foo.com", _httpImpl.removeProtocol("http://///foo.com"));
 		Assert.assertEquals(
-			"foo.com", _httpImpl.removeProtocol("http://http://foo.com"));
+			"////foo.com", _httpImpl.removeProtocol("////foo.com"));
 		Assert.assertEquals(
-			"www.google.com", _httpImpl.removeProtocol("/\\www.google.com"));
+			"http://foo.com",
+			_httpImpl.removeProtocol("http://http://foo.com"));
 		Assert.assertEquals(
-			"www.google.com",
+			"/\\www.google.com", _httpImpl.removeProtocol("/\\www.google.com"));
+		Assert.assertEquals(
+			"/\\//\\/www.google.com",
 			_httpImpl.removeProtocol("/\\//\\/www.google.com"));
 		Assert.assertEquals(
 			"/path/name", _httpImpl.removeProtocol("/path/name"));
