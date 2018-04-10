@@ -1121,7 +1121,6 @@ public class HttpImpl implements Http {
 
 		int pos = 0;
 
-		protocol:
 		while (true) {
 
 			// Find and skip all valid protocol "[a-zA-Z0-9]+://" headers
@@ -1143,22 +1142,6 @@ public class HttpImpl implements Http {
 					pos = index + Http.PROTOCOL_DELIMITER.length();
 
 					continue;
-				}
-			}
-
-			// Ignore all "[\\\\/]+" after valid protocol header
-
-			for (int i = pos; i < url.length(); i++) {
-				char c = url.charAt(i);
-
-				if ((c != CharPool.SLASH) && (c != CharPool.BACK_SLASH)) {
-					if (i != pos) {
-						pos = i;
-
-						continue protocol;
-					}
-
-					break;
 				}
 			}
 
