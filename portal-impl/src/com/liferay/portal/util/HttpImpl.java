@@ -505,15 +505,30 @@ public class HttpImpl implements Http {
 			return url;
 		}
 
-		url = removeProtocol(url);
+		try {
+			URI uri = new URI(url);
 
-		int pos = url.indexOf(CharPool.SLASH);
+			if (!uri.isAbsolute()) {
+				uri = new URI(Http.HTTPS_WITH_SLASH + url);
+			}
 
-		if (pos != -1) {
-			return url.substring(0, pos);
+			String host = uri.getHost();
+
+			if (host == null) {
+				return StringPool.BLANK;
+			}
+
+			int port = uri.getPort();
+
+			if (port == -1) {
+				return host;
+			}
+
+			return host.concat(StringPool.COLON).concat(String.valueOf(port));
 		}
-
-		return url;
+		catch (URISyntaxException urise) {
+			return StringPool.BLANK;
+		}
 	}
 
 	/**
@@ -1096,60 +1111,37 @@ public class HttpImpl implements Http {
 
 		url = url.trim();
 
-		// "/[a-zA-Z0-9]+" is considered as valid relative URL
+		try {
+			URI uri = new URI(url);
 
-		if ((url.length() >= 2) && (url.charAt(0) == CharPool.SLASH) &&
-			_isLetterOrNumber(url.charAt(1))) {
+			if (!uri.isAbsolute()) {
+				return url;
+			}
 
-			return url;
+			StringBuilder sb = new StringBuilder();
+
+			if (uri.getRawAuthority() != null) {
+				sb.append(uri.getRawAuthority());
+			}
+
+			if (uri.getRawPath() != null) {
+				sb.append(uri.getRawPath());
+			}
+
+			if (uri.getRawQuery() != null) {
+				sb.append(CharPool.QUESTION);
+				sb.append(uri.getRawQuery());
+			}
+
+			if (uri.getRawFragment() != null) {
+				sb.append(CharPool.POUND);
+				sb.append(uri.getRawFragment());
+			}
+
+			return sb.toString();
 		}
-
-		int pos = 0;
-
-		protocol:
-		while (true) {
-
-			// Find and skip all valid protocol "[a-zA-Z0-9]+://" headers
-
-			int index = url.indexOf(Http.PROTOCOL_DELIMITER, pos);
-
-			if (index > 0) {
-				boolean hasProtocol = true;
-
-				for (int i = pos; i < index; i++) {
-					if (!_isLetterOrNumber(url.charAt(i))) {
-						hasProtocol = false;
-
-						break;
-					}
-				}
-
-				if (hasProtocol) {
-					pos = index + Http.PROTOCOL_DELIMITER.length();
-
-					continue;
-				}
-			}
-
-			// Ignore all "[\\\\/]+" after valid protocol header
-
-			for (int i = pos; i < url.length(); i++) {
-				char c = url.charAt(i);
-
-				if ((c != CharPool.SLASH) && (c != CharPool.BACK_SLASH)) {
-					if (i != pos) {
-						pos = i;
-
-						continue protocol;
-					}
-
-					break;
-				}
-			}
-
-			// Chop off protocol and return
-
-			return url.substring(pos);
+		catch (URISyntaxException urise) {
+			return url;
 		}
 	}
 
