@@ -1141,7 +1141,7 @@ public class HttpImpl implements Http {
 			return sb.toString();
 		}
 		catch (URISyntaxException urise) {
-			return StringPool.BLANK;
+			return url;
 		}
 	}
 
