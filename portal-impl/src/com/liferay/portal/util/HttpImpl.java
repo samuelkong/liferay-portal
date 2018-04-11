@@ -505,15 +505,30 @@ public class HttpImpl implements Http {
 			return url;
 		}
 
-		url = removeProtocol(url);
-
-		int pos = url.indexOf(CharPool.SLASH);
-
-		if (pos != -1) {
-			return url.substring(0, pos);
+		if (!hasProtocol(url)) {
+			url = Http.HTTPS_WITH_SLASH + url;
 		}
 
-		return url;
+		try {
+			URI uri = new URI(url);
+
+			String host = uri.getHost();
+
+			if (host == null) {
+				return StringPool.BLANK;
+			}
+
+			int port = uri.getPort();
+
+			if (port == -1) {
+				return host;
+			}
+
+			return host.concat(StringPool.COLON).concat(String.valueOf(port));
+		}
+		catch (URISyntaxException urise) {
+			return StringPool.BLANK;
+		}
 	}
 
 	/**
@@ -1106,7 +1121,6 @@ public class HttpImpl implements Http {
 
 		int pos = 0;
 
-		protocol:
 		while (true) {
 
 			// Find and skip all valid protocol "[a-zA-Z0-9]+://" headers
@@ -1128,22 +1142,6 @@ public class HttpImpl implements Http {
 					pos = index + Http.PROTOCOL_DELIMITER.length();
 
 					continue;
-				}
-			}
-
-			// Ignore all "[\\\\/]+" after valid protocol header
-
-			for (int i = pos; i < url.length(); i++) {
-				char c = url.charAt(i);
-
-				if ((c != CharPool.SLASH) && (c != CharPool.BACK_SLASH)) {
-					if (i != pos) {
-						pos = i;
-
-						continue protocol;
-					}
-
-					break;
 				}
 			}
 
