@@ -1111,60 +1111,14 @@ public class HttpImpl implements Http {
 
 		url = url.trim();
 
-		// "/[a-zA-Z0-9]+" is considered as valid relative URL
-
-		if ((url.length() >= 2) && (url.charAt(0) == CharPool.SLASH) &&
-			_isLetterOrNumber(url.charAt(1))) {
-
-			return url;
+		if (url.startsWith(Http.HTTP_WITH_SLASH)) {
+			return url.substring(Http.HTTP_WITH_SLASH.length());
 		}
-
-		int pos = 0;
-
-		protocol:
-		while (true) {
-
-			// Find and skip all valid protocol "[a-zA-Z0-9]+://" headers
-
-			int index = url.indexOf(Http.PROTOCOL_DELIMITER, pos);
-
-			if (index > 0) {
-				boolean hasProtocol = true;
-
-				for (int i = pos; i < index; i++) {
-					if (!_isLetterOrNumber(url.charAt(i))) {
-						hasProtocol = false;
-
-						break;
-					}
-				}
-
-				if (hasProtocol) {
-					pos = index + Http.PROTOCOL_DELIMITER.length();
-
-					continue;
-				}
-			}
-
-			// Ignore all "[\\\\/]+" after valid protocol header
-
-			for (int i = pos; i < url.length(); i++) {
-				char c = url.charAt(i);
-
-				if ((c != CharPool.SLASH) && (c != CharPool.BACK_SLASH)) {
-					if (i != pos) {
-						pos = i;
-
-						continue protocol;
-					}
-
-					break;
-				}
-			}
-
-			// Chop off protocol and return
-
-			return url.substring(pos);
+		else if (url.startsWith(Http.HTTPS_WITH_SLASH)) {
+			return url.substring(Http.HTTPS_WITH_SLASH.length());
+		}
+		else {
+			return url;
 		}
 	}
 
@@ -2028,17 +1982,6 @@ public class HttpImpl implements Http {
 				_log.error(e, e);
 			}
 		}
-	}
-
-	private boolean _isLetterOrNumber(char c) {
-		if (((CharPool.NUMBER_0 <= c) && (c <= CharPool.NUMBER_9)) ||
-			((CharPool.UPPER_CASE_A <= c) && (c <= CharPool.UPPER_CASE_Z)) ||
-			((CharPool.LOWER_CASE_A <= c) && (c <= CharPool.LOWER_CASE_Z))) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private String _shortenURL(String url, int currentLength) {
