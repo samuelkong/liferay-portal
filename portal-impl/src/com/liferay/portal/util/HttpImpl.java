@@ -1111,13 +1111,36 @@ public class HttpImpl implements Http {
 
 		url = url.trim();
 
-		if (url.startsWith(Http.HTTP_WITH_SLASH)) {
-			return url.substring(Http.HTTP_WITH_SLASH.length());
+		if (!hasProtocol(url)) {
+			return url;
 		}
-		else if (url.startsWith(Http.HTTPS_WITH_SLASH)) {
-			return url.substring(Http.HTTPS_WITH_SLASH.length());
+
+		try {
+			URI uri = new URI(url);
+
+			StringBuilder sb = new StringBuilder();
+
+			if (uri.getRawAuthority() != null) {
+				sb.append(uri.getRawAuthority());
+			}
+
+			if (uri.getRawPath() != null) {
+				sb.append(uri.getRawPath());
+			}
+
+			if (uri.getRawQuery() != null) {
+				sb.append(CharPool.QUESTION);
+				sb.append(uri.getRawQuery());
+			}
+
+			if (uri.getRawFragment() != null) {
+				sb.append(CharPool.POUND);
+				sb.append(uri.getRawFragment());
+			}
+
+			return sb.toString();
 		}
-		else {
+		catch (URISyntaxException urise) {
 			return url;
 		}
 	}
