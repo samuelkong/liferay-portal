@@ -914,10 +914,14 @@ public class PortalImpl implements Portal {
 			return url;
 		}
 
+		if (StringUtil.startsWith(url, CharPool.SLASH)) {
+			return url;
+		}
+
 		String domain = HttpUtil.getDomain(url);
 
 		if (domain.isEmpty()) {
-			return url;
+			return null;
 		}
 
 		int pos = domain.indexOf(CharPool.COLON);
