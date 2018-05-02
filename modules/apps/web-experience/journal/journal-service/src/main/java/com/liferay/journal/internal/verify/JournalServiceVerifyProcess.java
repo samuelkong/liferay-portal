@@ -18,8 +18,6 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.journal.configuration.JournalServiceConfiguration;
-import com.liferay.journal.internal.verify.model.JournalArticleResourceVerifiableModel;
-import com.liferay.journal.internal.verify.model.JournalFeedVerifiableModel;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleConstants;
 import com.liferay.journal.model.JournalContentSearch;
@@ -49,9 +47,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.verify.VerifyLayout;
 import com.liferay.portal.verify.VerifyProcess;
-import com.liferay.portal.verify.VerifyUUID;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,21 +67,19 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = "verify.process.name=com.liferay.journal.service",
-	service = {JournalServiceVerifyProcess.class, VerifyProcess.class}
+	service = VerifyProcess.class
 )
-public class JournalServiceVerifyProcess extends VerifyLayout {
+public class JournalServiceVerifyProcess extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
 		verifyArticleAssets();
 		verifyArticleContents();
 		verifyArticleExpirationDate();
-		verifyArticleLayouts();
 		verifyArticleStructures();
 		verifyContentSearch();
 		verifyFolderAssets();
 		verifyPermissions();
-		verifyUUIDModels();
 
 		VerifyProcess verifyProcess =
 			new JournalServiceSystemEventVerifyProcess(
@@ -458,12 +452,6 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 	}
 
-	protected void verifyArticleLayouts() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			verifyUuid("JournalArticle");
-		}
-	}
-
 	protected void verifyArticleStructures() throws PortalException {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			ActionableDynamicQuery actionableDynamicQuery =
@@ -577,13 +565,6 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 					JournalArticle.class.getName(),
 					article.getResourcePrimKey(), false, false, false);
 			}
-		}
-	}
-
-	protected void verifyUUIDModels() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			VerifyUUID.verify(new JournalArticleResourceVerifiableModel());
-			VerifyUUID.verify(new JournalFeedVerifiableModel());
 		}
 	}
 

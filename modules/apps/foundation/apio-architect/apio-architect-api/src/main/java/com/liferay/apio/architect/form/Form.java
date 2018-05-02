@@ -138,7 +138,7 @@ public class Form<T> {
 	 * @return the list of form fields.
 	 */
 	public List<FormField> getFormFields() {
-		Stream<Stream<FormField>> stream = Stream.of(
+		return Stream.of(
 			getOptionalFormFieldStream(_optionalBooleans, BOOLEAN),
 			getOptionalFormFieldStream(_optionalBooleanLists, BOOLEAN_LIST),
 			getOptionalFormFieldStream(_optionalDates, DATE),
@@ -162,9 +162,8 @@ public class Form<T> {
 			getRequiredFormFieldStream(_requiredLongs, LONG),
 			getRequiredFormFieldStream(_requiredLongLists, LONG_LIST),
 			getRequiredFormFieldStream(_requiredStrings, STRING),
-			getRequiredFormFieldStream(_requiredStringLists, STRING_LIST));
-
-		return stream.flatMap(
+			getRequiredFormFieldStream(_requiredStringLists, STRING_LIST)
+		).flatMap(
 			Function.identity()
 		).collect(
 			Collectors.toList()

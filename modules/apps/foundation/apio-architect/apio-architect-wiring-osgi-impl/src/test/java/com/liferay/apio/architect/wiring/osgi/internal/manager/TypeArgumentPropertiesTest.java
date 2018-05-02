@@ -25,8 +25,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 import com.liferay.apio.architect.functional.Try;
 
-import java.lang.reflect.Field;
-
 import java.util.HashSet;
 import java.util.stream.Stream;
 
@@ -45,10 +43,9 @@ public class TypeArgumentPropertiesTest {
 
 	@Test
 	public void testThereIsOnlyOneDuplicateConstant() {
-		Stream<Field> stream = Stream.of(
-			TypeArgumentProperties.class.getDeclaredFields());
-
-		boolean noDuplicates = stream.filter(
+		boolean noDuplicates = Stream.of(
+			TypeArgumentProperties.class.getDeclaredFields()
+		).filter(
 			field -> isStatic(field.getModifiers())
 		).filter(
 			field -> "KEY_PRINCIPAL_TYPE_ARGUMENT".equals(field.getName())

@@ -20,7 +20,7 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServices
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
-import com.liferay.dynamic.data.mapping.form.web.configuration.DDMFormWebConfigurationActivator;
+import com.liferay.dynamic.data.mapping.form.web.internal.configuration.activator.DDMFormWebConfigurationActivator;
 import com.liferay.dynamic.data.mapping.form.web.internal.display.context.DDMFormAdminDisplayContext;
 import com.liferay.dynamic.data.mapping.form.web.internal.display.context.DDMFormAdminFieldSetDisplayContext;
 import com.liferay.dynamic.data.mapping.form.web.internal.instance.lifecycle.AddDefaultSharedFormLayoutPortalInstanceLifecycleListener;
@@ -51,7 +51,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.workflow.WorkflowEngineManager;
 
 import java.io.IOException;
 
@@ -202,13 +201,13 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 					_addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
 					_ddmExporterFactory,
 					_ddmFormWebConfigurationActivator.
-						getDDLFormWebConfiguration(),
+						getDDMFormWebConfiguration(),
 					_ddmFormInstanceRecordLocalService, _ddmFormInstanceService,
 					_ddmFormFieldTypeServicesTracker,
 					_ddmFormFieldTypesJSONSerializer, _ddmFormRenderer,
 					_ddmFormValuesFactory, _ddmFormValuesMerger,
 					_ddmStructureLocalService, _ddmStructureService,
-					_jsonFactory, _storageEngine, _workflowEngineManager));
+					_jsonFactory, _storageEngine));
 		}
 		else {
 			ThemeDisplay themeDisplay =
@@ -244,18 +243,18 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 					_addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
 					_ddmExporterFactory,
 					_ddmFormWebConfigurationActivator.
-						getDDLFormWebConfiguration(),
+						getDDMFormWebConfiguration(),
 					_ddmFormInstanceRecordLocalService, _ddmFormInstanceService,
 					_ddmFormFieldTypeServicesTracker,
 					_ddmFormFieldTypesJSONSerializer, _ddmFormRenderer,
 					_ddmFormValuesFactory, _ddmFormValuesMerger,
 					_ddmStructureLocalService, _ddmStructureService,
-					_jsonFactory, _storageEngine, _workflowEngineManager));
+					_jsonFactory, _storageEngine));
 		}
 	}
 
-	protected void unsetDDLFormWebConfigurationActivator(
-		DDMFormWebConfigurationActivator ddlFormWebConfigurationActivator) {
+	protected void unsetDDMFormWebConfigurationActivator(
+		DDMFormWebConfigurationActivator ddmFormWebConfigurationActivator) {
 
 		_ddmFormWebConfigurationActivator = null;
 	}
@@ -299,7 +298,7 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 		cardinality = ReferenceCardinality.OPTIONAL,
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY,
-		unbind = "unsetDDLFormWebConfigurationActivator"
+		unbind = "unsetDDMFormWebConfigurationActivator"
 	)
 	private volatile DDMFormWebConfigurationActivator
 		_ddmFormWebConfigurationActivator;
@@ -318,8 +317,5 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 
 	@Reference
 	private StorageEngine _storageEngine;
-
-	@Reference
-	private WorkflowEngineManager _workflowEngineManager;
 
 }

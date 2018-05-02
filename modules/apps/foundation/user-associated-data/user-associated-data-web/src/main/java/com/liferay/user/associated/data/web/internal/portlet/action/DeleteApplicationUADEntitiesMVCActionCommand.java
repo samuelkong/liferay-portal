@@ -47,8 +47,6 @@ public class DeleteApplicationUADEntitiesMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long selectedUserId = getSelectedUserId(actionRequest);
-
 		String applicationName = ParamUtil.getString(
 			actionRequest, "applicationName");
 
@@ -57,6 +55,8 @@ public class DeleteApplicationUADEntitiesMVCActionCommand
 				applicationName);
 
 		for (UADAnonymizer uadAnonymizer : uadAnonymizers) {
+			long selectedUserId = getSelectedUserId(actionRequest);
+
 			uadAnonymizer.deleteAll(selectedUserId);
 		}
 	}

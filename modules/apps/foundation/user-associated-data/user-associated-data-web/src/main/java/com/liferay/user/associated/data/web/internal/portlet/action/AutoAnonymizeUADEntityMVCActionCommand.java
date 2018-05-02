@@ -14,6 +14,7 @@
 
 package com.liferay.user.associated.data.web.internal.portlet.action;
 
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.user.associated.data.anonymizer.UADAnonymizer;
@@ -47,9 +48,11 @@ public class AutoAnonymizeUADEntityMVCActionCommand
 
 		UADAnonymizer uadAnonymizer = getUADAnonymizer(actionRequest);
 
+		User selectedUser = getSelectedUser(actionRequest);
+
 		uadAnonymizer.autoAnonymize(
-			getEntity(actionRequest), getSelectedUserId(actionRequest),
-			_uadAnonymizerHelper.getAnonymousUser());
+			getEntity(actionRequest), selectedUser.getUserId(),
+			_uadAnonymizerHelper.getAnonymousUser(selectedUser.getCompanyId()));
 
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
 

@@ -432,7 +432,7 @@ public class LiferayOAuthDataProvider
 
 			extraProperties.put(
 				OAuth2ProviderRestEndpointConstants.PROPERTY_KEY_COMPANY_ID,
-				GetterUtil.getString(oAuth2Authorization.getCompanyId()));
+				String.valueOf(oAuth2Authorization.getCompanyId()));
 
 			return refreshToken;
 		}
@@ -621,7 +621,7 @@ public class LiferayOAuthDataProvider
 
 		UserSubject userSubject = serverAccessToken.getSubject();
 
-		userSubject.setId(GetterUtil.getString(accessToken.getUserId()));
+		userSubject.setId(String.valueOf(accessToken.getUserId()));
 		userSubject.setLogin(accessToken.getUserName());
 
 		return serverAccessToken;
@@ -659,7 +659,7 @@ public class LiferayOAuthDataProvider
 
 		UserSubject userSubject = cxfRefreshToken.getSubject();
 
-		userSubject.setId(GetterUtil.getString(refreshToken.getUserId()));
+		userSubject.setId(String.valueOf(refreshToken.getUserId()));
 		userSubject.setLogin(refreshToken.getUserName());
 
 		return cxfRefreshToken;
@@ -705,7 +705,7 @@ public class LiferayOAuthDataProvider
 
 		UserSubject userSubject = serverAccessToken.getSubject();
 
-		userSubject.setId(GetterUtil.getString(accessToken.getUserId()));
+		userSubject.setId(String.valueOf(accessToken.getUserId()));
 		userSubject.setLogin(accessToken.getUserName());
 
 		return serverAccessToken;
@@ -768,7 +768,7 @@ public class LiferayOAuthDataProvider
 
 		extraProperties.put(
 			OAuth2ProviderRestEndpointConstants.PROPERTY_KEY_COMPANY_ID,
-			GetterUtil.getString(oAuth2Authorization.getCompanyId()));
+			String.valueOf(oAuth2Authorization.getCompanyId()));
 
 		return serverAccessToken;
 	}
@@ -865,7 +865,7 @@ public class LiferayOAuthDataProvider
 
 		properties.put(
 			OAuth2ProviderRestEndpointConstants.PROPERTY_KEY_COMPANY_ID,
-			GetterUtil.getString(oAuth2Application.getCompanyId()));
+			String.valueOf(oAuth2Application.getCompanyId()));
 		properties.put(
 			OAuth2ProviderRestEndpointConstants.PROPERTY_KEY_CLIENT_FEATURES,
 			oAuth2Application.getFeatures());
@@ -885,13 +885,13 @@ public class LiferayOAuthDataProvider
 		long companyId, long userId, String username) {
 
 		UserSubject userSubject = new UserSubject(
-			username, GetterUtil.getString(userId));
+			username, String.valueOf(userId));
 
 		Map<String, String> properties = userSubject.getProperties();
 
 		properties.put(
 			OAuth2ProviderRestEndpointConstants.PROPERTY_KEY_COMPANY_ID,
-			GetterUtil.getString(companyId));
+			String.valueOf(companyId));
 
 		return userSubject;
 	}

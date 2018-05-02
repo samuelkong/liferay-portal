@@ -53,10 +53,11 @@ public class IsAFunctionalList<E>
 
 		E head = functionalList.head();
 
-		Stream<E> stream = Stream.concat(
-			Stream.of(head), functionalList.tailStream());
-
-		List<E> list = stream.collect(Collectors.toList());
+		List<E> list = Stream.concat(
+			Stream.of(head), functionalList.tailStream()
+		).collect(
+			Collectors.toList()
+		);
 
 		if (_matcher.matches(list)) {
 			return true;

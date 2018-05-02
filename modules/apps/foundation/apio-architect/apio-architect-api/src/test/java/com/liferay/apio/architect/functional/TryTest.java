@@ -534,9 +534,9 @@ public class TryTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testOnFailureWithUncheckedExceptionShouldThrowRuntimeException() {
-		Try<String> stringTry = Try.fail(new Exception());
-
-		stringTry.getUnchecked();
+		Try.fail(
+			new Exception()
+		).getUnchecked();
 	}
 
 	@Parameters(method = FAIL)

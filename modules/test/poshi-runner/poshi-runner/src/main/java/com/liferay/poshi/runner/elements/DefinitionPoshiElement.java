@@ -50,11 +50,7 @@ public class DefinitionPoshiElement extends PoshiElement {
 	@Override
 	public void parseReadableSyntax(String readableSyntax) {
 		for (String readableBlock : getReadableBlocks(readableSyntax)) {
-			if (readableBlock.startsWith("@") &&
-				!readableBlock.startsWith("@description") &&
-				!readableBlock.startsWith("@ignore") &&
-				!readableBlock.startsWith("@priority")) {
-
+			if (readableBlock.startsWith("@") && !readableBlock.endsWith("}")) {
 				String name = getNameFromAssignment(readableBlock);
 				String value = getQuotedContent(readableBlock);
 
@@ -163,11 +159,7 @@ public class DefinitionPoshiElement extends PoshiElement {
 				continue;
 			}
 
-			if (trimmedLine.startsWith("@") &&
-				!trimmedLine.startsWith("@description") &&
-				!trimmedLine.startsWith("@ignore") &&
-				!trimmedLine.startsWith("@priority")) {
-
+			if (trimmedLine.equals(line) && trimmedLine.startsWith("@")) {
 				readableBlocks.add(line);
 
 				continue;

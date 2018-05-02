@@ -25,7 +25,13 @@ public class InlinePoshiComment extends PoshiComment {
 
 	@Override
 	public PoshiComment clone(Comment comment) {
-		return new InlinePoshiComment(comment);
+		String commentText = comment.getText();
+
+		if (!commentText.contains("\n")) {
+			return new InlinePoshiComment(comment);
+		}
+
+		return null;
 	}
 
 	@Override

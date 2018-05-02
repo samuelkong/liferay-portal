@@ -49,15 +49,17 @@ public class DeleteRemainingUADMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long selectedUserId = getSelectedUserId(actionRequest);
-
 		Collection<UADAnonymizer> uadAnonymizers =
 			_uadRegistry.getUADAnonymizers();
 
-		User anonymousUser = _uadAnonymizerHelper.getAnonymousUser();
-
 		for (UADAnonymizer uadAnonymizer : uadAnonymizers) {
-			uadAnonymizer.autoAnonymizeAll(selectedUserId, anonymousUser);
+			User selectedUser = getSelectedUser(actionRequest);
+
+			User anonymousUser = _uadAnonymizerHelper.getAnonymousUser(
+				selectedUser.getCompanyId());
+
+			uadAnonymizer.autoAnonymizeAll(
+				selectedUser.getUserId(), anonymousUser);
 		}
 
 		String redirect = ParamUtil.getString(actionRequest, "redirect");

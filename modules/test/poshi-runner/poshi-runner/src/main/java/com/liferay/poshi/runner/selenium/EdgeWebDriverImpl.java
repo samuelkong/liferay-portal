@@ -54,4 +54,9 @@ public class EdgeWebDriverImpl extends BaseWebDriverImpl {
 		}
 	}
 
+	@Override
+	public String getText(String locator, String timeout) throws Exception {
+		return javaScriptGetText(locator, timeout);
+	}
+
 }

@@ -76,12 +76,12 @@ public class JSONBodyMessageBodyReader implements MessageBodyReader<Body> {
 
 		Gson gson = new Gson();
 
-		Try<JsonObject> mapTry = Try.fromFallibleWithResources(
+		JsonObject jsonObject = Try.fromFallibleWithResources(
 			() -> new InputStreamReader(entityStream, "UTF-8"),
-			streamReader -> gson.fromJson(streamReader, JsonObject.class));
-
-		JsonObject jsonObject = mapTry.orElseThrow(
-			() -> new BadRequestException("Body is not a valid JSON"));
+			streamReader -> gson.fromJson(streamReader, JsonObject.class)
+		).orElseThrow(
+			() -> new BadRequestException("Body is not a valid JSON")
+		);
 
 		return Body.create(
 			_transform(

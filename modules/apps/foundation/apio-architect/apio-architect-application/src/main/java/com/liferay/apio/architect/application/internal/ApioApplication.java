@@ -15,6 +15,7 @@
 package com.liferay.apio.architect.application.internal;
 
 import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
+import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
 import com.liferay.apio.architect.endpoint.RootEndpoint;
@@ -74,7 +75,7 @@ public class ApioApplication extends Application {
 	}
 
 	@Reference(
-		cardinality = MULTIPLE, policyOption = GREEDY,
+		cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY,
 		target = "(liferay.apio.architect.container.response.filter=true)"
 	)
 	public void setContainerResponseFilter(
@@ -85,7 +86,7 @@ public class ApioApplication extends Application {
 	}
 
 	@Reference(
-		cardinality = MULTIPLE, policyOption = GREEDY,
+		cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY,
 		target = "(liferay.apio.architect.exception.mapper=true)"
 	)
 	public void setExceptionMapper(
@@ -96,7 +97,7 @@ public class ApioApplication extends Application {
 	}
 
 	@Reference(
-		cardinality = MULTIPLE, policyOption = GREEDY,
+		cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY,
 		target = "(liferay.apio.architect.message.body.reader=true)"
 	)
 	public <T> void setMessageBodyReader(
@@ -107,7 +108,7 @@ public class ApioApplication extends Application {
 	}
 
 	@Reference(
-		cardinality = MULTIPLE, policyOption = GREEDY,
+		cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY,
 		target = "(liferay.apio.architect.message.body.writer=true)"
 	)
 	public <T> void setMessageBodyWriter(
