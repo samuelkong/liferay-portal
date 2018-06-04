@@ -17,10 +17,12 @@ package com.liferay.portal.util;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 
 /**
  * @author Manuel de la Peña
  */
+@Ignore
 public class LicenseUtilWindowsTest extends BaseLicenseUtilTestCase {
 
 	@Override

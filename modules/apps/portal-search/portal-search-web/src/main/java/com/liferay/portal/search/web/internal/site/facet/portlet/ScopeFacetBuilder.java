@@ -15,35 +15,26 @@
 package com.liferay.portal.search.web.internal.site.facet.portlet;
 
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.facet.Facet;
-import com.liferay.portal.kernel.search.facet.ScopeFacet;
-import com.liferay.portal.kernel.search.facet.ScopeFacetFactory;
 import com.liferay.portal.kernel.search.facet.config.FacetConfiguration;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-
-import java.util.Arrays;
+import com.liferay.portal.search.facet.Facet;
+import com.liferay.portal.search.facet.FacetFactory;
 
 /**
  * @author André de Oliveira
  */
 public class ScopeFacetBuilder {
 
-	public ScopeFacetBuilder(ScopeFacetFactory scopeFacetFactory) {
-		_scopeFacetFactory = scopeFacetFactory;
+	public ScopeFacetBuilder(FacetFactory facetFactory) {
+		_facetFactory = facetFactory;
 	}
 
 	public Facet build() {
-		Facet facet = _scopeFacetFactory.newInstance(_searchContext);
+		Facet facet = _facetFactory.newInstance(_searchContext);
 
 		facet.setFacetConfiguration(buildFacetConfiguration(facet));
 
-		if (_selectedSites != null) {
-			ScopeFacet scopeFacet = (ScopeFacet)facet;
-
-			scopeFacet.setValues(
-				ListUtil.toLongArray(
-					Arrays.asList(_selectedSites), GetterUtil::getLong));
+		if (_selectedGroupIds != null) {
+			facet.select(_selectedGroupIds);
 		}
 
 		return facet;
@@ -61,8 +52,8 @@ public class ScopeFacetBuilder {
 		_searchContext = searchContext;
 	}
 
-	public void setSelectedSites(String... selectedSites) {
-		_selectedSites = selectedSites;
+	public void setSelectedGroupIds(String... selectedGroupIds) {
+		_selectedGroupIds = selectedGroupIds;
 	}
 
 	protected FacetConfiguration buildFacetConfiguration(Facet facet) {
@@ -83,10 +74,10 @@ public class ScopeFacetBuilder {
 		return facetConfiguration;
 	}
 
+	private final FacetFactory _facetFactory;
 	private int _frequencyThreshold;
 	private int _maxTerms;
-	private final ScopeFacetFactory _scopeFacetFactory;
 	private SearchContext _searchContext;
-	private String[] _selectedSites;
+	private String[] _selectedGroupIds;
 
 }

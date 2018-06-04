@@ -38,12 +38,15 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.kernel.util.OSDetector;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.license.sigar.SigarNativeLoader;
 
 import java.io.File;
 import java.io.InputStream;
@@ -89,6 +92,9 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+
+import org.hyperic.sigar.CpuInfo;
+import org.hyperic.sigar.Sigar;
 
 /**
  * @author Amos Fong
@@ -162,6 +168,10 @@ public class LicenseUtil {
 		return _macAddresses;
 	}
 
+	public static int getProcessorCores() {
+		return _processorCores;
+	}
+
 	public static byte[] getServerIdBytes() throws Exception {
 		if (_serverIdBytes != null) {
 			return _serverIdBytes;
@@ -187,6 +197,14 @@ public class LicenseUtil {
 		serverInfo.put("macAddresses", StringUtil.merge(getMacAddresses()));
 
 		return serverInfo;
+	}
+
+	public static void init() {
+		_initKeys();
+
+		_ipAddresses = _getIPAddresses();
+		_macAddresses = _getMACAddresses();
+		_processorCores = _getProcessorCores();
 	}
 
 	public static void registerOrder(HttpServletRequest request) {
@@ -565,6 +583,53 @@ public class LicenseUtil {
 		return sortedMap;
 	}
 
+	private static int _getProcessorCores() {
+		if (OSDetector.isAIX() || OSDetector.isLinux()) {
+			try {
+				Runtime runtime = Runtime.getRuntime();
+
+				Process process = runtime.exec("nproc");
+
+				return GetterUtil.getInteger(
+					StringUtil.read(process.getInputStream()));
+			}
+			catch (Exception e) {
+				_log.error(e, e);
+			}
+		}
+
+		Sigar sigar = null;
+
+		try {
+			SigarNativeLoader.load();
+
+			sigar = new Sigar();
+
+			CpuInfo[] cpuInfos = sigar.getCpuInfoList();
+
+			CpuInfo cpuInfo = cpuInfos[0];
+
+			return cpuInfo.getTotalCores();
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+		}
+		finally {
+			if (sigar != null) {
+				sigar.close();
+			}
+
+			try {
+				SigarNativeLoader.unload();
+			}
+			catch (Exception e) {
+				_log.error(e, e);
+			}
+		}
+
+		return 0;
+	}
+
 	private static void _initKeys() {
 		ClassLoader classLoader = ClassLoaderUtil.getPortalClassLoader();
 
@@ -650,19 +715,13 @@ public class LicenseUtil {
 	private static String _encryptedSymmetricKey;
 	private static final MethodHandler _getServerInfoMethodHandler =
 		new MethodHandler(new MethodKey(LicenseUtil.class, "getServerInfo"));
-	private static final Set<String> _ipAddresses;
-	private static final Set<String> _macAddresses;
+	private static Set<String> _ipAddresses;
+	private static Set<String> _macAddresses;
+	private static int _processorCores;
 	private static final MethodKey _registerOrderMethodKey = new MethodKey(
 		LicenseUtil.class, "registerOrder", String.class, String.class,
 		int.class);
 	private static byte[] _serverIdBytes;
 	private static Key _symmetricKey;
-
-	static {
-		_initKeys();
-
-		_ipAddresses = _getIPAddresses();
-		_macAddresses = _getMACAddresses();
-	}
 
 }

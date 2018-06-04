@@ -22,8 +22,6 @@ import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -45,7 +43,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), groupId,
-			FragmentActionKeys.ADD_FRAGMENT_ENTRY);
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.addFragmentEntry(
 			getUserId(), groupId, fragmentCollectionId, name, status,
@@ -60,7 +58,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), groupId,
-			FragmentActionKeys.ADD_FRAGMENT_ENTRY);
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.addFragmentEntry(
 			getUserId(), groupId, fragmentCollectionId, fragmentEntryKey, name,
@@ -75,7 +73,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), groupId,
-			FragmentActionKeys.ADD_FRAGMENT_ENTRY);
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.addFragmentEntry(
 			getUserId(), groupId, fragmentCollectionId, name, css, html, js,
@@ -91,7 +89,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), groupId,
-			FragmentActionKeys.ADD_FRAGMENT_ENTRY);
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.addFragmentEntry(
 			getUserId(), groupId, fragmentCollectionId, fragmentEntryKey, name,
@@ -103,10 +101,14 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		throws PortalException {
 
 		for (long fragmentEntryId : fragmentEntriesIds) {
-			_fragmentEntryModelResourcePermission.check(
-				getPermissionChecker(), fragmentEntryId, ActionKeys.DELETE);
+			FragmentEntry fragmentEntry =
+				fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
 
-			fragmentEntryLocalService.deleteFragmentEntry(fragmentEntryId);
+			_portletResourcePermission.check(
+				getPermissionChecker(), fragmentEntry.getGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+			fragmentEntryLocalService.deleteFragmentEntry(fragmentEntry);
 		}
 	}
 
@@ -114,8 +116,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public FragmentEntry deleteFragmentEntry(long fragmentEntryId)
 		throws PortalException {
 
-		_fragmentEntryModelResourcePermission.check(
-			getPermissionChecker(), fragmentEntryId, ActionKeys.DELETE);
+		FragmentEntry fragmentEntry =
+			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentEntry.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.deleteFragmentEntry(fragmentEntryId);
 	}
@@ -128,8 +134,9 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			fragmentEntryLocalService.fetchFragmentEntry(fragmentEntryId);
 
 		if (fragmentEntry != null) {
-			_fragmentEntryModelResourcePermission.check(
-				getPermissionChecker(), fragmentEntry, ActionKeys.VIEW);
+			_portletResourcePermission.check(
+				getPermissionChecker(), fragmentEntry.getGroupId(),
+				ActionKeys.VIEW);
 		}
 
 		return fragmentEntry;
@@ -139,7 +146,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public int getFragmentCollectionsCount(
 		long groupId, long fragmentCollectionId) {
 
-		return fragmentEntryPersistence.filterCountByG_FCI(
+		return fragmentEntryPersistence.countByG_FCI(
 			groupId, fragmentCollectionId);
 	}
 
@@ -147,7 +154,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public int getFragmentCollectionsCount(
 		long groupId, long fragmentCollectionId, int status) {
 
-		return fragmentEntryPersistence.filterCountByG_FCI_S(
+		return fragmentEntryPersistence.countByG_FCI_S(
 			groupId, fragmentCollectionId, status);
 	}
 
@@ -155,7 +162,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public int getFragmentCollectionsCount(
 		long groupId, long fragmentCollectionId, String name) {
 
-		return fragmentEntryPersistence.filterCountByG_FCI_LikeN(
+		return fragmentEntryPersistence.countByG_FCI_LikeN(
 			groupId, fragmentCollectionId,
 			_customSQL.keywords(name, WildcardMode.SURROUND)[0]);
 	}
@@ -164,7 +171,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public int getFragmentCollectionsCount(
 		long groupId, long fragmentCollectionId, String name, int status) {
 
-		return fragmentEntryPersistence.filterCountByG_FCI_LikeN_S(
+		return fragmentEntryPersistence.countByG_FCI_LikeN_S(
 			groupId, fragmentCollectionId,
 			_customSQL.keywords(name, WildcardMode.SURROUND)[0], status);
 	}
@@ -187,7 +194,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public List<FragmentEntry> getFragmentEntries(
 		long groupId, long fragmentCollectionId, int start, int end) {
 
-		return fragmentEntryPersistence.filterFindByG_FCI(
+		return fragmentEntryPersistence.findByG_FCI(
 			groupId, fragmentCollectionId, start, end);
 	}
 
@@ -196,7 +203,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		long groupId, long fragmentCollectionId, int status, int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
 
-		return fragmentEntryPersistence.filterFindByG_FCI_S(
+		return fragmentEntryPersistence.findByG_FCI_S(
 			groupId, fragmentCollectionId, status, start, end,
 			orderByComparator);
 	}
@@ -206,7 +213,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		long groupId, long fragmentCollectionId, int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
 
-		return fragmentEntryPersistence.filterFindByG_FCI(
+		return fragmentEntryPersistence.findByG_FCI(
 			groupId, fragmentCollectionId, start, end, orderByComparator);
 	}
 
@@ -216,7 +223,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
 
-		return fragmentEntryPersistence.filterFindByG_FCI_LikeN_S(
+		return fragmentEntryPersistence.findByG_FCI_LikeN_S(
 			groupId, fragmentCollectionId,
 			_customSQL.keywords(name, WildcardMode.SURROUND)[0], status, start,
 			end, orderByComparator);
@@ -227,7 +234,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		long groupId, long fragmentCollectionId, String name, int start,
 		int end, OrderByComparator<FragmentEntry> orderByComparator) {
 
-		return fragmentEntryPersistence.filterFindByG_FCI_LikeN(
+		return fragmentEntryPersistence.findByG_FCI_LikeN(
 			groupId, fragmentCollectionId,
 			_customSQL.keywords(name, WildcardMode.SURROUND)[0], start, end,
 			orderByComparator);
@@ -239,7 +246,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), groupId,
-			FragmentActionKeys.ADD_FRAGMENT_ENTRY);
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.getTempFileNames(
 			getUserId(), groupId, folderName);
@@ -249,8 +256,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public FragmentEntry updateFragmentEntry(long fragmentEntryId, String name)
 		throws PortalException {
 
-		_fragmentEntryModelResourcePermission.check(
-			getPermissionChecker(), fragmentEntryId, ActionKeys.UPDATE);
+		FragmentEntry fragmentEntry =
+			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentEntry.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.updateFragmentEntry(
 			fragmentEntryId, name);
@@ -262,19 +273,18 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			String js, int status, ServiceContext serviceContext)
 		throws PortalException {
 
-		_fragmentEntryModelResourcePermission.check(
-			getPermissionChecker(), fragmentEntryId, ActionKeys.UPDATE);
+		FragmentEntry fragmentEntry =
+			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentEntry.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryLocalService.updateFragmentEntry(
 			getUserId(), fragmentEntryId, name, css, html, js, status,
 			serviceContext);
 	}
 
-	private static volatile ModelResourcePermission<FragmentEntry>
-		_fragmentEntryModelResourcePermission =
-			ModelResourcePermissionFactory.getInstance(
-				FragmentEntryServiceImpl.class,
-				"_fragmentEntryModelResourcePermission", FragmentEntry.class);
 	private static volatile PortletResourcePermission
 		_portletResourcePermission =
 			PortletResourcePermissionFactory.getInstance(

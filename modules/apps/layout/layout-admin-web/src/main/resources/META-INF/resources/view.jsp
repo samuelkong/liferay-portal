@@ -18,6 +18,8 @@
 
 <%
 Group scopeGroup = themeDisplay.getScopeGroup();
+
+portletDisplay.setShowStagingIcon(false);
 %>
 
 <c:choose>

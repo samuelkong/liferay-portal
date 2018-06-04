@@ -46,7 +46,7 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 	@Deployment
 	public static Archive<?> getDeployment() throws Exception {
 		return BaseClientTestCase.getDeployment(
-			AnnotatedApplicationBundleActivator.class);
+			AnnotatedApplicationTestPreparatorBundleActivator.class);
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 		Assert.assertEquals(403, response.getStatus());
 	}
 
-	public static class AnnotatedApplicationBundleActivator
+	public static class AnnotatedApplicationTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
 
 		@Override

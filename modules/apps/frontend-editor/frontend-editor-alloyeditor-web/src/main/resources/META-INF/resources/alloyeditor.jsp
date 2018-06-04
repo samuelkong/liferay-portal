@@ -153,7 +153,7 @@ name = HtmlUtil.escapeJS(name);
 			data = <%= HtmlUtil.escapeJS(namespace + initMethod) %>();
 		}
 		else {
-			data = '<%= contents != null ? HtmlUtil.escapeJS(contents) : StringPool.BLANK %>';
+			data = '<%= (contents != null) ? HtmlUtil.escapeJS(contents) : StringPool.BLANK %>';
 		}
 
 		return data;
@@ -177,7 +177,7 @@ name = HtmlUtil.escapeJS(name);
 
 		editorConfig = A.merge(
 			{
-				title: '<%= LanguageUtil.get(resourceBundle, "rich-text-editor") %>'
+				title: false
 			},
 			editorConfig
 		);
