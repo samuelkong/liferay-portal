@@ -1093,13 +1093,13 @@
 		<execute function="Confirm" value1="Are you sure you want to expire the selected version?" />
 	</command>
 
-	<command name="getAssetId" returns="assetId">
+	<command name="getAssetId">
 		<if>
 			<isset var="webContentAsset" />
 			<then>
 				<var method="selenium#getAttribute('//li[contains(@data-title,\'${webContentAsset}\')]//input@value')" name="webContentId" />
 
-				<return name="assetId" value="${webContentId}" />
+				<return value="${webContentId}" />
 			</then>
 		</if>
 
@@ -1108,7 +1108,7 @@
 			<then>
 				<var method="selenium#getAttribute('//li[contains(@data-title,\'${folderAsset}\')]@data-folder-id')" name="folderId" />
 
-				<return name="assetId" value="${folderId}" />
+				<return value="${folderId}" />
 			</then>
 		</if>
 	</command>
@@ -1396,13 +1396,13 @@
 
 		<execute macro="IFrame#selectTopFrame" />
 
-		<execute function="SelectFrame" locator1="IFrame#TEMPLATES" />
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
 		<execute function="AssertClickNoError" locator1="ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK" value1="${templateName}">
 			<var name="key_rowEntry" value="${templateName}" />
 		</execute>
 
-		<execute function="Confirm#assertConfirmationNoWait" value1="Selecting a new template deletes all unsaved content. Do you want to proceed?" />
+		<execute function="Confirm#assertConfirmationNoWait" value1="Editing the current template deletes all unsaved content." />
 
 		<execute macro="IFrame#selectTopFrame" />
 
