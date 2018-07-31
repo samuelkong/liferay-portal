@@ -57,7 +57,7 @@ public class ExecutePoshiElement extends PoshiElement {
 	public void parsePoshiScript(String poshiScript) {
 		String executeType = "macro";
 
-		if (isValidUtilClassName(poshiScript)) {
+		if (isValidUtilityClassName(poshiScript)) {
 			executeType = "class";
 		}
 		else if (isValidFunctionFileName(poshiScript)) {
@@ -65,20 +65,9 @@ public class ExecutePoshiElement extends PoshiElement {
 		}
 
 		if (executeType.equals("class")) {
-			int index = poshiScript.indexOf("(");
-
-			String methodName = poshiScript.substring(0, index);
-
-			for (String utilClassName : utilClassNames) {
-				if (poshiScript.startsWith(utilClassName)) {
-					addAttribute("class", utilClassName);
-
-					methodName = methodName.replace(utilClassName + ".", "");
-
-					addAttribute("method", methodName);
-
-					break;
-				}
+			if (isValidUtilityClassName(poshiScript)) {
+				addAttribute("class", getClassName(poshiScript));
+				addAttribute("method", getCommandName(poshiScript));
 			}
 
 			String parentheticalContent = getParentheticalContent(poshiScript);

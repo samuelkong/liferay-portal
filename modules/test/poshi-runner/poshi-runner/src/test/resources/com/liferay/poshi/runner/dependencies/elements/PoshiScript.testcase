@@ -19,7 +19,7 @@ definition {
 
 	tearDown {
 		PortalInstances.tearDownCP(
-			testPortalInstance = TestPropsUtil.get('test.portal.instance')
+			testPortalInstance = PropsUtil.get('test.portal.instance')
 		);
 	}
 

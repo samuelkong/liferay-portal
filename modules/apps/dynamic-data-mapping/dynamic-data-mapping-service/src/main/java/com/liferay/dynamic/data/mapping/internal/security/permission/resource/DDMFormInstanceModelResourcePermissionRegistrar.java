@@ -14,18 +14,22 @@
 
 package com.liferay.dynamic.data.mapping.internal.security.permission.resource;
 
+import com.liferay.dynamic.data.mapping.constants.DDMActionKeys;
 import com.liferay.dynamic.data.mapping.constants.DDMConstants;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermission;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.StagedModelPermissionLogic;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.Dictionary;
+import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -53,10 +57,29 @@ public class DDMFormInstanceModelResourcePermissionRegistrar {
 				_ddmFormInstanceLocalService::getDDMFormInstance,
 				_portletResourcePermission,
 				(modelResourcePermission, consumer) -> consumer.accept(
-					new StagedModelPermissionLogic<>(
+					new StagedModelPermissionLogic<DDMFormInstance>(
 						_stagingPermission,
 						DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-						DDMFormInstance::getFormInstanceId))),
+						DDMFormInstance::getFormInstanceId) {
+
+						@Override
+						public Boolean contains(
+							PermissionChecker permissionChecker, String name,
+							DDMFormInstance ddmFormInstance, String actionId) {
+
+							if (Objects.equals(
+									actionId,
+									DDMActionKeys.ADD_FORM_INSTANCE_RECORD)) {
+
+								return null;
+							}
+
+							return super.contains(
+								permissionChecker, name, ddmFormInstance,
+								actionId);
+						}
+
+					})),
 			properties);
 	}
 
@@ -67,6 +90,9 @@ public class DDMFormInstanceModelResourcePermissionRegistrar {
 
 	@Reference
 	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference(target = "(resource.name=" + DDMConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;

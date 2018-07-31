@@ -1055,6 +1055,15 @@ public class PoshiRunnerValidation {
 			return;
 		}
 
+		try {
+			validateUtilityClassName(element, filePath, className);
+		}
+		catch (Exception e) {
+			_exceptions.add(e);
+
+			return;
+		}
+
 		String methodName = element.attributeValue("method");
 
 		List<Method> possibleMethods = new ArrayList<>();
@@ -1628,6 +1637,31 @@ public class PoshiRunnerValidation {
 		validateOnElement(element, filePath);
 	}
 
+	protected static void validateUtilityClassName(
+			Element element, String filePath, String className)
+		throws Exception {
+
+		if (!className.startsWith("selenium")) {
+			if (!className.contains(".")) {
+				try {
+					className = PoshiRunnerGetterUtil.getUtilityClassName(
+						className);
+				}
+				catch (IllegalArgumentException iae) {
+					throw new Exception(
+						iae.getMessage() + "\n" + filePath + ":" +
+							element.attributeValue("line-number"));
+				}
+			}
+
+			if (!PoshiRunnerGetterUtil.isValidUtilityClass(className)) {
+				throw new Exception(
+					className + " is an invalid utility class\n" + filePath +
+						":" + element.attributeValue("line-number"));
+			}
+		}
+	}
+
 	protected static void validateVarElement(Element element, String filePath) {
 		validateHasNoChildElements(element, filePath);
 		validateRequiredAttributeNames(
@@ -1695,6 +1729,21 @@ public class PoshiRunnerValidation {
 				 Validator.isNotNull(
 					 element.attributeValue("property-value")) ||
 				 Validator.isNotNull(element.attributeValue("var"))) {
+
+			if (Validator.isNotNull(element.attributeValue("method"))) {
+				String methodAttribute = element.attributeValue("method");
+
+				int x = methodAttribute.indexOf("#");
+
+				String className = methodAttribute.substring(0, x);
+
+				try {
+					validateUtilityClassName(element, filePath, className);
+				}
+				catch (Exception e) {
+					_exceptions.add(e);
+				}
+			}
 
 			int expectedAttributeCount = 1;
 

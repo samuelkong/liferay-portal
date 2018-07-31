@@ -770,9 +770,9 @@ public class PoshiRunnerExecutor {
 
 				PoshiRunnerVariablesUtil.putIntoCommandMap(
 					returnName, _macroReturnValue);
-			}
 
-			_macroReturnValue = null;
+				_macroReturnValue = null;
+			}
 		}
 		catch (Exception e) {
 			SummaryLoggerHandler.failSummary(executeElement, e.getMessage());
@@ -1225,11 +1225,6 @@ public class PoshiRunnerExecutor {
 			}
 			else if (element.attributeValue("method") != null) {
 				String methodName = element.attributeValue("method");
-
-				if (methodName.startsWith("TestPropsUtil")) {
-					methodName = methodName.replace(
-						"TestPropsUtil", "PropsUtil");
-				}
 
 				try {
 					varValue = PoshiRunnerGetterUtil.getVarMethodValue(

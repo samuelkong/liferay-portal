@@ -1,0 +1,29 @@
+<definition>
+	<command name="ExecuteVarInheritance">
+		<execute macro="RootVar#assertExecuteVar">
+			<var name="rootVar" value="An execute var that will referenced by another execute var." />
+			<var name="rootVar" value="${rootVar}" />
+		</execute>
+
+		<var name="rootVar" value="A command var that will be overridden by an execute var." />
+
+		<execute macro="RootVar#assertExecuteVar">
+			<var name="rootVar" value="An execute var that will referenced by another execute var." />
+			<var name="rootVar" value="${rootVar}" />
+		</execute>
+	</command>
+
+	<command name="RootVarInheritance">
+		<execute macro="RootVar#assertRootVar" />
+
+		<execute macro="RootVar#assertRootVarInNestedMacro" />
+
+		<execute macro="RootVar#overrideRootVar">
+			<var name="rootVar" value="An execute variable passed into a macro." />
+		</execute>
+
+		<execute macro="RootVar#overrideRootVarInNestedMacro">
+			<var name="rootVar" value="An execute variable passed into a macro." />
+		</execute>
+	</command>
+</definition>

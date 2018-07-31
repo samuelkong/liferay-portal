@@ -924,27 +924,35 @@ public class PoshiRunnerValidationTest extends TestCase {
 		String filePath = "validateMethodExecuteElement.macro";
 		String invalidClassName = "com.liferay.poshi.runner.util.FakeUtil";
 		String invalidMethodName = "FakeMethod";
+		String invalidUtilityClassName =
+			"com.liferay.poshi.runner.PoshiRunnerGetterUtil";
+		String invalidUtilityClassMethodName = "getCurrentNamespace";
 		String validClassName = "com.liferay.poshi.runner.util.StringUtil";
 		String validMethodName = "add";
 
 		List<String> testClassNames = new ArrayList<>();
 
 		testClassNames.add(invalidClassName);
+		testClassNames.add(invalidUtilityClassName);
 		testClassNames.add(validClassName);
 
 		List<String> testMethodNames = new ArrayList<>();
 
 		testMethodNames.add(validMethodName);
+		testMethodNames.add(invalidUtilityClassMethodName);
 		testMethodNames.add(invalidMethodName);
 
 		List<List<String>> testArguments = new ArrayList<>();
 
 		testArguments.add(new ArrayList<String>());
 		testArguments.add(new ArrayList<String>());
+		testArguments.add(new ArrayList<String>());
 
 		List<String> expectedMessages = new ArrayList<>();
 
 		expectedMessages.add("Unable to find class " + invalidClassName);
+		expectedMessages.add(
+			invalidUtilityClassName + " is an invalid utility class");
 		expectedMessages.add(
 			"Unable to find method " + validClassName + "#" +
 				invalidMethodName);
@@ -1529,6 +1537,22 @@ public class PoshiRunnerValidationTest extends TestCase {
 
 		Assert.assertEquals(
 			"validateVarElement is failing", "Missing value attribute",
+			getExceptionMessage());
+
+		document = DocumentHelper.createDocument();
+
+		element = document.addElement("var");
+
+		element.addAttribute("line-number", "1");
+		element.addAttribute("method", "TestPropsUtil#get('test.name')");
+		element.addAttribute("name", "name");
+
+		PoshiRunnerValidation.validateVarElement(
+			element, "ValidateVarElement.macro");
+
+		Assert.assertEquals(
+			"validateVarElement is failing",
+			"TestPropsUtil is not a valid simple class name",
 			getExceptionMessage());
 	}
 

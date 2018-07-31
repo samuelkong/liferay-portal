@@ -432,8 +432,8 @@
 
 		<execute function="Click" locator1="Icon#HISTORY_VERTICAL_ELLIPSIS" />
 
-		<execute function="AssertClickNoError" locator1="MenuItem#ANY_MENU_ITEM" value1="Delete">
-			<var name="key_menuItem" value="Delete" />
+		<execute macro="MenuItem#clickNoError">
+			<var name="menuItem" value="Delete" />
 		</execute>
 
 		<execute function="Confirm" value1="Are you sure you want to delete this? It will be deleted immediately." />
@@ -510,10 +510,12 @@
 
 		<var name="key_sitePagesVariationName" value="${sitePagesVariationName}" />
 
-		<execute function="Click" locator1="StagingManageVariations#SITE_PAGES_VARIATIONS_TABLE_ACTIONS" />
+		<execute macro="LexiconEntry#openEntryMenu">
+			<var name="rowEntry" value="${sitePagesVariationName}" />
+		</execute>
 
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Edit">
-			<var name="key_menuItem" value="Edit" />
+		<execute macro="MenuItem#click">
+			<var name="menuItem" value="Edit" />
 		</execute>
 
 		<execute function="Type" locator1="StagingManageVariations#MANAGE_VARIATION" value1="${sitePagesVariationName} Edit" />
@@ -681,8 +683,8 @@
 	<command name="navigateToStagingMenuItem">
 		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
 
-		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Staging">
-			<var name="key_menuItem" value="Staging" />
+		<execute macro="MenuItem#click">
+			<var name="menuItem" value="Staging" />
 		</execute>
 
 		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION_DIALOG" />
@@ -757,10 +759,10 @@
 			<condition function="IsElementPresent" locator1="StagingPublishToLive#SWITCH_TO_ADVANCED_PUBLICATION" />
 			<then>
 				<execute function="AssertClick#assertPartialTextClickAt" locator1="StagingPublishToLive#SWITCH_TO_ADVANCED_PUBLICATION" value1="Switch to Advanced Publication" />
+
+				<execute function="AssertClick" locator1="StagingPublishToLive#PUBLISH_TEMPLATES_BUTTON" value1="Publish Templates" />
 			</then>
 		</if>
-
-		<execute function="AssertClick" locator1="StagingPublishToLive#PUBLISH_TEMPLATES_BUTTON" value1="Publish Templates" />
 
 		<execute function="Click" locator1="Icon#HISTORY_VERTICAL_ELLIPSIS" />
 
@@ -770,15 +772,18 @@
 
 		<execute function="Pause" locator1="5000" />
 
-		<execute function="AssertTextEquals" locator1="Staging#PROCESS_SUCCESSFUL" value1="Successful" />
-
-		<execute function="SelectFrame" value1="relative=top" />
-
 		<if>
-			<condition function="IsElementPresent" locator1="Icon#CLOSE" />
+			<condition function="IsElementPresent" locator1="Staging#PROCESS_SUCCESSFUL" />
 			<then>
+				<execute function="AssertTextEquals" locator1="Staging#PROCESS_SUCCESSFUL" value1="Successful" />
+
+				<execute function="SelectFrame" value1="relative=top" />
+
 				<execute macro="IFrame#closeFrame" />
 			</then>
+			<else>
+				<execute function="AssertTextEquals" locator1="Staging#LATEST_PROCESS_RESULT" value1="SUCCESSFUL" />
+			</else>
 		</if>
 
 		<var name="key_siteName" value="${siteName}" />
@@ -789,7 +794,15 @@
 			<var name="portlet" value="Staging" />
 		</execute>
 
-		<execute function="AssertTextEquals" locator1="Staging#LATEST_PROCESS_RESULT" value1="SUCCESSFUL" />
+		<if>
+			<condition function="IsElementPresent" locator1="Staging#LATEST_PROCESS_RESULT" />
+			<then>
+				<execute function="AssertTextEquals" locator1="Staging#LATEST_PROCESS_RESULT" value1="SUCCESSFUL" />
+			</then>
+			<else>
+				<execute function="AssertTextEquals" locator1="Staging#PROCESS_SUCCESSFUL" value1="Successful" />
+			</else>
+		</if>
 	</command>
 
 	<command name="redoStagingPageVersioningPG">
@@ -1142,8 +1155,8 @@
 			</then>
 		</if>
 
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Publish Templates">
-			<var name="key_menuItem" value="Publish Templates" />
+		<execute macro="MenuItem#click">
+			<var name="menuItem" value="Publish Templates" />
 		</execute>
 
 		<var name="key_publishTemplateName" value="${publishTemplateName}" />

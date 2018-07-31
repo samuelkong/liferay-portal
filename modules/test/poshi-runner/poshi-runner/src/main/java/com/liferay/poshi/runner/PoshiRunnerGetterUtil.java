@@ -14,6 +14,8 @@
 
 package com.liferay.poshi.runner;
 
+import com.google.common.reflect.ClassPath;
+
 import com.liferay.poshi.runner.elements.PoshiElement;
 import com.liferay.poshi.runner.elements.PoshiNode;
 import com.liferay.poshi.runner.elements.PoshiNodeFactory;
@@ -24,6 +26,7 @@ import com.liferay.poshi.runner.util.ExternalMethod;
 import com.liferay.poshi.runner.util.FileUtil;
 import com.liferay.poshi.runner.util.GetterUtil;
 import com.liferay.poshi.runner.util.OSDetector;
+import com.liferay.poshi.runner.util.PropsUtil;
 import com.liferay.poshi.runner.util.PropsValues;
 import com.liferay.poshi.runner.util.StringUtil;
 import com.liferay.poshi.runner.util.Validator;
@@ -40,6 +43,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -239,6 +244,18 @@ public class PoshiRunnerGetterUtil {
 			List<String> args, String className, String methodName,
 			Object object)
 		throws Exception {
+
+		if (!className.equals("selenium")) {
+			if (!className.contains(".")) {
+				className = getUtilityClassName(className);
+			}
+			else {
+				if (!isValidUtilityClass(className)) {
+					throw new IllegalArgumentException(
+						className + " is not a valid class name");
+				}
+			}
+		}
 
 		Object[] parameters = new Object[args.size()];
 
@@ -482,6 +499,15 @@ public class PoshiRunnerGetterUtil {
 		return rootElement;
 	}
 
+	public static String getUtilityClassName(String simpleClassName) {
+		if (_utilityClassMap.containsKey(simpleClassName)) {
+			return _utilityClassMap.get(simpleClassName);
+		}
+
+		throw new IllegalArgumentException(
+			simpleClassName + " is not a valid simple class name");
+	}
+
 	public static Object getVarMethodValue(String expression, String namespace)
 		throws Exception {
 
@@ -523,22 +549,21 @@ public class PoshiRunnerGetterUtil {
 		String className = expression.substring(0, y);
 		String methodName = expression.substring(y + 1, x);
 
-		Object returnObject = null;
+		Object object = null;
 
 		if (className.equals("selenium")) {
-			Object object = SeleniumUtil.getSelenium();
-
-			returnObject = getMethodReturnValue(
-				args, className, methodName, object);
-		}
-		else {
-			className = "com.liferay.poshi.runner.util." + className;
-
-			returnObject = getMethodReturnValue(
-				args, className, methodName, null);
+			object = SeleniumUtil.getSelenium();
 		}
 
-		return returnObject;
+		return getMethodReturnValue(args, className, methodName, object);
+	}
+
+	public static boolean isValidUtilityClass(String className) {
+		if (_utilityClassMap.containsValue(className)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Pattern _namespacedClassCommandNamePattern =
@@ -557,7 +582,27 @@ public class PoshiRunnerGetterUtil {
 			"thead", "then", "title", "toggle", "tr", "var", "while"
 		});
 	private static final Pattern _tagPattern = Pattern.compile("<[a-z\\-]+");
+	private static final Map<String, String > _utilityClassMap =
+		new TreeMap<>();
 	private static final Pattern _variablePattern = Pattern.compile(
 		"\\$\\{([^}]*)\\}");
+
+	static {
+		try {
+			ClassPath classPath = ClassPath.from(
+				PropsUtil.class.getClassLoader());
+
+			for (ClassPath.ClassInfo classInfo :
+					classPath.getTopLevelClasses(
+						"com.liferay.poshi.runner.util")) {
+
+				_utilityClassMap.put(
+					classInfo.getSimpleName(), classInfo.getName());
+			}
+		}
+		catch (IOException ioe) {
+			throw new RuntimeException(ioe);
+		}
+	}
 
 }
