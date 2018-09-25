@@ -19,6 +19,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -60,6 +61,11 @@ public class JSPTagAttributesCheck extends TagAttributesCheck {
 		_allFileNames = allFileNames;
 	}
 
+	public void setEscapeAttributesTagTypes(String escapeAttributesTagTypes) {
+		_escapeAttributesTagTypes = ListUtil.fromString(
+			escapeAttributesTagTypes, StringPool.COMMA);
+	}
+
 	@Override
 	protected Tag doFormatLineBreaks(Tag tag, String absolutePath) {
 		String tagName = tag.getName();
@@ -89,6 +95,28 @@ public class JSPTagAttributesCheck extends TagAttributesCheck {
 		content = formatMultiLinesTagAttributes(absolutePath, content, false);
 
 		return content;
+	}
+
+	@Override
+	protected Tag formatEscapeAttribute(Tag tag) {
+		if (!_escapeAttributesTagTypes.contains(tag.getName())) {
+			return tag;
+		}
+
+		Map<String, String> attributesMap = tag.getAttributesMap();
+
+		for (Map.Entry<String, String> entry : attributesMap.entrySet()) {
+			String attributeValue = entry.getValue();
+
+			if (attributeValue.startsWith("<%= HtmlUtil.escape(")) {
+				tag.putAttribute(
+					entry.getKey(),
+					StringUtil.replaceFirst(
+						attributeValue, "escape", "escapeAttribute"));
+			}
+		}
+
+		return tag;
 	}
 
 	@Override
@@ -552,6 +580,7 @@ public class JSPTagAttributesCheck extends TagAttributesCheck {
 	private List<String> _allFileNames;
 	private final Map<String, Map<String, String>> _classSetMethodsMap =
 		new HashMap<>();
+	private List<String> _escapeAttributesTagTypes = new ArrayList<>();
 	private Set<String> _primitiveTagAttributeDataTypes;
 	private Map<String, Map<String, String>> _tagSetMethodsMap;
 
