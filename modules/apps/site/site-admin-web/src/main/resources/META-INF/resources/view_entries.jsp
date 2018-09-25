@@ -81,7 +81,7 @@ siteChecker.setRememberCheckBoxStateURLRegex("^(?!.*" + liferayPortletResponse.g
 					colspan="<%= 2 %>"
 				>
 					<h5>
-						<aui:a href="<%= viewSiteURL %>" label="<%= HtmlUtil.escape(curGroup.getDescriptiveName(locale)) %>" localizeLabel="<%= false %>" />
+						<aui:a href="<%= viewSiteURL %>" label="<%= HtmlUtil.escapeAttribute(curGroup.getDescriptiveName(locale)) %>" localizeLabel="<%= false %>" />
 					</h5>
 
 					<ul class="list-inline">
