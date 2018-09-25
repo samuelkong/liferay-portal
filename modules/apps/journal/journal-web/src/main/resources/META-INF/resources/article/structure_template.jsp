@@ -35,7 +35,7 @@ DDMTemplate ddmTemplate = (DDMTemplate)request.getAttribute("edit_article.jsp-te
 
 	<c:choose>
 		<c:when test="<%= DDMStructurePermission.contains(permissionChecker, ddmStructure, ActionKeys.UPDATE) %>">
-			<aui:a href="javascript:;" id="editDDMStructure" label="<%= HtmlUtil.escape(ddmStructure.getName(locale)) %>" />
+			<aui:a href="javascript:;" id="editDDMStructure" label="<%= HtmlUtil.escapeAttribute(ddmStructure.getName(locale)) %>" />
 		</c:when>
 		<c:otherwise>
 			<%= HtmlUtil.escape(ddmStructure.getName(locale)) %>
@@ -59,7 +59,7 @@ DDMTemplate ddmTemplate = (DDMTemplate)request.getAttribute("edit_article.jsp-te
 
 		<c:choose>
 			<c:when test="<%= (ddmTemplate != null) && DDMTemplatePermission.contains(permissionChecker, ddmTemplate, ActionKeys.UPDATE) %>">
-				<aui:a href="javascript:;" id="editDDMTemplate" label="<%= HtmlUtil.escape(ddmTemplate.getName(locale)) %>" />
+				<aui:a href="javascript:;" id="editDDMTemplate" label="<%= HtmlUtil.escapeAttribute(ddmTemplate.getName(locale)) %>" />
 			</c:when>
 			<c:otherwise>
 				<%= (ddmTemplate != null) ? HtmlUtil.escape(ddmTemplate.getName(locale)) : LanguageUtil.get(request, "none") %>

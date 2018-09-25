@@ -306,7 +306,9 @@
 		<check name="JSPStringBundlerCheck" />
 		<check name="JSPStylingCheck" />
 		<check name="JSPSubnameCheck" />
-		<check name="JSPTagAttributesCheck" />
+		<check name="JSPTagAttributesCheck">
+			<property name="escapeAttributesTagTypes" value="aui:a" />
+		</check>
 		<check name="JSPTaglibVariableCheck" />
 		<check name="JSPUnusedTermsCheck" />
 		<check name="JSPWhitespaceCheck" />

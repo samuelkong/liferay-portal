@@ -37,6 +37,10 @@ public abstract class TagAttributesCheck extends BaseFileCheck {
 
 	protected abstract Tag doFormatLineBreaks(Tag tag, String absolutePath);
 
+	protected Tag formatEscapeAttribute(Tag tag) {
+		return tag;
+	}
+
 	protected String formatIncorrectLineBreak(String fileName, String content) {
 		Matcher matcher = _incorrectLineBreakPattern.matcher(content);
 
@@ -149,6 +153,7 @@ public abstract class TagAttributesCheck extends BaseFileCheck {
 			return s;
 		}
 
+		tag = formatEscapeAttribute(tag);
 		tag = formatTagAttributeType(tag);
 
 		tag = sortHTMLTagAttributes(tag);
