@@ -485,6 +485,8 @@ public interface PropsKeys {
 
 	public static final String COMPANY_SECURITY_AUTH_REQUIRES_HTTPS = "company.security.auth.requires.https";
 
+	public static final String COMPANY_SECURITY_AUTH_TOKEN = "company.security.auth.token";
+
 	public static final String COMPANY_SECURITY_AUTH_TYPE = "company.security.auth.type";
 
 	public static final String COMPANY_SECURITY_AUTO_LOGIN = "company.security.auto.login";
