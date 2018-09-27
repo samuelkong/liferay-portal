@@ -95,6 +95,8 @@ public interface Company extends CompanyModel, PersistedModel {
 
 	public boolean hasCompanyMx(String emailAddress);
 
+	public boolean isAuthToken();
+
 	public boolean isAutoLogin();
 
 	public boolean isSendPassword();
