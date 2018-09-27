@@ -384,6 +384,11 @@ public class CompanyWrapper implements Company, ModelWrapper<Company> {
 	}
 
 	@Override
+	public boolean isAuthToken() {
+		return _company.isAuthToken();
+	}
+
+	@Override
 	public boolean isAutoLogin() {
 		return _company.isAutoLogin();
 	}
