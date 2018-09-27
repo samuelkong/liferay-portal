@@ -24,6 +24,7 @@ boolean companySecuritySendPasswordResetLink = company.isSendPasswordResetLink()
 boolean companySecurityStrangers = company.isStrangers();
 boolean companySecurityStrangersWithMx = company.isStrangersWithMx();
 boolean companySecurityStrangersVerify = company.isStrangersVerify();
+boolean companySecurityAuthToken = company.isAuthToken();
 %>
 
 <aui:fieldset>
@@ -44,4 +45,6 @@ boolean companySecurityStrangersVerify = company.isStrangersVerify();
 	<aui:input label="allow-strangers-to-create-accounts-with-a-company-email-address" name='<%= "settings--" + PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX + "--" %>' type="checkbox" value="<%= companySecurityStrangersWithMx %>" />
 
 	<aui:input label="require-strangers-to-verify-their-email-address" name='<%= "settings--" + PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY + "--" %>' type="checkbox" value="<%= companySecurityStrangersVerify %>" />
+
+	<aui:input helpMessage="check-auth-token-when-login-help" label="check-auth-token-when-login" name='<%= "settings--" + PropsKeys.COMPANY_SECURITY_AUTH_TOKEN + "--" %>' type="checkbox" value="<%= companySecurityAuthToken %>" />
 </aui:fieldset>

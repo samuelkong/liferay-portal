@@ -16,8 +16,10 @@ package com.liferay.portal.action;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.WindowStateFactory;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -87,6 +89,13 @@ public class LoginAction extends Action {
 		String password = request.getParameter("password");
 
 		if (Validator.isNotNull(login) && Validator.isNotNull(password)) {
+			Company company = themeDisplay.getCompany();
+
+			if (company.isAuthToken()) {
+				AuthTokenUtil.checkCSRFToken(
+					request, LoginAction.class.getName());
+			}
+
 			boolean rememberMe = ParamUtil.getBoolean(request, "rememberMe");
 			String authType = ParamUtil.getString(request, "authType");
 
