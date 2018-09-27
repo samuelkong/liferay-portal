@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.AuthException;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManager;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -193,6 +195,17 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
 
 		if (!themeDisplay.isSignedIn()) {
+			Company company = themeDisplay.getCompany();
+
+			if (company.isAuthToken()) {
+				LiferayPortletRequest liferayPortletRequest =
+					_portal.getLiferayPortletRequest(actionRequest);
+
+				AuthTokenUtil.checkCSRFToken(
+					liferayPortletRequest.getOriginalHttpServletRequest(),
+					LoginMVCActionCommand.class.getName());
+			}
+
 			String portletId = _portal.getPortletId(actionRequest);
 
 			PortletPreferences portletPreferences =
