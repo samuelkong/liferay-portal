@@ -65,6 +65,7 @@
 				<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
 				<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 				<aui:input name="doActionAfterLogin" type="hidden" value="<%= portletName.equals(PortletKeys.FAST_LOGIN) ? true : false %>" />
+				<aui:input name="p_auth" type="hidden" value="<%= AuthTokenUtil.getToken(request) %>" />
 
 				<div class="inline-alert-container lfr-alert-container"></div>
 

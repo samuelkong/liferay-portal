@@ -39,6 +39,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -125,6 +126,7 @@ public class UserLocalServiceTest {
 		Assert.assertTrue(users.toString(), users.contains(user));
 	}
 
+	@Ignore
 	@Test
 	public void testGetOrganizationsAndUserGroupsUsersCount() throws Exception {
 		int iterations = 3;

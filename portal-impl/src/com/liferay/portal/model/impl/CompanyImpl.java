@@ -278,6 +278,13 @@ public class CompanyImpl extends CompanyBaseImpl {
 	}
 
 	@Override
+	public boolean isAuthToken() {
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_AUTH_TOKEN,
+			PropsValues.COMPANY_SECURITY_AUTH_TOKEN);
+	}
+
+	@Override
 	public boolean isAutoLogin() {
 		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
 

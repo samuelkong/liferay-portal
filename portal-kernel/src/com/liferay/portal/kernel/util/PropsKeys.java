@@ -485,6 +485,8 @@ public interface PropsKeys {
 
 	public static final String COMPANY_SECURITY_AUTH_REQUIRES_HTTPS = "company.security.auth.requires.https";
 
+	public static final String COMPANY_SECURITY_AUTH_TOKEN = "company.security.auth.token";
+
 	public static final String COMPANY_SECURITY_AUTH_TYPE = "company.security.auth.type";
 
 	public static final String COMPANY_SECURITY_AUTO_LOGIN = "company.security.auto.login";
@@ -2403,8 +2405,16 @@ public interface PropsKeys {
 
 	public static final String STRIP_MIME_TYPES = "strip.mime.types";
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
+	 */
+	@Deprecated
 	public static final String STRUTS_PORTLET_IGNORED_PARAMETERS_REGEXP = "struts.portlet.ignored.parameters.regexp";
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
+	 */
+	@Deprecated
 	public static final String STRUTS_PORTLET_REQUEST_PROCESSOR = "struts.portlet.request.processor";
 
 	public static final String SYSTEM_GROUPS = "system.groups";
