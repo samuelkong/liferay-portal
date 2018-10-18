@@ -20,6 +20,7 @@
 long ldapServerId = ParamUtil.getLong(request, "ldapServerId", 0);
 
 String baseProviderURL = ParamUtil.getString(request, "baseProviderURL");
+String baseDN = ParamUtil.getString(request, "baseDN");
 String principal = ParamUtil.getString(request, "principal");
 
 String credentials = request.getParameter("credentials");
@@ -31,6 +32,15 @@ if (credentials.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
 }
 
 LdapContext ldapContext = PortalLDAPUtil.getContext(themeDisplay.getCompanyId(), baseProviderURL, principal, credentials);
+
+try {
+	if (Validator.isNotNull(baseDN)) {
+		ldapContext.list(baseDN);
+	}
+}
+catch (NameNotFoundException ntfe) {
+	ldapContext = null;
+}
 %>
 
 <c:choose>
