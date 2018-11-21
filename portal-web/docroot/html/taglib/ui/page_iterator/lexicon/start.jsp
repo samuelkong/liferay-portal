@@ -96,7 +96,7 @@ if (forcePost && (portletURL != null)) {
 							continue;
 						}
 
-						String curDeltaURL = HttpUtil.addParameter(deltaURL, namespace + deltaParam, curDelta + urlAnchor);
+						String curDeltaURL = HttpUtil.addParameter(deltaURL + urlAnchor, namespace + deltaParam, curDelta);
 					%>
 
 						<li>
