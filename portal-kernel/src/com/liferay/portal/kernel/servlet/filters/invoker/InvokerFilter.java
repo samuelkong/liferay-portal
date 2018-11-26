@@ -45,6 +45,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -74,6 +75,8 @@ public class InvokerFilter extends BasePortalLifecycle implements Filter {
 		if (!handleLongRequestURL(request, response, originalURI)) {
 			return;
 		}
+
+		request = new PathInfoServletRequest(request);
 
 		request = handleNonSerializableRequest(request);
 
@@ -360,5 +363,22 @@ public class InvokerFilter extends BasePortalLifecycle implements Filter {
 	private PortalCache<String, InvokerFilterChain> _filterChains;
 	private FilterConfig _filterConfig;
 	private InvokerFilterHelper _invokerFilterHelper;
+
+	private class PathInfoServletRequest extends HttpServletRequestWrapper {
+
+		public PathInfoServletRequest(HttpServletRequest request) {
+			super(request);
+
+			_pathInfo = HttpUtil.normalizePath(request.getPathInfo());
+		}
+
+		@Override
+		public String getPathInfo() {
+			return _pathInfo;
+		}
+
+		private final String _pathInfo;
+
+	}
 
 }
