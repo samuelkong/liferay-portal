@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.portlet.Event;
+import javax.portlet.PortletPreferences;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -91,6 +92,8 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 				getOwnerLayoutRequestWrapper(request, portlet);
 
 			checkAction(ownerLayoutRequest, portlet);
+
+			checkWidget(request, response, portlet);
 
 			return _portletContainer.processAction(request, response, portlet);
 		}
@@ -138,6 +141,8 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 
 		try {
 			checkRender(request, portlet);
+
+			checkWidget(request, response, portlet);
 
 			_portletContainer.render(request, response, portlet);
 		}
@@ -199,6 +204,8 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 				getOwnerLayoutRequestWrapper(request, portlet);
 
 			checkResource(ownerLayoutRequest, portlet);
+
+			checkWidget(request, response, portlet);
 
 			_portletContainer.serveResource(request, response, portlet);
 		}
@@ -279,6 +286,39 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 		throws Exception {
 
 		check(request, portlet);
+	}
+
+	protected void checkWidget(
+			HttpServletRequest request, HttpServletResponse response,
+			Portlet portlet)
+		throws PrincipalException {
+
+		Boolean widget = (Boolean)request.getAttribute(WebKeys.WIDGET);
+
+		if (!Boolean.TRUE.equals(widget)) {
+			return;
+		}
+
+		try {
+			if (!isWidgetAllowed(request)) {
+				throw new PrincipalException(
+					"Unable to process " + portlet.getPortletId() +
+						" as a widget, portlet is not shared");
+			}
+		}
+		catch (PrincipalException e) {
+			throw e;
+		}
+		catch (PortalException e) {
+			throw new PrincipalException(
+				"Portlet " + portlet.getPortletId() +
+					" must have existing setup to be used as a widget",
+				e);
+		}
+
+		if (response.containsHeader(HttpHeaders.X_FRAME_OPTIONS)) {
+			response.setHeader(HttpHeaders.X_FRAME_OPTIONS, "");
+		}
 	}
 
 	protected String getOriginalURL(HttpServletRequest request) {
@@ -453,6 +493,47 @@ public class SecurityPortletContainerWrapper implements PortletContainer {
 					PortalUtil.getUserId(request), url,
 					portlet.getPortletId()));
 		}
+	}
+
+	private boolean isWidgetAllowed(HttpServletRequest request)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PortletPreferences portletPreferences =
+			PortletPreferencesFactoryUtil.getExistingPortletSetup(
+				themeDisplay.getLayout(), themeDisplay.getPpid());
+
+		boolean lfrWidgetShowAddAppLink = GetterUtil.getBoolean(
+			portletPreferences.getValue("lfrWidgetShowAddAppLink", "false"));
+
+		if (lfrWidgetShowAddAppLink) {
+			return true;
+		}
+
+		boolean lfrFacebookShowAddAppLink = GetterUtil.getBoolean(
+			portletPreferences.getValue("lfrFacebookShowAddAppLink", "false"));
+
+		if (lfrFacebookShowAddAppLink) {
+			return true;
+		}
+
+		boolean lfrIgoogleShowAddAppLink = GetterUtil.getBoolean(
+			portletPreferences.getValue("lfrIgoogleShowAddAppLink", "false"));
+
+		if (lfrIgoogleShowAddAppLink) {
+			return true;
+		}
+
+		boolean lfrNetvibesShowAddAppLink = GetterUtil.getBoolean(
+			portletPreferences.getValue("lfrNetvibesShowAddAppLink", "false"));
+
+		if (lfrNetvibesShowAddAppLink) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
