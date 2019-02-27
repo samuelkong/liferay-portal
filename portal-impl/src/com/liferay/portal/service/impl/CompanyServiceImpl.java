@@ -548,6 +548,7 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 * @param siteLogo whether to to allow site administrators to use their own
 	 *        logo instead of the enterprise logo
 	 */
+	@Deprecated
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
 	@Override
 	public void updateSecurity(

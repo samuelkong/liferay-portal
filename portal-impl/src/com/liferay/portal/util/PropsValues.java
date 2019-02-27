@@ -654,6 +654,7 @@ public class PropsValues {
 					PropsKeys.
 						COMPANY_SECURITY_PASSWORD_REMINDER_QUERY_FORM_AUTOCOMPLETE));
 
+	@Deprecated
 	public static final boolean COMPANY_SECURITY_SEND_PASSWORD =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.COMPANY_SECURITY_SEND_PASSWORD));

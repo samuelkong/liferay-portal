@@ -1229,6 +1229,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 * @param siteLogo whether to allow site administrators to use their own
 	 *        logo instead of the enterprise logo
 	 */
+	@Deprecated
 	@Override
 	public void updateSecurity(
 		long companyId, String authType, boolean autoLogin,
