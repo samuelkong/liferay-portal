@@ -1171,6 +1171,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
@@ -1199,6 +1200,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPasswordByScreenName(long companyId, String screenName)
 		throws PortalException {
@@ -1224,6 +1226,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPasswordByUserId(long userId) throws PortalException {
 		return userLocalService.sendPasswordByUserId(userId);

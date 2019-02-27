@@ -58,7 +58,7 @@ public class ForgetPasswordNavigationPostPageInclude implements PageInclude {
 
 		Company company = themeDisplay.getCompany();
 
-		if (!company.isSendPassword() && !company.isSendPasswordResetLink()) {
+		if (!company.isSendPasswordResetLink()) {
 			return;
 		}
 

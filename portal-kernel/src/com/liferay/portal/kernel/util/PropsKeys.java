@@ -664,6 +664,7 @@ public interface PropsKeys {
 		COMPANY_SECURITY_PASSWORD_REMINDER_QUERY_FORM_AUTOCOMPLETE =
 			"company.security.password.reminder.query.form.autocomplete";
 
+	@Deprecated
 	public static final String COMPANY_SECURITY_SEND_PASSWORD =
 		"company.security.send.password";
 

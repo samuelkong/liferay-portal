@@ -3836,6 +3836,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 *        <code>portal.properties</code> will be used.
 	 * @param serviceContext the service context to be applied
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPassword(
 			long companyId, String emailAddress, String fromName,
@@ -3970,6 +3971,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
@@ -4001,6 +4003,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPasswordByScreenName(long companyId, String screenName)
 		throws PortalException {
@@ -4030,6 +4033,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
 	 */
+	@Deprecated
 	@Override
 	public boolean sendPasswordByUserId(long userId) throws PortalException {
 		User user = userPersistence.findByPrimaryKey(userId);

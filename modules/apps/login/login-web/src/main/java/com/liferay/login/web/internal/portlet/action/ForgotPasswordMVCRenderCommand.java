@@ -47,7 +47,7 @@ public class ForgotPasswordMVCRenderCommand implements MVCRenderCommand {
 
 		Company company = themeDisplay.getCompany();
 
-		if (!company.isSendPassword() && !company.isSendPasswordResetLink()) {
+		if (!company.isSendPasswordResetLink()) {
 			return "/login.jsp";
 		}
 
