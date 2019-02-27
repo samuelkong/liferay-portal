@@ -167,7 +167,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "forgot-password"));
 							</c:if>
 
 							<aui:button-row>
-								<aui:button type="submit" value='<%= company.isSendPasswordResetLink() ? "send-password-reset-link" : "send-new-password" %>' />
+								<aui:button type="submit" value="send-password-reset-link" />
 							</aui:button-row>
 						</c:otherwise>
 					</c:choose>
