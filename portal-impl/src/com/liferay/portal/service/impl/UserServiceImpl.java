@@ -1170,6 +1170,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 * @return <code>true</code> if the notification email includes a new
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
 	@Deprecated
 	@Override
@@ -1199,6 +1201,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 * @return <code>true</code> if the notification email includes a new
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLinkByScreenName(long, String)}
 	 */
 	@Deprecated
 	@Override
@@ -1225,11 +1229,38 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 * @return <code>true</code> if the notification email includes a new
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLinkByUserId(long)}
 	 */
 	@Deprecated
 	@Override
 	public boolean sendPasswordByUserId(long userId) throws PortalException {
 		return userLocalService.sendPasswordByUserId(userId);
+	}
+
+	@Override
+	public void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws PortalException {
+
+		userLocalService.sendPasswordResetLinkByEmailAddress(
+			companyId, emailAddress);
+	}
+
+	@Override
+	public void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws PortalException {
+
+		userLocalService.sendPasswordResetLinkByScreenName(
+			companyId, screenName);
+	}
+
+	@Override
+	public void sendPasswordResetLinkByUserId(long userId)
+		throws PortalException {
+
+		userLocalService.sendPasswordResetLinkByUserId(userId);
 	}
 
 	/**

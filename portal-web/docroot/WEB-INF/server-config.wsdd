@@ -210,6 +210,15 @@
 			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="strangersVerify" type="tns:boolean"></parameter>
 			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="siteLogo" type="tns:boolean"></parameter>
 		</operation>
+		<operation xmlns:operNS="urn:http.service.portal.liferay.com" name="updateSecurity" qname="operNS:updateSecurity" soapAction="">
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="companyId" type="tns:long"></parameter>
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="authType" type="tns:string"></parameter>
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="autoLogin" type="tns:boolean"></parameter>
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="strangers" type="tns:boolean"></parameter>
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="strangersWithMx" type="tns:boolean"></parameter>
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="strangersVerify" type="tns:boolean"></parameter>
+			<parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="siteLogo" type="tns:boolean"></parameter>
+		</operation>
 		<parameter name="allowedMethods" value="addCompany deleteCompany deleteLogo getCompanyById getCompanyByLogoId getCompanyByMx getCompanyByVirtualHost getCompanyByWebId removePreferences updateCompany updateDisplay updateLogo updateSecurity" />
 		<parameter name="className" value="com.liferay.portal.service.http.CompanyServiceSoap" />
 		<parameter name="schemaUnqualified" value="http://model.kernel.portal.liferay.com,urn:http.service.portal.liferay.com" />

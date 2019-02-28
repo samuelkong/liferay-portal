@@ -530,6 +530,25 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 		companyLocalService.updatePreferences(companyId, properties);
 	}
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public void updateSecurity(
+			long companyId, String authType, boolean autoLogin,
+			boolean strangers, boolean strangersWithMx, boolean strangersVerify,
+			boolean siteLogo)
+		throws PortalException {
+
+		if (!roleLocalService.hasUserRole(
+				getUserId(), companyId, RoleConstants.ADMINISTRATOR, true)) {
+
+			throw new PrincipalException();
+		}
+
+		companyLocalService.updateSecurity(
+			companyId, authType, autoLogin, strangers, strangersWithMx,
+			strangersVerify, siteLogo);
+	}
+
 	/**
 	 * Updates the company's security properties.
 	 *
@@ -547,6 +566,8 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 *        to be verified via email
 	 * @param siteLogo whether to to allow site administrators to use their own
 	 *        logo instead of the enterprise logo
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link #updateSecurity(
+	 *             long, String, boolean, boolean, boolean, boolean, boolean)}
 	 */
 	@Deprecated
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)

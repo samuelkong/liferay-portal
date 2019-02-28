@@ -1211,6 +1211,41 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		_clearCompanyCache(companyId);
 	}
 
+	@Override
+	public void updateSecurity(
+		long companyId, String authType, boolean autoLogin, boolean strangers,
+		boolean strangersWithMx, boolean strangersVerify, boolean siteLogo) {
+
+		PortletPreferences preferences = PrefsPropsUtil.getPreferences(
+			companyId);
+
+		try {
+			preferences.setValue(
+				PropsKeys.COMPANY_SECURITY_AUTH_TYPE, authType);
+			preferences.setValue(
+				PropsKeys.COMPANY_SECURITY_AUTO_LOGIN,
+				String.valueOf(autoLogin));
+			preferences.setValue(
+				PropsKeys.COMPANY_SECURITY_STRANGERS,
+				String.valueOf(strangers));
+			preferences.setValue(
+				PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
+				String.valueOf(strangersWithMx));
+			preferences.setValue(
+				PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY,
+				String.valueOf(strangersVerify));
+			preferences.setValue(
+				PropsKeys.COMPANY_SECURITY_SITE_LOGO, String.valueOf(siteLogo));
+
+			preferences.store();
+		}
+		catch (IOException | PortletException e) {
+			throw new SystemException(e);
+		}
+
+		_clearCompanyCache(companyId);
+	}
+
 	/**
 	 * Updates the company's security properties.
 	 *
@@ -1228,6 +1263,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 *        to be verified via email
 	 * @param siteLogo whether to allow site administrators to use their own
 	 *        logo instead of the enterprise logo
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link #updateSecurity(
+	 *             long, String, boolean, boolean, boolean, boolean, boolean)}
 	 */
 	@Deprecated
 	@Override

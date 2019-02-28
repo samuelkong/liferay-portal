@@ -284,6 +284,9 @@ public class CompanyImpl extends CompanyBaseImpl {
 		return companySecurityBag._autoLogin;
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), with no direct replacement
+	 */
 	@Deprecated
 	@Override
 	public boolean isSendPassword() {
