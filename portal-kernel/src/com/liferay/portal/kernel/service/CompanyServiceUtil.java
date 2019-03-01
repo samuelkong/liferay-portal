@@ -454,6 +454,17 @@ public class CompanyServiceUtil {
 		getService().updatePreferences(companyId, properties);
 	}
 
+	public static void updateSecurity(
+			long companyId, String authType, boolean autoLogin,
+			boolean strangers, boolean strangersWithMx, boolean strangersVerify,
+			boolean siteLogo)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().updateSecurity(
+			companyId, authType, autoLogin, strangers, strangersWithMx,
+			strangersVerify, siteLogo);
+	}
+
 	/**
 	 * Updates the company's security properties.
 	 *
@@ -471,7 +482,10 @@ public class CompanyServiceUtil {
 	 to be verified via email
 	 * @param siteLogo whether to to allow site administrators to use their own
 	 logo instead of the enterprise logo
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link #updateSecurity(
+	 long, String, boolean, boolean, boolean, boolean, boolean)}
 	 */
+	@Deprecated
 	public static void updateSecurity(
 			long companyId, String authType, boolean autoLogin,
 			boolean sendPassword, boolean strangers, boolean strangersWithMx,

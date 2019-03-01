@@ -669,7 +669,10 @@ public interface UserService extends BaseService {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
+	@Deprecated
 	public boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
 		throws PortalException;
@@ -692,7 +695,10 @@ public interface UserService extends BaseService {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByScreenName(long, String)}
 	 */
+	@Deprecated
 	public boolean sendPasswordByScreenName(long companyId, String screenName)
 		throws PortalException;
 
@@ -713,8 +719,22 @@ public interface UserService extends BaseService {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByUserId(long)}
 	 */
+	@Deprecated
 	public boolean sendPasswordByUserId(long userId) throws PortalException;
+
+	public void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws PortalException;
+
+	public void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws PortalException;
+
+	public void sendPasswordResetLinkByUserId(long userId)
+		throws PortalException;
 
 	/**
 	 * Sets the users in the role, removing and adding users to the role as

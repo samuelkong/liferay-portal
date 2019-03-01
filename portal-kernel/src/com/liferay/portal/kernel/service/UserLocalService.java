@@ -1974,7 +1974,11 @@ public interface UserLocalService
 	 * @param body the email body. If <code>null</code>, the body specified in
 	 <code>portal.properties</code> will be used.
 	 * @param serviceContext the service context to be applied
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLink(long, String, String, String, String,
+	 String, ServiceContext)}
 	 */
+	@Deprecated
 	public boolean sendPassword(
 			long companyId, String emailAddress, String fromName,
 			String fromAddress, String subject, String body,
@@ -2000,7 +2004,10 @@ public interface UserLocalService
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
+	@Deprecated
 	public boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
 		throws PortalException;
@@ -2023,7 +2030,10 @@ public interface UserLocalService
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByScreenName(long, String)}
 	 */
+	@Deprecated
 	public boolean sendPasswordByScreenName(long companyId, String screenName)
 		throws PortalException;
 
@@ -2044,8 +2054,28 @@ public interface UserLocalService
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByUserId(long)}
 	 */
+	@Deprecated
 	public boolean sendPasswordByUserId(long userId) throws PortalException;
+
+	public void sendPasswordResetLink(
+			long companyId, String emailAddress, String fromName,
+			String fromAddress, String subject, String body,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	public void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws PortalException;
+
+	public void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws PortalException;
+
+	public void sendPasswordResetLinkByUserId(long userId)
+		throws PortalException;
 
 	public void setGroupUsers(long groupId, long[] userIds);
 

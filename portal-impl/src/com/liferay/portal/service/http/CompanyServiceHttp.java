@@ -793,6 +793,43 @@ public class CompanyServiceHttp {
 
 	public static void updateSecurity(
 			HttpPrincipal httpPrincipal, long companyId, String authType,
+			boolean autoLogin, boolean strangers, boolean strangersWithMx,
+			boolean strangersVerify, boolean siteLogo)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CompanyServiceUtil.class, "updateSecurity",
+				_updateSecurityParameterTypes19);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, authType, autoLogin, strangers,
+				strangersWithMx, strangersVerify, siteLogo);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception e) {
+				if (e instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						e;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					e);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException se) {
+			_log.error(se, se);
+
+			throw se;
+		}
+	}
+
+	public static void updateSecurity(
+			HttpPrincipal httpPrincipal, long companyId, String authType,
 			boolean autoLogin, boolean sendPassword, boolean strangers,
 			boolean strangersWithMx, boolean strangersVerify, boolean siteLogo)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -800,7 +837,7 @@ public class CompanyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CompanyServiceUtil.class, "updateSecurity",
-				_updateSecurityParameterTypes19);
+				_updateSecurityParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, authType, autoLogin, sendPassword,
@@ -903,6 +940,11 @@ public class CompanyServiceHttp {
 			long.class, com.liferay.portal.kernel.util.UnicodeProperties.class
 		};
 	private static final Class<?>[] _updateSecurityParameterTypes19 =
+		new Class[] {
+			long.class, String.class, boolean.class, boolean.class,
+			boolean.class, boolean.class, boolean.class
+		};
+	private static final Class<?>[] _updateSecurityParameterTypes20 =
 		new Class[] {
 			long.class, String.class, boolean.class, boolean.class,
 			boolean.class, boolean.class, boolean.class, boolean.class

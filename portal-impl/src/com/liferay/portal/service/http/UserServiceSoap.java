@@ -1247,7 +1247,10 @@ public class UserServiceSoap {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
 		throws RemoteException {
@@ -1283,7 +1286,10 @@ public class UserServiceSoap {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByScreenName(long, String)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByScreenName(
 			long companyId, String screenName)
 		throws RemoteException {
@@ -1318,7 +1324,10 @@ public class UserServiceSoap {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByUserId(long)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByUserId(long userId)
 		throws RemoteException {
 
@@ -1326,6 +1335,49 @@ public class UserServiceSoap {
 			boolean returnValue = UserServiceUtil.sendPasswordByUserId(userId);
 
 			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws RemoteException {
+
+		try {
+			UserServiceUtil.sendPasswordResetLinkByEmailAddress(
+				companyId, emailAddress);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws RemoteException {
+
+		try {
+			UserServiceUtil.sendPasswordResetLinkByScreenName(
+				companyId, screenName);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void sendPasswordResetLinkByUserId(long userId)
+		throws RemoteException {
+
+		try {
+			UserServiceUtil.sendPasswordResetLinkByUserId(userId);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

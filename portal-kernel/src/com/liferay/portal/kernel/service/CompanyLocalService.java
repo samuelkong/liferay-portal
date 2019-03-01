@@ -604,6 +604,10 @@ public interface CompanyLocalService
 	public void updatePreferences(long companyId, UnicodeProperties properties)
 		throws PortalException;
 
+	public void updateSecurity(
+		long companyId, String authType, boolean autoLogin, boolean strangers,
+		boolean strangersWithMx, boolean strangersVerify, boolean siteLogo);
+
 	/**
 	 * Updates the company's security properties.
 	 *
@@ -621,7 +625,10 @@ public interface CompanyLocalService
 	 to be verified via email
 	 * @param siteLogo whether to allow site administrators to use their own
 	 logo instead of the enterprise logo
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link #updateSecurity(
+	 long, String, boolean, boolean, boolean, boolean, boolean)}
 	 */
+	@Deprecated
 	public void updateSecurity(
 		long companyId, String authType, boolean autoLogin,
 		boolean sendPassword, boolean strangers, boolean strangersWithMx,

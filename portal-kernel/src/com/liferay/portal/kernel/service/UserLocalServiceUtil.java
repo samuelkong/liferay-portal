@@ -2587,7 +2587,11 @@ public class UserLocalServiceUtil {
 	 * @param body the email body. If <code>null</code>, the body specified in
 	 <code>portal.properties</code> will be used.
 	 * @param serviceContext the service context to be applied
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLink(long, String, String, String, String,
+	 String, ServiceContext)}
 	 */
+	@Deprecated
 	public static boolean sendPassword(
 			long companyId, String emailAddress, String fromName,
 			String fromAddress, String subject, String body,
@@ -2618,7 +2622,10 @@ public class UserLocalServiceUtil {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -2644,7 +2651,10 @@ public class UserLocalServiceUtil {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByScreenName(long, String)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByScreenName(
 			long companyId, String screenName)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -2669,11 +2679,46 @@ public class UserLocalServiceUtil {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByUserId(long)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByUserId(long userId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().sendPasswordByUserId(userId);
+	}
+
+	public static void sendPasswordResetLink(
+			long companyId, String emailAddress, String fromName,
+			String fromAddress, String subject, String body,
+			ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLink(
+			companyId, emailAddress, fromName, fromAddress, subject, body,
+			serviceContext);
+	}
+
+	public static void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLinkByEmailAddress(
+			companyId, emailAddress);
+	}
+
+	public static void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLinkByScreenName(companyId, screenName);
+	}
+
+	public static void sendPasswordResetLinkByUserId(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLinkByUserId(userId);
 	}
 
 	public static void setGroupUsers(long groupId, long[] userIds) {
