@@ -171,7 +171,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -3835,6 +3834,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @param body the email body. If <code>null</code>, the body specified in
 	 *        <code>portal.properties</code> will be used.
 	 * @param serviceContext the service context to be applied
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLink(long, String, String, String, String,
+	 *             String, ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -3844,111 +3846,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		Company company = companyPersistence.findByPrimaryKey(companyId);
+		sendPasswordResetLink(
+			companyId, emailAddress, fromName, fromAddress, subject, body,
+			serviceContext);
 
-		if (!company.isSendPassword() && !company.isSendPasswordResetLink()) {
-			throw new SendPasswordException.MustBeEnabled(company);
-		}
-
-		emailAddress = StringUtil.toLowerCase(StringUtil.trim(emailAddress));
-
-		if (Validator.isNull(emailAddress)) {
-			throw new UserEmailAddressException.MustNotBeNull();
-		}
-
-		User user = userPersistence.findByC_EA(companyId, emailAddress);
-
-		PasswordPolicy passwordPolicy = user.getPasswordPolicy();
-
-		String newPassword = StringPool.BLANK;
-		String passwordResetURL = StringPool.BLANK;
-
-		if (company.isSendPasswordResetLink()) {
-			Date expirationDate = null;
-
-			if ((passwordPolicy != null) &&
-				(passwordPolicy.getResetTicketMaxAge() > 0)) {
-
-				expirationDate = new Date(
-					System.currentTimeMillis() +
-						(passwordPolicy.getResetTicketMaxAge() * 1000));
-			}
-
-			Ticket ticket = ticketLocalService.addDistinctTicket(
-				companyId, User.class.getName(), user.getUserId(),
-				TicketConstants.TYPE_PASSWORD, null, expirationDate,
-				serviceContext);
-
-			StringBundler sb = new StringBundler(6);
-
-			sb.append(serviceContext.getPortalURL());
-			sb.append(serviceContext.getPathMain());
-			sb.append("/portal/update_password?p_l_id=");
-			sb.append(serviceContext.getPlid());
-			sb.append("&ticketKey=");
-			sb.append(ticket.getKey());
-
-			passwordResetURL = sb.toString();
-		}
-		else {
-			if (!Objects.equals(
-					PasswordEncryptorUtil.getDefaultPasswordAlgorithmType(),
-					PasswordEncryptorUtil.TYPE_NONE)) {
-
-				if (LDAPSettingsUtil.isPasswordPolicyEnabled(
-						user.getCompanyId())) {
-
-					if (_log.isWarnEnabled()) {
-						StringBundler sb = new StringBundler(5);
-
-						sb.append("When LDAP password policy is enabled, it ");
-						sb.append("is possible that portal generated ");
-						sb.append("passwords will not match the LDAP policy.");
-						sb.append("Using RegExpToolkit to generate new ");
-						sb.append("password.");
-
-						_log.warn(sb.toString());
-					}
-
-					RegExpToolkit regExpToolkit = new RegExpToolkit();
-
-					newPassword = regExpToolkit.generate(null);
-				}
-				else {
-					newPassword = PwdToolkitUtil.generate(passwordPolicy);
-				}
-
-				boolean passwordReset = false;
-
-				if (passwordPolicy.isChangeable() &&
-					passwordPolicy.isChangeRequired()) {
-
-					passwordReset = true;
-				}
-
-				trackPassword(user);
-
-				user.setPassword(PasswordEncryptorUtil.encrypt(newPassword));
-				user.setPasswordUnencrypted(newPassword);
-				user.setPasswordEncrypted(true);
-				user.setPasswordReset(passwordReset);
-				user.setPasswordModified(true);
-				user.setPasswordModifiedDate(new Date());
-
-				userPersistence.update(user);
-
-				user.setPasswordModified(false);
-			}
-			else {
-				newPassword = user.getPassword();
-			}
-		}
-
-		sendPasswordNotification(
-			user, companyId, newPassword, passwordResetURL, fromName,
-			fromAddress, subject, body, serviceContext);
-
-		return company.isSendPassword();
+		return false;
 	}
 
 	/**
@@ -3970,6 +3872,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @return <code>true</code> if the notification email includes a new
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
 	@Deprecated
 	@Override
@@ -3977,11 +3881,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			long companyId, String emailAddress)
 		throws PortalException {
 
-		User user = userPersistence.findByC_EA(companyId, emailAddress);
+		sendPasswordResetLinkByEmailAddress(companyId, emailAddress);
 
-		return sendPassword(
-			user.getCompanyId(), user.getEmailAddress(), null, null, null, null,
-			ServiceContextThreadLocal.getServiceContext());
+		return false;
 	}
 
 	/**
@@ -4002,17 +3904,17 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @return <code>true</code> if the notification email includes a new
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLinkByScreenName(long, String)}
 	 */
 	@Deprecated
 	@Override
 	public boolean sendPasswordByScreenName(long companyId, String screenName)
 		throws PortalException {
 
-		User user = userPersistence.findByC_SN(companyId, screenName);
+		sendPasswordResetLinkByScreenName(companyId, screenName);
 
-		return sendPassword(
-			user.getCompanyId(), user.getEmailAddress(), null, null, null, null,
-			ServiceContextThreadLocal.getServiceContext());
+		return false;
 	}
 
 	/**
@@ -4032,13 +3934,105 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @return <code>true</code> if the notification email includes a new
 	 *         password; <code>false</code> if the notification email only
 	 *         contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #sendPasswordResetLinkByUserId(long)}
 	 */
 	@Deprecated
 	@Override
 	public boolean sendPasswordByUserId(long userId) throws PortalException {
+		sendPasswordResetLinkByUserId(userId);
+
+		return false;
+	}
+
+	@Override
+	public void sendPasswordResetLink(
+			long companyId, String emailAddress, String fromName,
+			String fromAddress, String subject, String body,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		Company company = companyPersistence.findByPrimaryKey(companyId);
+
+		if (!company.isSendPasswordResetLink()) {
+			throw new SendPasswordException.MustBeEnabled(company);
+		}
+
+		emailAddress = StringUtil.toLowerCase(StringUtil.trim(emailAddress));
+
+		if (Validator.isNull(emailAddress)) {
+			throw new UserEmailAddressException.MustNotBeNull();
+		}
+
+		User user = userPersistence.findByC_EA(companyId, emailAddress);
+
+		PasswordPolicy passwordPolicy = user.getPasswordPolicy();
+
+		String newPassword = StringPool.BLANK;
+		String passwordResetURL = StringPool.BLANK;
+
+		Date expirationDate = null;
+
+		if ((passwordPolicy != null) &&
+			(passwordPolicy.getResetTicketMaxAge() > 0)) {
+
+			expirationDate = new Date(
+				System.currentTimeMillis() +
+					(passwordPolicy.getResetTicketMaxAge() * 1000));
+		}
+
+		Ticket ticket = ticketLocalService.addDistinctTicket(
+			companyId, User.class.getName(), user.getUserId(),
+			TicketConstants.TYPE_PASSWORD, null, expirationDate,
+			serviceContext);
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(serviceContext.getPortalURL());
+		sb.append(serviceContext.getPathMain());
+		sb.append("/portal/update_password?p_l_id=");
+		sb.append(serviceContext.getPlid());
+		sb.append("&ticketKey=");
+		sb.append(ticket.getKey());
+
+		passwordResetURL = sb.toString();
+
+		sendPasswordNotification(
+			user, companyId, newPassword, passwordResetURL, fromName,
+			fromAddress, subject, body, serviceContext);
+	}
+
+	@Override
+	public void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws PortalException {
+
+		User user = userPersistence.findByC_EA(companyId, emailAddress);
+
+		sendPasswordResetLink(
+			user.getCompanyId(), user.getEmailAddress(), null, null, null, null,
+			ServiceContextThreadLocal.getServiceContext());
+	}
+
+	@Override
+	public void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws PortalException {
+
+		User user = userPersistence.findByC_SN(companyId, screenName);
+
+		sendPasswordResetLink(
+			user.getCompanyId(), user.getEmailAddress(), null, null, null, null,
+			ServiceContextThreadLocal.getServiceContext());
+	}
+
+	@Override
+	public void sendPasswordResetLinkByUserId(long userId)
+		throws PortalException {
+
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		return sendPassword(
+		sendPasswordResetLink(
 			user.getCompanyId(), user.getEmailAddress(), null, null, null, null,
 			ServiceContextThreadLocal.getServiceContext());
 	}

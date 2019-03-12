@@ -236,7 +236,7 @@ public class LoginUtil {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			User.class.getName(), actionRequest);
 
-		UserLocalServiceUtil.sendPassword(
+		UserLocalServiceUtil.sendPasswordResetLink(
 			company.getCompanyId(), toAddress, fromName, fromAddress, subject,
 			body, serviceContext);
 	}

@@ -284,6 +284,9 @@ public class CompanyImpl extends CompanyBaseImpl {
 		return companySecurityBag._autoLogin;
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), with no direct replacement
+	 */
 	@Deprecated
 	@Override
 	public boolean isSendPassword() {
@@ -382,8 +385,12 @@ public class CompanyImpl extends CompanyBaseImpl {
 		private final String _authType;
 		private final boolean _autoLogin;
 
+		/**
+		 * @deprecated As of Mueller (7.2.x), with no direct replacement
+		 */
 		@Deprecated
 		private final boolean _sendPassword;
+
 		private final boolean _siteLogo;
 		private final boolean _strangers;
 		private final boolean _strangersVerify;

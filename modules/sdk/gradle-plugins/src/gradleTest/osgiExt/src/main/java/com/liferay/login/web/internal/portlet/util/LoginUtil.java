@@ -230,14 +230,14 @@ public class LoginUtil {
 
 		Company company = themeDisplay.getCompany();
 
-		if (!company.isSendPassword() && !company.isSendPasswordResetLink()) {
+		if (!company.isSendPasswordResetLink()) {
 			return;
 		}
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			User.class.getName(), actionRequest);
 
-		UserLocalServiceUtil.sendPassword(
+		UserLocalServiceUtil.sendPasswordResetLink(
 			company.getCompanyId(), toAddress, fromName, fromAddress, subject,
 			body, serviceContext);
 	}

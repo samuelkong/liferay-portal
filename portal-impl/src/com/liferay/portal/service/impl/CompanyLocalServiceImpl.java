@@ -1211,30 +1211,10 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		_clearCompanyCache(companyId);
 	}
 
-	/**
-	 * Updates the company's security properties.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param authType the company's method of authenticating users
-	 * @param autoLogin whether to allow users to select the "remember me"
-	 *        feature
-	 * @param sendPassword whether to allow users to ask the company to send
-	 *        their password
-	 * @param strangers whether to allow strangers to create accounts register
-	 *        themselves in the company
-	 * @param strangersWithMx whether to allow strangers to create accounts with
-	 *        email addresses that match the company mail suffix
-	 * @param strangersVerify whether to require strangers who create accounts
-	 *        to be verified via email
-	 * @param siteLogo whether to allow site administrators to use their own
-	 *        logo instead of the enterprise logo
-	 */
-	@Deprecated
 	@Override
 	public void updateSecurity(
-		long companyId, String authType, boolean autoLogin,
-		boolean sendPassword, boolean strangers, boolean strangersWithMx,
-		boolean strangersVerify, boolean siteLogo) {
+		long companyId, String authType, boolean autoLogin, boolean strangers,
+		boolean strangersWithMx, boolean strangersVerify, boolean siteLogo) {
 
 		PortletPreferences preferences = PrefsPropsUtil.getPreferences(
 			companyId);
@@ -1245,9 +1225,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			preferences.setValue(
 				PropsKeys.COMPANY_SECURITY_AUTO_LOGIN,
 				String.valueOf(autoLogin));
-			preferences.setValue(
-				PropsKeys.COMPANY_SECURITY_SEND_PASSWORD,
-				String.valueOf(sendPassword));
 			preferences.setValue(
 				PropsKeys.COMPANY_SECURITY_STRANGERS,
 				String.valueOf(strangers));
@@ -1267,6 +1244,38 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 
 		_clearCompanyCache(companyId);
+	}
+
+	/**
+	 * Updates the company's security properties.
+	 *
+	 * @param companyId the primary key of the company
+	 * @param authType the company's method of authenticating users
+	 * @param autoLogin whether to allow users to select the "remember me"
+	 *        feature
+	 * @param sendPassword whether to allow users to ask the company to send
+	 *        their password
+	 * @param strangers whether to allow strangers to create accounts register
+	 *        themselves in the company
+	 * @param strangersWithMx whether to allow strangers to create accounts with
+	 *        email addresses that match the company mail suffix
+	 * @param strangersVerify whether to require strangers who create accounts
+	 *        to be verified via email
+	 * @param siteLogo whether to allow site administrators to use their own
+	 *        logo instead of the enterprise logo
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link #updateSecurity(
+	 *             long, String, boolean, boolean, boolean, boolean, boolean)}
+	 */
+	@Deprecated
+	@Override
+	public void updateSecurity(
+		long companyId, String authType, boolean autoLogin,
+		boolean sendPassword, boolean strangers, boolean strangersWithMx,
+		boolean strangersVerify, boolean siteLogo) {
+
+		updateSecurity(
+			companyId, authType, autoLogin, strangers, strangersWithMx,
+			strangersVerify, siteLogo);
 	}
 
 	protected void addAssetEntriesFacet(SearchContext searchContext) {
