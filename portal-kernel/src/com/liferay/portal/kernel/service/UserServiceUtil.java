@@ -815,7 +815,10 @@ public class UserServiceUtil {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByEmailAddress(long, String)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByEmailAddress(
 			long companyId, String emailAddress)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -841,7 +844,10 @@ public class UserServiceUtil {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByScreenName(long, String)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByScreenName(
 			long companyId, String screenName)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -866,11 +872,35 @@ public class UserServiceUtil {
 	 * @return <code>true</code> if the notification email includes a new
 	 password; <code>false</code> if the notification email only
 	 contains a reset link
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #sendPasswordResetLinkByUserId(long)}
 	 */
+	@Deprecated
 	public static boolean sendPasswordByUserId(long userId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().sendPasswordByUserId(userId);
+	}
+
+	public static void sendPasswordResetLinkByEmailAddress(
+			long companyId, String emailAddress)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLinkByEmailAddress(
+			companyId, emailAddress);
+	}
+
+	public static void sendPasswordResetLinkByScreenName(
+			long companyId, String screenName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLinkByScreenName(companyId, screenName);
+	}
+
+	public static void sendPasswordResetLinkByUserId(long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().sendPasswordResetLinkByUserId(userId);
 	}
 
 	/**
