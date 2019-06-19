@@ -177,6 +177,7 @@ lportal_BS
 			</beanshell>
 
 			<copy
+				failonerror="false"
 				file="@{artifact.file}"
 				tofile="${local.cache.artifact}"
 			/>

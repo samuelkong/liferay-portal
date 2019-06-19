@@ -14,10 +14,13 @@
 
 package com.liferay.portal.search.web.internal.search.bar.portlet.shared.search;
 
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.web.internal.display.context.Keywords;
@@ -32,6 +35,7 @@ import com.liferay.portal.search.web.internal.util.SearchOptionalUtil;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -92,7 +96,7 @@ public class SearchBarPortletSharedSearchContributor
 
 		searchRequestBuilder.withSearchContext(
 			searchContext -> searchContext.setGroupIds(
-				new long[] {getScopeGroupId(portletSharedSearchSettings)}));
+				getGroupIds(portletSharedSearchSettings)));
 	}
 
 	protected Optional<Portlet> findTopSearchBarPortletOptional(
@@ -115,6 +119,32 @@ public class SearchBarPortletSharedSearchContributor
 		return searchScopePreference.getSearchScope();
 	}
 
+	protected long[] getGroupIds(
+		PortletSharedSearchSettings portletSharedSearchSettings) {
+
+		ThemeDisplay themeDisplay =
+			portletSharedSearchSettings.getThemeDisplay();
+
+		try {
+			List<Long> groupIds = new ArrayList<>();
+
+			groupIds.add(themeDisplay.getScopeGroupId());
+
+			List<Group> groups = groupLocalService.getGroups(
+				themeDisplay.getCompanyId(), Layout.class.getName(),
+				themeDisplay.getScopeGroupId());
+
+			for (Group group : groups) {
+				groupIds.add(group.getGroupId());
+			}
+
+			return ArrayUtil.toLongArray(groupIds);
+		}
+		catch (Exception e) {
+			return new long[] {themeDisplay.getScopeGroupId()};
+		}
+	}
+
 	protected Stream<Portlet> getPortletsStream(ThemeDisplay themeDisplay) {
 		Layout layout = themeDisplay.getLayout();
 
@@ -124,15 +154,6 @@ public class SearchBarPortletSharedSearchContributor
 		List<Portlet> portlets = layoutTypePortlet.getAllPortlets(false);
 
 		return portlets.stream();
-	}
-
-	protected long getScopeGroupId(
-		PortletSharedSearchSettings portletSharedSearchSettings) {
-
-		ThemeDisplay themeDisplay =
-			portletSharedSearchSettings.getThemeDisplay();
-
-		return themeDisplay.getScopeGroupId();
 	}
 
 	protected SearchBarPortletPreferences getSearchBarPortletPreferences(
@@ -287,6 +308,9 @@ public class SearchBarPortletSharedSearchContributor
 
 		return true;
 	}
+
+	@Reference
+	protected GroupLocalService groupLocalService;
 
 	@Reference
 	protected PortletPreferencesLookup portletPreferencesLookup;
