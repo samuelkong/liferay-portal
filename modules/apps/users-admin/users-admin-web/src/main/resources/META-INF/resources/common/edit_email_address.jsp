@@ -27,7 +27,7 @@ if (editContactInformationDisplayContext.getPrimaryKey() > 0) {
 	emailAddress = EmailAddressServiceUtil.getEmailAddress(editContactInformationDisplayContext.getPrimaryKey());
 }
 
-PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "contact-information"), editContactInformationDisplayContext.getRedirect());
+PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "contact-information"), PortalUtil.escapeRedirect(editContactInformationDisplayContext.getRedirect()));
 
 PortalUtil.addPortletBreadcrumbEntry(request, editContactInformationDisplayContext.getSheetTitle(), null);
 %>
