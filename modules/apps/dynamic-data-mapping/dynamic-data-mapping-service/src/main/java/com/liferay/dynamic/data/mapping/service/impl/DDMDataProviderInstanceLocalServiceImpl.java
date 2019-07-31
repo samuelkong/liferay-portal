@@ -15,6 +15,7 @@
 package com.liferay.dynamic.data.mapping.service.impl;
 
 import com.liferay.dynamic.data.mapping.exception.DataProviderInstanceNameException;
+import com.liferay.dynamic.data.mapping.exception.DataProviderInstanceURLException;
 import com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 import com.liferay.dynamic.data.mapping.exception.RequiredDataProviderInstanceException;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializer;
@@ -22,7 +23,9 @@ import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializerSerializeReque
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializerSerializeResponse;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializerTracker;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.base.DDMDataProviderInstanceLocalServiceBaseImpl;
+import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidator;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -34,10 +37,16 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
+import com.liferay.portal.util.PropsValues;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 import java.util.List;
 import java.util.Locale;
@@ -346,6 +355,10 @@ public class DDMDataProviderInstanceLocalServiceImpl
 				"Name is null for locale " + locale.getDisplayName());
 		}
 
+		if (!PropsValues.DDM_DATA_PROVIDER_ACCESS_LOCAL_NETWORK) {
+			_validateURL(ddmFormValues);
+		}
+
 		ddmFormValuesValidator.validate(ddmFormValues);
 	}
 
@@ -354,5 +367,43 @@ public class DDMDataProviderInstanceLocalServiceImpl
 
 	@ServiceReference(type = DDMFormValuesValidator.class)
 	protected DDMFormValuesValidator ddmFormValuesValidator;
+
+	private void _validateURL(DDMFormValues ddmFormValues)
+		throws PortalException {
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap();
+
+		if (!ddmFormFieldValuesMap.containsKey("url")) {
+			return;
+		}
+
+		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
+			"url");
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		for (Locale availableLocale : value.getAvailableLocales()) {
+			String valueString = value.getString(availableLocale);
+
+			if (Validator.isUrl(valueString)) {
+				try {
+					URL url = new URL(valueString);
+
+					if (InetAddressUtil.isLocalInetAddress(
+							InetAddressUtil.getInetAddressByName(
+								url.getHost()))) {
+
+						throw new DataProviderInstanceURLException(
+							"URL mustn't be a local network");
+					}
+				}
+				catch (MalformedURLException | UnknownHostException e) {
+				}
+			}
+		}
+	}
 
 }
