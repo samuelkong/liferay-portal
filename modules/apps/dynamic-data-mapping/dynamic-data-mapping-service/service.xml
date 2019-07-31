@@ -736,6 +736,7 @@
 		<exception>ContentData</exception>
 		<exception>ContentName</exception>
 		<exception>DataProviderInstanceName</exception>
+		<exception>DataProviderInstanceURL</exception>
 		<exception>FormInstanceName</exception>
 		<exception>FormInstanceRecordExporter</exception>
 		<exception>FormInstanceRecordGroupId</exception>
