@@ -766,11 +766,11 @@ public interface PropsKeys {
 	public static final String DATABASE_STRING_INDEX_MAX_LENGTH =
 		"database.string.index.max.length";
 
-	public static final String DEFAULT_ADMIN_EMAIL_ADDRESS_PREFIX =
-		"default.admin.email.address.prefix";
-
 	public static final String DDM_DATA_PROVIDER_ACCESS_LOCAL_NETWORK =
 		"ddm.data.provider.access.local.network";
+
+	public static final String DEFAULT_ADMIN_EMAIL_ADDRESS_PREFIX =
+		"default.admin.email.address.prefix";
 
 	public static final String DEFAULT_ADMIN_FIRST_NAME =
 		"default.admin.first.name";

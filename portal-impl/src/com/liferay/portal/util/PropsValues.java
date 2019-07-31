@@ -733,7 +733,7 @@ public class PropsValues {
 	public static final String DATABASE_MYSQL_ENGINE = PropsUtil.get(
 		PropsKeys.DATABASE_MYSQL_ENGINE);
 
-	public static final boolean DDM_DATA_PROVIDER_ACCESS_LOCAL_NETWORK = 
+	public static final boolean DDM_DATA_PROVIDER_ACCESS_LOCAL_NETWORK =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.DDM_DATA_PROVIDER_ACCESS_LOCAL_NETWORK));
 
