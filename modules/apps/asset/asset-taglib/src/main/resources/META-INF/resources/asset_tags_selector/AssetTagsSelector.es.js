@@ -139,8 +139,8 @@ class AssetTagsSelector extends Component {
 				}
 
 				const item = {
-					label: inputValue,
-					value: inputValue
+					label: AUI().Lang.String.escapeHTML(inputValue),
+					value: AUI().Lang.String.escapeHTML(inputValue)
 				};
 
 				this.selectedItems = this.selectedItems.concat(item);
