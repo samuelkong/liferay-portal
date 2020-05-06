@@ -21,6 +21,11 @@ String actionCommandName = (String)request.getAttribute(UsersAdminWebKeys.ACTION
 boolean editable = (boolean)request.getAttribute(UsersAdminWebKeys.EDITABLE);
 String formLabel = (String)request.getAttribute(UsersAdminWebKeys.FORM_LABEL);
 String jspPath = (String)request.getAttribute(UsersAdminWebKeys.JSP_PATH);
+String editEmailPasswordPath = (String)portletSession.getAttribute("editEmailPasswordPath");
+
+if (Validator.isNotNull(editEmailPasswordPath)) {
+	jspPath = editEmailPasswordPath;
+}
 
 User selUser = PortalUtil.getSelectedUser(request);
 

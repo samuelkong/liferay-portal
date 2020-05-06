@@ -62,6 +62,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -83,6 +84,7 @@ import java.util.Locale;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletSession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -222,6 +224,15 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 			else if (cmd.equals(Constants.UPDATE)) {
 				Object[] returnValue = updateUser(
 					actionRequest, actionResponse);
+
+				PortletSession portletSession =
+					actionRequest.getPortletSession();
+
+				if (Validator.isNotNull(
+						portletSession.getAttribute("editEmailPasswordPath"))) {
+
+					return;
+				}
 
 				user = (User)returnValue[0];
 				oldScreenName = (String)returnValue[1];
@@ -407,9 +418,6 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		User user = portal.getSelectedUser(actionRequest);
 
 		Contact contact = user.getContact();
@@ -430,6 +438,13 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 		byte[] portraitBytes = null;
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
+
+		PortletSession portletSession = actionRequest.getPortletSession();
+
+		if (Validator.isNotNull(portletSession.getAttribute("fileEntryId"))) {
+			fileEntryId = GetterUtil.getLong(
+				portletSession.getAttribute("fileEntryId"));
+		}
 
 		if (fileEntryId > 0) {
 			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
@@ -468,6 +483,87 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 		String jobTitle = BeanParamUtil.getString(
 			user, actionRequest, "jobTitle");
 
+		if (Validator.isNotNull(portletSession.getAttribute("emailAddress"))) {
+			emailAddress = GetterUtil.getString(
+				portletSession.getAttribute("emailAddress"));
+		}
+
+		if (!StringUtil.equalsIgnoreCase(emailAddress, oldEmailAddress)) {
+			String currentPassword = ParamUtil.getString(
+				actionRequest, "currentPassword");
+
+			if (Validator.isNull(currentPassword)) {
+				User user2 = user;
+
+				user2.setScreenName(screenName);
+				user2.setEmailAddress(emailAddress);
+				user2.setLanguageId(languageId);
+				user2.setComments(comments);
+				user2.setFirstName(firstName);
+				user2.setMiddleName(middleName);
+				user2.setLastName(lastName);
+				user2.setJobTitle(jobTitle);
+
+				portletSession.setAttribute("user2", user2);
+
+				Contact contact2 = contact;
+
+				contact2.setPrefixId(prefixId);
+				contact2.setSuffixId(suffixId);
+				contact2.setMale(male);
+
+				portletSession.setAttribute("contact2", contact2);
+
+				portletSession.setAttribute("birthdayDay", birthdayDay);
+				portletSession.setAttribute("birthdayMonth", birthdayMonth);
+				portletSession.setAttribute("birthdayYear", birthdayYear);
+				portletSession.setAttribute("deleteLogo", deleteLogo);
+				portletSession.setAttribute("emailAddress", emailAddress);
+				portletSession.setAttribute("fileEntryId", fileEntryId);
+
+				portletSession.setAttribute(
+					"editEmailPasswordPath", "/edit_user_email.jsp");
+
+				return new Object[] {user, StringPool.BLANK, false};
+			}
+
+			User user2 = (User)portletSession.getAttribute("user2");
+
+			if (user2 != null) {
+				user = user2;
+
+				screenName = user.getScreenName();
+				emailAddress = user.getEmailAddress();
+				facebookId = user.getFacebookId();
+				languageId = user.getLanguageId();
+				comments = user.getComments();
+				firstName = user.getFirstName();
+				middleName = user.getMiddleName();
+				lastName = user.getLastName();
+				jobTitle = user.getJobTitle();
+			}
+
+			Contact contact2 = (Contact)portletSession.getAttribute("contact2");
+
+			if (contact2 != null) {
+				contact = contact2;
+
+				prefixId = contact.getPrefixId();
+				suffixId = contact.getSuffixId();
+				male = contact.isMale();
+			}
+
+			oldPassword = currentPassword;
+			deleteLogo = GetterUtil.getBoolean(
+				portletSession.getAttribute("deleteLogo"));
+			birthdayMonth = GetterUtil.getInteger(
+				portletSession.getAttribute("birthdayMonth"));
+			birthdayDay = GetterUtil.getInteger(
+				portletSession.getAttribute("birthdayDay"));
+			birthdayYear = GetterUtil.getInteger(
+				portletSession.getAttribute("birthdayYear"));
+		}
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			User.class.getName(), actionRequest);
 
@@ -486,6 +582,9 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		boolean updateLanguageId = false;
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
 		if (user.getUserId() == themeDisplay.getUserId()) {
 
@@ -523,6 +622,16 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 
 			hideDefaultSuccessMessage(actionRequest);
 		}
+
+		portletSession.removeAttribute("user2");
+		portletSession.removeAttribute("contact2");
+		portletSession.removeAttribute("emailAddress");
+		portletSession.removeAttribute("deleteLogo");
+		portletSession.removeAttribute("fileEntryId");
+		portletSession.removeAttribute("birthdayMonth");
+		portletSession.removeAttribute("birthdayDay");
+		portletSession.removeAttribute("birthdayYear");
+		portletSession.removeAttribute("abcd");
 
 		return new Object[] {user, oldScreenName, updateLanguageId};
 	}

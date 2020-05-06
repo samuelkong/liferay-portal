@@ -5129,6 +5129,45 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			user.setReminderQueryAnswer(reminderQueryAnswer);
 		}
 
+		if (!StringUtil.equalsIgnoreCase(
+				emailAddress, user.getEmailAddress())) {
+
+			if (Validator.isNotNull(oldPassword)) {
+				Map<String, String[]> headerMap = new HashMap<>();
+				Map<String, String[]> parameterMap = new HashMap<>();
+				Map<String, Object> resultsMap = new HashMap<>();
+
+				long companyId = user.getCompanyId();
+				String authType = company.getAuthType();
+
+				int authResult = Authenticator.FAILURE;
+
+				if (authType.equals(CompanyConstants.AUTH_TYPE_EA)) {
+					authResult = authenticateByEmailAddress(
+						companyId, user.getEmailAddress(), password, headerMap,
+						parameterMap, resultsMap);
+				}
+				else if (authType.equals(CompanyConstants.AUTH_TYPE_SN)) {
+					authResult = authenticateByScreenName(
+						companyId, user.getScreenName(), password, headerMap,
+						parameterMap, resultsMap);
+				}
+				else if (authType.equals(CompanyConstants.AUTH_TYPE_ID)) {
+					authResult = authenticateByUserId(
+						companyId, user.getUserId(), password, headerMap,
+						parameterMap, resultsMap);
+				}
+
+				if (authResult == Authenticator.FAILURE) {
+					throw new UserPasswordException.MustMatchCurrentPassword(
+						user.getUserId());
+				}
+			}
+			else {
+				throw new UserPasswordException.MustNotBeNull(user.getUserId());
+			}
+		}
+
 		boolean screenNameModified = !StringUtil.equalsIgnoreCase(
 			user.getScreenName(), screenName);
 
