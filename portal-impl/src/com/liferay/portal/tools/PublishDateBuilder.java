@@ -165,7 +165,11 @@ public class PublishDateBuilder {
 			_writeDocument(document, xml);
 		}
 		catch (DocumentException documentException) {
-			throw new DocumentException("Reading the " + xml + "Failed!");
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to read the " + xml, documentException);
+			}
+
+			throw new DocumentException("Unable to read the " + xml);
 		}
 	}
 
@@ -488,7 +492,11 @@ public class PublishDateBuilder {
 			xmlWriter.close();
 		}
 		catch (IOException ioException) {
-			throw new IOException("Write the " + xml + "failed!");
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to write the " + xml, ioException);
+			}
+
+			throw new IOException("Unable to write the " + xml);
 		}
 	}
 
