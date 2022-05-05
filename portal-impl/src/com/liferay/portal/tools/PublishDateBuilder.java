@@ -236,6 +236,10 @@ public class PublishDateBuilder {
 		JSONObject jsonObject = _requestByGroupIdAndArtifactId(
 			groupId, artifactId);
 
+		if (jsonObject == null) {
+			return date;
+		}
+
 		JSONObject responseJSONObject = jsonObject.getJSONObject("response");
 
 		int numFound = responseJSONObject.getInt("numFound");
@@ -346,6 +350,10 @@ public class PublishDateBuilder {
 		JSONObject jsonObject = _requestByGroupIdAndArtifactId(
 			groupId, artifactId);
 
+		if (jsonObject == null) {
+			return date;
+		}
+
 		JSONObject responseJSONObject = jsonObject.getJSONObject("response");
 
 		int numFound = responseJSONObject.getInt("numFound");
@@ -379,6 +387,8 @@ public class PublishDateBuilder {
 
 					name = content.substring(start + 1);
 
+					name = name.trim();
+
 					break;
 				}
 			}
@@ -387,7 +397,7 @@ public class PublishDateBuilder {
 			_log.error(ioException);
 		}
 
-		return name.trim();
+		return name;
 	}
 
 	private JSONObject _requestByGroupIdAndArtifactId(
