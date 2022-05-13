@@ -82,10 +82,6 @@ public class PublishDateBuilder {
 	public PublishDateBuilder(String[] xmls)
 		throws DocumentException, IOException {
 
-		String modules = System.getProperty("project.modules.dir");
-
-		_map = _scanBNDFiles(modules, new HashMap<String, String>());
-
 		System.setProperty("line.separator", StringPool.NEW_LINE);
 
 		for (String xml : xmls) {
@@ -281,9 +277,7 @@ public class PublishDateBuilder {
 
 		projectName = projectName.substring(0, index);
 
-		String gradleFilePath = _map.get(projectName);
-
-		File gradleFile = new File(gradleFilePath + "/build.gradle");
+		File gradleFile = _getGradleFile(projectName);
 
 		Path path = Paths.get(gradleFile.getAbsolutePath());
 
@@ -371,9 +365,7 @@ public class PublishDateBuilder {
 		return date;
 	}
 
-	private String _getModuleProjectName(File file) {
-		String name = null;
-
+	private String _getBundleSymbolicName(File file) {
 		Path path = Paths.get(file.getAbsolutePath());
 
 		try {
@@ -385,11 +377,9 @@ public class PublishDateBuilder {
 				if (StringUtil.startsWith(content, "Bundle-SymbolicName")) {
 					int start = content.indexOf(StringPool.COLON);
 
-					name = content.substring(start + 1);
+					String name = content.substring(start + 1);
 
-					name = name.trim();
-
-					break;
+					return name.trim();
 				}
 			}
 		}
@@ -397,7 +387,7 @@ public class PublishDateBuilder {
 			_log.error(ioException);
 		}
 
-		return name;
+		return null;
 	}
 
 	private JSONObject _requestByGroupIdAndArtifactId(
@@ -443,31 +433,56 @@ public class PublishDateBuilder {
 		return jsonObject;
 	}
 
-	private Map<String, String> _scanBNDFiles(
-		String path, Map<String, String> map) {
+	private File _getGradleFile(String bundleName) {
+		Map<String, File> bundleNameGradleFileMap = _getBundleNameGradleFileMap();
 
-		File modules = new File(path);
+		return bundleNameGradleFileMap.get(bundleName);
+	}
 
-		File[] files = modules.listFiles();
+	private Map<String, File> _getBundleNameGradleFileMap() {
+		File folder = new File(System.getProperty("project.modules.dir"));
+
+		return _getBundleNameGradleFileMap(folder);
+	}
+
+	private Map<String, File> _getBundleNameGradleFileMap(File folder) {
+		if (_bundleNameGradleFileMap != null) {
+			return _bundleNameGradleFileMap;
+		}
+
+		_bundleNameGradleFileMap = new HashMap<>();
+
+		File[] files = folder.listFiles();
 
 		for (File file : files) {
 			if (file.isDirectory()) {
-				_scanBNDFiles(file.getAbsolutePath(), map);
+				_getBundleNameGradleFileMap(file);
+
+				continue;
 			}
-			else {
-				String name = file.getName();
 
-				if (name.equals("bnd.bnd")) {
-					String projectName = _getModuleProjectName(file);
+			String name = file.getName();
 
-					String gradlePath = file.getParent();
-
-					map.put(projectName, gradlePath);
-				}
+			if (!name.equals("bnd.bnd")) {
+				continue;
 			}
+
+			String bundleSymbolicName = _getBundleSymbolicName(file);
+
+			if (bundleSymbolicName == null) {
+				continue;
+			}
+
+			File gradleFile = new File(file.getParent() + "/build.gradle");
+
+			if (!gradleFile.exists()) {
+				continue;
+			}
+
+			_bundleNameGradleFileMap.put(bundleSymbolicName, gradleFile);
 		}
 
-		return map;
+		return _bundleNameGradleFileMap;
 	}
 
 	private Element _updateLVPDElement(
@@ -571,6 +586,6 @@ public class PublishDateBuilder {
 		}
 	}
 
-	private Map<String, String> _map = new HashMap<>();
+	private Map<String, File> _bundleNameGradleFileMap;
 
 }
