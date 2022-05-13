@@ -224,6 +224,52 @@ public class PublishDateBuilder {
 		return dateFormat.format(timestamp);
 	}
 
+	private Map<String, File> _getBundleNameGradleFileMap() {
+		File folder = new File(System.getProperty("project.modules.dir"));
+
+		return _getBundleNameGradleFileMap(folder);
+	}
+
+	private Map<String, File> _getBundleNameGradleFileMap(File folder) {
+		if (_bundleNameGradleFileMap != null) {
+			return _bundleNameGradleFileMap;
+		}
+
+		_bundleNameGradleFileMap = new HashMap<>();
+
+		File[] files = folder.listFiles();
+
+		for (File file : files) {
+			if (file.isDirectory()) {
+				_getBundleNameGradleFileMap(file);
+
+				continue;
+			}
+
+			String name = file.getName();
+
+			if (!name.equals("bnd.bnd")) {
+				continue;
+			}
+
+			String bundleSymbolicName = _getBundleSymbolicName(file);
+
+			if (bundleSymbolicName == null) {
+				continue;
+			}
+
+			File gradleFile = new File(file.getParent() + "/build.gradle");
+
+			if (!gradleFile.exists()) {
+				continue;
+			}
+
+			_bundleNameGradleFileMap.put(bundleSymbolicName, gradleFile);
+		}
+
+		return _bundleNameGradleFileMap;
+	}
+
 	private String _getCVPDDate(
 		String groupId, String artifactId, String version) {
 
@@ -338,6 +384,13 @@ public class PublishDateBuilder {
 		return dependency;
 	}
 
+	private File _getGradleFile(String bundleName) {
+		Map<String, File> bundleNameGradleFileMap =
+			_getBundleNameGradleFileMap();
+
+		return bundleNameGradleFileMap.get(bundleName);
+	}
+
 	private String _getLVPDDate(String groupId, String artifactId) {
 		String date = null;
 
@@ -431,58 +484,6 @@ public class PublishDateBuilder {
 		}
 
 		return jsonObject;
-	}
-
-	private File _getGradleFile(String bundleName) {
-		Map<String, File> bundleNameGradleFileMap = _getBundleNameGradleFileMap();
-
-		return bundleNameGradleFileMap.get(bundleName);
-	}
-
-	private Map<String, File> _getBundleNameGradleFileMap() {
-		File folder = new File(System.getProperty("project.modules.dir"));
-
-		return _getBundleNameGradleFileMap(folder);
-	}
-
-	private Map<String, File> _getBundleNameGradleFileMap(File folder) {
-		if (_bundleNameGradleFileMap != null) {
-			return _bundleNameGradleFileMap;
-		}
-
-		_bundleNameGradleFileMap = new HashMap<>();
-
-		File[] files = folder.listFiles();
-
-		for (File file : files) {
-			if (file.isDirectory()) {
-				_getBundleNameGradleFileMap(file);
-
-				continue;
-			}
-
-			String name = file.getName();
-
-			if (!name.equals("bnd.bnd")) {
-				continue;
-			}
-
-			String bundleSymbolicName = _getBundleSymbolicName(file);
-
-			if (bundleSymbolicName == null) {
-				continue;
-			}
-
-			File gradleFile = new File(file.getParent() + "/build.gradle");
-
-			if (!gradleFile.exists()) {
-				continue;
-			}
-
-			_bundleNameGradleFileMap.put(bundleSymbolicName, gradleFile);
-		}
-
-		return _bundleNameGradleFileMap;
 	}
 
 	private Element _updateLVPDElement(
