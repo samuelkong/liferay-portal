@@ -85,14 +85,20 @@ public class PublishDateBuilder {
 		System.setProperty("line.separator", StringPool.NEW_LINE);
 
 		for (String xml : xmls) {
-			_addDateElement(xml);
+			_addDate(xml);
 		}
 	}
 
 	private Element _addCVPDElement(
-		Element element, String groupId, String artifactId, String version) {
+		Element librayElement, String groupId, String artifactId, String version) {
 
-		Element cvpdElement = element.addElement(_CVPD);
+		Element cvpdElement = libraryElement.element(_CVPD);
+
+		if (cvpdElement != null) {
+			return librayElement;
+		}
+
+		cvpdElement = librayElement.addElement(_CVPD);
 
 		String date = _getCVPDDate(groupId, artifactId, version);
 
@@ -100,10 +106,10 @@ public class PublishDateBuilder {
 			cvpdElement.setText(date);
 		}
 
-		return element;
+		return librayElement;
 	}
 
-	private void _addDateElement(String xml)
+	private void _addDate(String xml)
 		throws DocumentException, IOException {
 
 		try {
@@ -121,41 +127,27 @@ public class PublishDateBuilder {
 			List<Element> libraryElements = librariesElement.elements(
 				"library");
 
-			for (Element element : libraryElements) {
-				String fileNameElementText = element.elementText("file-name");
-
+			for (Element libraryElement : libraryElements) {
 				String value = null;
 
-				if (!fileNameElementText.startsWith("lib/")) {
-					value = _getDependencyFromGradleFile(fileNameElementText);
+				String fileNameElementText = libraryElement.elementText(
+					"file-name");
+
+				if (fileNameElementText.startsWith("lib/")) {
+					value = _getDependencyFromPropertyFile(fileNameElementText);
 				}
 				else {
-					value = _getDependencyFromPropertyFile(fileNameElementText);
+					value = _getDependencyFromGradleFile(fileNameElementText);
 				}
 
 				String[] dependency = StringUtil.split(value, ':');
 
 				String groupId = dependency[0];
-
 				String artifactId = dependency[1];
+				String version = dependency[2];
 
-				Element cvpdElement = element.element(_CVPD);
-
-				if (cvpdElement == null) {
-					String version = dependency[2];
-
-					element = _addCVPDElement(
-						element, groupId, artifactId, version);
-				}
-
-				Element lvpdElement = element.element(_LVPD);
-
-				if (lvpdElement == null) {
-					_addLVPDElement(element, groupId, artifactId);
-				}
-				else {
-					_updateLVPDElement(lvpdElement, groupId, artifactId);
-				}
+				_addCVPDElement(libraryElement, groupId, artifactId, version);
+				_addLVPDElement(libraryElement, groupId, artifactId);
 			}
 
 			_writeDocument(document, xml);
@@ -170,13 +162,21 @@ public class PublishDateBuilder {
 	}
 
 	private Element _addLVPDElement(
-		Element element, String groupId, String artifactId) {
+		Element libraryElement, String groupId, String artifactId) {
 
-		Element lvpdElement = element.addElement(_LVPD);
+		Element lvpdElement = libraryElement.element(_LVPD);
 
-		_updateLVPDElement(lvpdElement, groupId, artifactId);
+		if (lvpdElement == null) {
+			lvpdElement = libraryElement.addElement(_LVPD);
+		}
+	
+		String date = _getLVPDDate(groupId, artifactId);
 
-		return element;
+		if (date != null) {
+			lvpdElement.setText(date);
+		}
+
+		return libraryElement;
 	}
 
 	private String _extractGradleDependency(String content) {
@@ -367,19 +367,10 @@ public class PublishDateBuilder {
 
 		int endIndex = fileNameElementText.lastIndexOf(".");
 
-		String fileName = fileNameElementText.substring(
+		String name = fileNameElementText.substring(
 			startIndex + 1, endIndex);
 
-		String path = fileNameElementText.substring(0, startIndex);
-
-		if (path.contains("/development")) {
-			dependency = _dependenciesPropertiesDevelopmentFile.getProperty(
-				fileName);
-		}
-		else if (path.contains("/portal")) {
-			dependency = _dependenciesPropertiesPortalFile.getProperty(
-				fileName);
-		}
+		dependency = _dependenciesProperties.getProperty(name);
 
 		return dependency;
 	}
@@ -486,18 +477,6 @@ public class PublishDateBuilder {
 		return jsonObject;
 	}
 
-	private Element _updateLVPDElement(
-		Element element, String groupId, String artifactId) {
-
-		String date = _getLVPDDate(groupId, artifactId);
-
-		if (date != null) {
-			element.setText(date);
-		}
-
-		return element;
-	}
-
 	private void _writeDocument(Document document, String xml)
 		throws IOException {
 
@@ -534,56 +513,54 @@ public class PublishDateBuilder {
 		PublishDateBuilder.class);
 
 	private static final Map<String, JSONObject> _cache = new HashMap<>();
-	private static final Properties _dependenciesPropertiesDevelopmentFile;
-	private static final Properties _dependenciesPropertiesPortalFile;
+	private static final Properties _dependenciesProperties;
 
 	static {
 		String projectDir = System.getProperty("project.dir");
 
-		_dependenciesPropertiesDevelopmentFile = new Properties();
+		_dependenciesProperties = new Properties();
 
-		_dependenciesPropertiesPortalFile = new Properties();
-
-		String developmentFilePath =
-			projectDir + "/lib/development/dependencies.properties";
-
-		String portalFilePath =
-			projectDir + "/lib/portal/dependencies.properties";
-
-		File dependenciesDevelopmentFile = new File(developmentFilePath);
-
-		File dependenciesPortalFile = new File(portalFilePath);
+		InputStream developmentPropertiesInputStream = null;
+		InputStream portalPropertiesInputStream = null;
 
 		try {
-			InputStream developmentFileInputStream = new BufferedInputStream(
-				new FileInputStream(dependenciesDevelopmentFile));
+			developmentPropertiesInputStream = new BufferedInputStream(
+				new FileInputStream(
+					projectDir + "/lib/development/dependencies.properties"));
+			portalPropertiesInputStream = new BufferedInputStream(
+				new FileInputStream(
+					projectDir + "/lib/portal/dependencies.properties"));
 
-			_dependenciesPropertiesDevelopmentFile.load(
-				developmentFileInputStream);
+			_dependenciesProperties.load(
+				developmentPropertiesInputStream);
+			_dependenciesProperties.load(
+				portalPropertiesInputStream);
 
-			//add the development dependencies of versions.xml
-			_dependenciesPropertiesDevelopmentFile.put(
+			// Fake the dependencies JARs added directly to /lib/development
+
+			_dependenciesProperties.put(
 				"ant-contrib", "ant-contrib:ant-contrib:1.0b3");
-			_dependenciesPropertiesDevelopmentFile.put(
+			_dependenciesProperties.put(
 				"antelope", "com.liferay:ise.antelope:3.4.0");
-			_dependenciesPropertiesDevelopmentFile.put(
+			_dependenciesProperties.put(
 				"bsh", "org.beanshell:bsh:2.0b4");
-			_dependenciesPropertiesDevelopmentFile.put(
+			_dependenciesProperties.put(
 				"xmltask", "com.oopsconsultancy:xmltask:1.16");
-
-			InputStream portalFileInputStream = new BufferedInputStream(
-				new FileInputStream(dependenciesPortalFile));
-
-			_dependenciesPropertiesPortalFile.load(portalFileInputStream);
-
-			developmentFileInputStream.close();
-			portalFileInputStream.close();
 		}
 		catch (FileNotFoundException fileNotFoundException) {
 			_log.error(fileNotFoundException);
 		}
 		catch (IOException ioException) {
 			_log.error(ioException);
+		}
+		finally {
+			if (developmentPropertiesInputStream != null) {
+				developmentPropertiesInputStream.close();
+			}
+
+			if (portalPropertiesInputStream != null) {
+				portalPropertiesInputStream.close();
+			}
 		}
 	}
 
