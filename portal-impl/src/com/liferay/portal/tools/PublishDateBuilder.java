@@ -226,18 +226,18 @@ public class PublishDateBuilder {
 	}
 
 	private Map<String, File> _getBundleNameGradleFileMap() {
+		if (_bundleNameGradleFileMap != null) {
+			return _bundleNameGradleFileMap;
+		}
+
 		File folder = new File(System.getProperty("project.modules.dir"));
+
+		_bundleNameGradleFileMap = new HashMap<>();
 
 		return _getBundleNameGradleFileMap(folder);
 	}
 
 	private Map<String, File> _getBundleNameGradleFileMap(File folder) {
-		if (_bundleNameGradleFileMap != null) {
-			return _bundleNameGradleFileMap;
-		}
-
-		_bundleNameGradleFileMap = new HashMap<>();
-
 		File[] files = folder.listFiles();
 
 		for (File file : files) {
