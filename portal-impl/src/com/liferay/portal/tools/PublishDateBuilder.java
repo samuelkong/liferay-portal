@@ -192,7 +192,7 @@ public class PublishDateBuilder {
 
 		int nameEndIndex = content.indexOf(StringPool.COMMA, nameStartIndex);
 
-		int versionIndex = content.indexOf("version:");
+		int versionStartIndex = content.indexOf("version:");
 
 		String groupPart = content.substring(groupStartIndex, groupEndIndex);
 
@@ -206,7 +206,7 @@ public class PublishDateBuilder {
 
 		name = StringUtil.removeChars(name.trim(), quote);
 
-		String versionPart = content.substring(versionIndex);
+		String versionPart = content.substring(versionStartIndex);
 
 		String version = StringUtil.extractLast(versionPart, StringPool.COLON);
 
@@ -300,14 +300,14 @@ public class PublishDateBuilder {
 	private String _getDependencyFromGradleFile(String fileNameElementText) {
 		String dependency = null;
 
-		String projectName = StringUtil.extractFirst(
+		String bundleJar = StringUtil.extractFirst(
 			fileNameElementText, StringPool.EXCLAMATION);
 
-		int index = projectName.lastIndexOf(StringPool.PERIOD);
+		int x = bundleJar.lastIndexOf(StringPool.PERIOD);
 
-		projectName = projectName.substring(0, index);
+		String bundleName = bundleJar.substring(0, x);
 
-		File gradleFile = _getGradleFile(projectName);
+		File gradleFile = _getGradleFile(bundleName);
 
 		Path path = Paths.get(gradleFile.getAbsolutePath());
 
@@ -316,17 +316,17 @@ public class PublishDateBuilder {
 
 			String content;
 
-			String fileName = StringUtil.extractLast(
+			String artifactJar = StringUtil.extractLast(
 				fileNameElementText, StringPool.EXCLAMATION);
 
-			int endIndex = fileName.lastIndexOf(StringPool.PERIOD);
+			int y = artifactJar.lastIndexOf(StringPool.PERIOD);
 
-			fileName = fileName.substring(0, endIndex);
+			String artifactName = artifactJar.substring(0, y);
 
 			StringBuilder regexSB = new StringBuilder();
 
 			regexSB.append(".*group:.*name:\\s*\"");
-			regexSB.append(fileName);
+			regexSB.append(artifactName);
 			regexSB.append("\".*version:.*");
 
 			while ((content = reader.readLine()) != null) {
