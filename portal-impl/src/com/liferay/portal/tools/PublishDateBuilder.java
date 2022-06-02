@@ -90,16 +90,16 @@ public class PublishDateBuilder {
 	}
 
 	private Element _addCVPDElement(
-		Element librayElement, String groupId, String artifactId,
+		Element libraryElement, String groupId, String artifactId,
 		String version) {
 
 		Element cvpdElement = libraryElement.element(_CVPD);
 
 		if (cvpdElement != null) {
-			return librayElement;
+			return libraryElement;
 		}
 
-		cvpdElement = librayElement.addElement(_CVPD);
+		cvpdElement = libraryElement.addElement(_CVPD);
 
 		String date = _getMavenVersionDate(groupId, artifactId, version);
 
@@ -107,12 +107,10 @@ public class PublishDateBuilder {
 			cvpdElement.setText(date);
 		}
 
-		return librayElement;
+		return libraryElement;
 	}
 
-	private void _addDate(String xml)
-		throws DocumentException, IOException {
-
+	private void _addDate(String xml) throws DocumentException, IOException {
 		try {
 			SAXReader saxReader = SAXReaderFactory.getSAXReader(
 				null, false, false);
@@ -148,6 +146,7 @@ public class PublishDateBuilder {
 				String version = dependency[2];
 
 				_addCVPDElement(libraryElement, groupId, artifactId, version);
+
 				_addLVPDElement(libraryElement, groupId, artifactId);
 			}
 
@@ -170,7 +169,7 @@ public class PublishDateBuilder {
 		if (lvpdElement == null) {
 			lvpdElement = libraryElement.addElement(_LVPD);
 		}
-	
+
 		String date = _getMavenVersionDate(
 			groupId, artifactId, _LATEST_VERSION);
 
@@ -345,18 +344,13 @@ public class PublishDateBuilder {
 	}
 
 	private String _getDependencyFromPropertyFile(String fileNameElementText) {
-		String dependency = null;
-
 		int startIndex = fileNameElementText.lastIndexOf("/");
 
 		int endIndex = fileNameElementText.lastIndexOf(".");
 
-		String name = fileNameElementText.substring(
-			startIndex + 1, endIndex);
+		String name = fileNameElementText.substring(startIndex + 1, endIndex);
 
-		dependency = _dependenciesProperties.getProperty(name);
-
-		return dependency;
+		return _dependenciesProperties.getProperty(name);
 	}
 
 	private File _getGradleFile(String bundleName) {
@@ -369,8 +363,8 @@ public class PublishDateBuilder {
 	private String _getMavenVersionDate(
 		String groupId, String artifactId, String version) {
 
-		JSONObject mavenVersionDetailsJSONObject = _getMavenVersionDetails(
-			groupId, artifactId);
+		JSONObject mavenVersionDetailsJSONObject =
+			_getMavenVersionDetailsJSONObject(groupId, artifactId);
 
 		if (mavenVersionDetailsJSONObject == null) {
 			return null;
@@ -415,7 +409,7 @@ public class PublishDateBuilder {
 		return _formatDate(timestamp);
 	}
 
-	private JSONObject _getMavenVersionDetails(
+	private JSONObject _getMavenVersionDetailsJSONObject(
 		String groupId, String artifactId) {
 
 		String key = groupId + ":" + artifactId;
@@ -496,31 +490,28 @@ public class PublishDateBuilder {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PublishDateBuilder.class);
 
+	private static final Properties _dependenciesProperties;
 	private static final Map<String, JSONObject> _mavenVersionDetailsCache =
 		new HashMap<>();
-
-	private static final Properties _dependenciesProperties;
 
 	static {
 		String projectDir = System.getProperty("project.dir");
 
 		_dependenciesProperties = new Properties();
 
-		InputStream developmentPropertiesInputStream = null;
-		InputStream portalPropertiesInputStream = null;
-
 		try {
-			developmentPropertiesInputStream = new BufferedInputStream(
-				new FileInputStream(
-					projectDir + "/lib/development/dependencies.properties"));
-			portalPropertiesInputStream = new BufferedInputStream(
+			InputStream developmentPropertiesInputStream =
+				new BufferedInputStream(
+					new FileInputStream(
+						projectDir +
+							"/lib/development/dependencies.properties"));
+
+			InputStream portalPropertiesInputStream = new BufferedInputStream(
 				new FileInputStream(
 					projectDir + "/lib/portal/dependencies.properties"));
 
-			_dependenciesProperties.load(
-				developmentPropertiesInputStream);
-			_dependenciesProperties.load(
-				portalPropertiesInputStream);
+			_dependenciesProperties.load(developmentPropertiesInputStream);
+			_dependenciesProperties.load(portalPropertiesInputStream);
 
 			// Fake the dependencies JARs added directly to /lib/development
 
@@ -528,25 +519,18 @@ public class PublishDateBuilder {
 				"ant-contrib", "ant-contrib:ant-contrib:1.0b3");
 			_dependenciesProperties.put(
 				"antelope", "com.liferay:ise.antelope:3.4.0");
-			_dependenciesProperties.put(
-				"bsh", "org.beanshell:bsh:2.0b4");
+			_dependenciesProperties.put("bsh", "org.beanshell:bsh:2.0b4");
 			_dependenciesProperties.put(
 				"xmltask", "com.oopsconsultancy:xmltask:1.16");
+
+			developmentPropertiesInputStream.close();
+			portalPropertiesInputStream.close();
 		}
 		catch (FileNotFoundException fileNotFoundException) {
 			_log.error(fileNotFoundException);
 		}
 		catch (IOException ioException) {
 			_log.error(ioException);
-		}
-		finally {
-			if (developmentPropertiesInputStream != null) {
-				developmentPropertiesInputStream.close();
-			}
-
-			if (portalPropertiesInputStream != null) {
-				portalPropertiesInputStream.close();
-			}
 		}
 	}
 
