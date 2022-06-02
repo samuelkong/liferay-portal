@@ -90,7 +90,8 @@ public class PublishDateBuilder {
 	}
 
 	private Element _addCVPDElement(
-		Element librayElement, String groupId, String artifactId, String version) {
+		Element librayElement, String groupId, String artifactId,
+		String version) {
 
 		Element cvpdElement = libraryElement.element(_CVPD);
 
@@ -100,7 +101,7 @@ public class PublishDateBuilder {
 
 		cvpdElement = librayElement.addElement(_CVPD);
 
-		String date = _getCVPDDate(groupId, artifactId, version);
+		String date = _getMavenVersionDate(groupId, artifactId, version);
 
 		if (date != null) {
 			cvpdElement.setText(date);
@@ -170,7 +171,8 @@ public class PublishDateBuilder {
 			lvpdElement = libraryElement.addElement(_LVPD);
 		}
 	
-		String date = _getLVPDDate(groupId, artifactId);
+		String date = _getMavenVersionDate(
+			groupId, artifactId, _LATEST_VERSION);
 
 		if (date != null) {
 			lvpdElement.setText(date);
@@ -270,47 +272,53 @@ public class PublishDateBuilder {
 		return _bundleNameGradleFileMap;
 	}
 
-	private String _getCVPDDate(
+	private String _getMavenVersionDate(
 		String groupId, String artifactId, String version) {
 
-		String date = null;
-
-		JSONObject jsonObject = _requestByGroupIdAndArtifactId(
+		JSONObject mavenVersionDetailsJSONObject = _getMavenVersionDetails(
 			groupId, artifactId);
 
-		if (jsonObject == null) {
-			return date;
+		if (mavenVersionDetailsJSONObject == null) {
+			return null;
 		}
 
-		JSONObject responseJSONObject = jsonObject.getJSONObject("response");
+		JSONObject responseJSONObject =
+			mavenVersionDetailsJSONObject.getJSONObject("response");
 
 		int numFound = responseJSONObject.getInt("numFound");
 
-		if (numFound != 0) {
+		if (numFound == 0) {
+			return null;
+		}
+
+		JSONObject docJSONObject = null;
+
+		JSONArray docsJSONArray = responseJSONObject.getJSONArray("docs");
+
+		if (version.equals(_LATEST_VERSION)) {
+			docJSONObject = docsJSONArray.getJSONObject(0);
+		}
+		else {
 			String key = StringBundler.concat(
 				groupId, StringPool.COLON, artifactId, StringPool.COLON,
 				version);
 
-			JSONArray docsJSONArray = responseJSONObject.getJSONArray("docs");
-
 			Iterator<Object> iterator = docsJSONArray.iterator();
 
 			while (iterator.hasNext()) {
-				JSONObject docJSONObject = (JSONObject)iterator.next();
+				docJSONObject = (JSONObject)iterator.next();
 
 				String id = docJSONObject.getString("id");
 
 				if (id.equals(key)) {
-					long timestamp = docJSONObject.getLong("timestamp");
-
-					date = _formatDate(timestamp);
-
 					break;
 				}
 			}
 		}
 
-		return date;
+		long timestamp = docJSONObject.getLong("timestamp");
+
+		return _formatDate(timestamp);
 	}
 
 	private String _getDependencyFromGradleFile(String fileNameElementText) {
@@ -382,33 +390,6 @@ public class PublishDateBuilder {
 		return bundleNameGradleFileMap.get(bundleName);
 	}
 
-	private String _getLVPDDate(String groupId, String artifactId) {
-		String date = null;
-
-		JSONObject jsonObject = _requestByGroupIdAndArtifactId(
-			groupId, artifactId);
-
-		if (jsonObject == null) {
-			return date;
-		}
-
-		JSONObject responseJSONObject = jsonObject.getJSONObject("response");
-
-		int numFound = responseJSONObject.getInt("numFound");
-
-		if (numFound != 0) {
-			JSONArray docsJSONArray = responseJSONObject.getJSONArray("docs");
-
-			JSONObject docJSONObject = docsJSONArray.getJSONObject(0);
-
-			long timestamp = docJSONObject.getLong("timestamp");
-
-			date = _formatDate(timestamp);
-		}
-
-		return date;
-	}
-
 	private String _getBundleSymbolicName(File file) {
 		Path path = Paths.get(file.getAbsolutePath());
 
@@ -434,31 +415,31 @@ public class PublishDateBuilder {
 		return null;
 	}
 
-	private JSONObject _requestByGroupIdAndArtifactId(
+	private JSONObject _getMavenVersionDetails(
 		String groupId, String artifactId) {
 
 		String key = groupId + ":" + artifactId;
 
-		JSONObject jsonObject = _cache.get(key);
+		JSONObject mavenVersionDetailsJSONObject =
+			_mavenVersionDetailsCache.get(key);
 
-		if (jsonObject != null) {
-			return jsonObject;
+		if (mavenVersionDetailsJSONObject != null) {
+			return mavenVersionDetailsJSONObject;
 		}
 
-		StringBuilder uriSB = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-		uriSB.append("https://search.maven.org/solrsearch/select?q=");
-		uriSB.append("g:");
-		uriSB.append(groupId);
-		uriSB.append("+AND+");
-		uriSB.append("a:");
-		uriSB.append(artifactId);
-		uriSB.append("&core=gav&rows=200&wt=json");
+		sb.append("https://search.maven.org/solrsearch/select?q=g:");
+		sb.append(groupId);
+		sb.append("+AND+");
+		sb.append("a:");
+		sb.append(artifactId);
+		sb.append("&core=gav&rows=200&wt=json");
 
 		try {
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 
-			HttpGet httpGet = new HttpGet(uriSB.toString());
+			HttpGet httpGet = new HttpGet(sb.toString());
 
 			CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
 
@@ -466,15 +447,16 @@ public class PublishDateBuilder {
 
 			HttpEntity entity = httpResponse.getEntity();
 
-			jsonObject = new JSONObject(EntityUtils.toString(entity));
+			mavenVersionDetailsJSONObject = new JSONObject(
+				EntityUtils.toString(entity));
 
-			_cache.put(key, jsonObject);
+			_mavenVersionDetailsCache.put(key, mavenVersionDetailsJSONObject);
 		}
 		catch (IOException ioException) {
 			_log.error(ioException);
 		}
 
-		return jsonObject;
+		return mavenVersionDetailsJSONObject;
 	}
 
 	private void _writeDocument(Document document, String xml)
@@ -509,10 +491,12 @@ public class PublishDateBuilder {
 
 	private static final String _LVPD = "latest-version-publish-date";
 
+	private static final String _LATEST_VERSION = "LATEST VERSION";
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		PublishDateBuilder.class);
 
-	private static final Map<String, JSONObject> _cache = new HashMap<>();
+	private static final Map<String, JSONObject> _mavenVersionDetailsCache = new HashMap<>();
 	private static final Properties _dependenciesProperties;
 
 	static {
