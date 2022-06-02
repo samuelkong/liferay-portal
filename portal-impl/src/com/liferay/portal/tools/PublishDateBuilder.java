@@ -272,53 +272,29 @@ public class PublishDateBuilder {
 		return _bundleNameGradleFileMap;
 	}
 
-	private String _getMavenVersionDate(
-		String groupId, String artifactId, String version) {
+	private String _getBundleSymbolicName(File file) {
+		Path path = Paths.get(file.getAbsolutePath());
 
-		JSONObject mavenVersionDetailsJSONObject = _getMavenVersionDetails(
-			groupId, artifactId);
+		try {
+			BufferedReader reader = Files.newBufferedReader(path);
 
-		if (mavenVersionDetailsJSONObject == null) {
-			return null;
-		}
+			String content;
 
-		JSONObject responseJSONObject =
-			mavenVersionDetailsJSONObject.getJSONObject("response");
+			while ((content = reader.readLine()) != null) {
+				if (StringUtil.startsWith(content, "Bundle-SymbolicName")) {
+					int start = content.indexOf(StringPool.COLON);
 
-		int numFound = responseJSONObject.getInt("numFound");
+					String name = content.substring(start + 1);
 
-		if (numFound == 0) {
-			return null;
-		}
-
-		JSONObject docJSONObject = null;
-
-		JSONArray docsJSONArray = responseJSONObject.getJSONArray("docs");
-
-		if (version.equals(_LATEST_VERSION)) {
-			docJSONObject = docsJSONArray.getJSONObject(0);
-		}
-		else {
-			String key = StringBundler.concat(
-				groupId, StringPool.COLON, artifactId, StringPool.COLON,
-				version);
-
-			Iterator<Object> iterator = docsJSONArray.iterator();
-
-			while (iterator.hasNext()) {
-				docJSONObject = (JSONObject)iterator.next();
-
-				String id = docJSONObject.getString("id");
-
-				if (id.equals(key)) {
-					break;
+					return name.trim();
 				}
 			}
 		}
+		catch (IOException ioException) {
+			_log.error(ioException);
+		}
 
-		long timestamp = docJSONObject.getLong("timestamp");
-
-		return _formatDate(timestamp);
+		return null;
 	}
 
 	private String _getDependencyFromGradleFile(String fileNameElementText) {
@@ -390,29 +366,53 @@ public class PublishDateBuilder {
 		return bundleNameGradleFileMap.get(bundleName);
 	}
 
-	private String _getBundleSymbolicName(File file) {
-		Path path = Paths.get(file.getAbsolutePath());
+	private String _getMavenVersionDate(
+		String groupId, String artifactId, String version) {
 
-		try {
-			BufferedReader reader = Files.newBufferedReader(path);
+		JSONObject mavenVersionDetailsJSONObject = _getMavenVersionDetails(
+			groupId, artifactId);
 
-			String content;
+		if (mavenVersionDetailsJSONObject == null) {
+			return null;
+		}
 
-			while ((content = reader.readLine()) != null) {
-				if (StringUtil.startsWith(content, "Bundle-SymbolicName")) {
-					int start = content.indexOf(StringPool.COLON);
+		JSONObject responseJSONObject =
+			mavenVersionDetailsJSONObject.getJSONObject("response");
 
-					String name = content.substring(start + 1);
+		int numFound = responseJSONObject.getInt("numFound");
 
-					return name.trim();
+		if (numFound == 0) {
+			return null;
+		}
+
+		JSONObject docJSONObject = null;
+
+		JSONArray docsJSONArray = responseJSONObject.getJSONArray("docs");
+
+		if (version.equals(_LATEST_VERSION)) {
+			docJSONObject = docsJSONArray.getJSONObject(0);
+		}
+		else {
+			String key = StringBundler.concat(
+				groupId, StringPool.COLON, artifactId, StringPool.COLON,
+				version);
+
+			Iterator<Object> iterator = docsJSONArray.iterator();
+
+			while (iterator.hasNext()) {
+				docJSONObject = (JSONObject)iterator.next();
+
+				String id = docJSONObject.getString("id");
+
+				if (id.equals(key)) {
+					break;
 				}
 			}
 		}
-		catch (IOException ioException) {
-			_log.error(ioException);
-		}
 
-		return null;
+		long timestamp = docJSONObject.getLong("timestamp");
+
+		return _formatDate(timestamp);
 	}
 
 	private JSONObject _getMavenVersionDetails(
@@ -489,14 +489,16 @@ public class PublishDateBuilder {
 
 	private static final String _CVPD = "current-version-publish-date";
 
-	private static final String _LVPD = "latest-version-publish-date";
-
 	private static final String _LATEST_VERSION = "LATEST VERSION";
+
+	private static final String _LVPD = "latest-version-publish-date";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PublishDateBuilder.class);
 
-	private static final Map<String, JSONObject> _mavenVersionDetailsCache = new HashMap<>();
+	private static final Map<String, JSONObject> _mavenVersionDetailsCache =
+		new HashMap<>();
+
 	private static final Properties _dependenciesProperties;
 
 	static {
