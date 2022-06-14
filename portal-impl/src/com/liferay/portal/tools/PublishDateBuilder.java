@@ -18,6 +18,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.xml.SAXReaderFactory;
@@ -33,6 +34,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,13 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -431,20 +428,31 @@ public class PublishDateBuilder {
 		sb.append("&core=gav&rows=200&wt=json");
 
 		try {
-			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			URL url = new URL(sb.toString());
 
-			HttpGet httpGet = new HttpGet(sb.toString());
+			HttpURLConnection connection =
+				(HttpURLConnection)url.openConnection();
 
-			CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
+			connection.setRequestMethod(HttpMethods.GET);
 
-			HttpResponse httpResponse = closeableHttpClient.execute(httpGet);
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(connection.getInputStream()));
 
-			HttpEntity entity = httpResponse.getEntity();
+				StringBuilder response = new StringBuilder();
 
-			mavenVersionDetailsJSONObject = new JSONObject(
-				EntityUtils.toString(entity));
+				String line = null;
 
-			_mavenVersionDetailsCache.put(key, mavenVersionDetailsJSONObject);
+				while ((line = bufferedReader.readLine()) != null) {
+					response.append(line);
+				}
+
+				mavenVersionDetailsJSONObject = new JSONObject(
+					response.toString());
+
+				_mavenVersionDetailsCache.put(
+					key, mavenVersionDetailsJSONObject);
+			}
 		}
 		catch (IOException ioException) {
 			_log.error(ioException);
