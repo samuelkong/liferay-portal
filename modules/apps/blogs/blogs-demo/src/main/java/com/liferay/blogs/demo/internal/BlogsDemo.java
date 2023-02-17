@@ -95,6 +95,8 @@ public class BlogsDemo extends BasePortalInstanceLifecycleListener {
 
 			_multipleCommentDemoDataCreator.create(blogsEntry);
 		}
+
+		System.out.println("It's just a commit signing test!");
 	}
 
 	@Activate
